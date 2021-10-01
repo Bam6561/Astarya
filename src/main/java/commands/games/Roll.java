@@ -34,7 +34,7 @@ public class Roll extends Command {
     Random rand = new Random();
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Roll__");
-    display.setDescription("You rolled a **(" + (rand.nextInt(6) + 1) + ")**");
+    display.setDescription("You rolled a **(" + (rand.nextInt(6) + 1) + ")**.");
     Settings.sendEmbed(ce, display);
   }
 

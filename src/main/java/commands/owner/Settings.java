@@ -31,8 +31,8 @@ public class Settings extends Command {
         EmbedBuilder display = new EmbedBuilder();
         display.setTitle("__Settings__");
         display.setDescription("**Prefix:** `" + prefix + "` \n**AlternatePrefix:** `" + alternatePrefix
-            + "` \n**DeleteInvoke**: `" + deleteInvoke + "`" + "\n**MessageDecay:** `" + embedDecay + "`"
-            + "\n**MessageDecayTime:** `" + embedDecayTime + "`");
+            + "` \n**DeleteInvoke**: `" + deleteInvoke + "`" + "\n**EmbedDecay:** `" + embedDecay + "`"
+            + "\n**EmbedDecayTime:** `" + embedDecayTime + "`s");
         sendEmbed(ce, display);
       }
       case 3 -> { // Change settings
@@ -40,15 +40,16 @@ public class Settings extends Command {
           String setting = args[1].toLowerCase();
           switch (setting) {
             case "deleteinvoke" -> setDeleteInvokeSetting(ce, args[2]);
-            case "messagedecay" -> setEmbedDecaySetting(ce, args[2]);
-            case "messagedecaytimer" -> setEmbedDecayTimeSetting(ce, args[2]);
+            case "embeddecay" -> setEmbedDecaySetting(ce, args[2]);
+            case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, args[2]);
+            default -> ce.getChannel().sendMessage("Setting not found.").queue();
           }
         } else {
-          ce.getChannel().sendMessage("You must be the server commands.games.about.owner to change the bot's settings.").queue();
+          ce.getChannel().sendMessage("You must be the server owner to change the bot's settings.").queue();
         }
       }
       // Invalid arguments
-      default -> ce.getChannel().sendMessage("Invalid number of arguments").queue();
+      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
     }
   }
 
@@ -62,7 +63,7 @@ public class Settings extends Command {
     String proposedChange = change.toLowerCase();
     if (proposedChange.equals("true") || proposedChange.equals("false")) {
       deleteInvoke = Boolean.parseBoolean(proposedChange);
-      ce.getChannel().sendMessage("DeleteInvoke has been set to " + getDeleteInvoke()).queue();
+      ce.getChannel().sendMessage("DeleteInvoke has been set to `" + getDeleteInvoke() + "`.").queue();
     } else {
       ce.getChannel().sendMessage("You must specify true or false.").queue();
     }
@@ -72,7 +73,7 @@ public class Settings extends Command {
     change = change.toLowerCase();
     if (change.equals("true") || change.equals("false")) {
       embedDecay = Boolean.parseBoolean(change);
-      ce.getChannel().sendMessage("EmbedDecay has been set to " + getEmbedDecay()).queue();
+      ce.getChannel().sendMessage("EmbedDecay has been set to `" + getEmbedDecay() + "`.").queue();
     } else {
       ce.getChannel().sendMessage("You must specify true or false.").queue();
     }
@@ -83,7 +84,7 @@ public class Settings extends Command {
       int proposedChange = Integer.parseInt(change);
       if (proposedChange >= 15 && proposedChange <= 120) { // Between the range 15 - 120
         embedDecayTime = proposedChange;
-        ce.getChannel().sendMessage("EmbedDecayTime has been set to " + getEmbedDecayTime()).queue();
+        ce.getChannel().sendMessage("EmbedDecayTime has been set to `" + getEmbedDecayTime() + "`s.").queue();
       } else { // Outside of range 15 - 120
         ce.getChannel().sendMessage("You must provide a number between 15 - 120.").queue();
       }

@@ -65,9 +65,6 @@ public class Help extends Command {
               "whether or not the field is on the same row as the previous",
           "buildembed, embed, embedtemplate", "[0]BuildEmbed Switches [1]9 Character Switch",
           "buildembed, buildembed TTTTTTTTT");
-      case "random" -> sendEmbed(ce, display, "__Command: Random__",
-          "Provides a random image.",
-          "random", "[0]random", "random");
       case "choice" -> sendEmbed(ce, display, "__Command: Choice__",
           "Chooses randomly between any number of options. " +
               "The options are arguments provided by commas (,).",
@@ -109,13 +106,16 @@ public class Help extends Command {
       case "ping" -> sendEmbed(ce, display, "__Command: Ping__",
           "Response time of the bot in milliseconds.",
           "ping, response", "[0]Ping", "ping");
+      case "random" -> sendEmbed(ce, display, "__Command: Random__",
+          "Provides a random image.",
+          "random", "[0]random", "random");
       case "remind" -> sendEmbed(ce, display, "__Command: Remind__",
           "Sets a timer and alerts the user when the time expires for up to " +
               "a day's maximum length. Arguments provide the time duration, type, " +
               "and event name. The bot recognizes the following data types for 1 argument: " +
               "(0-86400)s, (0-1440)m, (0-24)h - and for 2+ arguments: hours, hour, hrs, hr, " +
               "h, minutes, minute, mins, min, m, seconds, second, secs, sec, s.",
-          "remind, reminder, remindme, notify, mentionme, alert",
+          "remind, reminder, remindme, notify, mentionme, alert, timer",
           "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName",
           "remind (0-86400)s, remind (0-1440)m, remind (0-24)h, "
               + "remind TimeDurationTimeType EventName, remind TimeDuration TimeType EventName");
@@ -141,11 +141,10 @@ public class Help extends Command {
           "whois, whois @user, whois UserID");
       default -> {
         display.setTitle("__Command Not Found__");
-        display.setDescription("Try typing " + Settings.getPrefix() + " commands for a full command list.");
+        display.setDescription("Try typing " + Settings.getPrefix() + "commands for a full command list.");
         Settings.sendEmbed(ce, display);
       }
     }
-
   }
 
   // Help details display

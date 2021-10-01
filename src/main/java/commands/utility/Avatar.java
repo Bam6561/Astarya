@@ -45,7 +45,7 @@ public class Avatar extends Command {
             }
           } else { // Self & Size
             User user = ce.getMember().getUser();
-            sendEmbed(ce, display, user.getName(), "Resolution: " + avatarSize + "x" + avatarSize,
+            sendEmbed(ce, display, user.getName(),
                 user.getAvatarUrl() + "?size=" + setImageSize(ce, args, 1, avatarSize, display));
           }
         }
@@ -53,13 +53,13 @@ public class Avatar extends Command {
       case 3 -> { // Mention & Size || UserID & Size
         if (!ce.getMessage().getMentionedMembers().isEmpty()) { // Mention
           Member member = ce.getMessage().getMentionedMembers().get(0);
-          sendEmbed(ce, display, member.getEffectiveName(), null,
+          sendEmbed(ce, display, member.getEffectiveName(),
               member.getUser().getAvatarUrl() + "?size=" + setImageSize(ce, args, 2, avatarSize, display));
         } else {
           if (args[1].length() == 18) { // UserID & Size
             try { // Verify UserID
               User user = ce.getJDA().retrieveUserById(args[1]).complete();
-              sendEmbed(ce, display, user.getName(), null,
+              sendEmbed(ce, display, user.getName(),
                   user.getAvatarUrl() + "?size=" + setImageSize(ce, args, 2, avatarSize, display));
             } catch (ErrorResponseException error) { // Invalid UserID
               ce.getChannel().sendMessage("Invalid User ID.").queue();
@@ -74,6 +74,7 @@ public class Avatar extends Command {
     }
   }
 
+  // avatarSize not provided
   private void sendEmbed(CommandEvent ce, EmbedBuilder display, String title, String description, String image) {
     display.setTitle(title);
     display.setDescription(description);
@@ -81,6 +82,14 @@ public class Avatar extends Command {
     Settings.sendEmbed(ce, display);
   }
 
+  // avatarSize provided
+  private void sendEmbed(CommandEvent ce, EmbedBuilder display, String title, String image) {
+    display.setTitle(title);
+    display.setImage(image);
+    Settings.sendEmbed(ce, display);
+  }
+
+  // avatarSize provided
   private String setImageSize(CommandEvent ce, String[] args, int argument, String avatarSize, EmbedBuilder display) {
     switch (args[argument]) {
       case "128", "256", "512", "1024" -> avatarSize = args[argument];

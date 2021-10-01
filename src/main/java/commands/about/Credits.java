@@ -21,7 +21,7 @@ public class Credits extends Command {
         "Most importantly, however, I also can't forget my friends who use the bot regularly and leave feedback " +
         "so that the bot is as bug-free as possible.");
     display.addField("**APIs, Libraries:**", "JDA, JDA-Utilities", false);
-    display.addField("**References:**", "Kody Simpson, MenuDocs, techtoolbox", false);
+    display.addField("**References:**", "Kody Simpson, MenuDocs, TechToolBox", false);
     Settings.sendEmbed(ce, display);
   }
 }

@@ -27,5 +27,5 @@ public class Random extends Command {
     return links[num];
   }
 
-  private final String[] links = {"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.istockphoto.com%2Fphotos%2Fplaceholder-image&psig=AOvVaw11STsGjvdke5sfpuoKYcpF&ust=1633135401647000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCMiwjc79p_MCFQAAAAAdAAAAABAJ"};
+  private final String[] links = {"https://i.ibb.co/QNmmDqW/lucyfer-Bot.png"};
 }
