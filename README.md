@@ -1,4 +1,6 @@
 # LucyferBot
+<img src="https://i.ibb.co/QNmmDqW/lucyfer-Bot.png" alt="lucyfer-Bot" width="128" height="128">
+
 ## About The Project
 Java-based Discord bot written with JDA API.
 ### Built With
