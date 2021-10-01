@@ -2,9 +2,9 @@
 ## About The Project
 Java-based Discord bot written with JDA API.
 ### Built With
-* Java (https://www.java.com/en/)
-* JDA (https://github.com/DV8FromTheWorld/JDA)
-* JDA Utilities (https://github.com/JDA-Applications/JDA-Utilities)
+* [Java](https://www.java.com/en/)
+* [JDA](https://github.com/DV8FromTheWorld/JDA)
+* [JDA Utilities](https://github.com/JDA-Applications/JDA-Utilities)
 ## Setup
 <ol>
   <li> Clone the repo. </li>
@@ -30,7 +30,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Danny Nguyen - [LinkedIn](https://www.linkedin.com/in/ndanny09/) - ndanny09@gmail.com <br>
 Project Link: https://github.com/ndanny09/LucyferBot
 ## Acknowledgements
-* [Kody Simpson] (https://www.youtube.com/c/KodySimpson)
-* [MenuDocs] (https://www.youtube.com/c/MenuDocs)
-* [TechToolBox] (https://www.youtube.com/c/TechToolboxOfficial)
-* [README Template] (https://github.com/othneildrew/Best-README-Template#prerequisites)
+* [Kody Simpson](https://www.youtube.com/c/KodySimpson)
+* [MenuDocs](https://www.youtube.com/c/MenuDocs)
+* [TechToolBox](https://www.youtube.com/c/TechToolboxOfficial)
+* [README Template](https://github.com/othneildrew/Best-README-Template#prerequisites)
