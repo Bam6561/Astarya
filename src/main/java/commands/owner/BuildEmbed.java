@@ -15,7 +15,7 @@ public class BuildEmbed extends Command {
   private int fieldsAdded;
 
   public BuildEmbed(EventWaiter waiter) {
-    this.name = "BuildEmbed";
+    this.name = "buildEmbed";
     this.aliases = new String[]{"buildembed", "embed", "embedtemplate"};
     this.arguments = "[1]9 Character Switch";
     this.help = "Builds embeds using the Discord message line.";

@@ -33,9 +33,9 @@ public class Help extends Command {
     display.addField("**About:**", "▫info \n▫help \n▫credits", true);
     display.addField("**Utility:**", "▫serverinfo \n▫whois \n▫avatar \n▫emote \n▫remind", true);
     display.addField("**Games:**", "▫roll \n▫flip \n▫choice \n▫highorlow", true);
-    display.addField("**Miscellaneous:**", "▫bruh \n▫echo \n▫ping", true);
-    display.addField("**Music:**", "▫Join \n▫Play \n▫Queue \n▫Leave", true);
-    display.addField("**Owner:**", "▫settings \n▫buildembed \n▫clear \n▫shutdown", true);
+    display.addField("**Miscellaneous:**", "▫random \n▫echo \n▫ping", true);
+    display.addField("**Music:**", "▫join \n▫play \n▫queue \n▫remove \n▫clearQueue \n▫leave", true);
+    display.addField("**Owner:**", "▫settings \n▫buildembed \n▫delete \n▫shutdown", true);
     display.addField("**Promotion:**", "▫dungeonarchives", true);
     Settings.sendEmbed(ce, display);
   }
@@ -71,10 +71,13 @@ public class Help extends Command {
               "The options are arguments provided by commas (,).",
           "choice, choose, pick", "[1, ++]Option",
           "choice Take out the trash, Do the laundry, Walk the dog");
-      case "clear" -> sendEmbed(ce, display, "__Command: Clear__",
-          "Clears a number of messages. " +
+      case "clearqueue" -> sendEmbed(ce, display, "__Command: Clear Queue__",
+          "Clears the track queue.", "clearqueue, clear", "[0]clear",
+          "clearqueue");
+      case "delete" -> sendEmbed(ce, display, "__Command: Delete__",
+          "Deletes a number of messages. " +
               "Argument provides how many (2 - 100).",
-          "clear, purge, clean", "[1]Number", "clear (2-100)");
+          "delete, purge", "[1]Number", "delete (2-100)");
       case "credits" -> sendEmbed(ce, display, "__Command: Credits__",
           "Provides user with a list of credits for the bot.",
           "credits", "[0]Credits", "credits");
@@ -116,7 +119,7 @@ public class Help extends Command {
       case "play" -> sendEmbed(ce, display, "__Command: Play__",
           "Adds an audio track to the queue. \n**Sources:** YouTube, Local files, " +
               "HTTP URLs \n**File Types:** MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, " +
-              "OGG streams, AAC streams", "play, p", "[1]URL, [2++]Search Top Results",
+              "OGG streams, AAC streams", "play, p", "[1]URL, [2++]YouTubeQuery",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ, play Cleverly Disguised Rickrolls");
       case "queue" -> sendEmbed(ce, display, "__Command: Queue__",
           "Provides a list of the tracks queued.", "queue, q", "[0]queue, [1]pageNumber",
@@ -134,6 +137,9 @@ public class Help extends Command {
           "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName",
           "remind (0-86400)s, remind (0-1440)m, remind (0-24)h, "
               + "remind TimeDurationTimeType EventName, remind TimeDuration TimeType EventName");
+      case "remove" -> sendEmbed(ce, display, "__Command: Remove__",
+          "Removes a song from the queue.", "remove, takeout, nvm", "[1]QueueNumber",
+          "remove 1");
       case "roll" -> sendEmbed(ce, display, "__Command: Roll__",
           "Dice roll and integer RNG (random number generator). No arguments to roll once. "
               + "One argument to roll (1-10) times. Three arguments to set your own RNG - lower bound" +

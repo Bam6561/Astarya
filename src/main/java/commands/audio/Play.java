@@ -11,6 +11,7 @@ public class Play extends Command {
     this.name = "play";
     this.aliases = new String[]{"play", "p"};
     this.help = "Adds a song to the queue.";
+    this.arguments = ("[1]URL [2++]YouTubeQuery");
   }
 
   @Override

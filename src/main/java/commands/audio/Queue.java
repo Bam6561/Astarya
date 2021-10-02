@@ -25,8 +25,8 @@ public class Queue extends Command {
       }
       case 2 -> {
         try {
-          queuePage = Integer.parseInt(args[1])-1;
-          PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).getAudioScheduler().getQueue(ce, queuePage);
+          PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild())
+              .getAudioScheduler().getQueue(ce, Integer.parseInt(args[1]) - 1);
         } catch (NumberFormatException error) {
           ce.getChannel().sendMessage("Page number must be a number.");
         }
@@ -35,6 +35,5 @@ public class Queue extends Command {
         ce.getChannel().sendMessage("Invalid number of arguments.").queue();
       }
     }
-
   }
 }

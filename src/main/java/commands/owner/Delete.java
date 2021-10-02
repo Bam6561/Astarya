@@ -7,10 +7,10 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.util.List;
 
-public class Clear extends Command {
-  public Clear() {
-    this.name = "clear";
-    this.aliases = new String[]{"clear", "purge", "clean"};
+public class Delete extends Command {
+  public Delete() {
+    this.name = "delete";
+    this.aliases = new String[]{"delete", "purge"};
     this.arguments = "[1]Number";
     this.help = "Clears a number of [2-100] messages.";
     this.ownerCommand = true;
@@ -25,7 +25,7 @@ public class Clear extends Command {
       try { // Ensure argument is an integer
         int number = Integer.parseInt(args[1]);
         MessageChannel channel = ce.getChannel();
-        clearMessages(channel, number);
+        deleteMessages(channel, number);
       } catch (NumberFormatException error) { // Input mismatch
         ce.getChannel().sendMessage("You must provide a number of (2-100) messages to clear.").queue();
       }
@@ -34,7 +34,7 @@ public class Clear extends Command {
     }
   }
 
-  private void clearMessages(MessageChannel channel, int number) {
+  private void deleteMessages(MessageChannel channel, int number) {
     if (number >= 2 && number <= 100) { // Range of 2 - 100
       List<Message> messages = channel.getHistory().retrievePast(number).complete();
       channel.purgeMessages(messages);

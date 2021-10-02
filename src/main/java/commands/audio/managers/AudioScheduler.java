@@ -78,4 +78,28 @@ public class AudioScheduler extends AudioEventAdapter {
       ce.getChannel().sendMessage("Queue is empty.").queue();
     }
   }
+
+  public void removeQueueEntry(CommandEvent ce, int entryNumber) {
+    try {
+      entryNumber = entryNumber - 1;
+      StringBuilder removeQueueEntryConfirmation = new StringBuilder();
+      removeQueueEntryConfirmation.append("**Removed:** **[").append(entryNumber+1).append("]** `")
+          .append(this.queue.get(entryNumber).getInfo().title).append("`")
+          .append(this.requesterList.get(entryNumber))
+          .append(" *[").append(ce.getAuthor().getAsTag()).append("]*");
+      this.queue.remove(entryNumber);
+      this.requesterList.remove(entryNumber);
+      ce.getChannel().sendMessage(removeQueueEntryConfirmation).queue();
+    } catch (NullPointerException error) {
+      ce.getChannel().sendMessage("Queue entry number does not exist.").queue();
+    }
+  }
+
+  public void clearQueue(CommandEvent ce) {
+    this.queue.clear();
+    this.requesterList.clear();
+    StringBuilder queueClearConfirmation = new StringBuilder();
+    queueClearConfirmation.append("**Queue Clear:** [").append(ce.getAuthor().getAsTag()).append("]");
+    ce.getChannel().sendMessage(queueClearConfirmation).queue();
+  }
 }

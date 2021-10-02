@@ -10,7 +10,7 @@ public class Join extends Command {
   public Join() {
     this.name = "join";
     this.aliases = new String[]{"join", "j", "comein", "getinhere"};
-    this.help = "Joins the same voice channel as the user.";
+    this.help = "Bot joins the same voice channel as the user.";
   }
 
   @Override

@@ -6,10 +6,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import commands.about.Credits;
 import commands.about.Help;
 import commands.about.Info;
-import commands.audio.Join;
-import commands.audio.Leave;
-import commands.audio.Play;
-import commands.audio.Queue;
+import commands.audio.*;
 import commands.games.Choice;
 import commands.games.Flip;
 import commands.games.HighOrLow;
@@ -18,7 +15,7 @@ import commands.miscellaneous.Echo;
 import commands.miscellaneous.Ping;
 import commands.miscellaneous.Random;
 import commands.owner.BuildEmbed;
-import commands.owner.Clear;
+import commands.owner.Delete;
 import commands.owner.Settings;
 import commands.owner.Shutdown;
 import commands.promotion.DungeonArchives;
@@ -53,12 +50,12 @@ public class LucyferBot {
     commands.setAlternativePrefix("L:");
     commands.setHelpWord("commands");
     commands.setOwnerId("204448598539239424"); // Bam#3531
-    commands.addCommands(new Avatar(), new Random(), new Choice(), new Clear(),
+    commands.addCommands(new Avatar(), new Random(), new Choice(), new Delete(),
         new Credits(), new DungeonArchives(), new Echo(), new Emote(),
         new Flip(), new Help(), new HighOrLow(waiter), new Info(), new Ping(),
         new Remind(), new Roll(), new ServerInfo(), new Settings(),
         new Shutdown(), new WhoIs(), new BuildEmbed(waiter), new Join(),
-        new Play(), new Queue(), new Leave());
+        new Play(), new Queue(), new Remove(), new ClearQueue(), new Leave());
     CommandClient client = commands.build();
     // Bot
     api.addEventListener(client, waiter, new MessageLog());
