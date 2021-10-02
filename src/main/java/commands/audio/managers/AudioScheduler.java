@@ -5,6 +5,8 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import commands.owner.Settings;
+import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.ArrayList;
 
@@ -42,14 +44,36 @@ public class AudioScheduler extends AudioEventAdapter {
     this.requesterList.add(requester);
   }
 
-  public void getQueue(CommandEvent ce) { // Track queue
-    if (!this.queue.isEmpty()) {
+  public void getQueue(CommandEvent ce, int queuePage) { // Track queue
+    if (!this.queue.isEmpty()) { // No tracks
+      int totalQueuePages = this.queue.size() / 10; // Full pages
+      if ((this.queue.size() % 10) > 0) { // Partially filled pages
+        totalQueuePages += 1;
+      }
+      if (queuePage >= totalQueuePages) { // Page number cannot exceed total pages
+        queuePage = totalQueuePages - 1;
+      }
+      if (queuePage < 0) { // Page number cannot be below 0
+        queuePage = 0;
+      }
+      int queuePageDisplay = queuePage * 10; // Which queue page to start
+      if (queuePageDisplay == this.queue.size()) { // Don't display 0 ending first
+        queuePageDisplay -= 10;
+      }
+      int lastQueueEntry = Math.min((queuePageDisplay + 10), this.queue.size()); // Last queue entry to display
+      // Display last entries
+      // Display only 10 entries at a time
       StringBuilder queueString = new StringBuilder();
-      for (int i = 0; i < this.queue.size(); i++) {
-        queueString.append("[").append(i).append("] `").append(queue.get(i).getInfo().title)
+      for (int i = queuePageDisplay; i < lastQueueEntry; i++) { // Queue Entries
+        queueString.append("**[").append(i + 1).append("]** `").append(queue.get(i).getInfo().title)
             .append("` ").append(requesterList.get(i)).append("\n");
       }
-      ce.getChannel().sendMessage(queueString).queue();
+      EmbedBuilder display = new EmbedBuilder();
+      display.setTitle("__**Queue**__");
+      String description = "Displaying page `" + (queuePage + 1) + "` / `" + totalQueuePages + "`";
+      display.setDescription(description);
+      display.addField("**Tracks:**", String.valueOf(queueString), false);
+      Settings.sendEmbed(ce, display);
     } else {
       ce.getChannel().sendMessage("Queue is empty.").queue();
     }

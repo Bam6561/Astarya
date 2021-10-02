@@ -114,13 +114,13 @@ public class Help extends Command {
           "Response time of the bot in milliseconds.",
           "ping, response", "[0]Ping", "ping");
       case "play" -> sendEmbed(ce, display, "__Command: Play__",
-          "Adds an audio track to the queue. \n**Sources:** YouTube, SoundCloud, Bandcamp, Vimeo, " +
-              "Twitch, Local files, HTTP URLs \n**File Types:** MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, " +
-              "OGG streams, AAC streams, Stream playlists", "play, p", "[1]URL",
-          "play https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+          "Adds an audio track to the queue. \n**Sources:** YouTube, Local files, " +
+              "HTTP URLs \n**File Types:** MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, " +
+              "OGG streams, AAC streams", "play, p", "[1]URL, [2++]Search Top Results",
+          "play https://www.youtube.com/watch?v=dQw4w9WgXcQ, play Cleverly Disguised Rickrolls");
       case "queue" -> sendEmbed(ce, display, "__Command: Queue__",
-          "Provides a list of the tracks queued.", "queue, q", "[0]queue",
-          "queue");
+          "Provides a list of the tracks queued.", "queue, q", "[0]queue, [1]pageNumber",
+          "queue, queue 1");
       case "random" -> sendEmbed(ce, display, "__Command: Random__",
           "Provides a random image.",
           "random", "[0]random", "random");
