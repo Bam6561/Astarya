@@ -9,6 +9,7 @@ import commands.about.Info;
 import commands.audio.Join;
 import commands.audio.Leave;
 import commands.audio.Play;
+import commands.audio.Queue;
 import commands.games.Choice;
 import commands.games.Flip;
 import commands.games.HighOrLow;
@@ -57,7 +58,7 @@ public class LucyferBot {
         new Flip(), new Help(), new HighOrLow(waiter), new Info(), new Ping(),
         new Remind(), new Roll(), new ServerInfo(), new Settings(),
         new Shutdown(), new WhoIs(), new BuildEmbed(waiter), new Join(),
-        new Play(), new Leave());
+        new Play(), new Queue(), new Leave());
     CommandClient client = commands.build();
     // Bot
     api.addEventListener(client, waiter, new MessageLog());

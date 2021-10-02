@@ -34,7 +34,7 @@ public class Help extends Command {
     display.addField("**Utility:**", "▫serverinfo \n▫whois \n▫avatar \n▫emote \n▫remind", true);
     display.addField("**Games:**", "▫roll \n▫flip \n▫choice \n▫highorlow", true);
     display.addField("**Miscellaneous:**", "▫bruh \n▫echo \n▫ping", true);
-    display.addField("**Music:**", "▫Join \n▫Play \n▫Leave", true);
+    display.addField("**Music:**", "▫Join \n▫Play \n▫Queue \n▫Leave", true);
     display.addField("**Owner:**", "▫settings \n▫buildembed \n▫clear \n▫shutdown", true);
     display.addField("**Promotion:**", "▫dungeonarchives", true);
     Settings.sendEmbed(ce, display);
@@ -118,6 +118,9 @@ public class Help extends Command {
               "Twitch, Local files, HTTP URLs \n**File Types:** MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, " +
               "OGG streams, AAC streams, Stream playlists", "play, p", "[1]URL",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+      case "queue" -> sendEmbed(ce, display, "__Command: Queue__",
+          "Provides a list of the tracks queued.", "queue, q", "[0]queue",
+          "queue");
       case "random" -> sendEmbed(ce, display, "__Command: Random__",
           "Provides a random image.",
           "random", "[0]random", "random");
