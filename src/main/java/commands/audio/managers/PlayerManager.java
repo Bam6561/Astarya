@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerManager {
@@ -50,13 +51,12 @@ public class PlayerManager {
 
       @Override
       public void playlistLoaded(AudioPlaylist playlist) {
-        String requester = " [" + ce.getAuthor().getAsTag() + "]";
-        for (AudioTrack track : playlist.getTracks()) {
-          ce.getChannel().sendMessage("**Added:** `" +
-              track.getInfo().title + "` " + requester).queue();
-          playbackManager.audioScheduler.queue(track);
-          playbackManager.audioScheduler.addToRequesterList(requester);
-        }
+        List<AudioTrack> topResults = playlist.getTracks();
+        String requester = "[" + ce.getAuthor().getAsTag() + "]";
+        ce.getChannel().sendMessage("**Added:** `" +
+            topResults.get(0).getInfo().title + "` " + requester).queue();
+        playbackManager.audioScheduler.queue(topResults.get(0));
+        playbackManager.audioScheduler.addToRequesterList(requester);
       }
 
       @Override

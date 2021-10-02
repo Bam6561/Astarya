@@ -38,18 +38,20 @@ public class AudioScheduler extends AudioEventAdapter {
     }
   }
 
-  public void addToRequesterList(String requester) {
+  public void addToRequesterList(String requester) { // Track requester array
     this.requesterList.add(requester);
   }
 
-  public void getQueue(CommandEvent ce) {
-    StringBuilder queueString = new StringBuilder();
-    for (int i = 0; i < this.queue.size(); i++) {
-      queueString.append("[").append(i).append("] `").append(queue.get(i).getInfo().title)
-          .append("` ").append(requesterList.get(i)).append("\n");
+  public void getQueue(CommandEvent ce) { // Track queue
+    if (!this.queue.isEmpty()) {
+      StringBuilder queueString = new StringBuilder();
+      for (int i = 0; i < this.queue.size(); i++) {
+        queueString.append("[").append(i).append("] `").append(queue.get(i).getInfo().title)
+            .append("` ").append(requesterList.get(i)).append("\n");
+      }
+      ce.getChannel().sendMessage(queueString).queue();
+    } else {
+      ce.getChannel().sendMessage("Queue is empty.").queue();
     }
-    ce.getChannel().sendMessage(queueString).queue();
   }
-
-
 }

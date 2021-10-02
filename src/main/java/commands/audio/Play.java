@@ -18,10 +18,21 @@ public class Play extends Command {
     Settings.deleteInvoke(ce);
     String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
     int arguments = args.length;
-    if (arguments == 2) {
-      PlayerManager.getINSTANCE().createAudioTrack(ce, args[1]);
-    } else {
-      ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+    switch (arguments) {
+      case 1 -> {
+        ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      }
+      case 2 -> {
+        PlayerManager.getINSTANCE().createAudioTrack(ce, args[1]);
+      }
+      default -> {
+        StringBuilder searchQuery = new StringBuilder();
+        for (int i = 1; i < arguments; i++) {
+          searchQuery.append(args[i]);
+        }
+        String youtubeSearchQuery = "ytsearch:" + String.join(" ", searchQuery);
+        PlayerManager.getINSTANCE().createAudioTrack(ce, youtubeSearchQuery);
+      }
     }
   }
 }
