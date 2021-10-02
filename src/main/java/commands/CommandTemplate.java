@@ -14,9 +14,9 @@ public class CommandTemplate extends Command {
   }
 
   @Override
-  protected void execute(CommandEvent e) {
-    Settings.deleteInvoke(e);
-    String[] args = e.getMessage().getContentRaw().split("\\s");
+  protected void execute(CommandEvent ce) {
+    Settings.deleteInvoke(ce);
+    String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
     int arguments = args.length;
   }
 }

@@ -34,8 +34,9 @@ public class Help extends Command {
     display.addField("**Utility:**", "▫serverinfo \n▫whois \n▫avatar \n▫emote \n▫remind", true);
     display.addField("**Games:**", "▫roll \n▫flip \n▫choice \n▫highorlow", true);
     display.addField("**Miscellaneous:**", "▫bruh \n▫echo \n▫ping", true);
-    display.addField("**Promotion:**", "▫dungeonarchives", true);
+    display.addField("**Music:**", "▫Join \n▫Play \n▫Leave", true);
     display.addField("**Owner:**", "▫settings \n▫buildembed \n▫clear \n▫shutdown", true);
+    display.addField("**Promotion:**", "▫dungeonarchives", true);
     Settings.sendEmbed(ce, display);
   }
 
@@ -102,10 +103,21 @@ public class Help extends Command {
           "highorlow, hol", "[0]HighOrLow", "highorlow");
       case "info" -> sendEmbed(ce, display, "__Command: Info__",
           "Provides information on the bot and its developer.",
-          "info, commands.commands.games.commands.games.about.about.games.commands.games.about.about", "[0]Info", "info");
+          "info, help", "[0]Info", "info");
+      case "join" -> sendEmbed(ce, display, "__Command: Join__",
+          "Joins the same voice channel as the user.", "join, j, comein, getinhere",
+          "[0]Join", "info");
+      case "leave" -> sendEmbed(ce, display, "__Command: Leave__",
+          "Leaves the voice channel the bot is in.", "leave, disconnect, dc, goaway, getout",
+          "[0]Leave", "leave");
       case "ping" -> sendEmbed(ce, display, "__Command: Ping__",
           "Response time of the bot in milliseconds.",
           "ping, response", "[0]Ping", "ping");
+      case "play" -> sendEmbed(ce, display, "__Command: Play__",
+          "Adds an audio track to the queue. \n**Sources:** YouTube, SoundCloud, Bandcamp, Vimeo, " +
+              "Twitch, Local files, HTTP URLs \n**File Types:** MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, " +
+              "OGG streams, AAC streams, Stream playlists", "play, p", "[1]URL",
+          "play https://www.youtube.com/watch?v=dQw4w9WgXcQ");
       case "random" -> sendEmbed(ce, display, "__Command: Random__",
           "Provides a random image.",
           "random", "[0]random", "random");

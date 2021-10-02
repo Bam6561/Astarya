@@ -6,6 +6,9 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import commands.about.Credits;
 import commands.about.Help;
 import commands.about.Info;
+import commands.audio.Join;
+import commands.audio.Leave;
+import commands.audio.Play;
 import commands.games.Choice;
 import commands.games.Flip;
 import commands.games.HighOrLow;
@@ -53,7 +56,8 @@ public class LucyferBot {
         new Credits(), new DungeonArchives(), new Echo(), new Emote(),
         new Flip(), new Help(), new HighOrLow(waiter), new Info(), new Ping(),
         new Remind(), new Roll(), new ServerInfo(), new Settings(),
-        new Shutdown(), new WhoIs(), new BuildEmbed(waiter));
+        new Shutdown(), new WhoIs(), new BuildEmbed(waiter), new Join(),
+        new Play(), new Leave());
     CommandClient client = commands.build();
     // Bot
     api.addEventListener(client, waiter, new MessageLog());

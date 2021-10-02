@@ -23,10 +23,10 @@ public class Info extends Command {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
     JDA jda = ce.getJDA();
     display.setTitle("__Info__");
-    display.setDescription("**Developer:** " + jda.getUserById("204448598539239424").getAsMention()
+    display.setDescription("**Developer:** " + "Bam#3531"
         + "\n**Bot:** " + jda.getSelfUser().getAsMention()
         + "\n**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` " +
-        "\n**Version:** `1.0.0` \n**Language:** `Java` " +
+        "\n**Version:** `1.1.0` \n**Language:** `Java` " +
         "\n**Source:** https://github.com/ndanny09/lucyferBot \n**Uptime:** " + getUptime());
     display.setThumbnail(jda.getSelfUser().getAvatarUrl());
     Settings.sendEmbed(ce, display);

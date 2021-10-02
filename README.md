@@ -7,6 +7,7 @@ Java-based Discord bot written with JDA API.
 * [Java](https://www.java.com/en/)
 * [JDA](https://github.com/DV8FromTheWorld/JDA)
 * [JDA Utilities](https://github.com/JDA-Applications/JDA-Utilities)
+* [LavaPlayer](https://github.com/sedmelluq/lavaplayer)
 ## Setup
 <ol>
   <li> Clone the repo. </li>
