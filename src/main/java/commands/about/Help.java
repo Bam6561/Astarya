@@ -35,7 +35,7 @@ public class Help extends Command {
     display.addField("**Games:**", "▫roll \n▫flip \n▫choice \n▫highorlow", true);
     display.addField("**Miscellaneous:**", "▫random \n▫echo \n▫ping", true);
     display.addField("**Music:**", "▫join \n▫nowPlaying \n▫play \n▫pause \n▫queue " +
-        "\n▫skip \n▫remove \n▫clearQueue \n▫leave", true);
+        "\n▫skip \n▫remove \n▫shuffle \n▫loop \n▫clearQueue \n▫leave", true);
     display.addField("**Owner:**", "▫settings \n▫buildembed \n▫delete \n▫shutdown", true);
     display.addField("**Promotion:**", "▫dungeonarchives", true);
     Settings.sendEmbed(ce, display);
@@ -110,10 +110,12 @@ public class Help extends Command {
           "info, help", "[0]Info", "info");
       case "join" -> sendEmbed(ce, display, "__Command: Join__",
           "Joins the same voice channel as the user.", "join, j, comein, getinhere",
-          "[0]Join", "info");
+          "[0]join", "info");
       case "leave" -> sendEmbed(ce, display, "__Command: Leave__",
           "Leaves the voice channel the bot is in.", "leave, disconnect, dc, goaway, getout",
-          "[0]Leave", "leave");
+          "[0]leave", "leave");
+      case "loop" -> sendEmbed(ce, display, "__Command: Loops__", "Loops the next track.",
+          "loop, again, infinite, repeat", "[0]loop", "loop")
       case "nowplaying" -> sendEmbed(ce, display, "__Command: NowPlaying__",
           "Shows the user what's currently playing in the player.", "nowplaying, np, now",
           "[0]NowPlaying", "now playing");
@@ -159,6 +161,9 @@ public class Help extends Command {
           "Provides information on bot settings.",
           "settings, config",
           "[0]Settings [1]Setting [2]True/False", "settings, settings (setting) (true/false) ");
+      case "shuffle" -> sendEmbed(ce, display, "__Command: Shuffle__",
+          "Shuffles the audio tracks in the player.", "shuffle, mix", "[0]shuffle",
+          "shuffle");
       case "shutdown" -> sendEmbed(ce, display, "__Command: Shutdown__",
           "Shuts the bot down. Use only when absolutely necessary.",
           "shutdown , turnoff, terminate", "[0]Shutdown", "shutdown");

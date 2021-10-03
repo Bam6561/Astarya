@@ -9,12 +9,14 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class AudioScheduler extends AudioEventAdapter {
   private final AudioPlayer audioPlayer;
   private ArrayList<AudioTrack> queueList;
   private ArrayList<String> requesterList;
   private ArrayList<String> nowPlaying;
+  private Boolean looped = false;
 
   public AudioScheduler(AudioPlayer audioPlayer) {
     this.audioPlayer = audioPlayer;
@@ -44,14 +46,30 @@ public class AudioScheduler extends AudioEventAdapter {
   @Override
   public void onTrackEnd(AudioPlayer audioPlayer, AudioTrack audioTrack, AudioTrackEndReason endReason) {
     if (endReason.mayStartNext) {
+      if (this.looped) {
+        this.audioPlayer.startTrack(audioTrack.makeClone(), false);
+        return;
+      }
       nextTrack();
     }
   }
 
+  public void setLooped(CommandEvent ce) {
+    StringBuilder loopedConfirmation = new StringBuilder();
+    if (this.looped) {
+      this.looped = false;
+      loopedConfirmation.append("**LOOPED:** Loop turned off. [").append(ce.getAuthor().getAsTag()).append("]");
+      ce.getChannel().sendMessage(loopedConfirmation).queue();
+    } else {
+      this.looped = true;
+      loopedConfirmation.append("**LOOPED:** Loop turned on. [").append(ce.getAuthor().getAsTag()).append("]");
+      ce.getChannel().sendMessage(loopedConfirmation).queue();
+    }
+  }
+
   public void getNowPlaying(CommandEvent ce) {
-    StringBuilder nowPlayingString = new StringBuilder();
-    nowPlayingString.append("**Now Playing:** `").append(this.nowPlaying.get(0)).append("` ")
-        .append(this.requesterList.get(0));
+    String nowPlayingString = "**Now Playing:** `" + this.nowPlaying.get(0) + "` " +
+        this.requesterList.get(0);
     ce.getChannel().sendMessage(String.valueOf(nowPlayingString)).queue();
   }
 
@@ -73,6 +91,19 @@ public class AudioScheduler extends AudioEventAdapter {
 
   public void forceSkip() {
     nextTrack();
+  }
+
+  public void Shuffle() {
+    Random rand = new Random();
+    for (int i = 0; i < queueList.size(); i++) {
+      int indexSwitch = rand.nextInt(queueList.size());
+      AudioTrack audioTrackTemp = queueList.get(i);
+      String stringTemp = requesterList.get(i);
+      queueList.set(i, queueList.get(indexSwitch));
+      queueList.set(indexSwitch, audioTrackTemp);
+      requesterList.set(i, requesterList.get(indexSwitch));
+      requesterList.set(indexSwitch, stringTemp);
+    }
   }
 
   public void getQueue(CommandEvent ce, int queuePage) { // Track queue
