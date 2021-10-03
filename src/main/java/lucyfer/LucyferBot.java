@@ -55,6 +55,7 @@ public class LucyferBot {
         new Flip(), new Help(), new HighOrLow(waiter), new Info(), new Ping(),
         new Remind(), new Roll(), new ServerInfo(), new Settings(),
         new Shutdown(), new WhoIs(), new BuildEmbed(waiter), new Join(),
+        new NowPlaying(),
         new Play(), new Queue(), new Remove(), new ClearQueue(), new Leave());
     CommandClient client = commands.build();
     // Bot

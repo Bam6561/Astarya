@@ -12,13 +12,15 @@ import java.util.ArrayList;
 
 public class AudioScheduler extends AudioEventAdapter {
   private final AudioPlayer audioPlayer;
-  private ArrayList<AudioTrack> queue = new ArrayList<AudioTrack>();
-  private ArrayList<String> requesterList = new ArrayList<String>();
+  private ArrayList<AudioTrack> queue;
+  private ArrayList<String> requesterList;
+  private ArrayList<String> nowPlaying;
 
   public AudioScheduler(AudioPlayer audioPlayer) {
     this.audioPlayer = audioPlayer;
     this.queue = new ArrayList<AudioTrack>();
     this.requesterList = new ArrayList<String>();
+    this.nowPlaying = new ArrayList<String>();
   }
 
   public void queue(AudioTrack audioTrack) {
@@ -31,6 +33,12 @@ public class AudioScheduler extends AudioEventAdapter {
     this.audioPlayer.startTrack(this.queue.get(0), false);
     this.queue.remove(0);
     this.requesterList.remove(0);
+    this.nowPlaying.remove(0);
+  }
+
+  @Override
+  public void onTrackStart(AudioPlayer audioPlayer, AudioTrack audioTrack) {
+    nowPlaying.add(audioTrack.getInfo().title);
   }
 
   @Override
@@ -38,6 +46,13 @@ public class AudioScheduler extends AudioEventAdapter {
     if (endReason.mayStartNext) {
       nextTrack();
     }
+  }
+
+  public void getNowPlaying(CommandEvent ce) {
+    StringBuilder nowPlayingString = new StringBuilder();
+    nowPlayingString.append("**Now Playing:** `").append(this.nowPlaying.get(0)).append("` ")
+        .append(this.requesterList.get(0));
+    ce.getChannel().sendMessage(String.valueOf(nowPlayingString)).queue();
   }
 
   public void addToRequesterList(String requester) { // Track requester array
@@ -83,7 +98,7 @@ public class AudioScheduler extends AudioEventAdapter {
     try {
       entryNumber = entryNumber - 1;
       StringBuilder removeQueueEntryConfirmation = new StringBuilder();
-      removeQueueEntryConfirmation.append("**Removed:** **[").append(entryNumber+1).append("]** `")
+      removeQueueEntryConfirmation.append("**Removed:** **[").append(entryNumber + 1).append("]** `")
           .append(this.queue.get(entryNumber).getInfo().title).append("`")
           .append(this.requesterList.get(entryNumber))
           .append(" *[").append(ce.getAuthor().getAsTag()).append("]*");

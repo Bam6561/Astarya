@@ -34,7 +34,7 @@ public class Help extends Command {
     display.addField("**Utility:**", "▫serverinfo \n▫whois \n▫avatar \n▫emote \n▫remind", true);
     display.addField("**Games:**", "▫roll \n▫flip \n▫choice \n▫highorlow", true);
     display.addField("**Miscellaneous:**", "▫random \n▫echo \n▫ping", true);
-    display.addField("**Music:**", "▫join \n▫play \n▫queue \n▫remove \n▫clearQueue \n▫leave", true);
+    display.addField("**Music:**", "▫nowPlaying ▫join \n▫play \n▫queue \n▫remove \n▫clearQueue \n▫leave", true);
     display.addField("**Owner:**", "▫settings \n▫buildembed \n▫delete \n▫shutdown", true);
     display.addField("**Promotion:**", "▫dungeonarchives", true);
     Settings.sendEmbed(ce, display);
@@ -113,6 +113,9 @@ public class Help extends Command {
       case "leave" -> sendEmbed(ce, display, "__Command: Leave__",
           "Leaves the voice channel the bot is in.", "leave, disconnect, dc, goaway, getout",
           "[0]Leave", "leave");
+      case "nowplaying" -> sendEmbed(ce, display, "Command: Now Playing__",
+          "Shows the user what's currently playing on the bot.", "nowplaying, np, now",
+          "[0]NowPlaying", "now playing");
       case "ping" -> sendEmbed(ce, display, "__Command: Ping__",
           "Response time of the bot in milliseconds.",
           "ping, response", "[0]Ping", "ping");
