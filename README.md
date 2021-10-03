@@ -3,6 +3,16 @@
 
 ## About The Project
 Java-based Discord bot written with JDA API.
+####Commands:
+- About: (Credits, Help, Info)
+- Audio: (ClearQueue, Join, Leave, Loop, NowPlaying, Pause, Play, Queue, Remove, Shuffle, Skip)
+- Games (Choice, Flip, HighOrLow, Roll)
+- Miscellaneous: (Echo, Ping, Random)
+- Owner: (BuildEmbed, Delete, Settings, Shutdown)
+- Promotion: (DungeonArchives)
+- Utility (Avatar, Emote, Remind, ServerInfo, WhoIs)
+
+[Version History](https://ndanny09.github.io/lucyferbot.html)
 ### Built With
 * [Java](https://www.java.com/en/)
 * [JDA](https://github.com/DV8FromTheWorld/JDA)
