@@ -55,6 +55,10 @@ public class AudioScheduler extends AudioEventAdapter {
     ce.getChannel().sendMessage(String.valueOf(nowPlayingString)).queue();
   }
 
+  public AudioPlayer getAudioPlayer() {
+    return audioPlayer;
+  }
+
   public String getRequesterListName() {
     return this.requesterList.get(0);
   }
