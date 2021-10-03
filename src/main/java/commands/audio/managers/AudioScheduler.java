@@ -12,26 +12,26 @@ import java.util.ArrayList;
 
 public class AudioScheduler extends AudioEventAdapter {
   private final AudioPlayer audioPlayer;
-  private ArrayList<AudioTrack> queue;
+  private ArrayList<AudioTrack> queueList;
   private ArrayList<String> requesterList;
   private ArrayList<String> nowPlaying;
 
   public AudioScheduler(AudioPlayer audioPlayer) {
     this.audioPlayer = audioPlayer;
-    this.queue = new ArrayList<AudioTrack>();
+    this.queueList = new ArrayList<AudioTrack>();
     this.requesterList = new ArrayList<String>();
     this.nowPlaying = new ArrayList<String>();
   }
 
   public void queue(AudioTrack audioTrack) {
     if (!this.audioPlayer.startTrack(audioTrack, true)) {
-      this.queue.add(audioTrack);
+      this.queueList.add(audioTrack);
     }
   }
 
   public void nextTrack() {
-    this.audioPlayer.startTrack(this.queue.get(0), false);
-    this.queue.remove(0);
+    this.audioPlayer.startTrack(this.queueList.get(0), false);
+    this.queueList.remove(0);
     this.requesterList.remove(0);
     this.nowPlaying.remove(0);
   }
@@ -55,14 +55,26 @@ public class AudioScheduler extends AudioEventAdapter {
     ce.getChannel().sendMessage(String.valueOf(nowPlayingString)).queue();
   }
 
+  public String getRequesterListName() {
+    return this.requesterList.get(0);
+  }
+
+  public String getQueueListTitle() {
+    return this.queueList.get(0).getInfo().title;
+  }
+
   public void addToRequesterList(String requester) { // Track requester array
     this.requesterList.add(requester);
   }
 
+  public void forceSkip() {
+    nextTrack();
+  }
+
   public void getQueue(CommandEvent ce, int queuePage) { // Track queue
-    if (!this.queue.isEmpty()) { // No tracks
-      int totalQueuePages = this.queue.size() / 10; // Full pages
-      if ((this.queue.size() % 10) > 0) { // Partially filled pages
+    if (!this.queueList.isEmpty()) { // No tracks
+      int totalQueuePages = this.queueList.size() / 10; // Full pages
+      if ((this.queueList.size() % 10) > 0) { // Partially filled pages
         totalQueuePages += 1;
       }
       if (queuePage >= totalQueuePages) { // Page number cannot exceed total pages
@@ -72,15 +84,15 @@ public class AudioScheduler extends AudioEventAdapter {
         queuePage = 0;
       }
       int queuePageDisplay = queuePage * 10; // Which queue page to start
-      if (queuePageDisplay == this.queue.size()) { // Don't display 0 ending first
+      if (queuePageDisplay == this.queueList.size()) { // Don't display 0 ending first
         queuePageDisplay -= 10;
       }
-      int lastQueueEntry = Math.min((queuePageDisplay + 10), this.queue.size()); // Last queue entry to display
+      int lastQueueEntry = Math.min((queuePageDisplay + 10), this.queueList.size()); // Last queue entry to display
       // Display last entries
       // Display only 10 entries at a time
       StringBuilder queueString = new StringBuilder();
       for (int i = queuePageDisplay; i < lastQueueEntry; i++) { // Queue Entries
-        queueString.append("**[").append(i + 1).append("]** `").append(queue.get(i).getInfo().title)
+        queueString.append("**[").append(i + 1).append("]** `").append(queueList.get(i).getInfo().title)
             .append("` ").append(requesterList.get(i)).append("\n");
       }
       EmbedBuilder display = new EmbedBuilder();
@@ -99,10 +111,10 @@ public class AudioScheduler extends AudioEventAdapter {
       entryNumber = entryNumber - 1;
       StringBuilder removeQueueEntryConfirmation = new StringBuilder();
       removeQueueEntryConfirmation.append("**Removed:** **[").append(entryNumber + 1).append("]** `")
-          .append(this.queue.get(entryNumber).getInfo().title).append("`")
+          .append(this.queueList.get(entryNumber).getInfo().title).append("`")
           .append(this.requesterList.get(entryNumber))
           .append(" *[").append(ce.getAuthor().getAsTag()).append("]*");
-      this.queue.remove(entryNumber);
+      this.queueList.remove(entryNumber);
       this.requesterList.remove(entryNumber);
       ce.getChannel().sendMessage(removeQueueEntryConfirmation).queue();
     } catch (NullPointerException error) {
@@ -111,7 +123,7 @@ public class AudioScheduler extends AudioEventAdapter {
   }
 
   public void clearQueue(CommandEvent ce) {
-    this.queue.clear();
+    this.queueList.clear();
     this.requesterList.clear();
     StringBuilder queueClearConfirmation = new StringBuilder();
     queueClearConfirmation.append("**Queue Clear:** [").append(ce.getAuthor().getAsTag()).append("]");

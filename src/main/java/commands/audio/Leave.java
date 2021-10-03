@@ -15,8 +15,12 @@ public class Leave extends Command {
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    AudioManager audioManager = ce.getGuild().getAudioManager();
-    audioManager.closeAudioConnection();
-    ce.getChannel().sendMessage("Thanks for listening. See you later!").queue();
+    if (ce.getGuild().getSelfMember().getVoiceState().inVoiceChannel()) {
+      AudioManager audioManager = ce.getGuild().getAudioManager();
+      audioManager.closeAudioConnection();
+      ce.getChannel().sendMessage("Thanks for listening. See you later!").queue();
+    } else {
+      ce.getChannel().sendMessage("I'm not in a voice channel yet.").queue();
+    }
   }
 }

@@ -34,7 +34,8 @@ public class Help extends Command {
     display.addField("**Utility:**", "▫serverinfo \n▫whois \n▫avatar \n▫emote \n▫remind", true);
     display.addField("**Games:**", "▫roll \n▫flip \n▫choice \n▫highorlow", true);
     display.addField("**Miscellaneous:**", "▫random \n▫echo \n▫ping", true);
-    display.addField("**Music:**", "▫nowPlaying ▫join \n▫play \n▫queue \n▫remove \n▫clearQueue \n▫leave", true);
+    display.addField("**Music:**", "▫nowPlaying \n▫join \n▫play \n▫queue " +
+        "\n▫skip \n▫remove \n▫clearQueue \n▫leave", true);
     display.addField("**Owner:**", "▫settings \n▫buildembed \n▫delete \n▫shutdown", true);
     display.addField("**Promotion:**", "▫dungeonarchives", true);
     Settings.sendEmbed(ce, display);
@@ -71,7 +72,7 @@ public class Help extends Command {
               "The options are arguments provided by commas (,).",
           "choice, choose, pick", "[1, ++]Option",
           "choice Take out the trash, Do the laundry, Walk the dog");
-      case "clearqueue" -> sendEmbed(ce, display, "__Command: Clear Queue__",
+      case "clearqueue" -> sendEmbed(ce, display, "__Command: ClearQueue__",
           "Clears the track queue.", "clearqueue, clear", "[0]clear",
           "clearqueue");
       case "delete" -> sendEmbed(ce, display, "__Command: Delete__",
@@ -113,8 +114,8 @@ public class Help extends Command {
       case "leave" -> sendEmbed(ce, display, "__Command: Leave__",
           "Leaves the voice channel the bot is in.", "leave, disconnect, dc, goaway, getout",
           "[0]Leave", "leave");
-      case "nowplaying" -> sendEmbed(ce, display, "Command: Now Playing__",
-          "Shows the user what's currently playing on the bot.", "nowplaying, np, now",
+      case "nowplaying" -> sendEmbed(ce, display, "Command: NowPlaying__",
+          "Shows the user what's currently playing in the player.", "nowplaying, np, now",
           "[0]NowPlaying", "now playing");
       case "ping" -> sendEmbed(ce, display, "__Command: Ping__",
           "Response time of the bot in milliseconds.",
@@ -125,7 +126,7 @@ public class Help extends Command {
               "OGG streams, AAC streams", "play, p", "[1]URL, [2++]YouTubeQuery",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ, play Cleverly Disguised Rickrolls");
       case "queue" -> sendEmbed(ce, display, "__Command: Queue__",
-          "Provides a list of the tracks queued.", "queue, q", "[0]queue, [1]pageNumber",
+          "Provides a list of audio tracks queued.", "queue, q", "[0]queue, [1]pageNumber",
           "queue, queue 1");
       case "random" -> sendEmbed(ce, display, "__Command: Random__",
           "Provides a random image.",
@@ -141,7 +142,7 @@ public class Help extends Command {
           "remind (0-86400)s, remind (0-1440)m, remind (0-24)h, "
               + "remind TimeDurationTimeType EventName, remind TimeDuration TimeType EventName");
       case "remove" -> sendEmbed(ce, display, "__Command: Remove__",
-          "Removes a song from the queue.", "remove, takeout, nvm", "[1]QueueNumber",
+          "Removes an audio track from the queue.", "remove, takeout, nvm", "[1]QueueNumber",
           "remove 1");
       case "roll" -> sendEmbed(ce, display, "__Command: Roll__",
           "Dice roll and integer RNG (random number generator). No arguments to roll once. "
@@ -159,6 +160,9 @@ public class Help extends Command {
       case "shutdown" -> sendEmbed(ce, display, "__Command: Shutdown__",
           "Shuts the bot down. Use only when absolutely necessary.",
           "shutdown , turnoff, terminate", "[0]Shutdown", "shutdown");
+      case "skip" -> sendEmbed(ce, display, "__Command: Skip__",
+          "Skips the current audio track in the player.",
+          "skip, s, next, ff", "[0]skip", "skip");
       case "whois" -> sendEmbed(ce, display, "__Command: WhoIs__",
           "Provides information on the user.",
           "whois, profile, user", "[0]Self [1]Mention/UserID",

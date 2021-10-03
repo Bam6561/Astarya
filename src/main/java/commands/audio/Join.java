@@ -16,13 +16,17 @@ public class Join extends Command {
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    VoiceChannel vc = ce.getMember().getVoiceState().getChannel();
-    AudioManager audioManager = ce.getGuild().getAudioManager();
-    try { // Join voice channel
-      audioManager.openAudioConnection(vc);
-      ce.getChannel().sendMessage("Connected to <#" + vc.getId() + ">.").queue();
-    } catch (Exception e) { // Insufficient permissions
-      ce.getChannel().sendMessage("Unable to join <#" + vc.getId() + ">.").queue();
+    if (ce.getMember().getVoiceState().inVoiceChannel()) {
+      VoiceChannel vc = ce.getMember().getVoiceState().getChannel();
+      AudioManager audioManager = ce.getGuild().getAudioManager();
+      try { // Join voice channel
+        audioManager.openAudioConnection(vc);
+        ce.getChannel().sendMessage("Connected to <#" + vc.getId() + ">.").queue();
+      } catch (Exception e) { // Insufficient permissions
+        ce.getChannel().sendMessage("Unable to join <#" + vc.getId() + ">.").queue();
+      }
+    } else {
+      ce.getChannel().sendMessage("Join a voice channel and I'll follow you.").queue();
     }
   }
 }

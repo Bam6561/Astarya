@@ -15,6 +15,14 @@ public class ClearQueue extends Command {
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).getAudioScheduler().clearQueue(ce);
+    if (ce.getGuild().getSelfMember().getVoiceState().inVoiceChannel()) {
+      if ((ce.getMember().getVoiceState().getChannel())
+          .equals((ce.getGuild().getSelfMember().getVoiceState().getChannel()))) {
+        PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).getAudioScheduler().clearQueue(ce);
+      } else
+        ce.getChannel().sendMessage("I'm not in the same voice channel.").queue();
+    } else {
+      ce.getChannel().sendMessage("I'm not in a voice channel yet.").queue();
+    }
   }
 }
