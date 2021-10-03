@@ -115,7 +115,7 @@ public class Help extends Command {
           "Leaves the voice channel the bot is in.", "leave, disconnect, dc, goaway, getout",
           "[0]leave", "leave");
       case "loop" -> sendEmbed(ce, display, "__Command: Loops__", "Loops the next track.",
-          "loop, again, infinite, repeat", "[0]loop", "loop")
+          "loop, again, infinite, repeat", "[0]loop", "loop");
       case "nowplaying" -> sendEmbed(ce, display, "__Command: NowPlaying__",
           "Shows the user what's currently playing in the player.", "nowplaying, np, now",
           "[0]NowPlaying", "now playing");
