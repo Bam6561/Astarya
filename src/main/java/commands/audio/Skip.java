@@ -38,7 +38,7 @@ public class Skip extends Command {
   private void skipTrack(CommandEvent ce) {
     PlayerManager.getINSTANCE().getPlaybackManager((ce.getGuild())).audioScheduler.skipTrack();
     StringBuilder skipConfirmation = new StringBuilder();
-    skipConfirmation.append("**SKIP:** [").append(ce.getAuthor().getAsTag()).append("]");
+    skipConfirmation.append("**Skip:** [").append(ce.getAuthor().getAsTag()).append("]");
     ce.getChannel().sendMessage(skipConfirmation).queue();
   }
 }

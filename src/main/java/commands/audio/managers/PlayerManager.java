@@ -46,18 +46,25 @@ public class PlayerManager {
       public void trackLoaded(AudioTrack track) {
         playbackManager.audioScheduler.queue(track);
         playbackManager.audioScheduler.addToRequesterList(requester);
+        long trackDurationLong = track.getDuration();
+        String trackDuration = floatTimeConversion(trackDurationLong);
         ce.getChannel().sendMessage("**Added:** `" +
-            track.getInfo().title + "` " + requester).queue();
+            track.getInfo().title + "` {*" + trackDuration + "*} "
+            + requester).queue();
       }
 
       @Override
       public void playlistLoaded(AudioPlaylist playlist) {
         List<AudioTrack> results = playlist.getTracks();
         if (playlist.isSearchResult()) { // Search query
-          playbackManager.audioScheduler.queue(results.get(0));
+          AudioTrack track = results.get(0);
+          playbackManager.audioScheduler.queue(track);
           playbackManager.audioScheduler.addToRequesterList(requester);
+          long trackDurationLong = track.getDuration();
+          String trackDuration = floatTimeConversion(trackDurationLong);
           ce.getChannel().sendMessage("**Added:** `" +
-              results.get(0).getInfo().title + "` " + requester).queue();
+              results.get(0).getInfo().title + "` {*" + trackDuration + "*} "
+              + requester).queue();
         } else { // Playlist
           for (int i = 0; i < playlist.getTracks().size(); i++) {
             playbackManager.audioScheduler.queue(playlist.getTracks().get(i));
@@ -78,6 +85,17 @@ public class PlayerManager {
         ce.getChannel().sendMessage("Unable to load track.").queue();
       }
     });
+  }
+
+  private String floatTimeConversion(long floatTime) {
+    long days = floatTime / 86400000 % 30;
+    long hours = floatTime / 3600000 % 24;
+    long minutes = floatTime / 60000 % 60;
+    long seconds = floatTime / 1000 % 60;
+    return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
+        (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
+        (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
+        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
   }
 
   // Query handler

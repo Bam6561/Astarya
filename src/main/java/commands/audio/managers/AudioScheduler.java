@@ -72,11 +72,11 @@ public class AudioScheduler extends AudioEventAdapter {
     StringBuilder loopConfirmation = new StringBuilder();
     if (this.loop) {
       this.loop = false;
-      loopConfirmation.append("**LOOP:** `OFF` [").append(ce.getAuthor().getAsTag()).append("]");
+      loopConfirmation.append("**Loop:** `OFF` [").append(ce.getAuthor().getAsTag()).append("]");
       ce.getChannel().sendMessage(loopConfirmation).queue();
     } else {
       this.loop = true;
-      loopConfirmation.append("**LOOP:** `ON` [").append(ce.getAuthor().getAsTag()).append("]");
+      loopConfirmation.append("**Loop:** `ON` [").append(ce.getAuthor().getAsTag()).append("]");
       ce.getChannel().sendMessage(loopConfirmation).queue();
     }
   }
@@ -106,18 +106,34 @@ public class AudioScheduler extends AudioEventAdapter {
             .append("` ").append(requesterList.get(i)).append("\n");
       }
       AudioTrack audioTrack = audioPlayer.getPlayingTrack();
+      long trackPositionLong = audioTrack.getPosition();
+      long trackDurationLong = audioTrack.getDuration();
+      String trackPosition = floatTimeConversion(trackPositionLong);
+      String trackDuration = floatTimeConversion(trackDurationLong);
       EmbedBuilder display = new EmbedBuilder();
       display.setTitle("__**Queue**__");
       StringBuilder description = new StringBuilder();
       description.append("**Now Playing:** `").append(audioPlayer.getPlayingTrack().getInfo().title).
-          append("` ").append(audioTrack.getPosition()).append("/").append(audioTrack.getDuration()).
-          append("\nPage `").append(queuePage + 1).append("` / `").append(totalQueuePages).append("`");
+          append("` {*").append(trackPosition).append("*-*").
+          append(trackDuration).append("*}\nPage `").append(queuePage + 1).
+          append("` / `").append(totalQueuePages).append("`");
       display.setDescription(description);
       display.addField("**Tracks:**", String.valueOf(queueString), false);
       Settings.sendEmbed(ce, display);
     } else {
       ce.getChannel().sendMessage("Queue is empty.").queue();
     }
+  }
+
+  private String floatTimeConversion(long floatTime) {
+    long days = floatTime / 86400000 % 30;
+    long hours = floatTime / 3600000 % 24;
+    long minutes = floatTime / 60000 % 60;
+    long seconds = floatTime / 1000 % 60;
+    return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
+        (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
+        (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
+        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
   }
 
   public void removeQueueEntry(CommandEvent ce, int entryNumber) {

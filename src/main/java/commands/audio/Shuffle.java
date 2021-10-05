@@ -38,7 +38,7 @@ public class Shuffle extends Command {
   private void shuffleQueue(CommandEvent ce) {
     PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.shuffleQueue();
     StringBuilder shuffleConfirmation = new StringBuilder();
-    shuffleConfirmation.append("**SHUFFLE:** [").append(ce.getAuthor().getAsTag()).append("]");
+    shuffleConfirmation.append("**Shuffle:** [").append(ce.getAuthor().getAsTag()).append("]");
     ce.getChannel().sendMessage(shuffleConfirmation).queue();
   }
 }
