@@ -55,7 +55,7 @@ public class LucyferBot {
         new Shutdown(), new WhoIs(), new BuildEmbed(waiter), new Join(),
         new NowPlaying(), new Play(), new Pause(), new Skip(), new Shuffle(),
         new Loop(), new Queue(), new Remove(), new ClearQueue(), new Leave(),
-        new Volume());
+        new Volume(), new SetPosition());
     CommandClient client = commands.build();
     // Bot
     api.addEventListener(client, waiter, new MessageLog());

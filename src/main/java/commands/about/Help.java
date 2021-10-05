@@ -34,10 +34,10 @@ public class Help extends Command {
     display.addField("**Utility:**", "▫serverinfo \n▫whois \n▫avatar \n▫emote \n▫remind", true);
     display.addField("**Music:**", "▫clearQueue \n▫join \n▫leave \n▫loop \n▫nowPlaying " +
         "\n▫pause", true);
-    display.addField("**Music:**", "▫play \n▫queue \n▫remove \n▫shuffle \n▫skip", true);
+    display.addField("**Music:**", "▫play \n▫queue \n▫remove ▫setPosition \n▫shuffle \n▫skip", true);
     display.addField("**Games:**", "▫roll \n▫flip \n▫choice \n▫highorlow", true);
     display.addField("**Miscellaneous:**", "▫random \n▫echo \n▫ping", true);
-    display.addField("**Owner:**", "▫settings \n▫buildembed \n▫delete \n▫shutdown \n▫join", true);
+    display.addField("**Owner:**", "▫settings \n▫buildembed \n▫delete \n▫shutdown \n▫volume", true);
     display.addField("**Promotion:**", "▫dungeonarchives", true);
     Settings.sendEmbed(ce, display);
   }
@@ -159,6 +159,11 @@ public class Help extends Command {
       case "serverinfo" -> sendEmbed(ce, display, "__Command: ServerInfo__",
           "Provides information on the server.",
           "serverinfo, discord, server", "[0]ServerInfo", "serverinfo");
+      case "setposition" -> sendEmbed(ce, display, "__Command: SetPosition__",
+          "Sets the position of the currently playing track. \":\" seperates" +
+              "the time types, from hours:minutes:seconds.",
+          "setposition, setpos, goto, songtime", "[1]timeString",
+          "setposition 124, set position 2:04");
       case "settings" -> sendEmbed(ce, display, "__Command: Settings__",
           "Provides information on bot settings.",
           "settings, config",

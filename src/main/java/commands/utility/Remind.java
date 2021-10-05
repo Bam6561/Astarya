@@ -142,7 +142,8 @@ public class Remind extends Command {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Reminder__");
     display.setDescription(!timerName.equals("")
-        ? "Time set for `" + timerName + "` in (" + timeDuration + ") " + getTimeTypeString(timeType) + "."
+        ? "Time set for `" + timerName.substring(0, timerName.length() - 1) +
+        "` in (" + timeDuration + ") " + getTimeTypeString(timeType) + "."
         : "Timer set to mention you in (" + timeDuration + ") " + getTimeTypeString(timeType) + ".");
     Settings.sendEmbed(ce, display);
   }

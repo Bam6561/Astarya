@@ -23,7 +23,7 @@ public class Pause extends Command {
       if (botVoiceState.inVoiceChannel()) { // Bot already in voice channel
         if (userVoiceState.getChannel()
             .equals(botVoiceState.getChannel())) { // User in same voice channel as bot
-          setPauseState(ce);
+          PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.setPauseState(ce);
         } else { // User not in same voice channel as bot
           ce.getChannel().sendMessage("User not in same voice channel.").queue();
         }
@@ -32,16 +32,6 @@ public class Pause extends Command {
       }
     } else { // User not in any voice channel
       ce.getChannel().sendMessage("User not in a voice channel.").queue();
-    }
-  }
-
-  private void setPauseState(CommandEvent ce) {
-    if (PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioPlayer.isPaused()) {
-      PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioPlayer.setPaused(false);
-      ce.getChannel().sendMessage("Audio player resumed.").queue();
-    } else {
-      PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioPlayer.setPaused(true);
-      ce.getChannel().sendMessage("Audio player paused.").queue();
     }
   }
 }

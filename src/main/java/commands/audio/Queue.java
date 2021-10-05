@@ -20,15 +20,17 @@ public class Queue extends Command {
     int arguments = args.length;
     int queuePage = 0;
     switch (arguments) {
-      case 1 -> PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getQueue(ce, queuePage);
+      case 1 -> { // First page
+        PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getQueue(ce, queuePage);
+      }
       case 2 -> {
-        try {
+        try { // Custom page
           PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild())
               .audioScheduler.getQueue(ce, Integer.parseInt(args[1]) - 1);
-        } catch (NumberFormatException error) {
+        } catch (NumberFormatException error) { // Invalid argument
           ce.getChannel().sendMessage("Page number must be a number.").queue();
         }
-      }
+      } // Invalid arguments
       default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
     }
   }

@@ -23,7 +23,7 @@ public class Skip extends Command {
       if (botVoiceState.inVoiceChannel()) { // Bot already in voice channel
         if (userVoiceState.getChannel()
             .equals(botVoiceState.getChannel())) { // User in same voice channel as bot
-          skipTrack(ce);
+          PlayerManager.getINSTANCE().getPlaybackManager((ce.getGuild())).audioScheduler.skipTrack(ce);
         } else { // User not in same voice channel as bot
           ce.getChannel().sendMessage("User not in the same voice channel.").queue();
         }
@@ -33,12 +33,5 @@ public class Skip extends Command {
     } else { // User not in any voice channel
       ce.getChannel().sendMessage("User not in a voice channel.").queue();
     }
-  }
-
-  private void skipTrack(CommandEvent ce) {
-    PlayerManager.getINSTANCE().getPlaybackManager((ce.getGuild())).audioScheduler.skipTrack();
-    StringBuilder skipConfirmation = new StringBuilder();
-    skipConfirmation.append("**Skip:** [").append(ce.getAuthor().getAsTag()).append("]");
-    ce.getChannel().sendMessage(skipConfirmation).queue();
   }
 }

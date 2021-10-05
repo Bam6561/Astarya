@@ -55,8 +55,12 @@ public class Play extends Command {
     String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
     int arguments = args.length;
     switch (arguments) {
-      case 1 -> ce.getChannel().sendMessage("Invalid number of arguments.").queue(); // Invalid argument
-      case 2 -> PlayerManager.getINSTANCE().createAudioTrack(ce, args[1]); // Track or playlist
+      case 1 -> { // Invalid argument
+        ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      }
+      case 2 -> { // Track or playlist
+        PlayerManager.getINSTANCE().createAudioTrack(ce, args[1]);
+      }
       default -> { // Search query
         StringBuilder searchQuery = new StringBuilder();
         for (int i = 1; i < arguments; i++) {

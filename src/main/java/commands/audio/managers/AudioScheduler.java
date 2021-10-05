@@ -60,7 +60,7 @@ public class AudioScheduler extends AudioEventAdapter {
     requesterList.add(requester);
   }
 
-  public void clearQueue(CommandEvent ce) {
+  public void clearQueue(CommandEvent ce) { // ClearQueue
     this.queueList.clear();
     this.requesterList.clear();
     StringBuilder queueClearConfirmation = new StringBuilder();
@@ -68,7 +68,7 @@ public class AudioScheduler extends AudioEventAdapter {
     ce.getChannel().sendMessage(queueClearConfirmation).queue();
   }
 
-  public void setLoopState(CommandEvent ce) {
+  public void setLoopState(CommandEvent ce) { // Loop
     StringBuilder loopConfirmation = new StringBuilder();
     if (this.loop) {
       this.loop = false;
@@ -81,7 +81,33 @@ public class AudioScheduler extends AudioEventAdapter {
     }
   }
 
-  public void getQueue(CommandEvent ce, int queuePage) { // Track queue
+  public void getNowPlaying(CommandEvent ce) { // NowPlaying
+    StringBuilder nowPlaying = new StringBuilder();
+    if (audioPlayer.getPlayingTrack() == null) {
+      nowPlaying.append("**Now Playing:** `Nothing`");
+    } else {
+      AudioTrack audioTrack = audioPlayer.getPlayingTrack();
+      long trackPositionLong = audioTrack.getPosition();
+      long trackDurationLong = audioTrack.getDuration();
+      String trackPosition = floatTimeConversion(trackPositionLong);
+      String trackDuration = floatTimeConversion(trackDurationLong);
+      nowPlaying.append("**Now Playing:** `").append(audioTrack.getInfo().title).
+          append("` {*").append(trackPosition).append("*-*").append(trackDuration).append("*}");
+    }
+    ce.getChannel().sendMessage(nowPlaying).queue();
+  }
+
+  public void setPauseState(CommandEvent ce) { // Pause
+    if (audioPlayer.isPaused()) {
+      audioPlayer.setPaused(false);
+      ce.getChannel().sendMessage("Audio player resumed.").queue();
+    } else {
+      audioPlayer.setPaused(true);
+      ce.getChannel().sendMessage("Audio player paused.").queue();
+    }
+  }
+
+  public void getQueue(CommandEvent ce, int queuePage) { // Queue
     if (!this.queueList.isEmpty()) { // No tracks
       int totalQueuePages = this.queueList.size() / 10; // Full pages
       if ((this.queueList.size() % 10) > 0) { // Partially filled pages
@@ -125,18 +151,7 @@ public class AudioScheduler extends AudioEventAdapter {
     }
   }
 
-  private String floatTimeConversion(long floatTime) {
-    long days = floatTime / 86400000 % 30;
-    long hours = floatTime / 3600000 % 24;
-    long minutes = floatTime / 60000 % 60;
-    long seconds = floatTime / 1000 % 60;
-    return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
-        (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
-        (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
-        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
-  }
-
-  public void removeQueueEntry(CommandEvent ce, int entryNumber) {
+  public void removeQueueEntry(CommandEvent ce, int entryNumber) { // Remove
     try {
       entryNumber = entryNumber - 1;
       StringBuilder removeQueueEntryConfirmation = new StringBuilder();
@@ -152,7 +167,50 @@ public class AudioScheduler extends AudioEventAdapter {
     }
   }
 
-  public void shuffleQueue() {
+  public void setPosition(CommandEvent ce, String[] args) { // SetPosition
+    if (!(audioPlayer.getPlayingTrack() == null)) { // Track exists
+      String positionString = args[1];
+      String[] positionTimeType = positionString.split(":");
+      long seconds = 0;
+      long minutes = 0;
+      long hours = 0;
+      switch (positionTimeType.length) {
+        case 1 -> {
+          seconds = Integer.parseInt(positionTimeType[0]);
+        }
+        case 2 -> {
+          minutes = Integer.parseInt(positionTimeType[0]);
+          seconds = Integer.parseInt(positionTimeType[1]);
+        }
+        case 3 -> {
+          hours = Integer.parseInt(positionTimeType[0]);
+          minutes = Integer.parseInt(positionTimeType[1]);
+          seconds = Integer.parseInt(positionTimeType[2]);
+        }
+        default -> {
+          ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+        }
+      }
+      hours = hours * 3600000;
+      minutes = minutes * 60000;
+      seconds = seconds * 1000;
+      long totalPosition = hours + minutes + seconds;
+      if (audioPlayer.getPlayingTrack().getDuration() > totalPosition) {
+        audioPlayer.getPlayingTrack().setPosition(totalPosition);
+        String positionSet = floatTimeConversion(totalPosition);
+        StringBuilder setPositionConfirmation = new StringBuilder();
+        setPositionConfirmation.append("**Set Position:** {*").append(positionSet).
+            append("*} [").append(ce.getAuthor().getAsTag()).append("]");
+        ce.getChannel().sendMessage(setPositionConfirmation).queue();
+      } else {
+        ce.getChannel().sendMessage("Requested position exceeds track length.").queue();
+      }
+    } else {
+      ce.getChannel().sendMessage("Nothing is currently playing.").queue();
+    }
+  }
+
+  public void shuffleQueue(CommandEvent ce) { // Shuffle
     Random rand = new Random();
     for (int i = 0; i < queueList.size(); i++) {
       int indexSwitch = rand.nextInt(queueList.size());
@@ -163,9 +221,26 @@ public class AudioScheduler extends AudioEventAdapter {
       requesterList.set(i, requesterList.get(indexSwitch));
       requesterList.set(indexSwitch, stringTemp);
     }
+    StringBuilder shuffleConfirmation = new StringBuilder();
+    shuffleConfirmation.append("**Shuffle:** [").append(ce.getAuthor().getAsTag()).append("]");
+    ce.getChannel().sendMessage(shuffleConfirmation).queue();
   }
 
-  public void skipTrack() {
+  public void skipTrack(CommandEvent ce) { // Skip
     nextTrack();
+    StringBuilder skipConfirmation = new StringBuilder();
+    skipConfirmation.append("**Skip:** [").append(ce.getAuthor().getAsTag()).append("]");
+    ce.getChannel().sendMessage(skipConfirmation).queue();
+  }
+
+  private String floatTimeConversion(long floatTime) {
+    long days = floatTime / 86400000 % 30;
+    long hours = floatTime / 3600000 % 24;
+    long minutes = floatTime / 60000 % 60;
+    long seconds = floatTime / 1000 % 60;
+    return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
+        (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
+        (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
+        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
   }
 }
