@@ -14,10 +14,8 @@ import commands.games.Roll;
 import commands.miscellaneous.Echo;
 import commands.miscellaneous.Ping;
 import commands.miscellaneous.Random;
-import commands.owner.BuildEmbed;
-import commands.owner.Delete;
-import commands.owner.Settings;
 import commands.owner.Shutdown;
+import commands.owner.*;
 import commands.promotion.DungeonArchives;
 import commands.utility.*;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -56,7 +54,8 @@ public class LucyferBot {
         new Remind(), new Roll(), new ServerInfo(), new Settings(),
         new Shutdown(), new WhoIs(), new BuildEmbed(waiter), new Join(),
         new NowPlaying(), new Play(), new Pause(), new Skip(), new Shuffle(),
-        new Loop(), new Queue(), new Remove(), new ClearQueue(), new Leave());
+        new Loop(), new Queue(), new Remove(), new ClearQueue(), new Leave(),
+        new Volume());
     CommandClient client = commands.build();
     // Bot
     api.addEventListener(client, waiter, new MessageLog());

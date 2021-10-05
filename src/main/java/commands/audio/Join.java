@@ -17,7 +17,6 @@ public class Join extends Command {
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    Settings.deleteInvoke(ce);
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
     if (userVoiceState.inVoiceChannel()) { // User in any voice channel
@@ -27,7 +26,7 @@ public class Join extends Command {
           ce.getChannel().sendMessage("Already in the same voice channel.").queue();
         } else { // User not in same voice channel as bot
           String alreadyConnected = "Already connected to <#"
-              + botVoiceState.getChannel().getId() + ">.";
+              + botVoiceState.getChannel().getId() + ">";
           ce.getChannel().sendMessage(alreadyConnected).queue();
         }
       } else { // Bot not in any voice channel

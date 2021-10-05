@@ -15,10 +15,6 @@ public class PlaybackManager { // Glues all LavaPlayer components together
     sendHandler = new AudioPlayerSendHandler(this.audioPlayer);
   }
 
-  public AudioScheduler getAudioScheduler() {
-    return this.audioScheduler;
-  }
-
   public static AudioPlayerSendHandler getSendHandler() {
     return sendHandler;
   }

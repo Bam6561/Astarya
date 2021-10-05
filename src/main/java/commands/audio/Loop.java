@@ -4,6 +4,7 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 public class Loop extends Command {
   public Loop() {
@@ -17,14 +18,22 @@ public class Loop extends Command {
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    if (ce.getGuild().getSelfMember().getVoiceState().inVoiceChannel()) {
-      if ((ce.getMember().getVoiceState().getChannel())
-          .equals((ce.getGuild().getSelfMember().getVoiceState().getChannel()))) {
-        PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).getAudioScheduler().setLooped(ce);
-      } else
-        ce.getChannel().sendMessage("I'm not in the same voice channel.").queue();
-    } else {
-      ce.getChannel().sendMessage("I'm not in a voice channel yet.").queue();
+    GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
+    GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
+    if (userVoiceState.inVoiceChannel()) { // User in any voice channel
+      if (botVoiceState.inVoiceChannel()) { // Bot already in voice channel
+        if (userVoiceState.getChannel()
+            .equals(botVoiceState.getChannel())) { // User in same voice channel as bot
+          PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.setLoopState(ce);
+        } else { // User not in same voice channel as bot
+          String alreadyConnected = "User not in the same voice channel.";
+          ce.getChannel().sendMessage(alreadyConnected).queue();
+        }
+      } else { // Bot not in any voice channel
+        ce.getChannel().sendMessage("Not in a voice channel.").queue();
+      }
+    } else { // User not in any voice channel
+      ce.getChannel().sendMessage("User not in a voice channel.").queue();
     }
   }
 }

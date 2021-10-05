@@ -8,7 +8,7 @@ Java-based Discord bot written with JDA API.
 - Audio: (ClearQueue, Join, Leave, Loop, NowPlaying, Pause, Play, Queue, Remove, Shuffle, Skip)
 - Games (Choice, Flip, HighOrLow, Roll)
 - Miscellaneous: (Echo, Ping, Random)
-- Owner: (BuildEmbed, Delete, Settings, Shutdown)
+- Owner: (BuildEmbed, Delete, Settings, Shutdown, Volume)
 - Promotion: (DungeonArchives)
 - Utility (Avatar, Emote, Remind, ServerInfo, WhoIs)
 

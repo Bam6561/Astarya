@@ -15,38 +15,40 @@ public class AudioScheduler extends AudioEventAdapter {
   private final AudioPlayer audioPlayer;
   private ArrayList<AudioTrack> queueList;
   private ArrayList<String> requesterList;
-  private ArrayList<String> nowPlaying;
-  private Boolean looped = false;
+  private Boolean loop = false;
 
   public AudioScheduler(AudioPlayer audioPlayer) {
     this.audioPlayer = audioPlayer;
     this.queueList = new ArrayList<AudioTrack>();
     this.requesterList = new ArrayList<String>();
-    this.nowPlaying = new ArrayList<String>();
   }
 
   public void queue(AudioTrack audioTrack) {
     if (!this.audioPlayer.startTrack(audioTrack, true)) {
-      this.queueList.add(audioTrack);
+      queueList.add(audioTrack);
     }
   }
 
   public void nextTrack() {
-    this.audioPlayer.startTrack(this.queueList.get(0), false);
-    this.queueList.remove(0);
-    this.requesterList.remove(0);
-    this.nowPlaying.remove(0);
+    if (!queueList.isEmpty()) {
+      this.audioPlayer.startTrack(this.queueList.get(0), false);
+      queueList.remove(0);
+      requesterList.remove(0);
+    } else {
+      audioPlayer.stopTrack();
+      queueList.clear();
+      requesterList.clear();
+    }
   }
 
   @Override
   public void onTrackStart(AudioPlayer audioPlayer, AudioTrack audioTrack) {
-    nowPlaying.add(audioTrack.getInfo().title);
   }
 
   @Override
   public void onTrackEnd(AudioPlayer audioPlayer, AudioTrack audioTrack, AudioTrackEndReason endReason) {
     if (endReason.mayStartNext) {
-      if (this.looped) {
+      if (this.loop) {
         this.audioPlayer.startTrack(audioTrack.makeClone(), false);
         return;
       }
@@ -54,55 +56,28 @@ public class AudioScheduler extends AudioEventAdapter {
     }
   }
 
-  public void setLooped(CommandEvent ce) {
-    StringBuilder loopedConfirmation = new StringBuilder();
-    if (this.looped) {
-      this.looped = false;
-      loopedConfirmation.append("**LOOPED:** Loop turned off. [").append(ce.getAuthor().getAsTag()).append("]");
-      ce.getChannel().sendMessage(loopedConfirmation).queue();
-    } else {
-      this.looped = true;
-      loopedConfirmation.append("**LOOPED:** Loop turned on. [").append(ce.getAuthor().getAsTag()).append("]");
-      ce.getChannel().sendMessage(loopedConfirmation).queue();
-    }
-  }
-
-  public void getNowPlaying(CommandEvent ce) {
-    String nowPlayingString = "**Now Playing:** `" + this.nowPlaying.get(0) + "` " +
-        this.requesterList.get(0);
-    ce.getChannel().sendMessage(String.valueOf(nowPlayingString)).queue();
-  }
-
-  public AudioPlayer getAudioPlayer() {
-    return audioPlayer;
-  }
-
-  public String getRequesterListName() {
-    return this.requesterList.get(0);
-  }
-
-  public String getQueueListTitle() {
-    return this.queueList.get(0).getInfo().title;
-  }
-
   public void addToRequesterList(String requester) { // Track requester array
-    this.requesterList.add(requester);
+    requesterList.add(requester);
   }
 
-  public void forceSkip() {
-    nextTrack();
+  public void clearQueue(CommandEvent ce) {
+    this.queueList.clear();
+    this.requesterList.clear();
+    StringBuilder queueClearConfirmation = new StringBuilder();
+    queueClearConfirmation.append("**Queue Clear:** [").append(ce.getAuthor().getAsTag()).append("]");
+    ce.getChannel().sendMessage(queueClearConfirmation).queue();
   }
 
-  public void Shuffle() {
-    Random rand = new Random();
-    for (int i = 0; i < queueList.size(); i++) {
-      int indexSwitch = rand.nextInt(queueList.size());
-      AudioTrack audioTrackTemp = queueList.get(i);
-      String stringTemp = requesterList.get(i);
-      queueList.set(i, queueList.get(indexSwitch));
-      queueList.set(indexSwitch, audioTrackTemp);
-      requesterList.set(i, requesterList.get(indexSwitch));
-      requesterList.set(indexSwitch, stringTemp);
+  public void setLoopState(CommandEvent ce) {
+    StringBuilder loopConfirmation = new StringBuilder();
+    if (this.loop) {
+      this.loop = false;
+      loopConfirmation.append("**LOOP:** `OFF` [").append(ce.getAuthor().getAsTag()).append("]");
+      ce.getChannel().sendMessage(loopConfirmation).queue();
+    } else {
+      this.loop = true;
+      loopConfirmation.append("**LOOP:** `ON` [").append(ce.getAuthor().getAsTag()).append("]");
+      ce.getChannel().sendMessage(loopConfirmation).queue();
     }
   }
 
@@ -130,9 +105,13 @@ public class AudioScheduler extends AudioEventAdapter {
         queueString.append("**[").append(i + 1).append("]** `").append(queueList.get(i).getInfo().title)
             .append("` ").append(requesterList.get(i)).append("\n");
       }
+      AudioTrack audioTrack = audioPlayer.getPlayingTrack();
       EmbedBuilder display = new EmbedBuilder();
       display.setTitle("__**Queue**__");
-      String description = "Page `" + (queuePage + 1) + "` / `" + totalQueuePages + "`";
+      StringBuilder description = new StringBuilder();
+      description.append("**Now Playing:** `").append(audioPlayer.getPlayingTrack().getInfo().title).
+          append("` ").append(audioTrack.getPosition()).append("/").append(audioTrack.getDuration()).
+          append("\nPage `").append(queuePage + 1).append("` / `").append(totalQueuePages).append("`");
       display.setDescription(description);
       display.addField("**Tracks:**", String.valueOf(queueString), false);
       Settings.sendEmbed(ce, display);
@@ -157,11 +136,20 @@ public class AudioScheduler extends AudioEventAdapter {
     }
   }
 
-  public void clearQueue(CommandEvent ce) {
-    this.queueList.clear();
-    this.requesterList.clear();
-    StringBuilder queueClearConfirmation = new StringBuilder();
-    queueClearConfirmation.append("**Queue Clear:** [").append(ce.getAuthor().getAsTag()).append("]");
-    ce.getChannel().sendMessage(queueClearConfirmation).queue();
+  public void shuffleQueue() {
+    Random rand = new Random();
+    for (int i = 0; i < queueList.size(); i++) {
+      int indexSwitch = rand.nextInt(queueList.size());
+      AudioTrack audioTrackTemp = queueList.get(i);
+      String stringTemp = requesterList.get(i);
+      queueList.set(i, queueList.get(indexSwitch));
+      queueList.set(indexSwitch, audioTrackTemp);
+      requesterList.set(i, requesterList.get(indexSwitch));
+      requesterList.set(indexSwitch, stringTemp);
+    }
+  }
+
+  public void skipTrack() {
+    nextTrack();
   }
 }

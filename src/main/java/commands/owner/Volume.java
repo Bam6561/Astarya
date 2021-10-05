@@ -1,17 +1,17 @@
-package commands.audio;
+package commands.owner;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.audio.managers.PlayerManager;
-import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
-public class Remove extends Command {
-  public Remove() {
-    this.name = "remove";
-    this.aliases = new String[]{"remove", "takeout", "nvm"};
-    this.arguments = "[1]QueueNumber";
-    this.help = "Removes an audio track from the queue.";
+public class Volume extends Command {
+  public Volume() {
+    this.name = "volume";
+    this.aliases = new String[]{"volume"};
+    this.arguments = "[0]volume [1]0-100";
+    this.help = "Sets the volume of the audio player.";
+    this.ownerCommand = true;
   }
 
   @Override
@@ -23,7 +23,7 @@ public class Remove extends Command {
       if (botVoiceState.inVoiceChannel()) { // Bot already in voice channel
         if (userVoiceState.getChannel()
             .equals(botVoiceState.getChannel())) { // User in same voice channel as bot
-          removeTrack(ce);
+          setVolume(ce);
         } else { // User not in same voice channel as bot
           ce.getChannel().sendMessage("User not in the same voice channel.").queue();
         }
@@ -35,18 +35,24 @@ public class Remove extends Command {
     }
   }
 
-  private void removeTrack(CommandEvent ce) {
+  private void setVolume(CommandEvent ce) {
     String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
     int arguments = args.length;
     if (arguments == 2) {
-      try { // Remove queue entry
-        PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).
-            audioScheduler.removeQueueEntry(ce, Integer.parseInt(args[1]));
-      } catch (NumberFormatException e) { //
-        ce.getChannel().sendMessage("Argument must be an integer.").queue();
+      try {
+        int volume = Integer.parseInt(args[1]);
+        if (volume >= 0 && volume <= 200) {
+          PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioPlayer.setVolume(volume);
+          String volumeConfirmation = "Audio player volume set to `" + volume + "`%.";
+          ce.getChannel().sendMessage(volumeConfirmation).queue();
+        } else {
+          ce.getChannel().sendMessage("Argument must be an integer from 0 - 200.");
+        }
+      } catch (NumberFormatException error) {
+        ce.getChannel().sendMessage("Argument must be an integer from 0 - 200.");
       }
-    } else {// Invalid argument
-      ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+    } else {
+      ce.getChannel().sendMessage("Invalid number of arguments.");
     }
   }
 }

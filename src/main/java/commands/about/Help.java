@@ -32,11 +32,12 @@ public class Help extends Command {
     display.setDescription("Type help [CommandName] for more details on the usage of each command.");
     display.addField("**About:**", "▫info \n▫help \n▫credits", true);
     display.addField("**Utility:**", "▫serverinfo \n▫whois \n▫avatar \n▫emote \n▫remind", true);
+    display.addField("**Music:**", "▫clearQueue \n▫join \n▫leave \n▫loop \n▫nowPlaying " +
+        "\n▫pause", true);
+    display.addField("**Music:**", "▫play \n▫queue \n▫remove \n▫shuffle \n▫skip", true);
     display.addField("**Games:**", "▫roll \n▫flip \n▫choice \n▫highorlow", true);
     display.addField("**Miscellaneous:**", "▫random \n▫echo \n▫ping", true);
-    display.addField("**Music:**", "▫join \n▫nowPlaying \n▫play \n▫pause \n▫queue " +
-        "\n▫skip \n▫remove \n▫shuffle \n▫loop \n▫clearQueue \n▫leave", true);
-    display.addField("**Owner:**", "▫settings \n▫buildembed \n▫delete \n▫shutdown", true);
+    display.addField("**Owner:**", "▫settings \n▫buildembed \n▫delete \n▫shutdown \n▫join", true);
     display.addField("**Promotion:**", "▫dungeonarchives", true);
     Settings.sendEmbed(ce, display);
   }
@@ -175,6 +176,9 @@ public class Help extends Command {
           "Provides information on the user.",
           "whois, profile, user", "[0]Self [1]Mention/UserID",
           "whois, whois @user, whois UserID");
+      case "volume" -> sendEmbed(ce, display, "__Command: Volume__",
+          "Sets the volume of the audio player.",
+          "volume", "[0]volume [1]0-100", "volume 125");
       default -> {
         display.setTitle("__Command Not Found__");
         display.setDescription("Try typing " + Settings.getPrefix() + "commands for a full command list.");
