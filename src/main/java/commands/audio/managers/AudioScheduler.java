@@ -132,7 +132,7 @@ public class AudioScheduler extends AudioEventAdapter {
       }
       EmbedBuilder display = new EmbedBuilder();
       display.setTitle("__**Queue**__");
-      String description = "Displaying page `" + (queuePage + 1) + "` / `" + totalQueuePages + "`";
+      String description = "Page `" + (queuePage + 1) + "` / `" + totalQueuePages + "`";
       display.setDescription(description);
       display.addField("**Tracks:**", String.valueOf(queueString), false);
       Settings.sendEmbed(ce, display);

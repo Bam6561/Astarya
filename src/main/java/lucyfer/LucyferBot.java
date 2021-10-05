@@ -46,7 +46,7 @@ public class LucyferBot {
     // Command Manager
     CommandClientBuilder commands = new CommandClientBuilder();
     EventWaiter waiter = new EventWaiter();
-    commands.setPrefix("?");
+    commands.setPrefix("<");
     commands.setAlternativePrefix("L:");
     commands.setHelpWord("commands");
     commands.setOwnerId("204448598539239424"); // Bam#3531

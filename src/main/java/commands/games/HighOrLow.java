@@ -30,8 +30,8 @@ public class HighOrLow extends Command {
     Settings.deleteInvoke(ce);
     if (!getCurrentlyPlaying()) { // No ongoing game
       gameSet(ce);
-      gameReactions(ce);
       gameScreen(ce);
+      gameReactions(ce);
       gameTimeout(ce);
     } else { // Ongoing game
       ce.getChannel()

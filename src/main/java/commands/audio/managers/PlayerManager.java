@@ -40,23 +40,32 @@ public class PlayerManager {
   public void createAudioTrack(CommandEvent ce, String trackURL) {
     final PlaybackManager playbackManager = this.getPlaybackManager(ce.getGuild());
     this.audioPlayerManager.loadItemOrdered(playbackManager, trackURL, new AudioLoadResultHandler() {
+      String requester = "[" + ce.getAuthor().getAsTag() + "]";
+
       @Override
       public void trackLoaded(AudioTrack track) {
-        String requester = "[" + ce.getAuthor().getAsTag() + "]";
-        ce.getChannel().sendMessage("**Added:** `" +
-            track.getInfo().title + "` " + requester).queue();
         playbackManager.audioScheduler.queue(track);
         playbackManager.audioScheduler.addToRequesterList(requester);
+        ce.getChannel().sendMessage("**Added:** `" +
+            track.getInfo().title + "` " + requester).queue();
       }
 
       @Override
       public void playlistLoaded(AudioPlaylist playlist) {
-        List<AudioTrack> topResults = playlist.getTracks();
-        String requester = "[" + ce.getAuthor().getAsTag() + "]";
-        ce.getChannel().sendMessage("**Added:** `" +
-            topResults.get(0).getInfo().title + "` " + requester).queue();
-        playbackManager.audioScheduler.queue(topResults.get(0));
-        playbackManager.audioScheduler.addToRequesterList(requester);
+        List<AudioTrack> results = playlist.getTracks();
+        if (playlist.isSearchResult()) { // Search query
+          playbackManager.audioScheduler.queue(results.get(0));
+          playbackManager.audioScheduler.addToRequesterList(requester);
+          ce.getChannel().sendMessage("**Added:** `" +
+              results.get(0).getInfo().title + "` " + requester).queue();
+        } else { // Playlist
+          for (int i = 0; i < playlist.getTracks().size(); i++) {
+            playbackManager.audioScheduler.queue(playlist.getTracks().get(i));
+            playbackManager.audioScheduler.addToRequesterList(requester);
+          }
+          ce.getChannel().sendMessage("**Added:** `" + playlist.getTracks().size()
+              + "` tracks " + requester).queue();
+        }
       }
 
       @Override

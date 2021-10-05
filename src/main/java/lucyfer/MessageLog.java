@@ -19,8 +19,8 @@ public class MessageLog extends ListenerAdapter {
         + (!ce.getMessage().getAttachments().isEmpty() ? getMessageAttachment(ce) : ""));
   }
 
-  private boolean isHuman(GuildMessageReceivedEvent e) {
-    return (!e.getMessage().isWebhookMessage() && (!e.getMessage().getAuthor().isBot()));
+  private boolean isHuman(GuildMessageReceivedEvent ce) {
+    return (!ce.getMessage().isWebhookMessage() && (!ce.getMessage().getAuthor().isBot()));
   }
 
   private static String getTime() {
@@ -29,20 +29,20 @@ public class MessageLog extends ListenerAdapter {
     return currentDateTime.format(dtf);
   }
 
-  private static String getGuildName(GuildMessageReceivedEvent e) {
-    return "<" + e.getGuild().getName() + ">";
+  private static String getGuildName(GuildMessageReceivedEvent ce) {
+    return "<" + ce.getGuild().getName() + ">";
   }
 
-  private static String getChannelName(GuildMessageReceivedEvent e) {
-    return "#" + e.getChannel().getName() + "";
+  private static String getChannelName(GuildMessageReceivedEvent ce) {
+    return "#" + ce.getChannel().getName() + "";
   }
 
-  private static String getAuthorTag(GuildMessageReceivedEvent e) {
-    return "[" + e.getAuthor().getAsTag() + "]:";
+  private static String getAuthorTag(GuildMessageReceivedEvent ce) {
+    return "[" + ce.getAuthor().getAsTag() + "]:";
   }
 
-  private static String getMessageContent(GuildMessageReceivedEvent e) {
-    return (!e.getMessage().getContentDisplay().isEmpty() ? e.getMessage().getContentDisplay() + " " : "");
+  private static String getMessageContent(GuildMessageReceivedEvent ce) {
+    return (!ce.getMessage().getContentDisplay().isEmpty() ? ce.getMessage().getContentDisplay() + " " : "");
   }
 
   private static String getMessageAttachment(GuildMessageReceivedEvent event) {

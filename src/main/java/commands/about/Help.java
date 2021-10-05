@@ -125,9 +125,10 @@ public class Help extends Command {
           "Response time of the bot in milliseconds.",
           "ping, response", "[0]Ping", "ping");
       case "play" -> sendEmbed(ce, display, "__Command: Play__",
-          "Adds an audio track to the queue. \n**Sources:** YouTube, Local files, " +
-              "HTTP URLs \n**File Types:** MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, " +
-              "OGG streams, AAC streams", "play, p", "[1]URL, [2++]YouTubeQuery",
+          "Adds an audio track to the queue. \n**Sources:** YouTube, " +
+              "HTTP URLs, playlists, Discord media links \n**File Types:** MP3, " +
+              "FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams",
+          "play, p, add", "[1]URL, [2++]YouTubeQuery",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ, play Cleverly Disguised Rickrolls");
       case "queue" -> sendEmbed(ce, display, "__Command: Queue__",
           "Provides a list of audio tracks queued.", "queue, q", "[0]queue, [1]pageNumber",

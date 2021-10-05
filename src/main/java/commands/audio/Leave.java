@@ -3,6 +3,8 @@ package commands.audio;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.managers.AudioManager;
 
 public class Leave extends Command {
@@ -15,12 +17,14 @@ public class Leave extends Command {
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    if (ce.getGuild().getSelfMember().getVoiceState().inVoiceChannel()) {
+    GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
+    if (botVoiceState.inVoiceChannel()) {
       AudioManager audioManager = ce.getGuild().getAudioManager();
       audioManager.closeAudioConnection();
-      ce.getChannel().sendMessage("Thanks for listening. See you later!").queue();
+      String leaveChannel = "Leaving <#" + botVoiceState.getChannel().getId() + ">";
+      ce.getChannel().sendMessage(leaveChannel).queue();
     } else {
-      ce.getChannel().sendMessage("I'm not in a voice channel yet.").queue();
+      ce.getChannel().sendMessage("Not in a voice channel.").queue();
     }
   }
 }

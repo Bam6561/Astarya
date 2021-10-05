@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 public class Settings extends Command {
-  private static final String prefix = "?";
+  private static final String prefix = "<";
   private static final String alternatePrefix = "L:";
   private static boolean deleteInvoke = false;
   private static boolean embedDecay = false;
