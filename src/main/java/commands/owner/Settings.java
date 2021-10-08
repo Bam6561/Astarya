@@ -17,7 +17,7 @@ public class Settings extends Command {
   public Settings() {
     this.name = "settings";
     this.aliases = new String[]{"settings", "config"};
-    this.arguments = "[0]Settings [1]Setting [2]True/False";
+    this.arguments = "[1]Setting [2]True/False";
     this.help = "Provides information on the bot's settings.";
   }
 

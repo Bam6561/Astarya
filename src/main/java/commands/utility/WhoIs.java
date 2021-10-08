@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 public class WhoIs extends Command {
   public WhoIs() {
     this.name = "whois";
-    this.aliases = new String[]{"whois", "profile", "user"};
+    this.aliases = new String[]{"whois", "who", "profile", "user"};
     this.arguments = "[0]Self [1]Mention/UserID";
     this.help = "Provides information on the user.";
   }

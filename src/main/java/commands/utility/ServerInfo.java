@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 public class ServerInfo extends Command {
   public ServerInfo() {
     this.name = "serverinfo";
-    this.aliases = new String[]{"serverinfo", "discord", "server"};
+    this.aliases = new String[]{"serverinfo", "server"};
     this.help = "Provides information on the server.";
   }
 

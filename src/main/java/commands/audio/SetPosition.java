@@ -9,9 +9,9 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 public class SetPosition extends Command {
   public SetPosition() {
     this.name = "setPosition";
-    this.aliases = new String[]{"setposition", "setpos", "goto", "songtime"};
+    this.aliases = new String[]{"setposition", "setpos", "goto"};
     this.arguments = "[1]timeString";
-    this.help = "Sets the position of the currently playing track.";
+    this.help = "Sets the position of the currently playing audio track.";
   }
 
   @Override

@@ -10,7 +10,7 @@ import java.util.Random;
 public class Flip extends Command {
   public Flip() {
     this.name = "flip";
-    this.aliases = new String[]{"flip", "coinflip", "headsortails"};
+    this.aliases = new String[]{"flip"};
     this.arguments = "[0]Once [1]Number";
     this.help = "Flips a coin.";
   }

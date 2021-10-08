@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 public class Join extends Command {
   public Join() {
     this.name = "join";
-    this.aliases = new String[]{"join", "j", "comein", "getinhere"};
+    this.aliases = new String[]{"join", "j"};
     this.help = "Bot joins the same voice channel as the user.";
   }
 

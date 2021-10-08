@@ -9,9 +9,8 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 public class Skip extends Command {
   public Skip() {
     this.name = "skip";
-    this.aliases = new String[]{"skip", "s", "next", "ff"};
-    this.arguments = "[0]skip";
-    this.help = "Skips the current audio track in the player.";
+    this.aliases = new String[]{"skip", "s", "next"};
+    this.help = "Skips the currently playing audio track.";
   }
 
   @Override

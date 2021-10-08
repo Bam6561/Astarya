@@ -10,8 +10,7 @@ public class Shuffle extends Command {
   public Shuffle() {
     this.name = "shuffle";
     this.aliases = new String[]{"shuffle", "mix"};
-    this.arguments = "[0]shuffle";
-    this.help = "Shuffles audio tracks in the player.";
+    this.help = "Shuffles the queue.";
   }
 
   @Override

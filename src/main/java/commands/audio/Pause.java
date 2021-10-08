@@ -9,8 +9,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 public class Pause extends Command {
   public Pause() {
     this.name = "pause";
-    this.aliases = new String[]{"pause", "stop", "freeze"};
-    this.arguments = "[0]pause";
+    this.aliases = new String[]{"pause", "stop"};
     this.help = "Pauses the audio player.";
   }
 

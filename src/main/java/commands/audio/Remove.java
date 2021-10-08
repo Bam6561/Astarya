@@ -9,8 +9,8 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 public class Remove extends Command {
   public Remove() {
     this.name = "remove";
-    this.aliases = new String[]{"remove", "takeout", "nvm"};
-    this.arguments = "[1]QueueNumber";
+    this.aliases = new String[]{"remove", "rm", "takeout"};
+    this.arguments = "[1]queueNumber";
     this.help = "Removes an audio track from the queue.";
   }
 

@@ -9,8 +9,8 @@ import net.dv8tion.jda.api.managers.AudioManager;
 public class Leave extends Command {
   public Leave() {
     this.name = "leave";
-    this.aliases = new String[]{"leave", "disconnect", "dc", "goaway", "getout"};
-    this.help = "Leaves the voice channel the bot is in.";
+    this.aliases = new String[]{"leave", "disconnect", "dc"};
+    this.help = "Bot leaves the voice channel it is in.";
   }
 
   @Override

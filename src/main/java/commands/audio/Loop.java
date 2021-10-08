@@ -9,10 +9,8 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 public class Loop extends Command {
   public Loop() {
     this.name = "loop";
-    this.aliases = new String[]{"loop", "again", "infinite", "repeat"};
-    this.arguments = "[0]loop";
-    this.help = "Loops the next track";
-    this.ownerCommand = false;
+    this.aliases = new String[]{"loop", "repeat"};
+    this.help = "Loops the current audio track.";
   }
 
   @Override

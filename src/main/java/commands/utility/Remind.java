@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 public class Remind extends Command {
   public Remind() {
     this.name = "remind";
-    this.aliases = new String[]{"remind", "reminder", "remindme", "notify", "mentionme", "alert", "timer"};
+    this.aliases = new String[]{"remind", "alert", "timer"};
     this.arguments = "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName";
     this.help = "Sets a timer and alerts the user when the time expires.";
     this.ownerCommand = false;

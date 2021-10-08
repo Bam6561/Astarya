@@ -8,9 +8,8 @@ import commands.owner.Settings;
 public class NowPlaying extends Command {
   public NowPlaying() {
     this.name = "nowplaying";
-    this.aliases = new String[]{"nowplaying", "np", "now"};
-    this.arguments = "[0]NowPlaying";
-    this.help = "Shows the user what's currently playing in the player.";
+    this.aliases = new String[]{"nowplaying", "np"};
+    this.help = "Shows what's currently playing.";
   }
 
   @Override

@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 public class Echo extends Command {
   public Echo() {
     this.name = "echo";
-    this.aliases = new String[]{"echo", "copycat"};
+    this.aliases = new String[]{"echo", "copy"};
     this.arguments = "[0++]Text";
     this.help = "Repeats user's text.";
   }

@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 public class Shutdown extends Command {
   public Shutdown() {
     this.name = "shutdown";
-    this.aliases = new String[]{"shutdown", "turnoff", "terminate"};
+    this.aliases = new String[]{"shutdown"};
     this.help = "Shuts the bot down.";
     this.ownerCommand = true;
   }

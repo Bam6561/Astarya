@@ -7,7 +7,7 @@ import commands.owner.Settings;
 public class Ping extends Command {
   public Ping() {
     this.name = "ping";
-    this.aliases = new String[]{"ping", "response"};
+    this.aliases = new String[]{"ping", "ms"};
     this.help = "Response time of the bot in milliseconds.";
   }
 
