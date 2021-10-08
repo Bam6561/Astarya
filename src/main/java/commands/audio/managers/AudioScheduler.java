@@ -9,6 +9,7 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class AudioScheduler extends AudioEventAdapter {
@@ -115,7 +116,7 @@ public class AudioScheduler extends AudioEventAdapter {
 
   public void playNext(CommandEvent ce, int entryNumber) { // PlayNext
     try { // Move track to first
-      entryNumber = entryNumber - 1;
+      entryNumber = entryNumber - 1; // Human count to machine count
       AudioTrack audioTrack = this.queueList.get(entryNumber);
       long trackDurationLong = audioTrack.getDuration();
       String trackDuration = floatTimeConversion(trackDurationLong);
@@ -192,7 +193,7 @@ public class AudioScheduler extends AudioEventAdapter {
 
   public void removeQueueEntry(CommandEvent ce, int entryNumber) { // Remove
     try {
-      entryNumber = entryNumber - 1;
+      entryNumber = entryNumber - 1; // Human count to machine count
       StringBuilder removeQueueEntryConfirmation = new StringBuilder();
       removeQueueEntryConfirmation.append("**Removed:** **[").append(entryNumber + 1).append("]** `")
           .append(this.queueList.get(entryNumber).getInfo().title).append("`")
@@ -201,14 +202,13 @@ public class AudioScheduler extends AudioEventAdapter {
       this.queueList.remove(entryNumber);
       this.requesterList.remove(entryNumber);
       ce.getChannel().sendMessage(removeQueueEntryConfirmation).queue();
-    } catch (NullPointerException error) {
+    } catch (IndexOutOfBoundsException error) {
       ce.getChannel().sendMessage("Queue entry number does not exist.").queue();
     }
   }
 
-  public void setPosition(CommandEvent ce, String[] args) { // SetPosition
+  public void setPosition(CommandEvent ce, String positionString) { // SetPosition
     if (!(this.audioPlayer.getPlayingTrack() == null)) { // Track exists
-      String positionString = args[1];
       String[] positionTimeType = positionString.split(":");
       long seconds = 0;
       long minutes = 0;
@@ -255,12 +255,8 @@ public class AudioScheduler extends AudioEventAdapter {
     Random rand = new Random();
     for (int i = 0; i < this.queueList.size(); i++) {
       int indexSwitch = rand.nextInt(this.queueList.size());
-      AudioTrack audioTrackTemp = this.queueList.get(i);
-      String stringTemp = this.requesterList.get(i);
-      this.queueList.set(i, this.queueList.get(indexSwitch));
-      this.queueList.set(indexSwitch, audioTrackTemp);
-      this.requesterList.set(i, this.requesterList.get(indexSwitch));
-      this.requesterList.set(indexSwitch, stringTemp);
+      Collections.swap(queueList, i, indexSwitch);
+      Collections.swap(requesterList, i, indexSwitch);
     }
     StringBuilder shuffleConfirmation = new StringBuilder();
     shuffleConfirmation.append("**Shuffle:** [").append(ce.getAuthor().getAsTag()).append("]");
@@ -275,6 +271,32 @@ public class AudioScheduler extends AudioEventAdapter {
       ce.getChannel().sendMessage(skipTrackConfirmation).queue();
     } else {
       ce.getChannel().sendMessage("Nothing to skip.").queue();
+    }
+  }
+
+  public void swap(CommandEvent ce, int originalQueue, int swapQueue) {
+    try {
+      originalQueue = originalQueue - 1; // Human count to machine count
+      swapQueue = swapQueue - 1;
+      AudioTrack originalTrack = this.queueList.get(originalQueue);
+      AudioTrack swapTrack = this.queueList.get(swapQueue);
+      long originalTrackDurationLong = originalTrack.getDuration();
+      long swapTrackDurationLong = swapTrack.getDuration();
+      String originalTrackDuration = floatTimeConversion(originalTrackDurationLong);
+      String swapTrackDuration = floatTimeConversion(swapTrackDurationLong);
+      StringBuilder swapConfirmation = new StringBuilder();
+      swapConfirmation.append("**Swap:** ").append(" [").
+          append(ce.getAuthor().getAsTag()).append("]\n**[").append(originalQueue + 1).
+          append("]** `").append(originalTrack.getInfo().title).
+          append("` {*").append(originalTrackDuration).append("*} ").
+          append(this.requesterList.get(originalQueue)).append("\n**[").
+          append(swapQueue + 1).append("]** `").append(swapTrack.getInfo().title).
+          append("` {*").append(swapTrackDuration).append("*} ").
+          append(this.requesterList.get(swapQueue));
+      Collections.swap(this.queueList, originalQueue, swapQueue);
+      ce.getChannel().sendMessage(swapConfirmation).queue();
+    } catch (IndexOutOfBoundsException error) {
+      ce.getChannel().sendMessage("Queue entry number does not exist.").queue();
     }
   }
 

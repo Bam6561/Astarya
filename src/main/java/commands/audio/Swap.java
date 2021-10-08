@@ -6,12 +6,12 @@ import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
-public class SetPosition extends Command {
-  public SetPosition() {
-    this.name = "setPosition";
-    this.aliases = new String[]{"setposition", "setpos", "goto"};
-    this.arguments = "[1]timeString";
-    this.help = "Sets the position of the currently playing audio track.";
+public class Swap extends Command {
+  public Swap() {
+    this.name = "switch";
+    this.aliases = new String[]{"swap", "switch"};
+    this.arguments = "[1]QueueNumber [2] QueueNumber";
+    this.help = "Swaps the position of an audio track in queue with another.";
   }
 
   @Override
@@ -23,7 +23,7 @@ public class SetPosition extends Command {
       if (botVoiceState.inVoiceChannel()) { // Bot already in voice channel
         if (userVoiceState.getChannel()
             .equals(botVoiceState.getChannel())) { // User in same voice channel as bot
-          setPosition(ce);
+          swapTrack(ce);
         } else { // User not in same voice channel as bot
           ce.getChannel().sendMessage("User not in same voice channel.").queue();
         }
@@ -35,16 +35,17 @@ public class SetPosition extends Command {
     }
   }
 
-  private void setPosition(CommandEvent ce) {
+  private void swapTrack(CommandEvent ce) {
     String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
     int arguments = args.length;
-    if (arguments == 2) {
+    if (arguments == 3) {
       try {
-        PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.setPosition(ce, args[1]);
+        PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).
+            audioScheduler.swap(ce, Integer.parseInt(args[1]), Integer.parseInt(args[2]));
       } catch (NumberFormatException error) {
-        ce.getChannel().sendMessage("Argument is invalid.").queue();
+        ce.getChannel().sendMessage("Arguments must be integers.").queue();
       }
-    } else {
+    } else { // Invalid arguments
       ce.getChannel().sendMessage("Invalid number of arguments.").queue();
     }
   }

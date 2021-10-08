@@ -133,9 +133,12 @@ public class Help extends Command {
               "FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams",
           "play, p, add", "[1]URL, [2++]YouTubeQuery",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ, play Cleverly Disguised Rickrolls");
+      case "playnext" -> sendEmbed(ce, display, "__Command: PlayNext__",
+          "Sets the position of the currently playing audio track.",
+          "playnext, after", "[1]QueueNumber", "playnext 3");
       case "queue" -> sendEmbed(ce, display, "__Command: Queue__",
-          "Provides a list of audio tracks queued.", "queue, q", "[0]Queue, [1]PageNumber",
-          "queue, queue 1");
+          "Provides a list of audio tracks queued.", "queue, q",
+          "[0]Queue, [1]PageNumber", "queue, queue 1");
       case "random" -> sendEmbed(ce, display, "__Command: Random__",
           "Provides a random image.",
           "random", "[0]Random", "random");
@@ -150,8 +153,8 @@ public class Help extends Command {
           "remind (0-86400)s, remind (0-1440)m, remind (0-24)h, "
               + "remind TimeDurationTimeType EventName, remind TimeDuration TimeType EventName");
       case "remove" -> sendEmbed(ce, display, "__Command: Remove__",
-          "Removes an audio track from the queue.", "remove, rm, takeout", "[1]QueueNumber",
-          "remove 1");
+          "Removes an audio track from the queue.", "remove, rm, takeout",
+          "[1]QueueNumber", "remove 1");
       case "roll" -> sendEmbed(ce, display, "__Command: Roll__",
           "Dice roll and integer RNG (random number generator). No arguments to roll once. "
               + "One argument to roll (1-10) times. Three arguments to set your own RNG - lower bound" +
@@ -169,7 +172,8 @@ public class Help extends Command {
       case "settings" -> sendEmbed(ce, display, "__Command: Settings__",
           "Provides information on bot settings.",
           "settings, config",
-          "[0]Settings [1]Setting [2]True/False", "settings, settings (setting) (true/false) ");
+          "[0]Settings [1]Setting [2]True/False",
+          "settings, settings (setting) (true/false) ");
       case "shuffle" -> sendEmbed(ce, display, "__Command: Shuffle__",
           "Shuffles the queue.", "shuffle, mix", "[0]Shuffle",
           "shuffle");
@@ -179,6 +183,10 @@ public class Help extends Command {
       case "skip" -> sendEmbed(ce, display, "__Command: Skip__",
           "Skips the currently playing audio track.",
           "skip, s, next", "[0]Skip", "skip");
+      case "switch" -> sendEmbed(ce, display, "__Command: Swap__",
+          "Swaps the position of an audio track in queue with another.",
+          "swap, switch", "[1]QueueNumber [2]QueueNumber",
+          "swap 2 4");
       case "whois" -> sendEmbed(ce, display, "__Command: WhoIs__",
           "Provides information on the user.",
           "whois, who, profile, user", "[0]Self [1]Mention/UserID",
