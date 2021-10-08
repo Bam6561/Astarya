@@ -161,6 +161,9 @@ public class Help extends Command {
               "and upper-bound values are included in the range.",
           "roll, rng, dice", "[0]Once [1]Number [2]LowerBound [3]UpperBound",
           "roll, roll (1-10), roll (1-10) (0++) (1-214748367)");
+      case "searchtrack" -> sendEmbed(ce, display, "__Command: SearchTrack__",
+          "Searches for an audio track to add to the queue.", "searchtrack, search, find",
+          "[1++]YouTubeQuery -> [1]SearchResultNumber", "search towa pallete, 1");
       case "serverinfo" -> sendEmbed(ce, display, "__Command: ServerInfo__",
           "Provides information on the server.",
           "serverinfo, server", "[0]ServerInfo", "serverinfo");

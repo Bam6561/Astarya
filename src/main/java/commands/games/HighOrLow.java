@@ -12,17 +12,21 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class HighOrLow extends Command {
-  private final EventWaiter waiter;
-  private static int firstNumber = 0;
-  private static int secondNumber = 0;
-  private static String playerID;
-  private static boolean currentlyPlaying = false;
+  private EventWaiter waiter;
+  private int firstNumber;
+  private int secondNumber;
+  private long playerID;
+  private boolean currentlyPlaying;
 
   public HighOrLow(EventWaiter waiter) {
     this.name = "highorlow";
     this.aliases = new String[]{"highorlow"};
     this.help = "Guess whether the next number will be higher or lower!";
     this.waiter = waiter;
+    this.firstNumber = 0;
+    this.secondNumber = 0;
+    this.playerID = 0;
+    this.currentlyPlaying = false;
   }
 
   @Override
@@ -45,7 +49,7 @@ public class HighOrLow extends Command {
     Random rand = new Random();
     setFirstNumber(rand.nextInt(101) + 1);
     setSecondNumber(rand.nextInt(101) + 1);
-    setPlayerID(ce.getMember().getUser().getId());
+    setPlayerID(Long.parseLong(ce.getMember().getUser().getId()));
     setCurrentlyPlaying(true);
     while (getFirstNumber() == getSecondNumber()) { // Ensure numbers are not equal
       setSecondNumber(rand.nextInt(101) + 1);
@@ -61,7 +65,7 @@ public class HighOrLow extends Command {
   }
 
   // Embed reactions
-  public void gameReactions(CommandEvent ce) {
+  private void gameReactions(CommandEvent ce) {
     waiter.waitForEvent(GuildMessageReceivedEvent.class, // Add reactions
         w -> !w.getMessage().getEmbeds().isEmpty()
             && (w.getMessage().getEmbeds().get(0).getTitle().equals("__HighOrLow__")),
@@ -71,14 +75,14 @@ public class HighOrLow extends Command {
         }, 15, TimeUnit.SECONDS, () -> {
         });
     waiter.waitForEvent(GuildMessageReactionAddEvent.class, // Lock reactions to player
-        w -> w.getMember().getUser().getId().equals(getPlayerID())
+        w -> Long.parseLong(w.getMember().getUser().getId()) == (getPlayerID())
             && (w.getReactionEmote().getName().equals("🔼")
             || (w.getReactionEmote().getName().equals("🔽"))),
         w -> gameResults(ce), 15, TimeUnit.SECONDS, () -> {
         });
   }
 
-  public void gameResults(CommandEvent e) {
+  private void gameResults(CommandEvent e) {
     EmbedBuilder display = new EmbedBuilder();
     if (getFirstNumber() > getSecondNumber()) {
       display.setTitle("__HighOrLow__");
@@ -89,11 +93,11 @@ public class HighOrLow extends Command {
     }
     Settings.sendEmbed(e, display);
     setCurrentlyPlaying(false);
-    setPlayerID("");
+    setPlayerID(0);
   }
 
   // User doesn't react within 15s
-  public void gameTimeout(CommandEvent ce) {
+  private void gameTimeout(CommandEvent ce) {
     new java.util.Timer().schedule(new java.util.TimerTask() { // Game Non-action Timeout (15s)
       public void run() {
         if (getCurrentlyPlaying()) {
@@ -108,36 +112,36 @@ public class HighOrLow extends Command {
     }, 15000);
   }
 
-  private static int getFirstNumber() {
-    return HighOrLow.firstNumber;
+  private int getFirstNumber() {
+    return this.firstNumber;
   }
 
-  private static int getSecondNumber() {
-    return HighOrLow.secondNumber;
+  private int getSecondNumber() {
+    return this.secondNumber;
   }
 
-  public static String getPlayerID() {
-    return HighOrLow.playerID;
+  private long getPlayerID() {
+    return this.playerID;
   }
 
-  private static boolean getCurrentlyPlaying() {
-    return HighOrLow.currentlyPlaying;
+  private boolean getCurrentlyPlaying() {
+    return this.currentlyPlaying;
   }
 
-  private static void setFirstNumber(int firstNumber) {
-    HighOrLow.firstNumber = firstNumber;
+  private void setFirstNumber(int firstNumber) {
+    this.firstNumber = firstNumber;
   }
 
-  private static void setSecondNumber(int secondNumber) {
-    HighOrLow.secondNumber = secondNumber;
+  private void setSecondNumber(int secondNumber) {
+    this.secondNumber = secondNumber;
   }
 
-  private static void setPlayerID(String playerID) {
-    HighOrLow.playerID = playerID;
+  private void setPlayerID(long playerID) {
+    this.playerID = playerID;
   }
 
-  private static void setCurrentlyPlaying(boolean status) {
-    HighOrLow.currentlyPlaying = status;
+  private void setCurrentlyPlaying(boolean status) {
+    this.currentlyPlaying = status;
   }
 
 }

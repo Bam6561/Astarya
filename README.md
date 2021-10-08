@@ -5,7 +5,8 @@
 Java-based Discord bot written with JDA API.
 #### Commands:
 - About: (Credits, Help, Info)
-- Audio: (ClearQueue, Join, Leave, Loop, NowPlaying, Pause, Play, PlayNext, Queue, Remove, SetPosition, Shuffle, Skip, Swap)
+- Audio: (ClearQueue, Join, Leave, Loop, NowPlaying, Pause, Play, PlayNext, Queue, Remove, 
+  SearchTrack, SetPosition, Shuffle, Skip, Swap)
 - Games (Choice, Flip, HighOrLow, Roll)
 - Miscellaneous: (Echo, Ping, Random)
 - Owner: (BuildEmbed, Delete, Settings, Shutdown, Volume)

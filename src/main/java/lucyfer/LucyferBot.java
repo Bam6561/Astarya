@@ -54,8 +54,8 @@ public class LucyferBot {
         new Ping(), new Random(), new Choice(), new Flip(), new HighOrLow(waiter),
         new Roll(), new ClearQueue(), new Join(), new Leave(), new Loop(),
         new NowPlaying(), new Pause(), new Play(), new PlayNext(), new Queue(),
-        new Remove(), new SetPosition(), new Shuffle(), new Skip(), new Swap(),
-        new Credits(), new Help(), new Info());
+        new Remove(), new SearchTrack(waiter), new SetPosition(), new Shuffle(),
+        new Skip(), new Swap(), new Credits(), new Help(), new Info());
     CommandClient client = commands.build();
     // Bot
     api.addEventListener(client, waiter, new MessageLog());
