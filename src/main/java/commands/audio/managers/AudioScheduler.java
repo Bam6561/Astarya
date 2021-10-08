@@ -25,19 +25,17 @@ public class AudioScheduler extends AudioEventAdapter {
 
   public void queue(AudioTrack audioTrack) {
     if (!this.audioPlayer.startTrack(audioTrack, true)) {
-      queueList.add(audioTrack);
+      this.queueList.add(audioTrack);
     }
   }
 
   public void nextTrack() {
-    if (!queueList.isEmpty()) {
+    if (!this.queueList.isEmpty()) {
       this.audioPlayer.startTrack(this.queueList.get(0), false);
-      queueList.remove(0);
-      requesterList.remove(0);
+      this.queueList.remove(0);
+      this.requesterList.remove(0);
     } else {
-      audioPlayer.stopTrack();
-      queueList.clear();
-      requesterList.clear();
+      this.audioPlayer.stopTrack();
     }
   }
 
@@ -48,7 +46,7 @@ public class AudioScheduler extends AudioEventAdapter {
   @Override
   public void onTrackEnd(AudioPlayer audioPlayer, AudioTrack audioTrack, AudioTrackEndReason endReason) {
     if (endReason.mayStartNext) {
-      if (this.loop) {
+      if (this.loop) {  // Loop
         this.audioPlayer.startTrack(audioTrack.makeClone(), false);
         return;
       }
@@ -57,24 +55,24 @@ public class AudioScheduler extends AudioEventAdapter {
   }
 
   public void addToRequesterList(String requester) { // Track requester array
-    requesterList.add(requester);
+    this.requesterList.add(requester);
   }
 
   public void clearQueue(CommandEvent ce) { // ClearQueue
     this.queueList.clear();
     this.requesterList.clear();
-    StringBuilder queueClearConfirmation = new StringBuilder();
-    queueClearConfirmation.append("**Queue Clear:** [").append(ce.getAuthor().getAsTag()).append("]");
-    ce.getChannel().sendMessage(queueClearConfirmation).queue();
+    StringBuilder clearQueueConfirmation = new StringBuilder();
+    clearQueueConfirmation.append("**Queue Clear:** [").append(ce.getAuthor().getAsTag()).append("]");
+    ce.getChannel().sendMessage(clearQueueConfirmation).queue();
   }
 
   public void setLoopState(CommandEvent ce) { // Loop
     StringBuilder loopConfirmation = new StringBuilder();
-    if (this.loop) {
+    if (this.loop) { // Loop On -> Off
       this.loop = false;
       loopConfirmation.append("**Loop:** `OFF` [").append(ce.getAuthor().getAsTag()).append("]");
       ce.getChannel().sendMessage(loopConfirmation).queue();
-    } else {
+    } else { // Loop Off -> On
       this.loop = true;
       loopConfirmation.append("**Loop:** `ON` [").append(ce.getAuthor().getAsTag()).append("]");
       ce.getChannel().sendMessage(loopConfirmation).queue();
@@ -82,35 +80,64 @@ public class AudioScheduler extends AudioEventAdapter {
   }
 
   public void getNowPlaying(CommandEvent ce) { // NowPlaying
-    StringBuilder nowPlaying = new StringBuilder();
-    if (audioPlayer.getPlayingTrack() == null) {
-      nowPlaying.append("**Now Playing:** `Nothing`");
-    } else {
-      AudioTrack audioTrack = audioPlayer.getPlayingTrack();
+    StringBuilder nowPlayingConfirmation = new StringBuilder();
+    if (this.audioPlayer.getPlayingTrack() == null) { // Not playing anything
+      nowPlayingConfirmation.append("**Now Playing:** `Nothing`");
+    } else { // Current track playing
+      // Duration
+      AudioTrack audioTrack = this.audioPlayer.getPlayingTrack();
       long trackPositionLong = audioTrack.getPosition();
       long trackDurationLong = audioTrack.getDuration();
       String trackPosition = floatTimeConversion(trackPositionLong);
       String trackDuration = floatTimeConversion(trackDurationLong);
-      nowPlaying.append("**Now Playing:** `").append(audioTrack.getInfo().title).
+      nowPlayingConfirmation.append("**Now Playing:** ");
+      if (this.audioPlayer.isPaused()) { // Paused
+        nowPlayingConfirmation.append("(Paused) ");
+      }
+      if (this.loop) { // Looped
+        nowPlayingConfirmation.append("(Loop) ");
+      }
+      nowPlayingConfirmation.append("`").append(audioTrack.getInfo().title).
           append("` {*").append(trackPosition).append("*-*").append(trackDuration).append("*}");
     }
-    ce.getChannel().sendMessage(nowPlaying).queue();
+    ce.getChannel().sendMessage(nowPlayingConfirmation).queue();
   }
 
   public void setPauseState(CommandEvent ce) { // Pause
-    if (audioPlayer.isPaused()) {
-      audioPlayer.setPaused(false);
-      ce.getChannel().sendMessage("Audio player resumed.").queue();
-    } else {
-      audioPlayer.setPaused(true);
+    if (!this.audioPlayer.isPaused()) { // Paused Off -> On
+      this.audioPlayer.setPaused(true);
       ce.getChannel().sendMessage("Audio player paused.").queue();
+    } else { // Paused On -> Off
+      this.audioPlayer.setPaused(false);
+      ce.getChannel().sendMessage("Audio player resumed.").queue();
+    }
+  }
+
+  public void playNext(CommandEvent ce, int entryNumber) { // PlayNext
+    try { // Move track to first
+      entryNumber = entryNumber - 1;
+      AudioTrack audioTrack = this.queueList.get(entryNumber);
+      long trackDurationLong = audioTrack.getDuration();
+      String trackDuration = floatTimeConversion(trackDurationLong);
+      StringBuilder playNextConfirmation = new StringBuilder();
+      playNextConfirmation.append("**Play Next:** **[").append(entryNumber + 1).
+          append("]** `").append(audioTrack.getInfo().title).
+          append("` {*").append(trackDuration).append("*} ").
+          append(this.requesterList.get(entryNumber)).append(" [").
+          append(ce.getAuthor().getAsTag()).append("]");
+      this.queueList.remove(entryNumber);
+      this.queueList.add(0, audioTrack);
+      ce.getChannel().sendMessage(playNextConfirmation).queue();
+    } catch (IndexOutOfBoundsException error) { // Track number out of bounds
+      ce.getChannel().sendMessage("Queue number does not exist.").queue();
     }
   }
 
   public void getQueue(CommandEvent ce, int queuePage) { // Queue
     if (!this.queueList.isEmpty()) { // No tracks
-      int totalQueuePages = this.queueList.size() / 10; // Full pages
-      if ((this.queueList.size() % 10) > 0) { // Partially filled pages
+      int queueListSize = this.queueList.size();
+      int totalQueuePages = queueListSize / 10; // Full pages
+      if ((queueListSize % 10) > 0) { // Partially filled pages
         totalQueuePages += 1;
       }
       if (queuePage >= totalQueuePages) { // Page number cannot exceed total pages
@@ -120,31 +147,43 @@ public class AudioScheduler extends AudioEventAdapter {
         queuePage = 0;
       }
       int queuePageDisplay = queuePage * 10; // Which queue page to start
-      if (queuePageDisplay == this.queueList.size()) { // Don't display 0 ending first
+      if (queuePageDisplay == queueListSize) { // Don't display 0 ending first
         queuePageDisplay -= 10;
       }
-      int lastQueueEntry = Math.min((queuePageDisplay + 10), this.queueList.size()); // Last queue entry to display
+      int lastQueueEntry = Math.min((queuePageDisplay + 10), queueListSize); // Last queue entry to display
       // Display last entries
       // Display only 10 entries at a time
-      StringBuilder queueString = new StringBuilder();
+      StringBuilder queueEntry = new StringBuilder();
       for (int i = queuePageDisplay; i < lastQueueEntry; i++) { // Queue Entries
-        queueString.append("**[").append(i + 1).append("]** `").append(queueList.get(i).getInfo().title)
-            .append("` ").append(requesterList.get(i)).append("\n");
+        long trackDurationLong = this.queueList.get(i).getDuration();
+        String trackDuration = floatTimeConversion(trackDurationLong);
+        queueEntry.append("**[").append(i + 1).append("]** `").
+            append(this.queueList.get(i).getInfo().title)
+            .append("` {*").append(trackDuration).append("*} ").
+            append(this.requesterList.get(i)).append("\n");
       }
-      AudioTrack audioTrack = audioPlayer.getPlayingTrack();
+      // Duration
+      AudioTrack audioTrack = this.audioPlayer.getPlayingTrack();
       long trackPositionLong = audioTrack.getPosition();
       long trackDurationLong = audioTrack.getDuration();
       String trackPosition = floatTimeConversion(trackPositionLong);
       String trackDuration = floatTimeConversion(trackDurationLong);
       EmbedBuilder display = new EmbedBuilder();
       display.setTitle("__**Queue**__");
-      StringBuilder description = new StringBuilder();
-      description.append("**Now Playing:** `").append(audioPlayer.getPlayingTrack().getInfo().title).
+      StringBuilder queueDisplay = new StringBuilder();
+      queueDisplay.append("**Now Playing:** ");
+      if (this.audioPlayer.isPaused()) { // Paused
+        queueDisplay.append("(Paused) ");
+      }
+      if (this.loop) { // Looped
+        queueDisplay.append("(Loop) ");
+      }
+      queueDisplay.append("`").append(audioTrack.getInfo().title).
           append("` {*").append(trackPosition).append("*-*").
           append(trackDuration).append("*}\nPage `").append(queuePage + 1).
           append("` / `").append(totalQueuePages).append("`");
-      display.setDescription(description);
-      display.addField("**Tracks:**", String.valueOf(queueString), false);
+      display.setDescription(queueDisplay);
+      display.addField("**Tracks:**", String.valueOf(queueEntry), false);
       Settings.sendEmbed(ce, display);
     } else {
       ce.getChannel().sendMessage("Queue is empty.").queue();
@@ -168,58 +207,60 @@ public class AudioScheduler extends AudioEventAdapter {
   }
 
   public void setPosition(CommandEvent ce, String[] args) { // SetPosition
-    if (!(audioPlayer.getPlayingTrack() == null)) { // Track exists
+    if (!(this.audioPlayer.getPlayingTrack() == null)) { // Track exists
       String positionString = args[1];
       String[] positionTimeType = positionString.split(":");
       long seconds = 0;
       long minutes = 0;
       long hours = 0;
       switch (positionTimeType.length) {
-        case 1 -> {
+        case 1 -> { // Seconds
           seconds = Integer.parseInt(positionTimeType[0]);
         }
-        case 2 -> {
+        case 2 -> { // Minutes, Seconds
           minutes = Integer.parseInt(positionTimeType[0]);
           seconds = Integer.parseInt(positionTimeType[1]);
         }
-        case 3 -> {
+        case 3 -> { // Hours, Minutes, Seconds
           hours = Integer.parseInt(positionTimeType[0]);
           minutes = Integer.parseInt(positionTimeType[1]);
           seconds = Integer.parseInt(positionTimeType[2]);
         }
-        default -> {
+        default -> { // Invalid argument
           ce.getChannel().sendMessage("Invalid number of arguments.").queue();
         }
       }
+      // Conversion to milliseconds
       hours = hours * 3600000;
       minutes = minutes * 60000;
       seconds = seconds * 1000;
       long totalPosition = hours + minutes + seconds;
-      if (audioPlayer.getPlayingTrack().getDuration() > totalPosition) {
-        audioPlayer.getPlayingTrack().setPosition(totalPosition);
+      // Requested time is smaller than total track length
+      if (this.audioPlayer.getPlayingTrack().getDuration() > totalPosition) {
+        this.audioPlayer.getPlayingTrack().setPosition(totalPosition);
         String positionSet = floatTimeConversion(totalPosition);
         StringBuilder setPositionConfirmation = new StringBuilder();
         setPositionConfirmation.append("**Set Position:** {*").append(positionSet).
             append("*} [").append(ce.getAuthor().getAsTag()).append("]");
         ce.getChannel().sendMessage(setPositionConfirmation).queue();
-      } else {
+      } else { // Requested time exceeds track length
         ce.getChannel().sendMessage("Requested position exceeds track length.").queue();
       }
-    } else {
+    } else { // No track currently playing
       ce.getChannel().sendMessage("Nothing is currently playing.").queue();
     }
   }
 
   public void shuffleQueue(CommandEvent ce) { // Shuffle
     Random rand = new Random();
-    for (int i = 0; i < queueList.size(); i++) {
-      int indexSwitch = rand.nextInt(queueList.size());
-      AudioTrack audioTrackTemp = queueList.get(i);
-      String stringTemp = requesterList.get(i);
-      queueList.set(i, queueList.get(indexSwitch));
-      queueList.set(indexSwitch, audioTrackTemp);
-      requesterList.set(i, requesterList.get(indexSwitch));
-      requesterList.set(indexSwitch, stringTemp);
+    for (int i = 0; i < this.queueList.size(); i++) {
+      int indexSwitch = rand.nextInt(this.queueList.size());
+      AudioTrack audioTrackTemp = this.queueList.get(i);
+      String stringTemp = this.requesterList.get(i);
+      this.queueList.set(i, this.queueList.get(indexSwitch));
+      this.queueList.set(indexSwitch, audioTrackTemp);
+      this.requesterList.set(i, this.requesterList.get(indexSwitch));
+      this.requesterList.set(indexSwitch, stringTemp);
     }
     StringBuilder shuffleConfirmation = new StringBuilder();
     shuffleConfirmation.append("**Shuffle:** [").append(ce.getAuthor().getAsTag()).append("]");
@@ -227,10 +268,14 @@ public class AudioScheduler extends AudioEventAdapter {
   }
 
   public void skipTrack(CommandEvent ce) { // Skip
-    nextTrack();
-    StringBuilder skipConfirmation = new StringBuilder();
-    skipConfirmation.append("**Skip:** [").append(ce.getAuthor().getAsTag()).append("]");
-    ce.getChannel().sendMessage(skipConfirmation).queue();
+    if (!(this.audioPlayer.getPlayingTrack() == null)) {
+      nextTrack();
+      StringBuilder skipTrackConfirmation = new StringBuilder();
+      skipTrackConfirmation.append("**Skip:** [").append(ce.getAuthor().getAsTag()).append("]");
+      ce.getChannel().sendMessage(skipTrackConfirmation).queue();
+    } else {
+      ce.getChannel().sendMessage("Nothing to skip.").queue();
+    }
   }
 
   private String floatTimeConversion(long floatTime) {

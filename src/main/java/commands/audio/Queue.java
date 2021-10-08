@@ -9,7 +9,7 @@ public class Queue extends Command {
   public Queue() {
     this.name = "queue";
     this.aliases = new String[]{"queue", "q"};
-    this.arguments = "[0]queue, [1]pageNumber";
+    this.arguments = "[0]Queue, [1]PageNumber";
     this.help = "Provides a list of audio tracks queued.";
   }
 
@@ -18,10 +18,9 @@ public class Queue extends Command {
     Settings.deleteInvoke(ce);
     String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
     int arguments = args.length;
-    int queuePage = 0;
     switch (arguments) {
       case 1 -> { // First page
-        PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getQueue(ce, queuePage);
+        PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getQueue(ce, 0);
       }
       case 2 -> {
         try { // Custom page
