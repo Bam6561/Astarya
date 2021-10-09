@@ -26,7 +26,7 @@ public class Info extends Command {
     display.setDescription("**Developer:** " + "Bam#3531"
         + "\n**Bot:** " + jda.getSelfUser().getAsMention()
         + "\n**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` " +
-        "\n**Version:** `1.2.15` \n**Language:** `Java` " +
+        "\n**Version:** `1.2.15.1` \n**Language:** `Java` " +
         "\n**Source:** https://github.com/ndanny09/lucyferBot \n**Uptime:** " + getUptime());
     display.setThumbnail(jda.getSelfUser().getAvatarUrl());
     Settings.sendEmbed(ce, display);

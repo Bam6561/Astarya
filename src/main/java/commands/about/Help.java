@@ -30,15 +30,14 @@ public class Help extends Command {
   private void getHelpMenu(CommandEvent ce, EmbedBuilder display) {
     display.setTitle("__Help__");
     display.setDescription("Type help [CommandName] for more details on the usage of each command.");
-    display.addField("**About:**", "▫info \n▫help \n▫credits", true);
-    display.addField("**Utility:**", "▫serverinfo \n▫whois \n▫avatar \n▫emote \n▫remind", true);
-    display.addField("**Music:**", "▫clearQueue \n▫join \n▫leave \n▫loop \n▫nowPlaying " +
-        "\n▫pause", true);
-    display.addField("**Music:**", "▫play \n▫queue \n▫remove ▫setPosition \n▫shuffle \n▫skip", true);
-    display.addField("**Games:**", "▫roll \n▫flip \n▫choice \n▫highorlow", true);
-    display.addField("**Miscellaneous:**", "▫random \n▫echo \n▫ping", true);
-    display.addField("**Owner:**", "▫settings \n▫buildembed \n▫delete \n▫shutdown \n▫volume", true);
-    display.addField("**Promotion:**", "▫dungeonarchives", true);
+    display.addField("**About:**", "<info <help <credits", true);
+    display.addField("**Utility:**", "<serverinfo <whois <avatar <emote <remind", true);
+    display.addField("**Music:**", "<clearQueue <join <leave <loop <nowPlaying " +
+        "<pause <playNext <play <queue <remove <searchTrack <setPosition <shuffle <skip <swap", true);
+    display.addField("**Games:**", "<roll <flip <choice <highorlow", true);
+    display.addField("**Miscellaneous:**", "<random <echo <ping", true);
+    display.addField("**Owner:**", "<settings <buildembed <delete <shutdown <volume", true);
+    display.addField("**Promotion:**", "<dungeonarchives", true);
     Settings.sendEmbed(ce, display);
   }
 
@@ -186,7 +185,7 @@ public class Help extends Command {
       case "skip" -> sendEmbed(ce, display, "__Command: Skip__",
           "Skips the currently playing audio track.",
           "skip, s, next", "[0]Skip", "skip");
-      case "switch" -> sendEmbed(ce, display, "__Command: Swap__",
+      case "swap" -> sendEmbed(ce, display, "__Command: Swap__",
           "Swaps the position of an audio track in queue with another.",
           "swap, switch", "[1]QueueNumber [2]QueueNumber",
           "swap 2 4");
