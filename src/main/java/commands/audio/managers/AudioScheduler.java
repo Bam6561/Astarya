@@ -37,6 +37,8 @@ public class AudioScheduler extends AudioEventAdapter {
       this.requesterList.remove(0);
     } else {
       this.audioPlayer.stopTrack();
+      this.queueList.clear();
+      this.requesterList.clear();
     }
   }
 
@@ -72,12 +74,11 @@ public class AudioScheduler extends AudioEventAdapter {
     if (this.loop) { // Loop On -> Off
       this.loop = false;
       loopConfirmation.append("**Loop:** `OFF` [").append(ce.getAuthor().getAsTag()).append("]");
-      ce.getChannel().sendMessage(loopConfirmation).queue();
     } else { // Loop Off -> On
       this.loop = true;
       loopConfirmation.append("**Loop:** `ON` [").append(ce.getAuthor().getAsTag()).append("]");
-      ce.getChannel().sendMessage(loopConfirmation).queue();
     }
+    ce.getChannel().sendMessage(loopConfirmation).queue();
   }
 
   public void getNowPlaying(CommandEvent ce) { // NowPlaying
@@ -214,9 +215,8 @@ public class AudioScheduler extends AudioEventAdapter {
       long minutes = 0;
       long hours = 0;
       switch (positionTimeType.length) {
-        case 1 -> { // Seconds
-          seconds = Integer.parseInt(positionTimeType[0]);
-        }
+        case 1 -> // Seconds
+            seconds = Integer.parseInt(positionTimeType[0]);
         case 2 -> { // Minutes, Seconds
           minutes = Integer.parseInt(positionTimeType[0]);
           seconds = Integer.parseInt(positionTimeType[1]);
@@ -226,9 +226,8 @@ public class AudioScheduler extends AudioEventAdapter {
           minutes = Integer.parseInt(positionTimeType[1]);
           seconds = Integer.parseInt(positionTimeType[2]);
         }
-        default -> { // Invalid argument
-          ce.getChannel().sendMessage("Invalid number of arguments.").queue();
-        }
+        default -> // Invalid argument
+            ce.getChannel().sendMessage("Invalid number of arguments.").queue();
       }
       // Conversion to milliseconds
       hours = hours * 3600000;
