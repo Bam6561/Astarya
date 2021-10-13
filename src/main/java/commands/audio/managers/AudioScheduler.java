@@ -25,9 +25,10 @@ public class AudioScheduler extends AudioEventAdapter {
   }
 
   public void queue(AudioTrack audioTrack) {
-    if (!this.audioPlayer.startTrack(audioTrack, true)) {
-      this.queueList.add(audioTrack);
-    }
+    if(this.audioPlayer.getPlayingTrack()==null){ // Play request immediately if nothing playing
+      this.audioPlayer.startTrack(audioTrack,true);
+      this.requesterList.remove(0);
+    } else this.queueList.add(audioTrack); // Add to queue
   }
 
   public void nextTrack() {
@@ -37,8 +38,6 @@ public class AudioScheduler extends AudioEventAdapter {
       this.requesterList.remove(0);
     } else {
       this.audioPlayer.stopTrack();
-      this.queueList.clear();
-      this.requesterList.clear();
     }
   }
 
