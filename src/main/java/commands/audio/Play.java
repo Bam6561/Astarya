@@ -6,6 +6,7 @@ import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
+import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
 import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
 import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
@@ -69,12 +70,13 @@ public class Play extends Command {
       case 1 -> // Invalid argument
           ce.getChannel().sendMessage("Invalid number of arguments.").queue();
       case 2 -> { // Track or playlist
-        if (args[1].contains("https://open.spotify.com/track/")) { // Spotify link
-          String spotifyTrack = args[1].substring(31); // Remove https portion
-          if ((spotifyTrack.length() == 42) || (spotifyTrack.length() == 22)) { // ID or ID & Query
-            playSpotifyRequest(ce, spotifyTrack);
-          } else { // Invalid ID
-            ce.getChannel().sendMessage("Invalid Spotify track id.").queue();
+        if (args[1].contains("https://open.spotify.com/")) { // Spotify link
+          if(args[1].contains("https://open.spotify.com/track/")) { // Spotify track
+            processSpotifyTrack(ce, args);
+          } else if (args[1].contains("https://open.spotify.com/playlist/")) { // Spotify playlist
+            processSpotifyPlaylist(ce, args);
+          } else {
+            ce.getChannel().sendMessage("Feature not supported.");
           }
         } else { // Not Spotify link
           PlayerManager.getINSTANCE().createAudioTrack(ce, args[1]);
@@ -91,7 +93,26 @@ public class Play extends Command {
     }
   }
 
-  private void playSpotifyRequest(CommandEvent ce, String spotifyTrack) {
+  private void processSpotifyTrack(CommandEvent ce, String[] args){
+    String spotifyTrack = args[1].substring(31); // Remove https portion
+    if ((spotifyTrack.length() == 42) || (spotifyTrack.length() == 22)) { // ID or ID & Query
+      playSpotifyTrackRequest(ce, spotifyTrack);
+    } else { // Invalid ID
+      ce.getChannel().sendMessage("Invalid Spotify track ID.").queue();
+    }
+  }
+
+  private void processSpotifyPlaylist(CommandEvent ce, String[] args){
+    String spotifyPlaylist = args[1].substring(34); // Remove https portion
+    if((spotifyPlaylist.length() == 47 || spotifyPlaylist.length() == 42 ||
+        spotifyPlaylist.length() == 22)) { // ID or ID & Query
+      playSpotifyPlaylistRequest(ce, spotifyPlaylist);
+    } else { //Invalid ID
+      ce.getChannel().sendMessage("Invalid Spotify playlist ID").queue();
+    }
+  }
+
+  private void playSpotifyTrackRequest(CommandEvent ce, String spotifyTrack) {
     if (spotifyTrack.length() == 42) { // ID & Query -> ID only
       spotifyTrack = spotifyTrack.substring(0, 22);
     }
@@ -108,18 +129,60 @@ public class Play extends Command {
       ClientCredentials clientCredentials = clientCredentialsRequest.execute();
       spotifyApi.setAccessToken(clientCredentials.getAccessToken()); // Generate Spotify API access token
       GetTrackRequest getTrackRequest = spotifyApi.getTrack(spotifyTrack).build(); // Search for matching track to ID
-      JSONObject jsonObject = new JSONObject(getTrackRequest.getJson()); // Convert response to jsom
-      JSONArray jsonArray = new JSONArray(jsonObject.getJSONObject("album"). // Get track's artists
+      JSONObject jsonTrack = new JSONObject(getTrackRequest.getJson()); // Convert response to json
+      JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONObject("album"). // Get track's artists
           getJSONArray("artists").toString());
       StringBuilder fullTrackRequest = new StringBuilder(); // Full YouTube query (track name and artists)
-      fullTrackRequest.append(jsonObject.getString("name")); // Track name
-      for(int i = 0; i<jsonArray.length(); i++){ // Artist name(s)
-        fullTrackRequest.append(jsonArray.getJSONObject(i).getString("name"));
+      fullTrackRequest.append(jsonTrack.getString("name")); // Track name
+      for(int i = 0; i<jsonTrackArtists.length(); i++){ // Artist name(s)
+        fullTrackRequest.append(jsonTrackArtists.getJSONObject(i).getString("name"));
       }
       String youtubeSearchQuery = "ytsearch:" + String.join(" ", fullTrackRequest);
       PlayerManager.getINSTANCE().createAudioTrack(ce, youtubeSearchQuery);
-    } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println("Error: " + e.getMessage());
+    } catch (IOException | SpotifyWebApiException | ParseException error) {
+      System.out.println("Error: " + error.getMessage());
+    }
+  }
+
+  private void playSpotifyPlaylistRequest(CommandEvent ce, String spotifyPlaylist){
+    if ((spotifyPlaylist.length() == 47) || (spotifyPlaylist.length() == 42)) { // ID & Query -> ID only
+      spotifyPlaylist = spotifyPlaylist.substring(0, 22);
+    }
+    // Spotify API authorization
+    Dotenv dotenv = Dotenv.load();
+    String clientID = dotenv.get("SPOTIFY_CLIENT_ID");
+    String clientSecret = dotenv.get("SPOTIFY_CLIENT_SECRET");
+    SpotifyApi spotifyApi = new SpotifyApi.Builder()
+        .setClientId(clientID)
+        .setClientSecret(clientSecret)
+        .build();
+    ClientCredentialsRequest clientCredentialsRequest = spotifyApi.clientCredentials().build();
+    try {
+      ClientCredentials clientCredentials = clientCredentialsRequest.execute();
+      spotifyApi.setAccessToken(clientCredentials.getAccessToken()); // Generate Spotify API access token
+      GetPlaylistRequest getPlaylistRequest = spotifyApi.getPlaylist(spotifyPlaylist).build(); // Search for matching track to ID
+      JSONObject jsonPlaylist = new JSONObject(getPlaylistRequest.getJson()); // Convert response to json
+      JSONArray jsonTracks = new JSONArray(jsonPlaylist.getJSONObject("tracks"). // Get playlist's tracks
+          getJSONArray("items").toString());
+      int tracksAdded = 0; // Number of tracks added
+      for(int i = 0; i < jsonTracks.length(); i++){ // Get tracks from playlist's tracks
+        JSONObject jsonTrack = new JSONObject(jsonTracks.getJSONObject(i).getJSONObject("track").toString()); // Convert playlist tracks to json
+        JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONObject("album"). // Get track's artists
+            getJSONArray("artists").toString());
+        StringBuilder fullTrackRequest = new StringBuilder(); // Full YouTube query (track name and artists)
+        fullTrackRequest.append(jsonTrack.getString("name")); // Track name
+        for(int j = 0; j<jsonTrackArtists.length(); j++) { // Artist name(s)
+          fullTrackRequest.append(jsonTrackArtists.getJSONObject(j).getString("name"));
+        }
+        String youtubeSearchQuery = "ytsearch:" + String.join(" ", fullTrackRequest);
+        PlayerManager.getINSTANCE().createAudioTrackSilent(ce, youtubeSearchQuery);
+        tracksAdded++;
+      }
+      String requester = "[" + ce.getAuthor().getAsTag() + "]";
+      ce.getChannel().sendMessage("**Added:** `" + tracksAdded
+          + "` tracks " + requester).queue();
+    } catch (IOException | SpotifyWebApiException | ParseException error) {
+      System.out.println("Error: " + error.getMessage());
     }
   }
 }

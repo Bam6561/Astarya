@@ -92,6 +92,48 @@ public class PlayerManager {
     });
   }
 
+  public void createAudioTrackSilent(CommandEvent ce, String trackURL) { // Play
+    final PlaybackManager playbackManager = this.getPlaybackManager(ce.getGuild());
+    this.audioPlayerManager.loadItemOrdered(playbackManager, trackURL, new AudioLoadResultHandler() {
+      String requester = "[" + ce.getAuthor().getAsTag() + "]";
+
+      @Override
+      public void trackLoaded(AudioTrack track) {
+        playbackManager.audioScheduler.queue(track);
+        playbackManager.audioScheduler.addToRequesterList(requester);
+        long trackDurationLong = track.getDuration();
+        String trackDuration = floatTimeConversion(trackDurationLong);
+      }
+
+      @Override
+      public void playlistLoaded(AudioPlaylist playlist) {
+        List<AudioTrack> results = playlist.getTracks();
+        if (playlist.isSearchResult()) { // Search query
+          AudioTrack track = results.get(0);
+          playbackManager.audioScheduler.queue(track);
+          playbackManager.audioScheduler.addToRequesterList(requester);
+          long trackDurationLong = track.getDuration();
+          String trackDuration = floatTimeConversion(trackDurationLong);
+        } else { // Playlist
+          for (int i = 0; i < playlist.getTracks().size(); i++) {
+            playbackManager.audioScheduler.queue(playlist.getTracks().get(i));
+            playbackManager.audioScheduler.addToRequesterList(requester);
+          }
+        }
+      }
+
+      @Override
+      public void noMatches() {
+        ce.getChannel().sendMessage("Unable to find track.").queue();
+      }
+
+      @Override
+      public void loadFailed(FriendlyException throwable) {
+        ce.getChannel().sendMessage("Unable to load track.").queue();
+      }
+    });
+  }
+
   public void searchAudioTrack(CommandEvent ce, String youtubeSearchQuery) { // SearchTrack
     final PlaybackManager playbackManager = this.getPlaybackManager(ce.getGuild());
     this.audioPlayerManager.loadItemOrdered(playbackManager, youtubeSearchQuery, new AudioLoadResultHandler() {

@@ -127,8 +127,9 @@ public class Help extends Command {
           "Response time of the bot in milliseconds.",
           "ping, ms", "[0]Ping", "ping");
       case "play" -> sendEmbed(ce, display, "__Command: Play__",
-          "Adds an audio track to the queue. \n**Sources:** YouTube, " +
-              "HTTP URLs, playlists, Discord media links \n**File Types:** MP3, " +
+          "Adds an audio track to the queue. Limit of Spotify playlists is 100." +
+              " \n**Sources:** YouTube links/playlists, " +
+              "Discord media links, Spotify links/playlists \n**File Types:** MP3, " +
               "FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams",
           "play, p, add", "[1]URL, [2++]YouTubeQuery",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ, play Cleverly Disguised Rickrolls");
