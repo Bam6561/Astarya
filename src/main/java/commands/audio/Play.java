@@ -2,11 +2,22 @@ package commands.audio;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.wrapper.spotify.SpotifyApi;
+import com.wrapper.spotify.exceptions.SpotifyWebApiException;
+import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
+import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
+import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
 import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
+import org.apache.hc.core5.http.ParseException;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class Play extends Command {
 
@@ -55,11 +66,19 @@ public class Play extends Command {
     String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
     int arguments = args.length;
     switch (arguments) {
-      case 1 -> { // Invalid argument
-        ce.getChannel().sendMessage("Invalid number of arguments.").queue();
-      }
+      case 1 -> // Invalid argument
+          ce.getChannel().sendMessage("Invalid number of arguments.").queue();
       case 2 -> { // Track or playlist
-        PlayerManager.getINSTANCE().createAudioTrack(ce, args[1]);
+        if (args[1].contains("https://open.spotify.com/track/")) { // Spotify link
+          String spotifyTrack = args[1].substring(31); // Remove https portion
+          if ((spotifyTrack.length() == 42) || (spotifyTrack.length() == 22)) { // ID or ID & Query
+            playSpotifyRequest(ce, spotifyTrack);
+          } else { // Invalid ID
+            ce.getChannel().sendMessage("Invalid Spotify track id.").queue();
+          }
+        } else { // Not Spotify link
+          PlayerManager.getINSTANCE().createAudioTrack(ce, args[1]);
+        }
       }
       default -> { // Search query
         StringBuilder searchQuery = new StringBuilder();
@@ -69,6 +88,38 @@ public class Play extends Command {
         String youtubeSearchQuery = "ytsearch:" + String.join(" ", searchQuery);
         PlayerManager.getINSTANCE().createAudioTrack(ce, youtubeSearchQuery);
       }
+    }
+  }
+
+  private void playSpotifyRequest(CommandEvent ce, String spotifyTrack) {
+    if (spotifyTrack.length() == 42) { // ID & Query -> ID only
+      spotifyTrack = spotifyTrack.substring(0, 22);
+    }
+    // Spotify API authorization
+    Dotenv dotenv = Dotenv.load();
+    String clientID = dotenv.get("SPOTIFY_CLIENT_ID");
+    String clientSecret = dotenv.get("SPOTIFY_CLIENT_SECRET");
+    SpotifyApi spotifyApi = new SpotifyApi.Builder()
+        .setClientId(clientID)
+        .setClientSecret(clientSecret)
+        .build();
+    ClientCredentialsRequest clientCredentialsRequest = spotifyApi.clientCredentials().build();
+    try {
+      ClientCredentials clientCredentials = clientCredentialsRequest.execute();
+      spotifyApi.setAccessToken(clientCredentials.getAccessToken()); // Generate Spotify API access token
+      GetTrackRequest getTrackRequest = spotifyApi.getTrack(spotifyTrack).build(); // Search for matching track to ID
+      JSONObject jsonObject = new JSONObject(getTrackRequest.getJson()); // Convert response to jsom
+      JSONArray jsonArray = new JSONArray(jsonObject.getJSONObject("album"). // Get track's artists
+          getJSONArray("artists").toString());
+      StringBuilder fullTrackRequest = new StringBuilder(); // Full YouTube query (track name and artists)
+      fullTrackRequest.append(jsonObject.getString("name")); // Track name
+      for(int i = 0; i<jsonArray.length(); i++){ // Artist name(s)
+        fullTrackRequest.append(jsonArray.getJSONObject(i).getString("name"));
+      }
+      String youtubeSearchQuery = "ytsearch:" + String.join(" ", fullTrackRequest);
+      PlayerManager.getINSTANCE().createAudioTrack(ce, youtubeSearchQuery);
+    } catch (IOException | SpotifyWebApiException | ParseException e) {
+      System.out.println("Error: " + e.getMessage());
     }
   }
 }
