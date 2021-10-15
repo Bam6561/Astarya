@@ -35,6 +35,7 @@ public class Help extends Command {
     display.addField("**Music:**", "<clearQueue <join <leave <loop <nowPlaying " +
         "<pause <playNext <play <queue <remove <searchTrack <setPosition <shuffle <skip <swap", true);
     display.addField("**Games:**", "<roll <flip <choice <highorlow", true);
+    display.addField("**HoloLive:**", "<hololivetags", true);
     display.addField("**Miscellaneous:**", "<random <echo <ping", true);
     display.addField("**Owner:**", "<settings <buildembed <delete <shutdown <volume", true);
     display.addField("**Promotion:**", "<dungeonarchives", true);
