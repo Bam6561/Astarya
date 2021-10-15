@@ -12,6 +12,7 @@ Java-based Discord bot written with JDA API.
 - Audio: (ClearQueue, Join, Leave, Loop, NowPlaying, Pause, Play, PlayNext, Queue, Remove, SearchTrack, SetPosition,
   Shuffle, Skip, Swap)
 - Games (Choice, Flip, HighOrLow, Roll)
+- HoloLive (HololiveTags)
 - Miscellaneous: (Echo, Ping, Random)
 - Owner: (BuildEmbed, Delete, Settings, Shutdown, Volume)
 - Promotion: (DungeonArchives)
