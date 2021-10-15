@@ -101,8 +101,6 @@ public class PlayerManager {
       public void trackLoaded(AudioTrack track) {
         playbackManager.audioScheduler.queue(track);
         playbackManager.audioScheduler.addToRequesterList(requester);
-        long trackDurationLong = track.getDuration();
-        String trackDuration = floatTimeConversion(trackDurationLong);
       }
 
       @Override
@@ -112,8 +110,6 @@ public class PlayerManager {
           AudioTrack track = results.get(0);
           playbackManager.audioScheduler.queue(track);
           playbackManager.audioScheduler.addToRequesterList(requester);
-          long trackDurationLong = track.getDuration();
-          String trackDuration = floatTimeConversion(trackDurationLong);
         } else { // Playlist
           for (int i = 0; i < playlist.getTracks().size(); i++) {
             playbackManager.audioScheduler.queue(playlist.getTracks().get(i));
@@ -137,8 +133,6 @@ public class PlayerManager {
   public void searchAudioTrack(CommandEvent ce, String youtubeSearchQuery) { // SearchTrack
     final PlaybackManager playbackManager = this.getPlaybackManager(ce.getGuild());
     this.audioPlayerManager.loadItemOrdered(playbackManager, youtubeSearchQuery, new AudioLoadResultHandler() {
-      String requester = "[" + ce.getAuthor().getAsTag() + "]";
-
       @Override
       public void trackLoaded(AudioTrack track) {
         ce.getChannel().sendMessage("Use the play command to queue tracks.").queue();
@@ -148,7 +142,7 @@ public class PlayerManager {
       public void playlistLoaded(AudioPlaylist playlist) {
         clearSearchTrackResults(); // Clear results from previous search
         List<AudioTrack> searchResults = playlist.getTracks();
-        for (int i = 0; i < 5; i++) { // Limit youtube search results to 5
+        for (int i = 0; i < 5; i++) { // Limit YouTube search results to 5
           addSearchTrackResults(searchResults.get(i));
         }
         EmbedBuilder display = new EmbedBuilder();

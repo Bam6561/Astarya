@@ -102,9 +102,13 @@ public class Help extends Command {
               "Argument describes more detailed command usage.",
           "help, manual, instructions",
           "[0]HelpCommandDescription [1]CommandName", "help help");
-      case "highorlow" -> sendEmbed(ce, display, "__HighOrLow__",
+      case "highorlow" -> sendEmbed(ce, display, "Command: __HighOrLow__",
           "Guess whether the next number will be higher or lower!",
           "highorlow", "[0]HighOrLow", "highorlow");
+      case "hololivetags" -> sendEmbed(ce, display, "__Command: HololiveTags__",
+          "Provides the requested female HoloLive member's Twitter tags.",
+          "hololivetags, holotags, tags", "[1]FirstOrLastName",
+          "hololivetags sora");
       case "info" -> sendEmbed(ce, display, "__Command: Info__",
           "Provides information on the bot and its developer.",
           "info, help", "[0]Info", "info");
@@ -127,10 +131,10 @@ public class Help extends Command {
           "Response time of the bot in milliseconds.",
           "ping, ms", "[0]Ping", "ping");
       case "play" -> sendEmbed(ce, display, "__Command: Play__",
-          "Adds an audio track to the queue. Limit of Spotify playlists is 100." +
-              " \n**Sources:** YouTube links/playlists, " +
-              "Discord media links, Spotify links/playlists \n**File Types:** MP3, " +
-              "FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams",
+          """
+              Adds an audio track to the queue. Limit of Spotify playlists is 100.\s
+              **Sources:** YouTube links/playlists, Discord media links, Spotify links/playlists\s
+              **File Types:** MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams""",
           "play, p, add", "[1]URL, [2++]YouTubeQuery",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ, play Cleverly Disguised Rickrolls");
       case "playnext" -> sendEmbed(ce, display, "__Command: PlayNext__",

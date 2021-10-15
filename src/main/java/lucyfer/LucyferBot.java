@@ -3,6 +3,7 @@ package lucyfer;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import commands.hololive.HololiveTags;
 import commands.about.Credits;
 import commands.about.Help;
 import commands.about.Info;
@@ -52,10 +53,10 @@ public class LucyferBot {
         new ServerInfo(), new WhoIs(), new DungeonArchives(), new BuildEmbed(waiter),
         new Delete(), new Settings(), new Shutdown(), new Volume(), new Echo(),
         new Ping(), new Random(), new Choice(), new Flip(), new HighOrLow(waiter),
-        new Roll(), new ClearQueue(), new Join(), new Leave(), new Loop(),
-        new NowPlaying(), new Pause(), new Play(), new PlayNext(), new Queue(),
-        new Remove(), new SearchTrack(waiter), new SetPosition(), new Shuffle(),
-        new Skip(), new Swap(), new Credits(), new Help(), new Info());
+        new Roll(), new HololiveTags(), new ClearQueue(), new Join(), new Leave(),
+        new Loop(), new NowPlaying(), new Pause(), new Play(), new PlayNext(),
+        new Queue(), new Remove(), new SearchTrack(waiter), new SetPosition(),
+        new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
     CommandClient client = commands.build();
     // Bot
     api.addEventListener(client, waiter, new MessageLog());

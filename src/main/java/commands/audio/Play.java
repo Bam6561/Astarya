@@ -76,7 +76,7 @@ public class Play extends Command {
           } else if (args[1].contains("https://open.spotify.com/playlist/")) { // Spotify playlist
             processSpotifyPlaylist(ce, args);
           } else {
-            ce.getChannel().sendMessage("Feature not supported.");
+            ce.getChannel().sendMessage("Feature not supported.").queue();
           }
         } else { // Not Spotify link
           PlayerManager.getINSTANCE().createAudioTrack(ce, args[1]);
@@ -95,7 +95,7 @@ public class Play extends Command {
 
   private void processSpotifyTrack(CommandEvent ce, String[] args){
     String spotifyTrack = args[1].substring(31); // Remove https portion
-    if ((spotifyTrack.length() == 42) || (spotifyTrack.length() == 22)) { // ID or ID & Query
+    if (spotifyTrack.length() >= 22) { // ID or ID & Query
       playSpotifyTrackRequest(ce, spotifyTrack);
     } else { // Invalid ID
       ce.getChannel().sendMessage("Invalid Spotify track ID.").queue();
@@ -104,8 +104,7 @@ public class Play extends Command {
 
   private void processSpotifyPlaylist(CommandEvent ce, String[] args){
     String spotifyPlaylist = args[1].substring(34); // Remove https portion
-    if((spotifyPlaylist.length() == 47 || spotifyPlaylist.length() == 42 ||
-        spotifyPlaylist.length() == 22)) { // ID or ID & Query
+    if((spotifyPlaylist.length() >= 22)) { // ID or ID & Query
       playSpotifyPlaylistRequest(ce, spotifyPlaylist);
     } else { //Invalid ID
       ce.getChannel().sendMessage("Invalid Spotify playlist ID").queue();
@@ -113,9 +112,7 @@ public class Play extends Command {
   }
 
   private void playSpotifyTrackRequest(CommandEvent ce, String spotifyTrack) {
-    if (spotifyTrack.length() == 42) { // ID & Query -> ID only
-      spotifyTrack = spotifyTrack.substring(0, 22);
-    }
+    spotifyTrack = spotifyTrack.substring(0, 22); // ID & Query -> ID only
     // Spotify API authorization
     Dotenv dotenv = Dotenv.load();
     String clientID = dotenv.get("SPOTIFY_CLIENT_ID");
@@ -145,9 +142,7 @@ public class Play extends Command {
   }
 
   private void playSpotifyPlaylistRequest(CommandEvent ce, String spotifyPlaylist){
-    if ((spotifyPlaylist.length() == 47) || (spotifyPlaylist.length() == 42)) { // ID & Query -> ID only
-      spotifyPlaylist = spotifyPlaylist.substring(0, 22);
-    }
+    spotifyPlaylist = spotifyPlaylist.substring(0, 22); // ID & Query -> ID only
     // Spotify API authorization
     Dotenv dotenv = Dotenv.load();
     String clientID = dotenv.get("SPOTIFY_CLIENT_ID");
