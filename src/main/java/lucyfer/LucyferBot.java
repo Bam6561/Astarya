@@ -45,18 +45,20 @@ public class LucyferBot {
     // Command Manager
     CommandClientBuilder commands = new CommandClientBuilder();
     EventWaiter waiter = new EventWaiter();
-    commands.setPrefix("<");
-    commands.setAlternativePrefix("L:");
+    String prefix = "<";
+    String alternativePrefix = "L:";
+    commands.setPrefix(prefix);
+    commands.setAlternativePrefix(alternativePrefix);
     commands.setHelpWord("commands");
     commands.setOwnerId("204448598539239424"); // Bam#3531
     commands.addCommands(new Avatar(), new Emote(), new Remind(),
         new ServerInfo(), new WhoIs(), new DungeonArchives(), new BuildEmbed(waiter),
-        new Delete(), new Settings(), new Shutdown(), new Volume(), new Echo(),
-        new Ping(), new Random(), new Choice(), new Flip(), new HighOrLow(waiter),
-        new Roll(), new HololiveTags(), new ClearQueue(), new Join(), new Leave(),
-        new Loop(), new NowPlaying(), new Pause(), new Play(), new PlayNext(),
-        new Queue(), new Remove(), new SearchTrack(waiter), new SetPosition(),
-        new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
+        new Delete(), new Settings(prefix, alternativePrefix), new Shutdown(), new Volume(),
+        new Echo(), new Ping(), new Random(), new Choice(), new Flip(), new HighOrLow(waiter),
+        new Roll(), new HololiveTags(), new ClearQueue(), new Join(), new Leave(), new Loop(),
+        new NowPlaying(), new Pause(), new Play(), new PlayNext(), new Queue(), new Remove(),
+        new SearchTrack(waiter), new SetPosition(), new Shuffle(), new Skip(), new Swap(),
+        new Credits(), new Help(), new Info());
     CommandClient client = commands.build();
     // Bot
     api.addEventListener(client, waiter, new MessageLog());

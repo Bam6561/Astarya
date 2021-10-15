@@ -8,17 +8,19 @@ import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 public class Settings extends Command {
-  private static final String prefix = "<";
-  private static final String alternatePrefix = "L:";
+  private static String prefix;
+  private static String alternativePrefix;
   private static boolean deleteInvoke = false;
   private static boolean embedDecay = false;
   private static int embedDecayTime = 30;
 
-  public Settings() {
+  public Settings(String prefix, String alternativePrefix) {
     this.name = "settings";
     this.aliases = new String[]{"settings", "config"};
     this.arguments = "[1]Setting [2]True/False";
     this.help = "Provides information on the bot's settings.";
+    this.prefix = prefix;
+    this.alternativePrefix = alternativePrefix;
   }
 
   @Override
@@ -30,7 +32,7 @@ public class Settings extends Command {
       case 1 -> { // Display main menu
         EmbedBuilder display = new EmbedBuilder();
         display.setTitle("__Settings__");
-        display.setDescription("**Prefix:** `" + prefix + "` \n**AlternatePrefix:** `" + alternatePrefix
+        display.setDescription("**Prefix:** `" + prefix + "` \n**AlternatePrefix:** `" + alternativePrefix
             + "` \n**DeleteInvoke**: `" + deleteInvoke + "`" + "\n**EmbedDecay:** `" + embedDecay + "`"
             + "\n**EmbedDecayTime:** `" + embedDecayTime + "`s");
         sendEmbed(ce, display);
