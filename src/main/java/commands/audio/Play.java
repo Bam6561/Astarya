@@ -210,7 +210,7 @@ public class Play extends Command {
       ClientCredentials clientCredentials = clientCredentialsRequest.execute();
       spotifyApi.setAccessToken(clientCredentials.getAccessToken()); // Generate Spotify API access token
       // Search for matching album to ID
-      GetAlbumsTracksRequest getAlbumsTracksRequest = spotifyApi.getAlbumsTracks(spotifyAlbum).build();
+      GetAlbumsTracksRequest getAlbumsTracksRequest = spotifyApi.getAlbumsTracks(spotifyAlbum).limit(50).build();
       JSONObject jsonAlbum = new JSONObject(getAlbumsTracksRequest.getJson()); // Convert response to json
       JSONArray jsonTracks = new JSONArray(jsonAlbum.getJSONArray("items").toString()); // Get tracks from album
       int tracksAdded = 0; // Number of tracks added

@@ -133,7 +133,7 @@ public class Help extends Command {
           "ping, ms", "[0]Ping", "ping");
       case "play" -> sendEmbed(ce, display, "__Command: Play__",
           """
-              Adds an audio track to the queue. Limit of Spotify playlists is 100.\s
+              Adds an audio track to the queue. Limit of Spotify playlists is 100. Limit of Spotify albums is 50.\s
               **Sources:** YouTube links/playlists, Discord media links, Spotify links/playlists/album\s
               **File Types:** MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams""",
           "play, p, add", "[1]URL, [2++]YouTubeQuery",
