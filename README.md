@@ -27,6 +27,7 @@ Java-based Discord bot written with JDA API.
 * [JDA Utilities](https://github.com/JDA-Applications/JDA-Utilities)
 * [LavaPlayer](https://github.com/sedmelluq/lavaplayer)
 * [Spotify Web API Java](https://github.com/spotify-web-api-java/spotify-web-api-java)
+* [Twittered](https://github.com/redouane59/twittered)
 
 ## Setup
 
