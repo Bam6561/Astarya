@@ -10,7 +10,7 @@ public class HololiveTags extends Command {
     this.name = "hololiveTags";
     this.aliases = new String[]{"hololiveTags", "holotags", "tags"};
     this.arguments = "[1]FirstOrLastName";
-    this.help = "Provides the requested female HoloLive member's Twitter tags.";
+    this.help = "Provides the requested HoloLive member's Twitter tags.";
   }
 
   @Override
@@ -555,6 +555,143 @@ public class HololiveTags extends Command {
               **Music:** #MADDOOFS\s
               **Memes (English):** #YABAEL\s
               **Memes (Japanese):** #ヤベール\s""");
+      // Holostars Gen 1
+      case "miyabi", "hanasaki" -> sendEmbed(ce, display, "Hanasaki Miyabi @miyabihanasaki",
+          "https://twitter.com/miyabihanasaki",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/7/77/" +
+              "Hanasaki_Miyabi_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/80?cb=20210725223223",
+          """
+              **General:** #花咲みやび\s
+              **Stream Talk:** #生き花\s
+              **Schedule:** #開花予定\s
+              **Fans:** #花見組\s
+              **Fan Art:** #みやびじゅつ\s
+              **Video Clips:** #切り抜きみやびさん\s
+              **Videos:** #花咲日和\s
+              **Commentary On Released Voice Dramas:** #聞いたぞみやび\s""");
+      case "izuru", "kanade" -> sendEmbed(ce, display, "Kanade Izuru @kanadeizuru",
+          "https://twitter.com/kanadeizuru",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/6/64/" +
+              "Kanade_Izuru_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/80?cb=20210412102921",
+          """
+              **General:** #奏手イヅル\s
+              **Fan Art:** #イヅル描いたぞ\s
+              **Fan Art (NSFW):** #イヅル見るなよ\s
+              **RIZnote General Tag:** #RIZnote\s
+              **RIZnote Stream Talk:** #RIZ生\s
+              **RIZnote Fan Art:** #RIZアート\s""");
+      case "arurandeisu", "aruran" -> sendEmbed(ce, display, "Arurandeisu @arurandeisu",
+          "https://twitter.com/arurandeisu",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/e/e9/" +
+              "Arurandeisu_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/80?cb=20210413011649",
+          """
+              **Stream Talk:** #アランストリーム\s
+              **Fan Art:** #アランの画廊\s
+              **Fan Art (NSFW):** #Rナンディス\s
+              **Video Clips:** #切り抜きナンディス\s
+              **Commentary On Released Voice Dramas:** #聞いたぞアラン\s""");
+      case "rikka" -> sendEmbed(ce, display, "Rikka @rikkaroid",
+          "https://twitter.com/rikkaroid",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/8/8b/" +
+              "Rikka_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/80?cb=20210415153551",
+          """
+              **General:** #律可\s
+              **Stream Talk:** #りつすた\s
+              **Schedule:** #りつジュール\s
+              **Fans:** #調りつ師\s
+              **Fan Art:** #りつあーと\s
+              **Fan Art (NSFW):** #律可開発中\s
+              **Video Clips:** #ちょこりっか\s
+              **Commentary On Released Voice Dramas:** #聞いたぞりっか\s
+              **RIZnote General Tag:** #RIZnote\s
+              **RIZnote Stream Talk:** #RIZ生\s
+              **RIZnote Fan Art:** #RIZアート\s
+              **RiTunes Labo:** #りちゅらぼ\s""");
+      case "kira", "kagami" -> sendEmbed(ce, display, "Kagami Kira @kagamikirach",
+          "https://twitter.com/kagamikirach",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/7/70/" +
+              "Kagami_Kira_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/80?cb=20210202172609",
+          """
+              **General:** #鏡見キラ\s
+              **Stream Talk:** #キラ生\s
+              **Fan Art:** #キラ絵\s
+              **Fan Art (NSFW):** #キラ見ろ\s
+              **Video Clips:** #キラ抜いたぞ\s""");
+      case "suzaku", "yakushiji" -> sendEmbed(ce, display, "Yakushiji Suzaku @YakushijiSuzaku",
+          "https://twitter.com/YakushijiSuzaku",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/d/d1/" +
+              "Yakushiji_Suzaku_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/80?cb=20210202173133",
+          """
+              **General:** #薬師寺朱雀\s
+              **Fan Art:** #朱雀絵\s
+              **Video Clips:** #朱雀動画\s""");
+      // Holostars Gen 2
+      case "leda", "astel" -> sendEmbed(ce, display, "Astel Leda @astelleda",
+          "https://twitter.com/astelleda",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/8/88/" +
+              "Astel_Leda_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/130?cb=20200815110151",
+          """
+              **General:** #アステルレダ\s
+              **Stream Talk:** #アステル生ダ\s
+              **Fans:** #アステラー\s
+              **Fan Art:** #アステル絵ダ\s
+              **Fan Art (NSFW):** #アステルエッだ\s
+              **Commentary On Released Voice Dramas:** #アステル聞ケタ\s""");
+      case "temma", "kishido" -> sendEmbed(ce, display, "Kishido Temma @kishidotemma",
+          "https://twitter.com/kishidotemma",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/9/9b/" +
+              "Kishido_Temma_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/130?cb=20210725223136",
+          """
+              **General:** #岸堂天真\s
+              **Stream Talk:** #天真修行中\s
+              **Fans:** #岸メン\s
+              **Fan Art:** #騎士絵画\s
+              **Video Clips:** 騎士抜き動画\s
+              **Commentary On Released Voice Dramas:** #天真聞いたよ\s""");
+      case "roberu", "yukoku" -> sendEmbed(ce, display, "Yukoku Roberu @yukokuroberu",
+          "https://twitter.com/yukokuroberu",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/8/84/" +
+              "Yukoku_Roberu_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/130?cb=20210412110008",
+          """
+              **General:** #夕刻ロベル\s
+              **Stream Talk:** #ROBEL営業中\s
+              **Fan Art:** #描クテル\s
+              **Video Clips:** #ひとくちロベル\s
+              **Commentary On Released Voice Dramas:** #おいロベル""");
+      // Holostars Gen 3
+      case "shien", "kageyama" -> sendEmbed(ce, display, "Kageyama Shien @kageyamashien",
+          "https://twitter.com/kageyamashien",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/7/70/" +
+              "Kageyama_Shien_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/130?cb=20210725223023",
+          """
+              **General:** #影山シエン\s
+              **Stream Talk:** #エンエアー\s
+              **Fans:** #シエン組\s
+              **Fan Art:** #シ絵ン\s
+              **Fan art (NSFW):** #シ絵ッン\s
+              **Video Clips:** #お試シエン\s
+              **Commentary On Released Voice Dramas:** #耳エン\s""");
+      case "oga", "aragami" -> sendEmbed(ce, display, "Aragami Oga @aragamioga",
+          "https://twitter.com/aragamioga",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/2/2a/" +
+              "Aragami_Oga_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/130?cb=20210725222909",
+          """
+              **General:** #荒咬オウガ\s
+              **Stream Talk:** #アラライブ\s
+              **Fan Art:** #オウ画\s
+              **Fan Art (NSFW):** #オウガ済ム\s
+              **Video Clips:** #荒咬ドウガ\s
+              **Commentary On Released Voice Dramas:** #荒声\s
+              **Twitter Spaces Talk:** #荒スペ\s""");
+      case "kaoru", "tsukishita" -> sendEmbed(ce, display, "Tsukishita Kaoru @tsukishitakaoru",
+          "https://twitter.com/tsukishitakaoru",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/0/05/" +
+              "Tsukishita_Kaoru_-_Profile_Picture.jpg/revision/latest/scale-to-width-down/130?cb=20210202172851",
+          """
+              **General:** #月下カオル\s
+              **Stream Talk:** #カオルがおる\s
+              **Fan Art:** #着せカオル\s
+              **Fan Art (NSFW):** #脱が下カオル\s""");
       default -> ce.getChannel().sendMessage("HoloLive member not found.").queue();
     }
   }

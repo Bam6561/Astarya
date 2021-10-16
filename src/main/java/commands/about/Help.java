@@ -107,7 +107,7 @@ public class Help extends Command {
           "Guess whether the next number will be higher or lower!",
           "highorlow", "[0]HighOrLow", "highorlow");
       case "hololivetags" -> sendEmbed(ce, display, "__Command: HololiveTags__",
-          "Provides the requested female HoloLive member's Twitter tags.",
+          "Provides the requested HoloLive member's Twitter tags.",
           "hololivetags, holotags, tags", "[1]FirstOrLastName",
           "hololivetags sora");
       case "info" -> sendEmbed(ce, display, "__Command: Info__",
