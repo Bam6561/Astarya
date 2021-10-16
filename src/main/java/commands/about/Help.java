@@ -31,7 +31,7 @@ public class Help extends Command {
     display.setTitle("__Help__");
     display.setDescription("Type help [CommandName] for more details on the usage of each command.");
     display.addField("**About:**", "<info <help <credits", true);
-    display.addField("**Utility:**", "<serverinfo <whois <avatar <emote <remind", true);
+    display.addField("**Utility:**", "<serverinfo <whois <avatar <emote <remind <twitter", true);
     display.addField("**Music:**", "<clearQueue <join <leave <loop <nowPlaying " +
         "<pause <playNext <play <queue <remove <searchTrack <setPosition <shuffle <skip <swap", true);
     display.addField("**Games:**", "<roll <flip <choice <highorlow", true);
@@ -195,6 +195,10 @@ public class Help extends Command {
           "Swaps the position of an audio track in queue with another.",
           "swap, switch", "[1]QueueNumber [2]QueueNumber",
           "swap 2 4");
+      case "twitter" -> sendEmbed(ce, display, "__Command: Twitter__",
+          "Provides information about a Twitter user.",
+          "twitter, tw", "[1]TwitterHandle",
+          "twitter ndanny09");
       case "whois" -> sendEmbed(ce, display, "__Command: WhoIs__",
           "Provides information on the user.",
           "whois, who, profile, user", "[0]Self [1]Mention/UserID",

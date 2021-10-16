@@ -247,8 +247,8 @@ public class HololiveTags extends Command {
               **Video Clips:** #きるしあ\s""");
       case "flare", "shiranui" -> sendEmbed(ce, display, "Shiranui Flare @shiranuiflare",
           "https://twitter.com/shiranuiflare",
-        "https://static.wikia.nocookie.net/virtualyoutuber/images/4/47/" +
-            "Shiranui_Flare_-_Icon.png/revision/latest/scale-to-width-down/100?cb=20210901132842",
+          "https://static.wikia.nocookie.net/virtualyoutuber/images/4/47/" +
+              "Shiranui_Flare_-_Icon.png/revision/latest/scale-to-width-down/100?cb=20210901132842",
           """
               **General:** #不知火フレア\s
               **Stream Talk:** #フレアストリーム\s
@@ -268,7 +268,7 @@ public class HololiveTags extends Command {
               **Fan Art:** #ノエラート\s
               **Fan Art (NSFW):** #オークアート\s
               **Video Clips:** #クリ抜き太郎\s""");
-      case "marine", "houshou" ->sendEmbed(ce, display, "Houshou Marine @houshoumarine",
+      case "marine", "houshou" -> sendEmbed(ce, display, "Houshou Marine @houshoumarine",
           "https://twitter.com/houshoumarine",
           "https://static.wikia.nocookie.net/virtualyoutuber/images/f/f7/" +
               "Houshou_Marine_-_Icon.png/revision/latest/scale-to-width-down/100?cb=20210901132233",
@@ -469,7 +469,7 @@ public class HololiveTags extends Command {
               **Fan Art (English):** #artsofashes\s
               **Fan Art (Japanese):** #絵ニックス\s
               **Kiara x Calliope Fan Art:** #takamori\s""");
-      case "ina'nis", "ina", "ninomae" -> sendEmbed(ce,display, "Ninomae Ina'nis @ninomaeinanis",
+      case "ina'nis", "ina", "ninomae" -> sendEmbed(ce, display, "Ninomae Ina'nis @ninomaeinanis",
           "https://twitter.com/ninomaeinanis",
           "https://static.wikia.nocookie.net/virtualyoutuber/images/e/ec/" +
               "Ninomae_Ina%27nis_-_Icon.png/revision/latest/scale-to-width-down/100?cb=20210901132639",

@@ -3,7 +3,6 @@ package lucyfer;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import commands.hololive.HololiveTags;
 import commands.about.Credits;
 import commands.about.Help;
 import commands.about.Info;
@@ -12,6 +11,7 @@ import commands.games.Choice;
 import commands.games.Flip;
 import commands.games.HighOrLow;
 import commands.games.Roll;
+import commands.hololive.HololiveTags;
 import commands.miscellaneous.Echo;
 import commands.miscellaneous.Ping;
 import commands.miscellaneous.Random;
@@ -52,13 +52,13 @@ public class LucyferBot {
     commands.setHelpWord("commands");
     commands.setOwnerId("204448598539239424"); // Bam#3531
     commands.addCommands(new Avatar(), new Emote(), new Remind(),
-        new ServerInfo(), new WhoIs(), new DungeonArchives(), new BuildEmbed(waiter),
-        new Delete(), new Settings(prefix, alternativePrefix), new Shutdown(), new Volume(),
-        new Echo(), new Ping(), new Random(), new Choice(), new Flip(), new HighOrLow(waiter),
-        new Roll(), new HololiveTags(), new ClearQueue(), new Join(), new Leave(), new Loop(),
-        new NowPlaying(), new Pause(), new Play(), new PlayNext(), new Queue(), new Remove(),
-        new SearchTrack(waiter), new SetPosition(), new Shuffle(), new Skip(), new Swap(),
-        new Credits(), new Help(), new Info());
+        new ServerInfo(), new Twitter(),new WhoIs(), new DungeonArchives(),
+        new BuildEmbed(waiter), new Delete(), new Settings(prefix, alternativePrefix),
+        new Shutdown(), new Volume(), new Echo(), new Ping(), new Random(), new Choice(),
+        new Flip(), new HighOrLow(waiter), new Roll(), new HololiveTags(), new ClearQueue(),
+        new Join(), new Leave(), new Loop(), new NowPlaying(), new Pause(), new Play(),
+        new PlayNext(), new Queue(), new Remove(), new SearchTrack(waiter), new SetPosition(),
+        new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
     CommandClient client = commands.build();
     // Bot
     api.addEventListener(client, waiter, new MessageLog());

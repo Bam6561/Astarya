@@ -16,7 +16,7 @@ Java-based Discord bot written with JDA API.
 - Miscellaneous: (Echo, Ping, Random)
 - Owner: (BuildEmbed, Delete, Settings, Shutdown, Volume)
 - Promotion: (DungeonArchives)
-- Utility (Avatar, Emote, Remind, ServerInfo, WhoIs)
+- Utility (Avatar, Emote, Remind, ServerInfo, Twitter, WhoIs)
 
 [Version History](https://ndanny09.github.io/lucyferbot.html)
 
@@ -41,13 +41,22 @@ Java-based Discord bot written with JDA API.
   <li> Give the bot MANAGE_MESSAGES permission in order for the CLEAR command to work. Other than that, it is ready to go. </li>
 </ol>
 
-#### 1.3.0 & above:
+#### 1.3.0 - 1.3.3.4:
 
 <ol>
   <li> Follow 1.2.15.3 and below's instructions.</li>
   <li> Inside your .env file, include a SPOTIFY_CLIENT_ID & SPOTIFY_CLIENT_SECRET variable.</li>
   <li> Create an application on the Spotify Developer Portal (https://developer.spotify.com/dashboard/). </li>
   <li> After the application is created, you will be provided a Client ID and Client Secret to use in the .env file. </li>
+</ol>
+
+#### 1.3.4+:
+
+<ol>
+  <li> Follow 1.3.3.4 and below's instructions.</li>
+  <li> Inside your .env file, include a TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET, TWITTER_API_KEY, & TWITTER_API_SECRET_KEY variable.</li>
+  <li> Create an application on the Twitter Developer Portal (https://developer.twitter.com/en). </li>
+  <li> After the application is created, you will be provided a Twitter Access Token, Twitter Access Token Secret, Twitter API key, & Twitter API Secret Key to use in the .env file. </li>
 </ol>
 
 ## Contributing
