@@ -27,7 +27,10 @@ public class AudioScheduler extends AudioEventAdapter {
   public void queue(AudioTrack audioTrack) {
     if(this.audioPlayer.getPlayingTrack()==null){ // Play request immediately if nothing playing
       this.audioPlayer.startTrack(audioTrack,true);
-      this.requesterList.remove(0);
+      // Only remove requesters when track requested is not immediately playing
+      if(!this.requesterList.isEmpty()) {
+        this.requesterList.remove(0);
+      }
     } else this.queueList.add(audioTrack); // Add to queue
   }
 

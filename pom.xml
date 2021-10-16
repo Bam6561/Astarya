@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ndanny09</groupId>
-    <artifactId>lucyferBot</artifactId>
-    <version>1.0.0</version>
+    <artifactId>LucyferBot</artifactId>
+    <version>1.3.3.3</version>
 
     <build>
         <plugins>
