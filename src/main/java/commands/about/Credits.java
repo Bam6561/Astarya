@@ -20,7 +20,9 @@ public class Credits extends Command {
     display.setDescription("I'm grateful for the following resources for their assistance in the bot's development. " +
         "Most importantly, however, I also can't forget my friends who use the bot regularly and leave feedback " +
         "so that the bot is as bug-free as possible.");
-    display.addField("**APIs, Libraries:**", "JDA, JDA-Utilities, LavaPlayer", false);
+    display.addField("**APIs:**", "JDA, Spotify, Twitter, YouTube", false);
+    display.addField("**Libraries & Wrappers:**", "JDA, JDA-Utilities, LavaPlayer, " +
+        "Spotify Web API Java, Twittered", false);
     display.addField("**References:**", "Kody Simpson, MenuDocs, TechToolBox", false);
     Settings.sendEmbed(ce, display);
   }

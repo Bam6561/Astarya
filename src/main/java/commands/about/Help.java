@@ -35,7 +35,7 @@ public class Help extends Command {
     display.addField("**Music:**", "<clearQueue <join <leave <loop <nowPlaying " +
         "<pause <playNext <play <queue <remove <searchTrack <setPosition <shuffle <skip <swap", true);
     display.addField("**Games:**", "<roll <flip <choice <highorlow", true);
-    display.addField("**HoloLive:**", "<hololivetags", true);
+    display.addField("**HoloLive:**", "<streams <tags", true);
     display.addField("**Miscellaneous:**", "<random <echo <ping", true);
     display.addField("**Owner:**", "<settings <buildembed <delete <shutdown <volume", true);
     display.addField("**Promotion:**", "<dungeonarchives", true);
@@ -106,10 +106,6 @@ public class Help extends Command {
       case "highorlow" -> sendEmbed(ce, display, "Command: __HighOrLow__",
           "Guess whether the next number will be higher or lower!",
           "highorlow", "[0]HighOrLow", "highorlow");
-      case "hololivetags" -> sendEmbed(ce, display, "__Command: HololiveTags__",
-          "Provides the requested HoloLive member's Twitter tags.",
-          "hololivetags, holotags, tags", "[1]FirstOrLastName",
-          "hololivetags sora");
       case "info" -> sendEmbed(ce, display, "__Command: Info__",
           "Provides information on the bot and its developer.",
           "info, help", "[0]Info", "info");
@@ -158,7 +154,7 @@ public class Help extends Command {
           "remind (0-86400)s, remind (0-1440)m, remind (0-24)h, "
               + "remind TimeDurationTimeType EventName, remind TimeDuration TimeType EventName");
       case "remove" -> sendEmbed(ce, display, "__Command: Remove__",
-          "Removes an audio track from the queue.", "remove, rm, takeout",
+          "Removes an audio track from the queue.", "remove, rm, r",
           "[1]QueueNumber", "remove 1");
       case "roll" -> sendEmbed(ce, display, "__Command: Roll__",
           "Dice roll and integer RNG (random number generator). No arguments to roll once. "
@@ -191,10 +187,18 @@ public class Help extends Command {
       case "skip" -> sendEmbed(ce, display, "__Command: Skip__",
           "Skips the currently playing audio track.",
           "skip, s, next", "[0]Skip", "skip");
+      case "streams" -> sendEmbed(ce, display, "__Command: Streams__",
+          "Displays upcoming and current HoloLive streams. Can only be updated once a day " +
+              "due to default YT quota restrictions.",
+          "streams", "[0]Streams", "streams");
       case "swap" -> sendEmbed(ce, display, "__Command: Swap__",
           "Swaps the position of an audio track in queue with another.",
           "swap, switch", "[1]QueueNumber [2]QueueNumber",
           "swap 2 4");
+      case "tags" -> sendEmbed(ce, display, "__Command: Tags__",
+          "Provides the requested HoloLive member's Twitter tags.",
+          "tags", "[1]FirstOrLastName",
+          "tags sora");
       case "twitter" -> sendEmbed(ce, display, "__Command: Twitter__",
           "Provides information about a Twitter user.",
           "twitter, tw", "[1]TwitterHandle",

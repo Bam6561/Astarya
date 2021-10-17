@@ -5,10 +5,10 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-public class HololiveTags extends Command {
-  public HololiveTags() {
-    this.name = "hololiveTags";
-    this.aliases = new String[]{"hololiveTags", "holotags", "tags"};
+public class Tags extends Command {
+  public Tags() {
+    this.name = "tags";
+    this.aliases = new String[]{"tags"};
     this.arguments = "[1]FirstOrLastName";
     this.help = "Provides the requested HoloLive member's Twitter tags.";
   }
@@ -383,7 +383,7 @@ public class HololiveTags extends Command {
               "Mano_Aloe_-_Icon.png/revision/latest/scale-to-width-down/100?cb=20210901132400",
           "**Fan Art:** #まのあろ絵 ");
       // ID Gen 1
-      case "risu", "ayuna" -> sendEmbed(ce, display, "Ayunda Risu @ayunda_risu",
+      case "risu", "ayunda" -> sendEmbed(ce, display, "Ayunda Risu @ayunda_risu",
           "https://twitter.com/ayunda_risu",
           "https://static.wikia.nocookie.net/virtualyoutuber/images/c/c5/" +
               "Ayunda_Risu_-_Icon.png/revision/latest/scale-to-width-down/130?cb=20210901132013",

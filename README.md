@@ -4,7 +4,7 @@
 
 ## About The Project
 
-Java-based Discord bot written with JDA API.
+Java-based Discord bot written with the JDA, Spotify, Twitter, & YouTube API.
 
 #### Commands:
 
@@ -12,7 +12,7 @@ Java-based Discord bot written with JDA API.
 - Audio: (ClearQueue, Join, Leave, Loop, NowPlaying, Pause, Play, PlayNext, Queue, Remove, SearchTrack, SetPosition,
   Shuffle, Skip, Swap)
 - Games (Choice, Flip, HighOrLow, Roll)
-- HoloLive (HololiveTags)
+- HoloLive (Streams, Tags)
 - Miscellaneous: (Echo, Ping, Random)
 - Owner: (BuildEmbed, Delete, Settings, Shutdown, Volume)
 - Promotion: (DungeonArchives)
@@ -22,43 +22,37 @@ Java-based Discord bot written with JDA API.
 
 ### Built With
 
-* [Java](https://www.java.com/en/)
-* [JDA](https://github.com/DV8FromTheWorld/JDA)
+[Java](https://www.java.com/en/)
+
+#### Libraries & Wrappers:
+
 * [JDA Utilities](https://github.com/JDA-Applications/JDA-Utilities)
 * [LavaPlayer](https://github.com/sedmelluq/lavaplayer)
+* [JSON-Java](https://github.com/stleary/JSON-java)
 * [Spotify Web API Java](https://github.com/spotify-web-api-java/spotify-web-api-java)
 * [Twittered](https://github.com/redouane59/twittered)
 
+#### APIs:
+
+* [JDA](https://github.com/DV8FromTheWorld/JDA)
+* [Spotify](https://developer.spotify.com/dashboard/)
+* [Twitter](https://developer.twitter.com/en)
+* [YouTube](https://developers.google.com/youtube/v3)
+
 ## Setup
 
-#### 1.2.15.3 & below:
+1.) Clone the repo. <br>
+2.) Create a .env file. <br>
+3.) Application: [Discord API](https://discord.com/developers/docs/intro) <br>
+4.) Credentials: Bot -> Token `BOT_TOKEN` <br>
+5.) Invite: OAuth2 -> Scopes(`BOT`) <br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;Permissions (`MANAGE_MESSAGES`)
 
-<ol>
-  <li> Clone the repo. </li>
-  <li> Create a .env file with a BOT_TOKEN variable in your directory. </li>
-  <li> Create an application on the Discord Developer Portal (https://discord.com/developers/docs/intro). </li>
-  <li> Under the Bot tab, retrieve a authentication token string to insert into BOT_TOKEN that allow the bots to login to Discord. </li>
-  <li> Under the OAuth2 tab, generate a link that allows you to invite the bot to any discord servers you manage. </li>
-  <li> Give the bot MANAGE_MESSAGES permission in order for the CLEAR command to work. Other than that, it is ready to go. </li>
-</ol>
-
-#### 1.3.0 - 1.3.3.4:
-
-<ol>
-  <li> Follow 1.2.15.3 and below's instructions.</li>
-  <li> Inside your .env file, include a SPOTIFY_CLIENT_ID & SPOTIFY_CLIENT_SECRET variable.</li>
-  <li> Create an application on the Spotify Developer Portal (https://developer.spotify.com/dashboard/). </li>
-  <li> After the application is created, you will be provided a Client ID and Client Secret to use in the .env file. </li>
-</ol>
-
-#### 1.3.4+:
-
-<ol>
-  <li> Follow 1.3.3.4 and below's instructions.</li>
-  <li> Inside your .env file, include a TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET, TWITTER_API_KEY, & TWITTER_API_SECRET_KEY variable.</li>
-  <li> Create an application on the Twitter Developer Portal (https://developer.twitter.com/en). </li>
-  <li> After the application is created, you will be provided a Twitter Access Token, Twitter Access Token Secret, Twitter API key, & Twitter API Secret Key to use in the .env file. </li>
-</ol>
+Necessary .env variables: <br>
+[Discord API](https://discord.com/developers/docs/intro) `BOT_TOKEN` <br>
+[Spotify API](https://developer.spotify.com/dashboard/) `SPOTIFY_CLIENT_ID` `SPOTIFY_CLIENT_SECRET` <br>
+[Twitter API](https://developer.twitter.com/en) `TWITTER_ACCESS_TOKEN` `TWITTER_ACCESS_TOKEN_SECRET` `TWITTER_API_KEY` `TWITTER_API_SECRET_KEY` <br>
+[YouTube API](https://developers.google.com/youtube/v3) `YOUTUBE_API_KEY`
 
 ## Contributing
 
