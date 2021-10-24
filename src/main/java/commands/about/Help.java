@@ -70,19 +70,19 @@ public class Help extends Command {
           "buildembed, buildembed TTTTTTTTT");
       case "choice" -> sendEmbed(ce, display, "__Command: Choice__",
           "Chooses randomly between any number of options. " +
-              "The options are arguments provided by commas (,).",
-          "choice, choose, pick", "[1, ++]Option",
+              "The choices are arguments provided by commas (,).",
+          "choice, choices, choose, pick", "[1, ++]Option",
           "choice Take out the trash, Do the laundry, Walk the dog");
       case "clearqueue" -> sendEmbed(ce, display, "__Command: ClearQueue__",
           "Clears the track queue.", "clearqueue, clear", "[0]clear",
           "clearqueue");
+      case "credits" -> sendEmbed(ce, display, "__Command: Credits__",
+          "Provides user with a list of credits for the bot.",
+          "credits", "[0]Credits", "credits");
       case "delete" -> sendEmbed(ce, display, "__Command: Delete__",
           "Deletes a number of messages. " +
               "Argument provides how many (2 - 100).",
           "delete, purge", "[1]Number", "delete (2-100)");
-      case "credits" -> sendEmbed(ce, display, "__Command: Credits__",
-          "Provides user with a list of credits for the bot.",
-          "credits", "[0]Credits", "credits");
       case "dungeonarchives" -> sendEmbed(ce, display, "__Command: DungeonArchives__",
           "Discord advertisment for Dungeon Archives.",
           "dungeonarchives, dainvite", "[0]DungeonArchives", "dungeonarchives");
@@ -137,6 +137,11 @@ public class Help extends Command {
       case "playnext" -> sendEmbed(ce, display, "__Command: PlayNext__",
           "Sets the position of the currently playing audio track.",
           "playnext, after", "[1]QueueNumber", "playnext 3");
+      case "poll" -> sendEmbed(ce, display, "__Command: Poll__",
+          "Creates a reaction vote with up to 10 options. " +
+              "The options are arguments provided by commas (,).",
+          "poll, polls, vote", "[2, ++]PollOptions",
+          "poll hot pizza, cold pizza");
       case "queue" -> sendEmbed(ce, display, "__Command: Queue__",
           "Provides a list of audio tracks queued.", "queue, q",
           "[0]Queue, [1]PageNumber", "queue, queue 1");

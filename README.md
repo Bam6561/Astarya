@@ -16,7 +16,7 @@ Java-based Discord bot written with the JDA, Spotify, Twitter, & YouTube API.
 - Miscellaneous: (Echo, Ping, Random)
 - Owner: (BuildEmbed, Delete, Settings, Shutdown, Volume)
 - Promotion: (DungeonArchives)
-- Utility (Avatar, Emote, Remind, ServerInfo, Twitter, WhoIs)
+- Utility (Avatar, Emote, Poll, Remind, ServerInfo, Twitter, WhoIs)
 
 [Version History](https://ndanny09.github.io/lucyferbot.html)
 

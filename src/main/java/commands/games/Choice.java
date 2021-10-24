@@ -12,7 +12,7 @@ public class Choice extends Command {
 
   public Choice() {
     this.name = "choice";
-    this.aliases = new String[]{"choice", "choose", "pick"};
+    this.aliases = new String[]{"choice", "choices", "choose", "pick"};
     this.arguments = "[1, ++]Option";
     this.help = "Chooses randomly between any number of options.";
   }
@@ -39,7 +39,7 @@ public class Choice extends Command {
   private String[] parseChoices(String[] args) {
     StringBuilder choicesStringBuilder = new StringBuilder();
     for (int i = 1; i < args.length; i++) {
-      choicesStringBuilder.append(" ").append(args[i]);
+      choicesStringBuilder.append(args[i]).append(" ");
     }
     setChoicesString(choicesStringBuilder.toString());
     return choicesString.split(","); // Split choices provided
@@ -64,7 +64,7 @@ public class Choice extends Command {
     int chosen = rand.nextInt(choices.length);
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Choice__");
-    display.setDescription("Based on the choices you provided... \n\n" + getChoicesString().substring(1)
+    display.setDescription("Based on the choices you provided... \n\n" + getChoicesString()
         + "\n\n**I have chosen:** \n||" + choices[chosen] + "||");
     Settings.sendEmbed(ce, display);
   }

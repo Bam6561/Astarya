@@ -52,7 +52,7 @@ public class LucyferBot {
     commands.setAlternativePrefix(alternativePrefix);
     commands.setHelpWord("commands");
     commands.setOwnerId("204448598539239424"); // Bam#3531
-    commands.addCommands(new Avatar(), new Emote(), new Remind(),
+    commands.addCommands(new Avatar(), new Emote(), new Poll(waiter), new Remind(),
         new ServerInfo(), new Twitter(), new WhoIs(), new DungeonArchives(),
         new BuildEmbed(waiter), new Delete(), new Settings(prefix, alternativePrefix),
         new Shutdown(), new Volume(), new Echo(), new Ping(), new Random(), new Choice(),
