@@ -21,10 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.util.*;
 
 public class Streams extends Command {
   private EmbedBuilder display = new EmbedBuilder();
@@ -41,6 +38,7 @@ public class Streams extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
     if (!dailyUpdate) { // Not updated today
+      ce.getChannel().sendMessage("Updating HoloLive stream data.").queue();
       display.clear(); // Empty display
       getStreams(display, getChannelNames(), getChannelIDs()); // Update display
       dailyUpdate = true; // Updated today
@@ -63,12 +61,11 @@ public class Streams extends Command {
     DateTimeFormatter dt1 = DateTimeFormatter.ofPattern("EEE MMM dd");
     DateTimeFormatter dt2 = DateTimeFormatter.ofPattern("hh:mm:ss");
     DateTimeFormatter dt3 = DateTimeFormatter.ofPattern("yyyy");
-    StringBuilder dateTime = new StringBuilder();
-    dateTime.append(date.format(dt1)).append(" ").append(time.format(dt2)).append(" ").
-        append(timeZone.getDisplayName()).append(" ").append(date.format(dt3));
+    String dateTime = date.format(dt1) + " " + time.format(dt2) + " " +
+        timeZone.getDisplayName() + " " + date.format(dt3);
     StringBuilder liveStreamsDescription = new StringBuilder();
     liveStreamsDescription.append("**Last Updated:** `").append(dateTime).append("`\n");
-    liveStreamsDescription.append("__**Livestreams:**__").append("\n"); // Livestreams
+    liveStreamsDescription.append("__**Live:**__").append("\n"); // Livestreams
     for (int i = 0; i < channelIds.length; i++) { // Check channels
       StringBuilder liveStreams = new StringBuilder();
       StringBuilder upcomingStreams = new StringBuilder();
@@ -103,17 +100,23 @@ public class Streams extends Command {
                 liveStreams.append("[").append(videoTitle).append("](https://www.youtube.com/watch?v=")
                     .append(videoID).append(") ").append("\n");
               } catch (JSONException error) { // Parse upcoming stream details
-                // Scheduled start time
-                String scheduledStartTime = video.getJSONObject(0).getJSONObject("liveStreamingDetails").
-                    getString("scheduledStartTime");
-                TemporalAccessor ta = DateTimeFormatter.ISO_INSTANT.parse(scheduledStartTime);
-                Instant instant = Instant.from(ta);
-                Date d = Date.from(instant);
                 // Video title
                 String videoTitle = videoList.getJSONObject(j).getJSONObject("snippet").getString("title");
-                // Append upcoming stream entry
-                upcomingStreams.append("[").append(videoTitle).append("](https://www.youtube.com/watch?v=")
-                    .append(videoID).append(") `").append(d).append("`\n");
+                String title = videoTitle.toLowerCase();
+                // Exclude "Free Chat", "Chat Room", & "Week(ly) Schedule" streams
+                if((!(title.contains("free")&&(title.contains("chat"))))&&
+                    (!(title.contains("chat")&&(title.contains("room"))))&&
+                    (!(title.contains("week")&&(title.contains("schedule"))))) {
+                  // Scheduled start time
+                  String scheduledStartTime = video.getJSONObject(0).getJSONObject("liveStreamingDetails").
+                      getString("scheduledStartTime");
+                  TemporalAccessor ta = DateTimeFormatter.ISO_INSTANT.parse(scheduledStartTime);
+                  Instant instant = Instant.from(ta);
+                  Date d = Date.from(instant);
+                  // Append upcoming stream entry
+                  upcomingStreams.append("[").append(videoTitle).append("](https://www.youtube.com/watch?v=")
+                      .append(videoID).append(") `").append(d).append("`\n");
+                }
               }
             }
           }
