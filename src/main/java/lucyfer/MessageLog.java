@@ -62,26 +62,20 @@ public class MessageLog extends ListenerAdapter {
         try {
           if (!message.contains("discordapp")) { // Discord
             domain = message.substring(firstOccurrence + 7);
-            if (!(domain.substring(0, 4).equals(".com") || domain.substring(0, 3).equals(".gg"))) {
+            if (!(domain.substring(0, 3).equals(".gg") ||
+                domain.substring(0, 4).equals(".com") ||
+                domain.substring(0, 5).equals(".gift"))) {
               ce.getMessage().delete().queue();
               ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
             }
           } else { // Discordapp
             domain = message.substring(firstOccurrence + 10);
-            if (!(domain.substring(0, 4).equals(".com") || domain.substring(0, 3).equals(".gg"))) {
+            if (!(domain.substring(0, 3).equals(".gg") ||
+                domain.substring(0, 4).equals(".com") ||
+                domain.substring(0, 5).equals(".gift"))) {
               ce.getMessage().delete().queue();
               ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
             }
-          }
-        } catch (IndexOutOfBoundsException error) {
-        }
-      } else if (message.contains(".gift")) { // Gift link
-        int firstOccurrence = message.indexOf("gift");
-        try { // Invalid gift link
-          if (!(message.substring(firstOccurrence - 8, firstOccurrence).equals("discord.") ||
-              (message.substring(firstOccurrence - 11, firstOccurrence).equals("discordapp.")))) {
-            ce.getMessage().delete().queue();
-            ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
           }
         } catch (IndexOutOfBoundsException error) {
         }
