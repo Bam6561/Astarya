@@ -64,6 +64,7 @@ public class MessageLog extends ListenerAdapter {
             domain = message.substring(firstOccurrence + 7);
             if (!(domain.substring(0, 3).equals(".gg") ||
                 domain.substring(0, 4).equals(".com") ||
+                domain.substring(0, 4).equals(".net") ||
                 domain.substring(0, 5).equals(".gift"))) {
               ce.getMessage().delete().queue();
               ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
@@ -72,6 +73,7 @@ public class MessageLog extends ListenerAdapter {
             domain = message.substring(firstOccurrence + 10);
             if (!(domain.substring(0, 3).equals(".gg") ||
                 domain.substring(0, 4).equals(".com") ||
+                domain.substring(0, 4).equals(".net") ||
                 domain.substring(0, 5).equals(".gift"))) {
               ce.getMessage().delete().queue();
               ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
