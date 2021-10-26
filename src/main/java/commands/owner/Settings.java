@@ -13,6 +13,7 @@ public class Settings extends Command {
   private static boolean deleteInvoke = false;
   private static boolean embedDecay = false;
   private static int embedDecayTime = 30;
+  private static boolean moderatePotentialPhishing = true;
 
   public Settings(String prefix, String alternativePrefix) {
     this.name = "settings";
@@ -32,9 +33,10 @@ public class Settings extends Command {
       case 1 -> { // Display main menu
         EmbedBuilder display = new EmbedBuilder();
         display.setTitle("__Settings__");
-        display.setDescription("**Prefix:** `" + prefix + "` \n**AlternatePrefix:** `" + alternativePrefix
-            + "` \n**DeleteInvoke**: `" + deleteInvoke + "`" + "\n**EmbedDecay:** `" + embedDecay + "`"
-            + "\n**EmbedDecayTime:** `" + embedDecayTime + "`s");
+        display.setDescription("**Prefix:** `" + prefix + "` \n**AlternatePrefix:** `" + alternativePrefix +"`"
+            + "\n**DeleteInvoke**: `" + deleteInvoke + "`" + "\n**EmbedDecay:** `" + embedDecay + "`"
+            + "\n**EmbedDecayTime:** `" + embedDecayTime + "`s"
+            + "\n**ModeratePotentialPhishing:** `" +moderatePotentialPhishing +"`");
         sendEmbed(ce, display);
       }
       case 3 -> { // Change settings
@@ -44,6 +46,7 @@ public class Settings extends Command {
             case "deleteinvoke" -> setDeleteInvokeSetting(ce, args[2]);
             case "embeddecay" -> setEmbedDecaySetting(ce, args[2]);
             case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, args[2]);
+            case "moderatepotentialphishing" -> setModeratePotentialPhishingSetting(ce, args[2]);
             default -> ce.getChannel().sendMessage("Setting not found.").queue();
           }
         } else {
@@ -95,6 +98,17 @@ public class Settings extends Command {
     }
   }
 
+  private void setModeratePotentialPhishingSetting(CommandEvent ce, String change) {
+    String proposedChange = change.toLowerCase();
+    if (proposedChange.equals("true") || proposedChange.equals("false")) {
+      moderatePotentialPhishing = Boolean.parseBoolean(proposedChange);
+      ce.getChannel().sendMessage("ModeratePotentialPhishing has been set to `" + getModeratePotentialPhishing()
+          + "`.").queue();
+    } else {
+      ce.getChannel().sendMessage("You must specify true or false.").queue();
+    }
+  }
+
   public static void sendEmbed(CommandEvent ce, EmbedBuilder display) {
     display.setColor(0x80000f);
     display.setFooter(ce.getMember().getUser().getAsTag());
@@ -116,15 +130,19 @@ public class Settings extends Command {
     return Settings.prefix;
   }
 
-  private static boolean getDeleteInvoke() {
+  private boolean getDeleteInvoke() {
     return Settings.deleteInvoke;
   }
 
-  private static boolean getEmbedDecay() {
+  private boolean getEmbedDecay() {
     return Settings.embedDecay;
   }
 
-  private static int getEmbedDecayTime() {
+  private int getEmbedDecayTime() {
     return Settings.embedDecayTime;
+  }
+
+  public static boolean getModeratePotentialPhishing() {
+    return Settings.moderatePotentialPhishing;
   }
 }

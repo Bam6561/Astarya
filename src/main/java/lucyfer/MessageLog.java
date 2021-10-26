@@ -1,5 +1,6 @@
 package lucyfer;
 
+import commands.owner.Settings;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -11,6 +12,9 @@ public class MessageLog extends ListenerAdapter {
     // MM/dd(HH:mm)<Server>#channel[UserTag]:Text(MessageAttachment)
     if (isHuman(ce)) {
       sendMessageLog(ce);
+      if (Settings.getModeratePotentialPhishing()) {
+        moderatePotentialPhishing(ce);
+      }
     }
   }
 
@@ -47,5 +51,44 @@ public class MessageLog extends ListenerAdapter {
 
   private static String getMessageAttachment(GuildMessageReceivedEvent event) {
     return "(" + event.getMessage().getAttachments().get(0).getUrl() + ")";
+  }
+
+  private void moderatePotentialPhishing(GuildMessageReceivedEvent ce) {
+    String message = ce.getMessage().getContentRaw().toLowerCase();
+    if (message.contains("http://") || message.contains("https://")) { // Contains a link
+      if (message.contains("discord")) { // Contains discord
+        String domain;
+        int firstOccurrence = message.indexOf("discord");
+        try {
+          if (!message.contains("discordapp")) { // Discord
+            domain = message.substring(firstOccurrence + 7);
+            if (!(domain.substring(0, 4).equals(".com") || domain.substring(0, 3).equals(".gg"))) {
+              ce.getMessage().delete().queue();
+              ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
+            }
+          } else { // Discordapp
+            domain = message.substring(firstOccurrence + 10);
+            if (!(domain.substring(0, 4).equals(".com") || domain.substring(0, 3).equals(".gg"))) {
+              ce.getMessage().delete().queue();
+              ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
+            }
+          }
+        } catch (IndexOutOfBoundsException error) {
+        }
+      } else if (message.contains(".gift")) { // Gift link
+        int firstOccurrence = message.indexOf("gift");
+        try { // Invalid gift link
+          if (!(message.substring(firstOccurrence - 8, firstOccurrence).equals("discord.") ||
+              (message.substring(firstOccurrence - 11, firstOccurrence).equals("discordapp.")))) {
+            ce.getMessage().delete().queue();
+            ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
+          }
+        } catch (IndexOutOfBoundsException error) {
+        }
+      } else if (message.contains("nitro") || message.contains("gift")) {
+        ce.getMessage().delete().queue();
+        ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
+      }
+    }
   }
 }

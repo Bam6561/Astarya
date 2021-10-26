@@ -9,7 +9,7 @@ public class Volume extends Command {
   public Volume() {
     this.name = "volume";
     this.aliases = new String[]{"volume"};
-    this.arguments = "[1]0-100";
+    this.arguments = "[1]0-200";
     this.help = "Sets the volume of the audio player.";
     this.ownerCommand = true;
   }
