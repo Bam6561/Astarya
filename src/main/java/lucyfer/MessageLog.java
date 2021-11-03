@@ -55,36 +55,90 @@ public class MessageLog extends ListenerAdapter {
 
   private void moderatePotentialPhishing(GuildMessageReceivedEvent ce) {
     String message = ce.getMessage().getContentRaw().toLowerCase();
-    if (message.contains("http://") || message.contains("https://")) { // Contains a link
-      if (message.contains("discord")) { // Contains discord
-        String domain;
-        int firstOccurrence = message.indexOf("discord");
-        try {
-          if (!message.contains("discordapp")) { // Discord
-            domain = message.substring(firstOccurrence + 7);
-            if (!(domain.substring(0, 3).equals(".gg") ||
-                domain.substring(0, 4).equals(".com") ||
-                domain.substring(0, 4).equals(".net") ||
-                domain.substring(0, 5).equals(".gift"))) {
-              ce.getMessage().delete().queue();
-              ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
-            }
-          } else { // Discordapp
-            domain = message.substring(firstOccurrence + 10);
-            if (!(domain.substring(0, 3).equals(".gg") ||
-                domain.substring(0, 4).equals(".com") ||
-                domain.substring(0, 4).equals(".net") ||
-                domain.substring(0, 5).equals(".gift"))) {
-              ce.getMessage().delete().queue();
-              ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
-            }
-          }
-        } catch (IndexOutOfBoundsException error) {
+    // Message contains a link
+    boolean containsLink = message.contains("https://") || message.contains("http://");
+    // Filter links from message
+    while (containsLink) {
+      if (message.contains("https://")) { // Found https://
+        if (!message.equals("https://")) { // Doesn't contain scheme only
+          message = message.substring(message.indexOf("https://") + 8); // Separate scheme from URL
+          // Unsafe URL content signals message deletion & ends loop immediately
+          containsLink = isSafeURL(ce, message);
+        } else { // Contains scheme only
+          containsLink = false;
         }
-      } else if (message.contains("nitro") || message.contains("gift")) {
-        ce.getMessage().delete().queue();
-        ce.getChannel().sendMessage("**Potentially Dangerous Link!** " +ce.getAuthor().getAsMention()).queue();
+      } else if (message.contains("http://")) { // Found http://
+        if (!message.equals("http://")) { // Doesn't contain scheme only
+          message = message.substring(message.indexOf("http://") + 7); // Separate scheme from URL
+          // Unsafe URL content signals message deletion & ends loop immediately
+          containsLink = isSafeURL(ce, message);
+        } else { // Contains scheme only
+          containsLink = false;
+        }
+      } else { // No more links in message
+        containsLink = false;
       }
     }
+  }
+
+  private boolean isSafeURL(GuildMessageReceivedEvent ce, String message) {
+    String link;
+    try { // Delimit url by space
+      link = message.substring(0, message.indexOf(" "));
+    } catch (StringIndexOutOfBoundsException error) { // No space
+      link = message;
+    }
+    if (isPotentialPhishingLink(link)) { // Screen link
+      ce.getMessage().delete().queue();
+      ce.getChannel().sendMessage("**Potentially Dangerous Link!** "
+          + ce.getAuthor().getAsMention()).queue();
+      return false;
+    }
+    return true; // Continue to next link if URL is deemed safe
+  }
+
+  private boolean isPotentialPhishingLink(String link) {
+    String domain;
+    try { // Separate subdirectories from domain
+      domain = link.substring(0, link.indexOf("/"));
+    } catch (IndexOutOfBoundsException error) { // No subdirectories
+      domain = link;
+    }
+    if (domain.contains("discord")) { // Contains discord
+      int discordIndex = domain.indexOf("discord");
+      if (!domain.contains("discordapp")) { // Discord
+        domain = domain.substring(discordIndex + 7);
+      } else { // Discordapp
+        domain = domain.substring(discordIndex + 10);
+      }
+      switch (domain.length()) { // Validate top level domain
+        case 0 -> {
+          return false;
+        }
+        case 3 -> {
+          if (domain.startsWith(".gg")) {
+            return false;
+          }
+        }
+        case 4 -> {
+          if (domain.startsWith(".com") ||
+              domain.startsWith(".net")) {
+            return false;
+          }
+        }
+        case 5 -> {
+          if (domain.startsWith(".gift")) {
+            return false;
+          }
+        }
+      }
+      return true; // Top level domain doesn't exist
+    } else if (domain.contains("nitro") || domain.contains("gift")) {
+      return true;
+    }
+    // Irregular patterns
+    return domain.contains("d1sc") || domain.contains("dlsc") || domain.contains("discod") ||
+        domain.contains("discorcl") || domain.contains("discond") || domain.contains("discrond") ||
+        domain.contains("discrod");
   }
 }
