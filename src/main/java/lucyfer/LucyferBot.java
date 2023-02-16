@@ -46,7 +46,7 @@ public class LucyferBot {
     EventWaiter waiter = new EventWaiter();
 
     // Prefixes
-    String prefix = "a";
+    String prefix = "L";
     String alternativePrefix = "L:";
 
     // CommandClient settings
