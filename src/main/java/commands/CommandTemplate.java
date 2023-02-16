@@ -13,10 +13,13 @@ public class CommandTemplate extends Command {
     this.ownerCommand = false;
   }
 
+  // Method does something
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
-    int arguments = args.length;
+
+    // Parse raw message for arguments (if necessary)
+    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfArguments = arguments.length;
   }
 }

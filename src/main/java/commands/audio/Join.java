@@ -14,33 +14,36 @@ public class Join extends Command {
     this.help = "Bot joins the same voice channel as the user.";
   }
 
+  // Connects bot to the same voice channel as the user
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
+
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
-    if (userVoiceState.inVoiceChannel()) { // User in any voice channel
-      if (botVoiceState.inVoiceChannel()) { // Bot already in voice channel
-        if (userVoiceState.getChannel()
-            .equals(botVoiceState.getChannel())) { // User in same voice channel as bot
-          ce.getChannel().sendMessage("Already in the same voice channel.").queue();
-        } else { // User not in same voice channel as bot
-          String alreadyConnected = "Already connected to <#"
-              + botVoiceState.getChannel().getId() + ">";
-          ce.getChannel().sendMessage(alreadyConnected).queue();
-        }
-      } else { // Bot not in any voice channel
-        joinVoiceChannel(ce);
+
+    boolean userInVoiceChannel = userVoiceState.inVoiceChannel();
+    boolean botNotAlreadyInVoiceChannel = !botVoiceState.inVoiceChannel();
+    boolean botIsAvailableToJoinSameVoiceChannel = userInVoiceChannel && botNotAlreadyInVoiceChannel;
+
+    if (botIsAvailableToJoinSameVoiceChannel) {
+      joinVoiceChannel(ce);
+    } else {
+      if (!userInVoiceChannel) {
+        ce.getChannel().sendMessage("User not in a voice channel.").queue();
+      } else if (!botNotAlreadyInVoiceChannel) {
+        String alreadyConnected = "Already connected to <#" + botVoiceState.getChannel().getId() + ">";
+        ce.getChannel().sendMessage(alreadyConnected).queue();
       }
-    } else { // User not in any voice channel
-      ce.getChannel().sendMessage("User not in a voice channel.").queue();
     }
   }
 
+  // Attempts to join the same voice channel as the user
   private void joinVoiceChannel(CommandEvent ce) {
     VoiceChannel voiceChannel = ce.getMember().getVoiceState().getChannel();
     AudioManager audioManager = ce.getGuild().getAudioManager();
-    try { // Join voice channel
+
+    try {
       audioManager.openAudioConnection(voiceChannel);
       ce.getChannel().sendMessage("Connected to <#" + voiceChannel.getId() + ">").queue();
     } catch (Exception e) { // Insufficient permissions

@@ -9,8 +9,8 @@ import java.time.format.DateTimeFormatter;
 
 public class MessageLog extends ListenerAdapter {
   public void onGuildMessageReceived(GuildMessageReceivedEvent ce) {
-    // MM/dd(HH:mm)<Server>#channel[UserTag]:Text(MessageAttachment)
-    if (isHuman(ce)) {
+    boolean isHuman = !ce.getMessage().isWebhookMessage() && (!ce.getMessage().getAuthor().isBot());
+    if (isHuman) {
       sendMessageLog(ce);
       if (Settings.getModeratePotentialPhishing()) {
         moderatePotentialPhishing(ce);
@@ -18,15 +18,14 @@ public class MessageLog extends ListenerAdapter {
     }
   }
 
+  // Logs sent messages in application console, used for debugging
+  // MM/dd(HH:mm)<Server>#channel[UserTag]:Text(MessageAttachment)
   private void sendMessageLog(GuildMessageReceivedEvent ce) {
     System.out.println(getTime() + getGuildName(ce) + getChannelName(ce) + getAuthorTag(ce) + getMessageContent(ce)
         + (!ce.getMessage().getAttachments().isEmpty() ? getMessageAttachment(ce) : ""));
   }
 
-  private boolean isHuman(GuildMessageReceivedEvent ce) {
-    return (!ce.getMessage().isWebhookMessage() && (!ce.getMessage().getAuthor().isBot()));
-  }
-
+  // Get various variables for formatting messages logged
   private static String getTime() {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd(HH:mm)");
     LocalDateTime currentDateTime = LocalDateTime.now();
@@ -53,25 +52,23 @@ public class MessageLog extends ListenerAdapter {
     return "(" + event.getMessage().getAttachments().get(0).getUrl() + ")";
   }
 
+  // Delete potential phishing attempts
   private void moderatePotentialPhishing(GuildMessageReceivedEvent ce) {
     String message = ce.getMessage().getContentRaw().toLowerCase();
-    // Message contains a link
+
     boolean containsLink = message.contains("https://") || message.contains("http://");
-    // Filter links from message
-    while (containsLink) {
+    while (containsLink) { // Filter links from message
       if (message.contains("https://")) { // Found https://
         if (!message.equals("https://")) { // Doesn't contain scheme only
           message = message.substring(message.indexOf("https://") + 8); // Separate scheme from URL
-          // Unsafe URL content signals message deletion & ends loop immediately
-          containsLink = isSafeURL(ce, message);
+          containsLink = isSafeURL(ce, message); // Unsafe URL content signals message deletion & ends loop immediately
         } else { // Contains scheme only
           containsLink = false;
         }
       } else if (message.contains("http://")) { // Found http://
         if (!message.equals("http://")) { // Doesn't contain scheme only
           message = message.substring(message.indexOf("http://") + 7); // Separate scheme from URL
-          // Unsafe URL content signals message deletion & ends loop immediately
-          containsLink = isSafeURL(ce, message);
+          containsLink = isSafeURL(ce, message); // Unsafe URL content signals message deletion & ends loop immediately
         } else { // Contains scheme only
           containsLink = false;
         }
@@ -81,6 +78,7 @@ public class MessageLog extends ListenerAdapter {
     }
   }
 
+  // Deletes message if any unsafe links are found
   private boolean isSafeURL(GuildMessageReceivedEvent ce, String message) {
     String link;
     try { // Delimit url by space
@@ -88,29 +86,38 @@ public class MessageLog extends ListenerAdapter {
     } catch (StringIndexOutOfBoundsException error) { // No space
       link = message;
     }
+
     if (isPotentialPhishingLink(link)) { // Screen link
       ce.getMessage().delete().queue();
       ce.getChannel().sendMessage("**Potentially Dangerous Link!** "
           + ce.getAuthor().getAsMention()).queue();
       return false;
     }
+
     return true; // Continue to next link if URL is deemed safe
   }
 
+  // Definition for potentially risky links
   private boolean isPotentialPhishingLink(String link) {
     String domain;
-    try { // Separate subdirectories from domain
+
+    // Separate subdirectories from domain
+    try {
       domain = link.substring(0, link.indexOf("/"));
     } catch (IndexOutOfBoundsException error) { // No subdirectories
       domain = link;
     }
-    if (domain.contains("discord")) { // Contains discord
+
+    // Contains discord
+    if (domain.contains("discord")) {
       int discordIndex = domain.indexOf("discord");
+
       if (!domain.contains("discordapp")) { // Discord
         domain = domain.substring(discordIndex + 7);
       } else { // Discordapp
         domain = domain.substring(discordIndex + 10);
       }
+
       switch (domain.length()) { // Validate top level domain
         case 0 -> {
           return false;
@@ -136,6 +143,7 @@ public class MessageLog extends ListenerAdapter {
     } else if (domain.contains("nitro") || domain.contains("gift")) {
       return true;
     }
+
     // Irregular patterns
     return domain.contains("d1sc") || domain.contains("dlsc") || domain.contains("discod") ||
         domain.contains("discorcl") || domain.contains("discond") || domain.contains("discrond") ||

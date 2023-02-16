@@ -19,13 +19,12 @@ import java.util.Map;
 
 public class PlayerManager {
   private static PlayerManager INSTANCE; // For query handling
-
   private final Map<Long, PlaybackManager> musicManagers;
   private final AudioPlayerManager audioPlayerManager; // Audio capabilities
-
   public ArrayList<AudioTrack> searchTrackResults;
 
-  public PlayerManager() { // Register audio player with bot
+  // Register audio player with bot
+  public PlayerManager() {
     this.musicManagers = new HashMap<>();
     this.audioPlayerManager = new DefaultAudioPlayerManager();
     AudioSourceManagers.registerRemoteSources(this.audioPlayerManager);
@@ -42,7 +41,7 @@ public class PlayerManager {
     });
   }
 
-  public void createAudioTrack(CommandEvent ce, String trackURL) { // Play
+  public void createAudioTrack(CommandEvent ce, String trackURL) {
     final PlaybackManager playbackManager = this.getPlaybackManager(ce.getGuild());
     this.audioPlayerManager.loadItemOrdered(playbackManager, trackURL, new AudioLoadResultHandler() {
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
@@ -51,8 +50,7 @@ public class PlayerManager {
       public void trackLoaded(AudioTrack track) {
         playbackManager.audioScheduler.queue(track);
         playbackManager.audioScheduler.addToRequesterList(requester);
-        long trackDurationLong = track.getDuration();
-        String trackDuration = floatTimeConversion(trackDurationLong);
+        String trackDuration = longTimeConversion(track.getDuration());
         ce.getChannel().sendMessage("**Added:** `" +
             track.getInfo().title + "` {*" + trackDuration + "*} "
             + requester).queue();
@@ -65,8 +63,7 @@ public class PlayerManager {
           AudioTrack track = results.get(0);
           playbackManager.audioScheduler.queue(track);
           playbackManager.audioScheduler.addToRequesterList(requester);
-          long trackDurationLong = track.getDuration();
-          String trackDuration = floatTimeConversion(trackDurationLong);
+          String trackDuration = longTimeConversion(track.getDuration());
           ce.getChannel().sendMessage("**Added:** `" +
               results.get(0).getInfo().title + "` {*" + trackDuration + "*} "
               + requester).queue();
@@ -92,7 +89,7 @@ public class PlayerManager {
     });
   }
 
-  public void createAudioTrackSilent(CommandEvent ce, String trackURL) { // Play
+  public void createAudioTrackSilent(CommandEvent ce, String trackURL) {
     final PlaybackManager playbackManager = this.getPlaybackManager(ce.getGuild());
     this.audioPlayerManager.loadItemOrdered(playbackManager, trackURL, new AudioLoadResultHandler() {
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
@@ -141,21 +138,28 @@ public class PlayerManager {
       @Override
       public void playlistLoaded(AudioPlaylist playlist) {
         clearSearchTrackResults(); // Clear results from previous search
+
+        // Limit YouTube search results to 5
         List<AudioTrack> searchResults = playlist.getTracks();
-        for (int i = 0; i < 5; i++) { // Limit YouTube search results to 5
+        for (int i = 0; i < 5; i++) {
           addSearchTrackResults(searchResults.get(i));
         }
-        EmbedBuilder display = new EmbedBuilder();
+
+        // Queue Entries
         StringBuilder searchResultsDisplay = new StringBuilder();
-        for (int i = 0; i < 5; i++) { // Queue Entries
+        for (int i = 0; i < 5; i++) {
           long trackDurationLong = getSearchTrackResults(i).getDuration();
-          String trackDuration = floatTimeConversion(trackDurationLong);
+          String trackDuration = longTimeConversion(trackDurationLong);
           searchResultsDisplay.append("**[").append(i + 1).append("]** `").
               append(getSearchTrackResults(i).getInfo().title)
               .append("` {*").append(trackDuration).append("*}\n");
         }
+
+        // Search results confirmation
+        EmbedBuilder display = new EmbedBuilder();
         display.setTitle("**__Search Results__**");
         display.setDescription(searchResultsDisplay);
+
         Settings.sendEmbed(ce, display);
       }
 
@@ -171,11 +175,12 @@ public class PlayerManager {
     });
   }
 
-  private String floatTimeConversion(long floatTime) {
-    long days = floatTime / 86400000 % 30;
-    long hours = floatTime / 3600000 % 24;
-    long minutes = floatTime / 60000 % 60;
-    long seconds = floatTime / 1000 % 60;
+  // Converts long duration to conventional readable time
+  private String longTimeConversion(long longTime) {
+    long days = longTime / 86400000 % 30;
+    long hours = longTime / 3600000 % 24;
+    long minutes = longTime / 60000 % 60;
+    long seconds = longTime / 1000 % 60;
     return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
         (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
         (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +

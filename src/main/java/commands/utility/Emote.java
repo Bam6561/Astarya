@@ -13,16 +13,20 @@ public class Emote extends Command {
     this.help = "Provides mentioned emote as a file.";
   }
 
+  // Sends an embed containing information about an emote
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    if (!ce.getMessage().getEmotes().isEmpty()) { // Emotes
+
+    boolean messageHasEmote = !ce.getMessage().getEmotes().isEmpty();
+    if (messageHasEmote) {
       EmbedBuilder display = new EmbedBuilder();
       display.setTitle(ce.getMessage().getEmotes().get(0).getName());
       display.setImage(ce.getMessage().getEmotes().get(0).getImageUrl());
+
       Settings.sendEmbed(ce, display);
     } else {
-      ce.getChannel().sendMessage("You must include an emote as an argument.").queue();
+      ce.getChannel().sendMessage("Specify an emote.").queue();
     }
   }
 }

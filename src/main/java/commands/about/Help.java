@@ -9,146 +9,126 @@ public class Help extends Command {
   public Help() {
     this.name = "help";
     this.aliases = new String[]{"help", "manual", "instructions"};
-    this.arguments = "[0]HelpCommandDescription [1]CommandName";
+    this.arguments = "[0]Help [1]CommandName";
     this.help = "Provides the command manual for the bot.";
   }
 
+  // Sends an embed containing documentation on a command
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
+
+    // Parse message for arguments
+    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfArguments = arguments.length - 1;
+
     EmbedBuilder display = new EmbedBuilder();
-    String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
-    int arguments = args.length;
-    switch (arguments) {
-      case 1 -> getHelpMenu(ce, display); // Main menu
-      case 2 -> getHelpDetail(ce, display, args[1].toLowerCase()); // Command help details
-      default -> ce.getChannel().sendMessage("Try doing " + Settings.getPrefix() // Invalid arguments
+    switch (numberOfArguments) {
+      case 0 -> helpMainMenu(ce, display);
+      case 1 -> sendDetailedCommandHelpEmbed(ce, display, arguments[1].toLowerCase());
+      default -> ce.getChannel().sendMessage("Try doing " + Settings.getPrefix()
           + "commands for a full command list.").queue();
     }
   }
 
-  private void getHelpMenu(CommandEvent ce, EmbedBuilder display) {
+  private void helpMainMenu(CommandEvent ce, EmbedBuilder display) {
     display.setTitle("__Help__");
     display.setDescription("Type help [CommandName] for more details on the usage of each command.");
-    display.addField("**About:**", "<info <help <credits", true);
-    display.addField("**Utility:**", "<serverinfo <whois <avatar <emote <poll <remind <twitter", true);
+    display.addField("**About:**", "<credits <help <info <ping ", true);
+    display.addField("**Utility:**", "<avatar <emote <poll <profile <remind <server", true);
     display.addField("**Music:**", "<clearQueue <join <leave <loop <nowPlaying " +
         "<pause <playNext <play <queue <remove <searchTrack <setPosition <shuffle <skip <swap", true);
-    display.addField("**Games:**", "<roll <flip <choice <highorlow", true);
-    display.addField("**HoloLive:**", "<streams <tags", true);
-    display.addField("**Miscellaneous:**", "<random <echo <ping", true);
-    display.addField("**Owner:**", "<settings <buildembed <delete <shutdown <volume", true);
-    display.addField("**Promotion:**", "<dungeonarchives", true);
+    display.addField("**Games:**", "<choose <coinflip <highorlow <roll", true);
+    display.addField("**Owner:**", "<delete <settings <shutdown", true);
+
     Settings.sendEmbed(ce, display);
   }
 
-  private void getHelpDetail(CommandEvent ce, EmbedBuilder display, String commandName) {
+  private void sendDetailedCommandHelpEmbed(CommandEvent ce, EmbedBuilder display, String commandName) {
     switch (commandName) {
-      case "avatar", "pfp" -> sendEmbed(ce, display, "__Command: Avatar__",
+      case "avatar", "pfp" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Avatar__",
           "Provides the user's profile picture. By default, the size of the image is 1024x1024. "
               + "Additional arguments adjust the size of the image in choices of 128, 256, & 512.",
           "avatar, pfp", "[0]Self [1]Mention/UserID/Size [2]Size",
           "avatar, avatar (128, 256, 512), avatar @user, avatar UserID, " +
               "avatar @user (128, 256, 512), avatar UserID (128, 256, 512)");
-      case "buildembed", "embed" -> sendEmbed(ce, display, "__Command: BuildEmbed__",
-          "Builds embeds using the Discord message line."
-              + " This command is very sensitive to user input, and any exceptions will cancel the embed " +
-              "building process. The switch signal for the bot to know which embed properties " +
-              "to include is either T for true/include or F for false/exclude. Use no arguments" +
-              " to bring up a reminder of what the switches are, and one argument that includes" +
-              " the 9 character switch block to begin. From there, the rest of the process will " +
-              "be bot requested inputs and user feedback. The options displayed in brackets ([]) " +
-              "are different types of variations of embed properties and their number of arguments" +
-              " to use them. There is no prefix necessary, you can type normally for input. The " +
-              "signal to let the bot know that you've finished with one argument or field is to " +
-              "include >> at the end of every argument you wish to use. Although Tenor gif links " +
-              "are not acceptable as image previews, saving the gif and uploading it to use its " +
-              "media link from there will work. \n\n__**Glossary:**__ \n(hyperlink): clickable text | " +
-              "(url): a website link or media location | (inline): true or false - determines " +
-              "whether or not the field is on the same row as the previous",
-          "buildembed, embed", "[0]BuildEmbed Switches [1]9 Character Switch",
-          "buildembed, buildembed TTTTTTTTT");
-      case "choice", "choices", "choose", "pick" -> sendEmbed(ce, display, "__Command: Choice__",
+      case "choose", "choice", "pick", "options" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Choose__",
           "Chooses randomly between any number of options. " +
               "The choices are arguments provided by commas (,).",
-          "choice, choices, choose, pick", "[1, ++]Option",
+          "choose, choice, pick, option", "[1, ++]Options",
           "choice Take out the trash, Do the laundry, Walk the dog");
-      case "clearqueue", "clear" -> sendEmbed(ce, display, "__Command: ClearQueue__",
-          "Clears the track queue.", "clearqueue, clear", "[0]clear",
+      case "clearqueue", "clearq", "clear" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: ClearQueue__",
+          "Clears the track queue.", "clearqueue, clear", "[0]Clear",
           "clearqueue");
-      case "credits" -> sendEmbed(ce, display, "__Command: Credits__",
-          "Provides user with a list of credits for the bot.",
+      case "coinflip" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Coin Flip__",
+          "Flips a coin any number of times. " +
+              "Argument provides how many times to flip the coin. (1-10)",
+          "coinflip, flip", "[0]Once [1]NumberOfFlips",
+          "flip, flip [1-10]");
+      case "credits" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Credits__",
+          "Shows a list of credits for the bot.",
           "credits", "[0]Credits", "credits");
-      case "delete", "purge" -> sendEmbed(ce, display, "__Command: Delete__",
-          "Deletes a number of messages. " +
+      case "delete", "purge" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Delete__",
+          "Deletes a number of recent messages. " +
               "Argument provides how many (2 - 100).",
-          "delete, purge", "[1]Number", "delete (2-100)");
-      case "dungeonarchives", "dainvite" -> sendEmbed(ce, display, "__Command: DungeonArchives__",
-          "Discord advertisment for Dungeon Archives.",
-          "dungeonarchives, dainvite", "[0]DungeonArchives", "dungeonarchives");
-      case "echo", "copy" -> sendEmbed(ce, display, "__Command: Echo__",
-          "Repeats the user's text. Argument provides the text content.",
-          "echo, copy", "[0++]Text", "echo Stop repeating me!");
-      case "emote", "emoji" -> sendEmbed(ce, display, "__Command: Emote__",
+          "delete, purge, wipe", "[1]NumberOfMessagesToDelete", "delete (2-100)");
+      case "emote", "emoji" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Emote__",
           "Provides the mentioned custom emote as a file. " +
               "Argument is the requested emote.",
           "emote, emoji", "[1]Emote", "emote :happyFeetDance:");
-      case "flip" -> sendEmbed(ce, display, "__Command: Flip__",
-          "Flips a coin any number of times. " +
-              "Argument provides how many times to flip the coin. (1-10)",
-          "flip", "[0]Once [1]Number",
-          "flip, flip [1-10]");
-      case "help", "manual", "instructions" -> sendEmbed(ce, display, "__Command: Help__",
-          "Provides documentation on Lucyfer commands. " +
+      case "help", "manual", "instructions" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Help__",
+          "Provides documentation on LucyferBot commands. " +
               "Argument describes more detailed command usage.",
           "help, manual, instructions",
-          "[0]HelpCommandDescription [1]CommandName", "help help");
-      case "highorlow" -> sendEmbed(ce, display, "Command: __HighOrLow__",
+          "[0]HelpMainMenu [1]CommandName", "help help");
+      case "highorlow", "guess" -> sendDetailedCommandHelpEmbed(ce, display, "Command: __HighOrLow__",
           "Guess whether the next number will be higher or lower!",
-          "highorlow", "[0]HighOrLow", "highorlow");
-      case "info" -> sendEmbed(ce, display, "__Command: Info__",
+          "highorlow, guess", "[0]HighOrLow", "highorlow");
+      case "info" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Info__",
           "Provides information on the bot and its developer.",
           "info", "[0]Info", "info");
-      case "join", "j" -> sendEmbed(ce, display, "__Command: Join__",
+      case "join", "j" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Join__",
           "Bot joins the same voice channel as the user.", "join, j",
           "[0]join", "info");
-      case "leave", "disconnect", "dc" -> sendEmbed(ce, display, "__Command: Leave__",
-          "Bot leaves the voice channel it is in.", "leave, disconnect, dc",
+      case "leave", "l", "disconnect", "dc" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Leave__",
+          "Bot leaves the voice channel it is in.", "leave, l, disconnect, dc",
           "[0]leave", "leave");
-      case "loop", "repeat" -> sendEmbed(ce, display, "__Command: Loops__",
+      case "loop", "repeat" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Loops__",
           "Loops the current audio track.",
           "loop, repeat", "[0]Loop", "loop");
-      case "nowplaying", "np" -> sendEmbed(ce, display, "__Command: NowPlaying__",
+      case "nowplaying", "np" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: NowPlaying__",
           "Shows what's currently playing.", "nowplaying, np",
           "[0]NowPlaying", "nowplaying");
-      case "pause", "stop" -> sendEmbed(ce, display, "__Command: Pause__",
-          "Pauses the audio player",
+      case "pause", "stop" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Pause__",
+          "Pauses the audio player. Rapid activity status changes may be rate limited.",
           "pause, stop", "[0]Pause", "pause");
-      case "ping", "ms" -> sendEmbed(ce, display, "__Command: Ping__",
+      case "ping", "ms" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Ping__",
           "Response time of the bot in milliseconds.",
           "ping, ms", "[0]Ping", "ping");
-      case "play", "p", "add" -> sendEmbed(ce, display, "__Command: Play__",
+      case "play", "p", "add" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Play__",
           """
-              Adds an audio track to the queue. Limit of Spotify playlists is 100. Limit of Spotify albums is 50.\s
+              Adds an audio track to the queue. Limit of Spotify playlists is 100. Limit of Spotify albums is 50.
+              Rapid activity status changes may be rate limited.\s
               **Sources:** YouTube links/playlists, Discord media links, Spotify links/playlists/album\s
-              **File Types:** MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams""",
+              **File Types:** MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams\s""",
           "play, p, add", "[1]URL, [2++]YouTubeQuery",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ, play Cleverly Disguised Rickrolls");
-      case "playnext", "after" -> sendEmbed(ce, display, "__Command: PlayNext__",
+      case "playnext", "after" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: PlayNext__",
           "Sets the position of the currently playing audio track.",
           "playnext, after", "[1]QueueNumber", "playnext 3");
-      case "poll", "polls", "vote" -> sendEmbed(ce, display, "__Command: Poll__",
+      case "poll", "react", "vote" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Poll__",
           "Creates a reaction vote with up to 10 options. " +
               "The options are arguments provided by commas (,).",
-          "poll, polls, vote", "[2, ++]PollOptions",
+          "poll, react, vote", "[2, ++]PollOptions",
           "poll hot pizza, cold pizza");
-      case "queue", "q" -> sendEmbed(ce, display, "__Command: Queue__",
+      case "profile", "whois", "who", "user" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Profile__",
+          "Provides information on the user.",
+          "profile, whois, who, user", "[0]Self [1]Mention/UserID",
+          "profile, profile @user, profile UserID");
+      case "queue", "q" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Queue__",
           "Provides a list of audio tracks queued.", "queue, q",
           "[0]Queue, [1]PageNumber", "queue, queue 1");
-      case "random" -> sendEmbed(ce, display, "__Command: Random__",
-          "Provides a random image.",
-          "random", "[0]Random", "random");
-      case "remind", "alert", "timer" -> sendEmbed(ce, display, "__Command: Remind__",
+      case "remind", "alert", "timer" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Remind__",
           "Sets a timer and alerts the user when the time expires for up to " +
               "a day's maximum length. Arguments provide the time duration, type, " +
               "and event name. The bot recognizes the following data types for 1 argument: " +
@@ -158,79 +138,62 @@ public class Help extends Command {
           "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName",
           "remind (0-86400)s, remind (0-1440)m, remind (0-24)h, "
               + "remind TimeDurationTimeType EventName, remind TimeDuration TimeType EventName");
-      case "remove", "rm", "r" -> sendEmbed(ce, display, "__Command: Remove__",
+      case "remove", "rm", "r" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Remove__",
           "Removes an audio track from the queue.", "remove, rm, r",
           "[1]QueueNumber", "remove 1");
-      case "roll", "rng", "dice" -> sendEmbed(ce, display, "__Command: Roll__",
-          "Dice roll and integer RNG (random number generator). No arguments to roll once. "
-              + "One argument to roll (1-10) times. Three arguments to set your own RNG - lower bound" +
-              "and upper-bound values are included in the range.",
-          "roll, rng, dice", "[0]Once [1]Number [2]LowerBound [3]UpperBound",
+      case "roll", "rng", "dice", "random" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Roll__",
+          "Dice roll and random integer generator. No arguments to roll once. "
+              + "One argument to roll (1-10) times. Three arguments to set how many times to roll" +
+              " your own custom range of minimum and maximum values.",
+          "roll, rng, dice, random", "[0]Once [1]NumberOfRolls [2]Minimum [3]Maximum",
           "roll, roll (1-10), roll (1-10) (0++) (1-214748367)");
-      case "searchtrack", "search", "find" -> sendEmbed(ce, display, "__Command: SearchTrack__",
-          "Searches for an audio track to add to the queue.", "searchtrack, search, find",
+      case "searchtrack", "search", "find" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: SearchTrack__",
+          "Searches for an audio track to add to the queue. Rapid activity status changes may be rate limited.", "searchtrack, search, find",
           "[1++]YouTubeQuery -> [1]SearchResultNumber", "search towa pallete, 1");
-      case "serverinfo", "server" -> sendEmbed(ce, display, "__Command: ServerInfo__",
+      case "server" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Server__",
           "Provides information on the server.",
           "serverinfo, server", "[0]ServerInfo", "serverinfo");
-      case "setposition", "setpos", "goto" -> sendEmbed(ce, display, "__Command: SetPosition__",
+      case "setposition", "setpos", "goto" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: SetPosition__",
           "Sets the position of the currently playing audio track. \":\" seperates" +
               "the time types, from hours:minutes:seconds.",
           "setposition, setpos, goto", "[1]TimeString",
           "setposition 124, set position 2:04");
-      case "settings", "config" -> sendEmbed(ce, display, "__Command: Settings__",
+      case "settings", "config" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Settings__",
           "Provides information on bot settings.",
           "settings, config",
           "[0]Settings [1]Setting [2]True/False",
           "settings, settings (setting) (true/false) ");
-      case "shuffle", "mix" -> sendEmbed(ce, display, "__Command: Shuffle__",
+      case "shuffle", "mix" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Shuffle__",
           "Shuffles the queue.", "shuffle, mix", "[0]Shuffle",
           "shuffle");
-      case "shutdown" -> sendEmbed(ce, display, "__Command: Shutdown__",
-          "Shuts the bot down. Use only when absolutely necessary.",
-          "shutdown", "[0]Shutdown", "shutdown");
-      case "skip", "s", "next" -> sendEmbed(ce, display, "__Command: Skip__",
-          "Skips the currently playing audio track.",
+      case "shutdown" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Shutdown__",
+          "Shuts the bot down.",
+          "shutdown, nuke", "[0]Shutdown", "shutdown");
+      case "skip", "s", "next" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Skip__",
+          "Skips the currently playing audio track. Rapid activity status changes may be rate limited.",
           "skip, s, next", "[0]Skip", "skip");
-      case "streams" -> sendEmbed(ce, display, "__Command: Streams__",
-          "Displays upcoming and current HoloLive streams. Can only be updated once a day " +
-              "due to default YT quota restrictions.",
-          "streams", "[0]Streams", "streams");
-      case "swap", "switch" -> sendEmbed(ce, display, "__Command: Swap__",
+      case "swap", "switch" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Swap__",
           "Swaps the position of an audio track in queue with another.",
           "swap, switch", "[1]QueueNumber [2]QueueNumber",
           "swap 2 4");
-      case "tags" -> sendEmbed(ce, display, "__Command: Tags__",
-          "Provides the requested HoloLive member's Twitter tags.",
-          "tags", "[1]FirstOrLastName",
-          "tags sora");
-      case "twitter", "tw" -> sendEmbed(ce, display, "__Command: Twitter__",
-          "Provides information about a Twitter user.",
-          "twitter, tw", "[1]TwitterHandle",
-          "twitter ndanny09");
-      case "whois", "who", "profile", "user" -> sendEmbed(ce, display, "__Command: WhoIs__",
-          "Provides information on the user.",
-          "whois, who, profile, user", "[0]Self [1]Mention/UserID",
-          "whois, whois @user, whois UserID");
-      case "volume" -> sendEmbed(ce, display, "__Command: Volume__",
-          "Sets the volume of the audio player.",
-          "volume", "[1]0-200", "volume 125");
       default -> {
         display.setTitle("__Command Not Found__");
         display.setDescription("Try typing " + Settings.getPrefix() + "commands for a full command list.");
+
         Settings.sendEmbed(ce, display);
       }
     }
   }
 
-  // Help details display
-  private void sendEmbed(CommandEvent ce, EmbedBuilder display, String title, String description, String aliases, String arguments,
-                         String examples) {
+  // Detailed command help details display
+  private void sendDetailedCommandHelpEmbed(CommandEvent ce, EmbedBuilder display, String title,
+                                            String description, String aliases, String arguments, String examples) {
     display.setTitle(title);
     display.setDescription(description);
     display.addField("**Aliases:**", aliases, false);
     display.addField("**Arguments:**", arguments, false);
     display.addField("**Examples:**", examples, false);
+
     Settings.sendEmbed(ce, display);
   }
 }

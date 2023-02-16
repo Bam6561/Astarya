@@ -9,17 +9,22 @@ import net.dv8tion.jda.api.managers.AudioManager;
 public class Leave extends Command {
   public Leave() {
     this.name = "leave";
-    this.aliases = new String[]{"leave", "disconnect", "dc"};
+    this.aliases = new String[]{"leave", "l", "disconnect", "dc"};
     this.help = "Bot leaves the voice channel it is in.";
   }
 
+  // Forces bot to leave its current voice channel
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
+
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
-    if (botVoiceState.inVoiceChannel()) {
+    boolean botIsInVoiceChannel = botVoiceState.inVoiceChannel();
+
+    if (botIsInVoiceChannel) {
       AudioManager audioManager = ce.getGuild().getAudioManager();
       audioManager.closeAudioConnection();
+
       String leaveChannel = "Leaving <#" + botVoiceState.getChannel().getId() + ">";
       ce.getChannel().sendMessage(leaveChannel).queue();
     } else {

@@ -14,38 +14,52 @@ public class Poll extends Command {
 
   public Poll(EventWaiter waiter) {
     this.name = "poll";
-    this.aliases = new String[]{"poll", "polls", "vote"};
+    this.aliases = new String[]{"poll", "vote", "react"};
     this.arguments = "[2, ++]PollOptions";
     this.help = "Creates a reaction vote with up to 10 options.";
     this.waiter = waiter;
   }
 
+  // Sends an embed with up to 10 reactions based on number of user provided options
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
-    int arguments = args.length;
-    // No arguments provided
-    if (arguments == 1) {
-      ce.getChannel().sendMessage("You need to provide some options separated by a comma.").queue();
-    } else {// Parse arguments for options provided
-      String[] options = parseOptions(args);
-      if (checkForEmptyOptions(options)) { // Empty option
-        ce.getChannel().sendMessage("None of the choices provided can be empty.").queue();
-      } else { // Prepare poll
-        if ((options.length > 1) && (options.length < 11)) { // 1 - 10 options
+
+    // Parse message for arguments
+    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfArguments = arguments.length - 1;
+
+    boolean optionsProvided = numberOfArguments != 0;
+    if (optionsProvided) {
+      String[] options = parseOptions(arguments);
+
+      boolean noEmptyOptions = !checkForEmptyPollOptions(options);
+      if (noEmptyOptions) { // Prepare poll
+        int numberOfOptions = options.length;
+        boolean moreThanOneOption = numberOfOptions > 1;
+        boolean noMoreThanTenOptions = numberOfOptions < 11;
+        boolean validNumberOfOptions = moreThanOneOption && noMoreThanTenOptions;
+
+        if (validNumberOfOptions) {
           createPoll(ce, options);
           setPollOptions(options);
-        } else if (options.length > 10) { // More than 10 options
-          ce.getChannel().sendMessage("You can only provide up to 10 options.").queue();
-        }  else { // Less than 2 options
-          ce.getChannel().sendMessage("You need to provide more than 1 option.").queue();
+        } else {
+          if (!moreThanOneOption) {
+            ce.getChannel().sendMessage("Specify more than 1 option.").queue();
+          }
+          if (!noMoreThanTenOptions) {
+            ce.getChannel().sendMessage("Specify only up to 10 options.").queue();
+          }
         }
+      } else {
+        ce.getChannel().sendMessage("None of the options provided can be empty.").queue();
       }
+    } else {
+      ce.getChannel().sendMessage("Specify options separated by a comma.").queue();
     }
   }
 
-  // Parse arguments for choices
+  // Parse arguments for options
   private String[] parseOptions(String[] args) {
     StringBuilder optionsStringBuilder = new StringBuilder();
     for (int i = 1; i < args.length; i++) {
@@ -55,48 +69,46 @@ public class Poll extends Command {
   }
 
   // Check for empty spaces in options
-  private boolean checkForEmptyOptions(String[] choices) {
-    boolean emptyOptionsExists = false;
-    int pointer = 0;
-    while ((!emptyOptionsExists) && (pointer < choices.length)) {
-      if (choices[pointer].equals(" ")) {
-        emptyOptionsExists = true;
-      }
-      pointer++;
+  private boolean checkForEmptyPollOptions(String[] options) {
+    for (String option : options) { // Find the first blank option (if any)
+      if (option.equals(" ")) return true;
     }
-    return emptyOptionsExists;
+    return false;
   }
 
-  // Create poll
+  // Sends an embed containing poll information
   private void createPoll(CommandEvent ce, String[] options) {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Poll__");
+
     StringBuilder displayOptions = new StringBuilder();
     displayOptions.append("It's time to vote!\n");
     for (int i = 0; i < options.length; i++) {
-      displayOptions.append("**[").append(i+1).append("]**").append(" ").append(options[i]).append("\n");
+      displayOptions.append("**[").append(i + 1).append("]**").append(" ").append(options[i]).append("\n");
     }
     display.setDescription(displayOptions);
+
     Settings.sendEmbed(ce, display);
   }
 
-  // Add reactions to poll
+  // Adds reactions to the poll embed
   private void setPollOptions(String[] options) {
     int numberOfOptions = options.length;
+
     waiter.waitForEvent(GuildMessageReceivedEvent.class,
         w -> !w.getMessage().getEmbeds().isEmpty()
             && (w.getMessage().getEmbeds().get(0).getTitle().equals("__Poll__")),
         w -> {
-          if (1 <= numberOfOptions) w.getMessage().addReaction("1️⃣").queue();
-          if (2 <= numberOfOptions) w.getMessage().addReaction("2️⃣").queue();
-          if (3 <= numberOfOptions) w.getMessage().addReaction("3️⃣").queue();
-          if (4 <= numberOfOptions) w.getMessage().addReaction("4️⃣").queue();
-          if (5 <= numberOfOptions) w.getMessage().addReaction("5️⃣").queue();
-          if (6 <= numberOfOptions) w.getMessage().addReaction("6️⃣").queue();
-          if (7 <= numberOfOptions) w.getMessage().addReaction("7️⃣").queue();
-          if (8 <= numberOfOptions) w.getMessage().addReaction("8️⃣").queue();
-          if (9 <= numberOfOptions) w.getMessage().addReaction("9️⃣").queue();
-          if (10 == numberOfOptions) w.getMessage().addReaction("0️⃣").queue();
+          w.getMessage().addReaction("1️⃣").queue();
+          if (numberOfOptions >= 2) w.getMessage().addReaction("2️⃣").queue();
+          if (numberOfOptions >= 3) w.getMessage().addReaction("3️⃣").queue();
+          if (numberOfOptions >= 4) w.getMessage().addReaction("4️⃣").queue();
+          if (numberOfOptions >= 5) w.getMessage().addReaction("5️⃣").queue();
+          if (numberOfOptions >= 6) w.getMessage().addReaction("6️⃣").queue();
+          if (numberOfOptions >= 7) w.getMessage().addReaction("7️⃣").queue();
+          if (numberOfOptions >= 8) w.getMessage().addReaction("8️⃣").queue();
+          if (numberOfOptions >= 9) w.getMessage().addReaction("9️⃣").queue();
+          if (numberOfOptions == 10) w.getMessage().addReaction("0️⃣").queue();
         }, 15, TimeUnit.SECONDS, () -> {
         });
   }

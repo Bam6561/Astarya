@@ -1,4 +1,4 @@
-package commands.miscellaneous;
+package commands.about;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
@@ -11,8 +11,10 @@ public class Ping extends Command {
     this.help = "Response time of the bot in milliseconds.";
   }
 
+  // Sends a message with the response time of the bot in milliseconds
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
+
     long time = System.currentTimeMillis();
     ce.getChannel().sendMessage("Ping:").queue(response ->
         response.editMessageFormat("Ping: %d ms", System.currentTimeMillis() - time).queue());

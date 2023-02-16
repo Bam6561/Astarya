@@ -2,8 +2,13 @@ package commands.audio;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
+import lucyfer.LucyferBot;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 public class Pause extends Command {
@@ -13,24 +18,50 @@ public class Pause extends Command {
     this.help = "Pauses the audio player.";
   }
 
+  // Pauses the currently playing track, changes bot's presence and activity
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
+
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
-    if (userVoiceState.inVoiceChannel()) { // User in any voice channel
-      if (botVoiceState.inVoiceChannel()) { // Bot already in voice channel
-        if (userVoiceState.getChannel()
-            .equals(botVoiceState.getChannel())) { // User in same voice channel as bot
-          PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.setPauseState(ce);
-        } else { // User not in same voice channel as bot
-          ce.getChannel().sendMessage("User not in same voice channel.").queue();
-        }
-      } else { // Bot not in any voice channel
-        ce.getChannel().sendMessage("Not in a voice channel.").queue();
+
+    boolean userInVoiceChannel = ce.getMember().getVoiceState().inVoiceChannel();
+    boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
+
+    if (userInVoiceChannel) {
+      if (userInSameVoiceChannel) {
+        setAudioPlayerPause(ce);
+      } else {
+        ce.getChannel().sendMessage("User not in the same voice channel.").queue();
       }
-    } else { // User not in any voice channel
+    } else {
       ce.getChannel().sendMessage("User not in a voice channel.").queue();
+    }
+  }
+
+  // Pauses the currently playing track
+  public void setAudioPlayerPause(CommandEvent ce) {
+    AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
+    AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
+    LucyferBot lucyferBot = new LucyferBot();
+
+    boolean audioPlayerNotPaused = !audioPlayer.isPaused();
+    if (audioPlayerNotPaused) { // Update presence when Paused - Idle Yellow
+      audioPlayer.setPaused(true);
+      lucyferBot.getApi().getPresence().setStatus(OnlineStatus.IDLE);
+      lucyferBot.getApi().getPresence().setActivity(Activity.listening("Paused"));
+      ce.getChannel().sendMessage("Audio player paused.").queue();
+    } else { // Update presence when Playing Music - Online Green || Not playing audio - Do Not Disturb Red
+      audioPlayer.setPaused(false);
+      try {
+        lucyferBot.getApi().getPresence().setStatus(OnlineStatus.ONLINE);
+        lucyferBot.getApi().getPresence().setActivity(Activity.listening(audioPlayer.getPlayingTrack().getInfo().title));
+      } catch (NullPointerException e) { // No track currently playing
+        lucyferBot.getApi().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
+        lucyferBot.getApi().getPresence().setActivity(Activity.listening("Nothing"));
+      }
+      ce.getChannel().sendMessage("Audio player resumed.").queue();
     }
   }
 }

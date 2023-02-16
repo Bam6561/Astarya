@@ -16,27 +16,32 @@ public class HighOrLow extends Command {
   private int firstNumber;
   private int secondNumber;
   private long playerID;
-  private boolean currentlyPlaying;
+  private boolean ongoingGame;
 
   public HighOrLow(EventWaiter waiter) {
     this.name = "highorlow";
-    this.aliases = new String[]{"highorlow"};
+    this.aliases = new String[]{"highorlow", "guess"};
     this.help = "Guess whether the next number will be higher or lower!";
     this.waiter = waiter;
     this.firstNumber = 0;
     this.secondNumber = 0;
     this.playerID = 0;
-    this.currentlyPlaying = false;
+    this.ongoingGame = false;
   }
 
+  /*
+   Sends an embed that only the user who invoked the command can react to,
+   reacting sends the next screen, and without a reaction, the locked embed times out
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    if (!getCurrentlyPlaying()) { // No ongoing game
-      gameSet(ce);
-      gameScreen(ce);
-      gameReactions(ce);
-      gameTimeout(ce);
+
+    if (!ongoingGame()) { // No ongoing game
+      startGame(ce);
+      displayGameScreen(ce);
+      handleGameReactions(ce);
+      handleGameTimeout(ce);
     } else { // Ongoing game
       ce.getChannel()
           .sendMessage("A high or low game is currently being played. Please wait until it finishes or expires.")
@@ -44,29 +49,38 @@ public class HighOrLow extends Command {
     }
   }
 
-  // Lock game to one player
-  private void gameSet(CommandEvent ce) {
+  // Start and lock the game to the user who invoked the command
+  private void startGame(CommandEvent ce) {
+    setOngoingGame(true);
+    setPlayerID(Long.parseLong(ce.getMember().getUser().getId()));
+    generateRandomPairOfNumbers();
+  }
+
+  // Generate two random numbers used for the game
+  private void generateRandomPairOfNumbers() {
     Random rand = new Random();
     setFirstNumber(rand.nextInt(101) + 1);
     setSecondNumber(rand.nextInt(101) + 1);
-    setPlayerID(Long.parseLong(ce.getMember().getUser().getId()));
-    setCurrentlyPlaying(true);
-    while (getFirstNumber() == getSecondNumber()) { // Ensure numbers are not equal
+
+    while (getFirstNumber() == getSecondNumber()) { // Ensure the numbers are not equal
       setSecondNumber(rand.nextInt(101) + 1);
     }
   }
 
-  private void gameScreen(CommandEvent ce) {
+  // Sends an embed to display to the user instructions on how to play
+  private void displayGameScreen(CommandEvent ce) {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__HighOrLow__");
     display.setDescription("My number is (" + getFirstNumber() + ") from a range of numbers from 1 - 100. "
         + "\nWill the next number I think of be higher or lower?");
+
     Settings.sendEmbed(ce, display);
   }
 
-  // Embed reactions
-  private void gameReactions(CommandEvent ce) {
-    waiter.waitForEvent(GuildMessageReceivedEvent.class, // Add reactions
+  // React to the game screen with reactions
+  private void handleGameReactions(CommandEvent ce) {
+    // Add reactions
+    waiter.waitForEvent(GuildMessageReceivedEvent.class,
         w -> !w.getMessage().getEmbeds().isEmpty()
             && (w.getMessage().getEmbeds().get(0).getTitle().equals("__HighOrLow__")),
         w -> {
@@ -74,15 +88,39 @@ public class HighOrLow extends Command {
           w.getMessage().addReaction("🔽").queue();
         }, 15, TimeUnit.SECONDS, () -> {
         });
-    waiter.waitForEvent(GuildMessageReactionAddEvent.class, // Lock reactions to player
+
+    // Wait for the original user to react to the embed
+    waiter.waitForEvent(GuildMessageReactionAddEvent.class,
         w -> Long.parseLong(w.getMember().getUser().getId()) == (getPlayerID())
             && (w.getReactionEmote().getName().equals("🔼")
             || (w.getReactionEmote().getName().equals("🔽"))),
-        w -> gameResults(ce), 15, TimeUnit.SECONDS, () -> {
+        w -> displayGameResults(ce), 15, TimeUnit.SECONDS, () -> {
         });
   }
 
-  private void gameResults(CommandEvent e) {
+  // Sends an embed that the user didn't react within 15s
+  private void handleGameTimeout(CommandEvent ce) {
+    new java.util.Timer().schedule(new java.util.TimerTask() { // Game Non-action Timeout (15s)
+      public void run() {
+        if (ongoingGame()) {
+          setOngoingGame(false);
+
+          EmbedBuilder display = new EmbedBuilder();
+          display.setTitle("__HighOrLow__");
+          display
+              .setDescription(ce.getMember().getAsMention() + " took too long to choose, and the game has expired!");
+
+          Settings.sendEmbed(ce, display);
+        }
+      }
+    }, 15000);
+  }
+
+  // Sends an embed to display the results of the randomly generated numbers and clear out the locked game status
+  private void displayGameResults(CommandEvent e) {
+    setOngoingGame(false);
+    setPlayerID(0);
+
     EmbedBuilder display = new EmbedBuilder();
     if (getFirstNumber() > getSecondNumber()) {
       display.setTitle("__HighOrLow__");
@@ -91,27 +129,11 @@ public class HighOrLow extends Command {
       display.setTitle("__HighOrLow__");
       display.setDescription("||I thought of (" + getSecondNumber() + "). The number was higher!||");
     }
+
     Settings.sendEmbed(e, display);
-    setCurrentlyPlaying(false);
-    setPlayerID(0);
   }
 
-  // User doesn't react within 15s
-  private void gameTimeout(CommandEvent ce) {
-    new java.util.Timer().schedule(new java.util.TimerTask() { // Game Non-action Timeout (15s)
-      public void run() {
-        if (getCurrentlyPlaying()) {
-          EmbedBuilder display = new EmbedBuilder();
-          display.setTitle("__HighOrLow__");
-          display
-              .setDescription(ce.getMember().getAsMention() + " took too long to choose, and the game has expired!");
-          Settings.sendEmbed(ce, display);
-          setCurrentlyPlaying(false);
-        }
-      }
-    }, 15000);
-  }
-
+  // Get and set various variables
   private int getFirstNumber() {
     return this.firstNumber;
   }
@@ -124,8 +146,8 @@ public class HighOrLow extends Command {
     return this.playerID;
   }
 
-  private boolean getCurrentlyPlaying() {
-    return this.currentlyPlaying;
+  private boolean ongoingGame() {
+    return this.ongoingGame;
   }
 
   private void setFirstNumber(int firstNumber) {
@@ -140,8 +162,8 @@ public class HighOrLow extends Command {
     this.playerID = playerID;
   }
 
-  private void setCurrentlyPlaying(boolean status) {
-    this.currentlyPlaying = status;
+  private void setOngoingGame(boolean status) {
+    this.ongoingGame = status;
   }
 
 }

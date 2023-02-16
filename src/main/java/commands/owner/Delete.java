@@ -10,37 +10,50 @@ import java.util.List;
 public class Delete extends Command {
   public Delete() {
     this.name = "delete";
-    this.aliases = new String[]{"delete", "purge"};
-    this.arguments = "[1]Number";
-    this.help = "Clears a number of [2-100] messages.";
+    this.aliases = new String[]{"delete", "purge", "wipe"};
+    this.arguments = "[1]NumberOfMessagesToDelete";
+    this.help = "Clears a number of [2-100] recent messages.";
     this.ownerCommand = true;
   }
 
+  // Deletes a number of recent messages sent in the channel
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
-    int arguments = args.length;
-    if (arguments == 2) {
-      try { // Ensure argument is an integer
-        int number = Integer.parseInt(args[1]);
-        MessageChannel channel = ce.getChannel();
-        deleteMessages(channel, number);
-      } catch (NumberFormatException error) { // Input mismatch
-        ce.getChannel().sendMessage("You must provide a number of (2-100) messages to clear.").queue();
-      }
+
+    // Parse message for arguments
+    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfArguments = arguments.length - 1;
+
+    if (numberOfArguments == 1) { // Delete messages
+      parseDeleteMessagesRequest(ce, arguments);
     } else { // Invalid arguments
       ce.getChannel().sendMessage("Invalid number of arguments.").queue();
     }
   }
 
-  private void deleteMessages(MessageChannel channel, int number) {
-    if (number >= 2 && number <= 100) { // Range of 2 - 100
-      List<Message> messages = channel.getHistory().retrievePast(number).complete();
-      channel.purgeMessages(messages);
-      channel.sendMessage("Previous (" + number + ") messages cleared.").queue();
-    } else { // Outside of range 2 - 100
-      channel.sendMessage("You must provide a number of (2-100) messages to clear.").queue();
+  // Validates whether the number of messages to delete is valid and within range
+  private void parseDeleteMessagesRequest(CommandEvent ce, String[] arguments) {
+    try { // Ensure argument is an integer
+      int numberOfMessagesToDelete = Integer.parseInt(arguments[1]);
+      boolean validNumberOfMessagesToDelete = (numberOfMessagesToDelete >= 2) && (numberOfMessagesToDelete <= 100);
+      if (validNumberOfMessagesToDelete) {
+        deleteRecentMessages(ce, numberOfMessagesToDelete);
+      } else {
+        ce.getChannel().sendMessage("Specify an integer between (2-100) messages to clear.").queue();
+      }
+
+    } catch (NumberFormatException error) { // Non-integer input
+      ce.getChannel().sendMessage("Specify an integer between (2-100) messages to clear.").queue();
     }
+  }
+
+  // Deletes user defined amount of messages from the text channel
+  private void deleteRecentMessages(CommandEvent ce, int numberOfMessagesToDelete) {
+    MessageChannel textChannel = ce.getChannel();
+    List<Message> recentMessages = textChannel.getHistory().retrievePast(numberOfMessagesToDelete).complete();
+
+    textChannel.purgeMessages(recentMessages);
+    textChannel.sendMessage("Previous (" + numberOfMessagesToDelete + ") messages cleared.").queue();
   }
 }

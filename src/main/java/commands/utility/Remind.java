@@ -14,51 +14,50 @@ public class Remind extends Command {
     this.ownerCommand = false;
   }
 
+  // Sends an embed containing user input information after an elapsed period of time
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
-    int arguments = args.length;
-    // Invalid arguments
-    if (arguments == 1) {
-      ce.getChannel().sendMessage("Invalid number of arguments.").queue();
-    } else { // Time & timer name
-      if (checkValidTimeType(args)) { // Accepted timeType
-        String timerName = "";
-        if (checkTimeTypeInFirstArgument(args)) {
-          timeTypeInFirstArgument(ce, args, arguments, timerName);
-        } else {
-          timeTypeInSecondArgument(ce, args, arguments, timerName);
-        }
-      } else { // No timeType exists in first or second argument
-        ce.getChannel().sendMessage("Invalid argument.").queue();
+
+    // Parse message for arguments
+    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfArguments = arguments.length - 1;
+
+    if (numberOfArguments != 0) {
+      boolean isValidTimeType = checkValidTimeTypeProvided(arguments);
+      if (isValidTimeType) {
+        boolean timeIsInFirstArgument = checkTimeTypeInFirstArgument(arguments);
+        processTimeTypeBasedOnLocation(ce, arguments, numberOfArguments, timeIsInFirstArgument);
+      } else { // No time type in first or second argument
+        ce.getChannel().sendMessage("No time types provided.").queue();
       }
+    } else {
+      ce.getChannel().sendMessage("Invalid number of arguments.").queue();
     }
   }
 
-  private boolean checkValidTimeType(String[] args) {
-    int indexLimit;
-    if (args.length == 2) { // Only check first or second argument for time type
+  // Validate recognized time types
+  private boolean checkValidTimeTypeProvided(String[] arguments) {
+    int numberOfArguments = arguments.length;
+    int indexLimit = 3; // Assume time type is in the ending argument
+    boolean timeTypeIsInTheFirstOrSecondArgument = numberOfArguments == 2;
+    if (timeTypeIsInTheFirstOrSecondArgument) { // Only check first or second argument for time type
       indexLimit = 2;
-    } else {
-      indexLimit = 3;
     }
+
+    // Search arguments for the time type symbol
     for (int i = 1; i < indexLimit; i++) {
-      String argument = args[i]; // Time type string
-      char lastChar = argument.charAt(args[i].length() - 1); // Time type char
-      switch (lastChar) {
-        case 's', 'm', 'h' -> {
+      String argument = arguments[i]; // Time type string
+      char lastChar = argument.charAt(arguments[i].length() - 1); // Time type char
+
+      switch (argument) {
+        case "hours", "hour", "hrs", "hr", "h", "minutes", "minute", "mins",
+            "min", "m", "seconds", "second", "secs", "sec", "s" -> {
           return true;
         }
       }
-      switch (argument) {
-        case "hours", "hour", "hrs", "hr", "h" -> {
-          return true;
-        }
-        case "minutes", "minute", "mins", "min", "m" -> {
-          return true;
-        }
-        case "seconds", "second", "secs", "sec", "s" -> {
+      switch (lastChar) {
+        case 's', 'm', 'h' -> {
           return true;
         }
       }
@@ -67,59 +66,46 @@ public class Remind extends Command {
   }
 
   // Check if first argument ends in s, m, h
-  private boolean checkTimeTypeInFirstArgument(String[] args) {
-    char timeType = args[1].charAt(args[1].length() - 1);
+  private boolean checkTimeTypeInFirstArgument(String[] arguments) {
+    char timeType = arguments[1].charAt(arguments[1].length() - 1);
     return timeType == 's' || timeType == 'm' || timeType == 'h';
   }
 
-  private void timeTypeInFirstArgument(CommandEvent ce, String[] args, int arguments, String timerName) {
-    try { // Ensure argument is an integer
-      int timeDuration = Integer.parseInt(args[1].substring(0, args[1].length() - 1));
-      char timeType = args[1].charAt(args[1].length() - 1);
-      if (checkTimeDurationLimit(timeDuration, timeType)) { // Range of 1 day
-        if (arguments > 2) { // Timer name provided
-          StringBuilder timerNameBuilder = new StringBuilder(timerName);
-          for (int i = 2; i < args.length; i++) {
-            timerNameBuilder.append(args[i]).append(" ");
-          }
-          timerName = timerNameBuilder.toString();
-        }
+  /*
+  Where the user provides the time type affects the data parsing, so
+  this method handles the differences in one stream.
+   */
+  private void processTimeTypeBasedOnLocation(CommandEvent ce, String[] arguments, int numberOfArguments, boolean timeInFirstArgument) {
+    try {
+      char timeType;
+      int timeDuration;
+
+      if (timeInFirstArgument) {
+        timeType = arguments[1].charAt(arguments[1].length() - 1);
+        timeDuration = Integer.parseInt(arguments[1].substring(0, arguments[1].length() - 1));
+      } else { // Time in second argument
+        timeType = convertTimeStringToTimeType(arguments);
+        timeDuration = Integer.parseInt(arguments[1]);
+      }
+
+      boolean validTimeDuration = checkTimeDuration(timeDuration, timeType);
+      if (validTimeDuration) { // Within the range of a day
+        String timerName = "";
+        timerName = setTimerName(arguments, numberOfArguments, timeInFirstArgument, timerName);
+
         setReminder(ce, timeDuration, timeType, timerName);
         setTimer(ce, timeDuration, timeType, timerName);
       } else { // Outside range of 1 day
-        ce.getChannel().sendMessage("You can only set the timer for the maximum length of a day.").queue();
+        ce.getChannel().sendMessage("Can only set timer for the maximum length of a day.").queue();
       }
-    } catch (NumberFormatException error) { // Input mismatch
-      ce.getChannel().sendMessage("You must to specify a valid numerical value, followed by an accepted time type.")
+    } catch (NumberFormatException e) {
+      ce.getChannel().sendMessage("Specify a valid numerical value, followed by an accepted time type.")
           .queue();
     }
   }
 
-  private void timeTypeInSecondArgument(CommandEvent ce, String[] args, int arguments, String timerName) {
-    try { // Ensure argument is an integer
-      int timeDuration = Integer.parseInt(args[1]);
-      char timeType = timeTypeStringConversion(args);
-      if (checkTimeDurationLimit(timeDuration, timeType)) { // Range of 1 day
-        if (arguments > 3) { // Timer name provided
-          StringBuilder timerNameBuilder = new StringBuilder(timerName);
-          for (int i = 3; i < args.length; i++) {
-            timerNameBuilder.append(args[i]).append(" ");
-          }
-          timerName = timerNameBuilder.toString();
-        }
-        setReminder(ce, timeDuration, timeType, timerName);
-        setTimer(ce, timeDuration, timeType, timerName);
-      } else { // Outside range of 1 day
-        ce.getChannel().sendMessage("You can only set the timer for the maximum length of a day.").queue();
-      }
-    } catch (NumberFormatException error) { // Input mismatch
-      ce.getChannel().sendMessage("You must to specify a valid numerical value, followed by an accepted time type.")
-          .queue();
-    }
-  }
-
-  // Convert time grammar to timeType
-  private char timeTypeStringConversion(String[] args) {
+  // Convert all variances of how to write time to uniform timeType
+  private char convertTimeStringToTimeType(String[] args) {
     return switch (args[2]) {
       case "hours", "hour", "hrs", "hr", "h" -> 'h';
       case "minutes", "minute", "mins", "min", "m" -> 'm';
@@ -128,16 +114,49 @@ public class Remind extends Command {
     };
   }
 
-  // Validate time range of 1 day
-  private boolean checkTimeDurationLimit(int timeDuration, char timeType) {
+  // Validate time range within 1 day
+  private boolean checkTimeDuration(int timeDuration, char timeType) {
     if (timeType == 'h' && timeDuration >= 0 && timeDuration <= 24) {
       return true;
     } else if (timeType == 'm' && timeDuration >= 0 && timeDuration <= 1440) {
       return true;
-    } else return timeType == 's' && timeDuration >= 0 && timeDuration <= 86400;
+    } else {
+      return (timeType == 's' && timeDuration >= 0 && timeDuration <= 86400);
+    }
   }
 
-  // Visual timer creation confirmation
+  /*
+  Where the user provides the time type affects the timer name parsing, so
+  this method handles the differences in one stream.
+   */
+  private String setTimerName(String[] arguments, int numberOfArguments, boolean timeInFirstArgument, String timerName) {
+    if (timeInFirstArgument) {
+      boolean timerNameProvided = numberOfArguments > 1;
+
+      if (timerNameProvided) {
+        StringBuilder timerNameBuilder = new StringBuilder();
+        for (int i = 2; i < arguments.length; i++) {
+          timerNameBuilder.append(arguments[i]).append(" ");
+        }
+        timerName = timerNameBuilder.toString();
+        return timerName;
+      }
+    } else {
+      boolean timerNameProvided = numberOfArguments > 2;
+
+      if (timerNameProvided) {
+        StringBuilder timerNameBuilder = new StringBuilder(timerName);
+        for (int i = 3; i < arguments.length; i++) {
+          timerNameBuilder.append(arguments[i]).append(" ");
+        }
+        timerName = timerNameBuilder.toString();
+        return timerName;
+      }
+    }
+    return "";
+  }
+
+  // Sends an embed containing visual reminder creation confirmation
   private void setReminder(CommandEvent ce, int timeDuration, char timeType, String timerName) {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Reminder__");
@@ -145,18 +164,8 @@ public class Remind extends Command {
         ? "Time set for `" + timerName.substring(0, timerName.length() - 1) +
         "` in (" + timeDuration + ") " + getTimeTypeString(timeType) + "."
         : "Timer set to mention you in (" + timeDuration + ") " + getTimeTypeString(timeType) + ".");
-    Settings.sendEmbed(ce, display);
-  }
 
-  // Timer countdown
-  public void setTimer(CommandEvent ce, int timeDuration, char timeType, String timerName) {
-    new java.util.Timer().schedule(new java.util.TimerTask() {
-      public void run() {
-        ce.getChannel().sendMessage(!timerName.equals("") ? "Hey " + ce.getMember().getAsMention()
-            + ", `" + timerName.substring(0, timerName.length() - 1) + "` is starting now!"
-            : "Hey " + ce.getMember().getAsMention() + ", time's up!").queue();
-      }
-    }, timeDurationIntoMilliseconds(timeDuration, timeType));
+    Settings.sendEmbed(ce, display);
   }
 
   // Character conversion to string
@@ -171,7 +180,18 @@ public class Remind extends Command {
     return null;
   }
 
-  // Millisecond conversion
+  // Creates a timer
+  public void setTimer(CommandEvent ce, int timeDuration, char timeType, String timerName) {
+    new java.util.Timer().schedule(new java.util.TimerTask() {
+      public void run() {
+        ce.getChannel().sendMessage(!timerName.equals("") ? "Hey " + ce.getMember().getAsMention()
+            + ", `" + timerName.substring(0, timerName.length() - 1) + "` is starting now!"
+            : "Hey " + ce.getMember().getAsMention() + ", time's up!").queue();
+      }
+    }, timeDurationIntoMilliseconds(timeDuration, timeType));
+  }
+
+  // Millisecond conversion for application timer
   private int timeDurationIntoMilliseconds(int timeDuration, char timeType) {
     if (timeType == 's') {
       return timeDuration * 1000;

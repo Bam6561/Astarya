@@ -16,84 +16,119 @@ public class Avatar extends Command {
     this.help = "Provides the user's profile picture.";
   }
 
+  // Sends an embed containing mentioned user's profile picture
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-    String[] args = ce.getMessage().getContentRaw().split("\\s"); // Parse message for arguments
-    int arguments = args.length;
+
+    // Parse message for arguments
+    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfArguments = arguments.length;
+
     String avatarSize = "1024"; // Choice between 128, 256, 512, 1024
     EmbedBuilder display = new EmbedBuilder();
-    switch (arguments) {
+
+    switch (numberOfArguments) {
       case 1 -> { // Self
-        User self = ce.getMember().getUser();
-        sendEmbed(ce, display, self.getName(), "Resolution: " + avatarSize + "x" + avatarSize,
-            self.getAvatarUrl() + "?size=" + avatarSize);
+        setEmbedToSelf(ce, display, avatarSize);
       }
+
       case 2 -> { // Mention || UserID || Self & Size
-        if (!ce.getMessage().getMentionedMembers().isEmpty()) { // Mention
-          Member member = ce.getMessage().getMentionedMembers().get(0);
-          sendEmbed(ce, display, member.getEffectiveName(), "Resolution: " + avatarSize + "x" + avatarSize,
-              member.getUser().getAvatarUrl() + "?size=" + avatarSize);
-        } else { // UserID || Self & Size
-          if (args[1].length() == 18) { // UserID
-            try { // Verify valid UserID
-              User user = ce.getJDA().retrieveUserById(args[1]).complete();
-              sendEmbed(ce, display, user.getName(), "Resolution: " + avatarSize + "x" + avatarSize,
-                  user.getAvatarUrl() + "?size=" + avatarSize);
-            } catch (ErrorResponseException error) { // Invalid UserID
-              ce.getChannel().sendMessage("Invalid User ID.").queue();
-            }
-          } else { // Self & Size
-            User user = ce.getMember().getUser();
-            sendEmbed(ce, display, user.getName(),
-                user.getAvatarUrl() + "?size=" + setImageSize(ce, args, 1, avatarSize, display));
-          }
-        }
-      }
-      case 3 -> { // Mention & Size || UserID & Size
-        if (!ce.getMessage().getMentionedMembers().isEmpty()) { // Mention
-          Member member = ce.getMessage().getMentionedMembers().get(0);
-          sendEmbed(ce, display, member.getEffectiveName(),
-              member.getUser().getAvatarUrl() + "?size=" + setImageSize(ce, args, 2, avatarSize, display));
+        boolean mentionedUser = !ce.getMessage().getMentionedMembers().isEmpty();
+        boolean validUserID = (arguments[1].length() == 18) || (arguments[1].length() == 19);
+        if (mentionedUser) {
+          setEmbedToMentionedUser(ce, display, avatarSize);
+        } else if (validUserID) {
+          setEmbedToUserID(ce, display, arguments, avatarSize);
         } else {
-          if (args[1].length() == 18) { // UserID & Size
-            try { // Verify UserID
-              User user = ce.getJDA().retrieveUserById(args[1]).complete();
-              sendEmbed(ce, display, user.getName(),
-                  user.getAvatarUrl() + "?size=" + setImageSize(ce, args, 2, avatarSize, display));
-            } catch (ErrorResponseException error) { // Invalid UserID
-              ce.getChannel().sendMessage("Invalid User ID.").queue();
-            }
-          } else {
-            ce.getChannel().sendMessage("Invalid User ID.").queue();
-          }
+          setEmbedToSelfAndSize(ce, display, arguments, avatarSize);
         }
       }
-      // Invalid arguments
-      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+
+      case 3 -> { // Mention & Size || UserID & Size
+        boolean mentionedUser = !ce.getMessage().getMentionedMembers().isEmpty();
+        boolean validUserID = (arguments[1].length() == 18) || (arguments[1].length() == 19);
+        if (mentionedUser) {
+          setEmbedToMentionAndSize(ce, display, arguments, avatarSize);
+        } else if (validUserID) {
+          setEmbedToUserIDAndSize(ce, display, arguments, avatarSize);
+        } else {
+          ce.getChannel().sendMessage("Invalid User ID.").queue();
+        }
+      }
+
+      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue(); // Invalid arguments
     }
   }
 
-  // avatarSize not provided
+  // Set embed to self user's profile picture
+  private void setEmbedToSelf(CommandEvent ce, EmbedBuilder display, String avatarSize) {
+    User self = ce.getMember().getUser();
+    sendEmbed(ce, display, self.getName(), "Resolution: " + avatarSize + "x" + avatarSize,
+        self.getAvatarUrl() + "?size=" + avatarSize);
+  }
+
+  // Set embed to mentioned user's profile picture
+  private void setEmbedToMentionedUser(CommandEvent ce, EmbedBuilder display, String avatarSize) {
+    Member member = ce.getMessage().getMentionedMembers().get(0);
+    sendEmbed(ce, display, member.getEffectiveName(), "Resolution: " + avatarSize + "x" + avatarSize,
+        member.getUser().getAvatarUrl() + "?size=" + avatarSize);
+  }
+
+  // Set embed to user ID's profile picture
+  private void setEmbedToUserID(CommandEvent ce, EmbedBuilder display, String[] arguments, String avatarSize) {
+    User user = ce.getJDA().retrieveUserById(arguments[1]).complete();
+    sendEmbed(ce, display, user.getName(), "Resolution: " + avatarSize + "x" + avatarSize,
+        user.getAvatarUrl() + "?size=" + avatarSize);
+  }
+
+  // Set embed to self user and change avatar size
+  private void setEmbedToSelfAndSize(CommandEvent ce, EmbedBuilder display, String[] arguments, String avatarSize) {
+    User user = ce.getMember().getUser();
+    sendEmbed(ce, display, user.getName(),
+        user.getAvatarUrl() + "?size=" + setImageSize(ce, arguments, 1, avatarSize, display));
+  }
+
+  // Set embed to mentioned user and change avatar size
+  private void setEmbedToMentionAndSize(CommandEvent ce, EmbedBuilder display, String[] arguments, String avatarSize) {
+    Member member = ce.getMessage().getMentionedMembers().get(0);
+    sendEmbed(ce, display, member.getEffectiveName(),
+        member.getUser().getAvatarUrl() + "?size=" + setImageSize(ce, arguments, 2, avatarSize, display));
+  }
+
+  // Set embed to user ID and change avatar size
+  private void setEmbedToUserIDAndSize(CommandEvent ce, EmbedBuilder display, String[] arguments, String avatarSize) {
+    try { // Verify UserID
+      User user = ce.getJDA().retrieveUserById(arguments[1]).complete();
+      sendEmbed(ce, display, user.getName(),
+          user.getAvatarUrl() + "?size=" + setImageSize(ce, arguments, 2, avatarSize, display));
+    } catch (ErrorResponseException error) { // Invalid UserID
+      ce.getChannel().sendMessage("Invalid User ID.").queue();
+    }
+  }
+
+  // Embed without avatar size provided
   private void sendEmbed(CommandEvent ce, EmbedBuilder display, String title, String description, String image) {
     display.setTitle(title);
     display.setDescription(description);
     display.setImage(image);
+
     Settings.sendEmbed(ce, display);
   }
 
-  // avatarSize provided
+  // Embed with avatar size provided
   private void sendEmbed(CommandEvent ce, EmbedBuilder display, String title, String image) {
     display.setTitle(title);
     display.setImage(image);
+
     Settings.sendEmbed(ce, display);
   }
 
-  // avatarSize provided
+  // Changes default avatar size
   private String setImageSize(CommandEvent ce, String[] args, int argument, String avatarSize, EmbedBuilder display) {
     switch (args[argument]) {
       case "128", "256", "512", "1024" -> avatarSize = args[argument];
-      default -> ce.getChannel().sendMessage("Image sizes only come in 128, 256, 512, & 1024.").queue();
+      default -> ce.getChannel().sendMessage("Image only come in square sizes of 128, 256, 512, & 1024.").queue();
     }
     display.setDescription("Resolution: " + avatarSize + "x" + avatarSize);
     return avatarSize;
