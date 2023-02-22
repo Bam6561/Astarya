@@ -58,7 +58,7 @@ public class SetPosition extends Command {
   }
 
   // Sets the position of the currently playing track
-  public void setPosition(CommandEvent ce, String trackPositionString) {
+  private void setPosition(CommandEvent ce, String trackPositionString) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
 

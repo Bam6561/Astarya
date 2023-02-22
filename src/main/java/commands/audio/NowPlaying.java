@@ -24,7 +24,7 @@ public class NowPlaying extends Command {
   }
 
   // Displays currently playing track
-  public void getNowPlaying(CommandEvent ce) { // NowPlaying
+  private void getNowPlaying(CommandEvent ce) { // NowPlaying
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
 

@@ -44,6 +44,7 @@ public class Skip extends Command {
 
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
+      audioScheduler.addToSkippedStack(audioPlayer.getPlayingTrack().makeClone());
       audioScheduler.nextTrack();
       StringBuilder skipTrackConfirmation = new StringBuilder();
       skipTrackConfirmation.append("**Skip:** [").append(ce.getAuthor().getAsTag()).append("]");

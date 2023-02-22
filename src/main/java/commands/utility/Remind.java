@@ -181,7 +181,7 @@ public class Remind extends Command {
   }
 
   // Creates a timer
-  public void setTimer(CommandEvent ce, int timeDuration, char timeType, String timerName) {
+  private void setTimer(CommandEvent ce, int timeDuration, char timeType, String timerName) {
     new java.util.Timer().schedule(new java.util.TimerTask() {
       public void run() {
         ce.getChannel().sendMessage(!timerName.equals("") ? "Hey " + ce.getMember().getAsMention()

@@ -41,7 +41,7 @@ public class Pause extends Command {
   }
 
   // Pauses the currently playing track
-  public void setAudioPlayerPause(CommandEvent ce) {
+  private void setAudioPlayerPause(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
     LucyferBot lucyferBot = new LucyferBot();

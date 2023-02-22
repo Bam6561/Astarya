@@ -37,7 +37,7 @@ public class Loop extends Command {
   }
 
   // Sets the loop state of the audio player
-  public void setAudioPlayerLoop(CommandEvent ce) {
+  private void setAudioPlayerLoop(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     boolean audioPlayerNotLooped = !audioScheduler.getAudioPlayerLoopState();
 

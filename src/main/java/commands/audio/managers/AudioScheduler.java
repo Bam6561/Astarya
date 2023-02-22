@@ -14,12 +14,14 @@ public class AudioScheduler extends AudioEventAdapter {
   private final AudioPlayer audioPlayer;
   private ArrayList<AudioTrack> trackQueue;
   private ArrayList<String> requesterList;
+  private ArrayList<AudioTrack> skippedStack;
   private Boolean audioPlayerLoopState = false;
 
   public AudioScheduler(AudioPlayer audioPlayer) {
     this.audioPlayer = audioPlayer;
     this.trackQueue = new ArrayList<AudioTrack>();
     this.requesterList = new ArrayList<String>();
+    this.skippedStack = new ArrayList<AudioTrack>();
   }
 
   // Adds track to track queue
@@ -36,7 +38,9 @@ public class AudioScheduler extends AudioEventAdapter {
     if (!this.trackQueue.isEmpty()) {
       this.audioPlayer.startTrack(this.trackQueue.get(0), false);
       this.trackQueue.remove(0);
-      this.requesterList.remove(0);
+      if (!this.requesterList.isEmpty()) {
+        this.requesterList.remove(0);
+      }
     } else { // Update presence when not playing audio
       this.audioPlayer.stopTrack();
       LucyferBot lucyferBot = new LucyferBot();
@@ -67,9 +71,18 @@ public class AudioScheduler extends AudioEventAdapter {
     }
   }
 
-  // Access and add requesters outside this class
+  // Access and add variables outside this class
   public void addToRequesterList(String requester) { // Track requester array
     this.requesterList.add(requester);
+  }
+
+  // Recently skipped songs go to the top, increment all existing track indices by 1
+  public void addToSkippedStack(AudioTrack skippedTrack) {
+    this.skippedStack.add(0, skippedTrack);
+    boolean skippedStackOverLimit = skippedStack.size() > 10;
+    if (skippedStackOverLimit) {
+      skippedStack.remove(9);
+    }
   }
 
   // Get and set various variables outside this class
@@ -83,6 +96,10 @@ public class AudioScheduler extends AudioEventAdapter {
 
   public ArrayList<String> getRequesterList() {
     return this.requesterList;
+  }
+
+  public ArrayList<AudioTrack> getSkippedStack() {
+    return this.skippedStack;
   }
 
   public boolean getAudioPlayerLoopState() {

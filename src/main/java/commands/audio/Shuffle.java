@@ -42,7 +42,7 @@ public class Shuffle extends Command {
   }
 
   // Shuffles the track queue
-  public void shuffleQueue(CommandEvent ce) {
+  private void shuffleQueue(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
 
     // Storage objects to access

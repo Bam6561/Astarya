@@ -59,7 +59,7 @@ public class PlayNext extends Command {
   }
 
   // Puts a track immediately after currently playing track
-  public void playNext(CommandEvent ce, int queueNumber) {
+  private void playNext(CommandEvent ce, int queueNumber) {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
 

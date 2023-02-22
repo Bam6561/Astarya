@@ -40,7 +40,7 @@ public class ClearQueue extends Command {
   }
 
   // Clears the track queue
-  public void clearTrackQueue(CommandEvent ce) {
+  private void clearTrackQueue(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
 
     // Storage objects to access

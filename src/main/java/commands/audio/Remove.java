@@ -59,7 +59,7 @@ public class Remove extends Command {
   }
 
   // Removes track from the queue
-  public void removeTrack(CommandEvent ce, int queueIndex) {
+  private void removeTrack(CommandEvent ce, int queueIndex) {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
 
