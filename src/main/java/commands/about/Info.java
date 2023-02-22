@@ -30,7 +30,7 @@ public class Info extends Command {
         + "\n**Developer ID: 204448598539239424"
         + "\n**Bot:** " + jda.getSelfUser().getAsMention()
         + "\n**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` " +
-        "\n**Version:** `1.5.2` \n**Language:** `Java` " +
+        "\n**Version:** `1.5.3` \n**Language:** `Java` " +
         "\n**Source:** https://github.com/Bam6561/LucyferBot \n**Uptime:** " + getUptime());
     display.setThumbnail(jda.getSelfUser().getAvatarUrl());
 

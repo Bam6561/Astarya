@@ -9,16 +9,17 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Remove extends Command {
   public Remove() {
     this.name = "remove";
     this.aliases = new String[]{"remove", "rm", "r"};
-    this.arguments = "[1]queueNumber";
+    this.arguments = "[1]QueueNumber, [1, ++]QueueNumbers";
     this.help = "Removes an audio track from the queue.";
   }
 
-  // Removes a track from the queue
+  // Removes audio track(s) from the queue
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -46,19 +47,29 @@ public class Remove extends Command {
     String[] arguments = ce.getMessage().getContentRaw().split("\\s");
     int numberOfArguments = arguments.length - 1;
 
-    boolean validNumberOfArguments = numberOfArguments == 1;
-    if (validNumberOfArguments) {
-      try {
-        removeTrack(ce, Integer.parseInt(arguments[1]));
-      } catch (NumberFormatException e) {
-        ce.getChannel().sendMessage("Specify what queue number to be removed with an integer.").queue();
+    switch (numberOfArguments) {
+      case 0 -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+
+      case 1 -> {
+        try {
+          removeTrack(ce, Integer.parseInt(arguments[1]));
+        } catch (NumberFormatException e) {
+          ce.getChannel().sendMessage("Specify what queue number to be removed with an integer.").queue();
+        }
       }
-    } else {
-      ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+
+      default -> {
+        try {
+          removeMultipleTracks(ce, arguments, numberOfArguments);
+        } catch (NumberFormatException e) {
+          ce.getChannel().sendMessage("Specify what queue numbers to be removed with an integer " +
+              "and add a space between each.").queue();
+        }
+      }
     }
   }
 
-  // Removes track from the queue
+  // Removes a track from the queue
   private void removeTrack(CommandEvent ce, int queueIndex) {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
@@ -82,6 +93,24 @@ public class Remove extends Command {
       requesterList.remove(queueIndex);
     } catch (IndexOutOfBoundsException error) {
       ce.getChannel().sendMessage("Queue number does not exist.").queue();
+    }
+  }
+
+  // Removes multiple tracks from the queue
+  private void removeMultipleTracks(CommandEvent ce, String[] arguments, int numberOfArguments) {
+    ArrayList<Integer> queueIndices = new ArrayList<>();
+
+    // Validate and convert values to integers
+    for (int i = 1; i < numberOfArguments + 1; i++) {
+      arguments[i] = arguments[i].replace(",", "");
+      queueIndices.add(Integer.valueOf(arguments[i]));
+    }
+
+    Collections.sort(queueIndices);
+
+    // Remove largest queue numbers first as to avoid the smallest to largest disrupting queue order
+    for (int i = queueIndices.size() - 1; i >= 0; i--) {
+      removeTrack(ce, queueIndices.get(i));
     }
   }
 }

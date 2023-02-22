@@ -15,7 +15,7 @@ public class Return extends Command {
   public Return() {
     this.name = "return";
     this.aliases = new String[]{"return", "ret", "unskip"};
-    this.arguments = "[0]skippedStack, [1]stackNumber";
+    this.arguments = "[0]RecentlySkipped, [1]SkippedStackNumber";
     this.help = "Returns a recently skipped audio track to the queue.";
   }
 

@@ -59,7 +59,7 @@ public class LucyferBot {
         new Server(), new Profile(), new Delete(), new Settings(prefix, alternativePrefix),
         new Shutdown(), new Ping(), new Choose(), new CoinFlip(), new HighOrLow(waiter), new Roll(),
         new ClearQueue(), new Join(), new Leave(), new Loop(), new NowPlaying(), new Pause(),
-        new Play(), new PlayNext(), new Queue(), new Remove(), new SearchTrack(waiter),
+        new Play(), new PlayNext(), new Queue(), new Remove(), new Return(), new SearchTrack(waiter),
         new SetPosition(), new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
 
     CommandClient commandClient = commands.build();

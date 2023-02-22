@@ -139,8 +139,11 @@ public class Help extends Command {
           "remind (0-86400)s, remind (0-1440)m, remind (0-24)h, "
               + "remind TimeDurationTimeType EventName, remind TimeDuration TimeType EventName");
       case "remove", "rm", "r" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Remove__",
-          "Removes an audio track from the queue.", "remove, rm, r",
-          "[1]QueueNumber", "remove 1");
+          "Removes audio track(s) from the queue.", "remove, rm, r",
+          "[1]QueueNumber, [1, ++]QueueNumbers", "remove 1, remove 2 4 5");
+      case "return", "ret", "unskip" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Return__",
+          "Returns a recently skipped track to the queue.", "return, ret, unskip",
+          "[0]RecentlySkipped, [1]SkippedStackNumber", "ret, ret 1");
       case "roll", "rng", "dice", "random" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Roll__",
           "Dice roll and random integer generator. No arguments to roll once. "
               + "One argument to roll (1-10) times. Three arguments to set how many times to roll" +
