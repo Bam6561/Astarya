@@ -112,7 +112,6 @@ public class Roll extends Command {
     }
 
     EmbedBuilder display = new EmbedBuilder();
-
     display.setTitle("__RNG__");
     display.setDescription(rollResults.toString());
 

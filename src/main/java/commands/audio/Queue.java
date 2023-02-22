@@ -68,18 +68,26 @@ public class Queue extends Command {
       StringBuilder queuePage = new StringBuilder();
       createPage(queuePage, trackQueue, requesterList);
 
-      AudioTrack audioTrack = audioPlayer.getPlayingTrack();
-      String trackPosition = longTimeConversion(audioTrack.getPosition());
-      String trackDuration = longTimeConversion(audioTrack.getDuration());
-
       // Add nowPlaying on queue page
       StringBuilder queuePageEmbedNowPlaying = new StringBuilder();
       queuePageEmbedNowPlaying.append("**Now Playing:** ");
       audioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, queuePageEmbedNowPlaying);
-      queuePageEmbedNowPlaying.append("`").append(audioTrack.getInfo().title).
-          append("` {*").append(trackPosition).append("*-*").
-          append(trackDuration).append("*}\nPage `").append(getPageRequested() + 1).
-          append("` / `").append(getNumberOfPages()).append("`");
+
+      boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
+      if (currentlyPlayingTrack) {
+        AudioTrack audioTrack = audioPlayer.getPlayingTrack();
+        String trackPosition = longTimeConversion(audioTrack.getPosition());
+        String trackDuration = longTimeConversion(audioTrack.getDuration());
+
+        queuePageEmbedNowPlaying.append("`").append(audioTrack.getInfo().title).
+            append("` {*").append(trackPosition).append("*-*").
+            append(trackDuration).append("*}\nPage `").append(getPageRequested() + 1).
+            append("` / `").append(getNumberOfPages()).append("`");
+      } else {
+        queuePageEmbedNowPlaying.append("`").append("Nothing")
+            .append("`\nPage `").append(getPageRequested() + 1).
+            append("` / `").append(getNumberOfPages()).append("`");
+      }
 
       // Display queue page
       EmbedBuilder display = new EmbedBuilder();

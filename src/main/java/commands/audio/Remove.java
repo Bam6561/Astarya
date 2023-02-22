@@ -68,8 +68,7 @@ public class Remove extends Command {
       ArrayList<String> requesterList = audioScheduler.getRequesterList();
 
       // Displayed index to users are different from data index, so subtract 1
-      trackQueue.remove(queueIndex - 1);
-      requesterList.remove(queueIndex - 1);
+      queueIndex = queueIndex - 1;
 
       // Removed track confirmation
       StringBuilder removeTrackConfirmation = new StringBuilder();
@@ -78,6 +77,9 @@ public class Remove extends Command {
           .append(requesterList.get(queueIndex))
           .append(" *[").append(ce.getAuthor().getAsTag()).append("]*");
       ce.getChannel().sendMessage(removeTrackConfirmation).queue();
+
+      trackQueue.remove(queueIndex);
+      requesterList.remove(queueIndex);
     } catch (IndexOutOfBoundsException error) {
       ce.getChannel().sendMessage("Queue number does not exist.").queue();
     }
