@@ -8,22 +8,33 @@ import net.dv8tion.jda.api.entities.Guild;
 
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Server is a command invocation that provides information on the Discord server.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.0
+ */
 public class Server extends Command {
   public Server() {
     this.name = "serverinfo";
     this.aliases = new String[]{"server", "serverinfo"};
-    this.help = "Provides information on the server.";
+    this.help = "Provides information on the Discord server.";
   }
 
-  // Sends an embed containing information about the Discord server
+  /**
+   * Sends an embed containing information about the Discord server.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
     Guild server = ce.getGuild();
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
     int textChannelCount = server.getTextChannels().size();
     int voiceChannelCount = server.getVoiceChannels().size();
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
 
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__" + server.getName() + "__");
@@ -37,7 +48,6 @@ public class Server extends Command {
         + "` **Boosts:** `" + server.getBoostCount() + "`");
     display.setThumbnail(server.getIconUrl());
     display.setImage(server.getBannerUrl());
-
     Settings.sendEmbed(ce, display);
   }
 }

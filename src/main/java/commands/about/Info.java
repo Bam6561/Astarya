@@ -9,14 +9,25 @@ import net.dv8tion.jda.api.JDA;
 import java.lang.management.ManagementFactory;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Info details information about the bot and its developer.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.0
+ */
 public class Info extends Command {
   public Info() {
     this.name = "info";
-    this.aliases = new String[]{"info", "about"};
-    this.help = "Provides information on the bot and its developer.";
+    this.aliases = new String[]{"info"};
+    this.help = "Details information about the bot and its developer.";
   }
 
-  // Sends an embed containing information about the bot's uptime, developer, and development
+  /**
+   * Sends an embed containing information about the bot's uptime, developer, and development.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -27,32 +38,34 @@ public class Info extends Command {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Info__");
     display.setDescription("**Developer:** Bam#3531"
-        + "\n**Developer ID: 204448598539239424"
+        + "\n**Developer ID: 204448598539239424**"
         + "\n**Bot:** " + jda.getSelfUser().getAsMention()
         + "\n**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` " +
-        "\n**Version:** `1.5.3` \n**Language:** `Java` " +
+        "\n**Version:** `1.5.4` \n**Language:** `Java` " +
         "\n**Source:** https://github.com/Bam6561/LucyferBot \n**Uptime:** " + getUptime());
     display.setThumbnail(jda.getSelfUser().getAvatarUrl());
-
     Settings.sendEmbed(ce, display);
   }
 
-  // Gets the application's lifespan and converts to readable conventional time
+  /**
+   * Gets the application's lifespan and converts to readable conventional time.
+   * <p>
+   * Uptime Clock
+   * Credit to Almighty Alpaca - slightly modified version
+   * https://github.com/Java-Discord-Bot-System/Plugin-Uptime/blob/master/src/main/java/com
+   * /almightyalpaca/discord/bot/plugin/uptime/UptimePlugin.java#L28-L42
+   * </p>
+   *
+   * @return uptime of the bot application
+   */
   private String getUptime() {
-    // Uptime Clock
-    // Credit to Almighty Alpaca - slightly modified version
-    // https://github.com/Java-Discord-Bot-System/Plugin-Uptime/blob/master/src/main/java/com
-    // /almightyalpaca/discord/bot/plugin/uptime/UptimePlugin.java#L28-L42 */
-
     final long duration = ManagementFactory.getRuntimeMXBean().getUptime();
-
     final long years = duration / 31104000000L;
     final long months = duration / 2592000000L % 12;
     final long days = duration / 86400000L % 30;
     final long hours = duration / 3600000L % 24;
     final long minutes = duration / 60000L % 60;
     final long seconds = duration / 1000L % 60;
-
     return (years == 0 ? "" : years + "yr ") + (months == 0 ? "" : months + "mo ")
         + (days == 0 ? "" : days + "d ") + (hours == 0 ? "" : hours + "h ") +
         (minutes == 0 ? "" : minutes + "m ") + (seconds == 0 ? "" : seconds + "s");

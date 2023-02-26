@@ -8,14 +8,25 @@ import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
+/**
+ * Skip is a command invocation that skips the currently playing track in the audio player.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.2.4
+ */
 public class Skip extends Command {
   public Skip() {
     this.name = "skip";
     this.aliases = new String[]{"skip", "s", "next"};
-    this.help = "Skips the currently playing audio track.";
+    this.help = "Skips the currently playing track.";
   }
 
-  // Skips the currently playing track
+  /**
+   * Determines whether the user is in the same voice channel as the bot to process a skip command request.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -23,21 +34,23 @@ public class Skip extends Command {
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
 
-    boolean userInVoiceChannel = ce.getMember().getVoiceState().inVoiceChannel();
-    boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-
-    if (userInVoiceChannel) {
+    try {
+      boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
       if (userInSameVoiceChannel) {
         skipTrack(ce);
       } else {
         ce.getChannel().sendMessage("User not in the same voice channel.").queue();
       }
-    } else {
+    } catch (NullPointerException e) {
       ce.getChannel().sendMessage("User not in a voice channel.").queue();
     }
   }
 
-  // Sends skipped track confirmation
+  /**
+   * Skips the currently playing track in the queue and adds it to the skipped song stack.
+   *
+   * @param ce object containing information about the command event
+   */
   private void skipTrack(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();

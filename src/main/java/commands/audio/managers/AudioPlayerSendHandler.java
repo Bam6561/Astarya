@@ -6,6 +6,14 @@ import net.dv8tion.jda.api.audio.AudioSendHandler;
 
 import java.nio.ByteBuffer;
 
+/**
+ * AudioPlayerSendHandler is a component of LavaPlayer that handles
+ * the bot's ability to play tracks in connected voice channels.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.1.0
+ */
 public class AudioPlayerSendHandler implements AudioSendHandler {
   private final AudioPlayer audioPlayer;
   private final ByteBuffer buffer;

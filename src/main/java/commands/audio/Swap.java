@@ -11,15 +11,26 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Swap is a command invocation that swaps the position of a track in queue with another.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.2.14
+ */
 public class Swap extends Command {
   public Swap() {
     this.name = "switch";
     this.aliases = new String[]{"swap", "switch", "sw"};
     this.arguments = "[1]QueueNumber [2] QueueNumber";
-    this.help = "Swaps the position of an audio track in queue with another.";
+    this.help = "Swaps the position of a track in queue with another.";
   }
 
-  // Swaps two tracks' order in the queue
+  /**
+   * Determines whether the user is in the same voice channel as the bot to process a swap command request.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -27,21 +38,24 @@ public class Swap extends Command {
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
 
-    boolean userInVoiceChannel = ce.getMember().getVoiceState().inVoiceChannel();
-    boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-
-    if (userInVoiceChannel) {
+    try {
+      boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
       if (userInSameVoiceChannel) {
         parseSwapRequest(ce);
       } else {
         ce.getChannel().sendMessage("User not in the same voice channel.").queue();
       }
-    } else {
+    } catch (NullPointerException e) {
       ce.getChannel().sendMessage("User not in a voice channel.").queue();
     }
   }
 
-  // Validates swap request before proceeding
+  /**
+   * Processes user provided arguments to determine whether the swap command request was formatted correctly.
+   *
+   * @param ce object containing information about the command event
+   * @throws NumberFormatException user provided non-integer values
+   */
   private void parseSwapRequest(CommandEvent ce) {
     // Parse message for arguments
     String[] arguments = ce.getMessage().getContentRaw().split("\\s");
@@ -55,7 +69,7 @@ public class Swap extends Command {
         int swapIndex = Integer.parseInt(arguments[2]) - 1;
 
         swapTracks(ce, originalIndex, swapIndex);
-      } catch (NumberFormatException error) {
+      } catch (NumberFormatException e) {
         ce.getChannel().sendMessage("Specify integers to swap tracks in queue.").queue();
       }
     } else {
@@ -63,7 +77,14 @@ public class Swap extends Command {
     }
   }
 
-  // Swaps two tracks' order in the queue
+  /**
+   * Swaps two tracks' order in the queue.
+   *
+   * @param ce            object containing information about the command event
+   * @param originalIndex original track index
+   * @param swapIndex     track index to be swapped
+   * @throws IndexOutOfBoundsException user provided indices out of queue range
+   */
   private void swapTracks(CommandEvent ce, int originalIndex, int swapIndex) {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
@@ -76,11 +97,11 @@ public class Swap extends Command {
       AudioTrack originalTrack = trackQueue.get(originalIndex);
       AudioTrack swapTrack = trackQueue.get(swapIndex);
 
-      // Tracks' duration
+      Collections.swap(trackQueue, originalIndex, swapIndex);
+
+      // tracks' duration
       String originalTrackDuration = longTimeConversion(originalTrack.getDuration());
       String swapTrackDuration = longTimeConversion(swapTrack.getDuration());
-
-      Collections.swap(trackQueue, originalIndex, swapIndex);
 
       // Swap confirmation
       StringBuilder swapConfirmation = new StringBuilder();
@@ -93,12 +114,17 @@ public class Swap extends Command {
           append("` {*").append(swapTrackDuration).append("*} ").
           append(requesterList.get(swapIndex));
       ce.getChannel().sendMessage(swapConfirmation).queue();
-    } catch (IndexOutOfBoundsException error) {
+    } catch (IndexOutOfBoundsException e) {
       ce.getChannel().sendMessage("Queue number does not exist.").queue();
     }
   }
 
-  // Converts long duration to conventional readable time
+  /**
+   * Converts long duration to conventional readable time.
+   *
+   * @param longTime duration of the track in long
+   * @return readable time format
+   */
   private String longTimeConversion(long longTime) {
     long days = longTime / 86400000 % 30;
     long hours = longTime / 3600000 % 24;

@@ -11,6 +11,13 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Profile is a command invocation that provides information on the user.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.0
+ */
 public class Profile extends Command {
   public Profile() {
     this.name = "whois";
@@ -19,7 +26,12 @@ public class Profile extends Command {
     this.help = "Provides information on the user.";
   }
 
-  // Sends an embed containing information about a Discord user
+  /**
+   * Processes user provided arguments to determine what type of profile command interaction is being
+   * requested. Available options are to look up the self-user, mentioned user, or a user via their ID.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -32,26 +44,38 @@ public class Profile extends Command {
     display.setTitle("__Profile__");
 
     switch (numberOfArguments) {
-      case 0 -> setEmbedToDisplaySelf(ce, display, ce.getMember().getUser()); // Self
-      case 1 -> setEmbedToDisplayMentionedUserOrProcessUserID(ce, display, arguments); // Mention or User ID provided
+      case 0 -> setEmbedToDisplaySelf(ce, display, ce.getMember().getUser());
+      case 1 -> setEmbedToDisplayMentionedUserOrProcessUserID(ce, display, arguments);
       default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
     }
   }
 
-  // Sends an embed containing information about the self user who invoked the command
+  /**
+   * Sends an embed containing information about the self-user who invoked the command.
+   *
+   * @param ce       object containing information about the command event
+   * @param display  object representing the embed
+   * @param selfUser user object representing the user who invoked the command
+   */
   private void setEmbedToDisplaySelf(CommandEvent ce, EmbedBuilder display, User selfUser) {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
-
     display.setThumbnail(selfUser.getAvatarUrl());
     display.setDescription("**Tag:** " + selfUser.getAsMention() + "\n**Discord:** `" + selfUser.getAsTag()
         + "`\n**User ID:** `" + selfUser.getId() + "`\n**Created:** `" + selfUser.getTimeCreated().format(dtf)
         + " GMT`\n**Joined:** `" + ce.getMember().getTimeJoined().format(dtf) + " GMT`");
     display.addField("**Roles:**", returnUserRolesAsMentionable(ce.getMember()), false);
-
     Settings.sendEmbed(ce, display);
   }
 
-  // Determines whether provided information from the command's arguments was a mention or a user ID
+  /**
+   * Determines from user provided arguments whether the user intends
+   * to look up a mentioned user or a user through their user ID.
+   *
+   * @param ce        object containing information about the command event
+   * @param display   object representing the embed
+   * @param arguments user provided arguments
+   * @throws Exception unknown error
+   */
   private void setEmbedToDisplayMentionedUserOrProcessUserID(CommandEvent ce, EmbedBuilder display, String[] arguments) {
     boolean mentionedAnyUsers = !ce.getMessage().getMentionedUsers().isEmpty();
     if (mentionedAnyUsers) { // Mention
@@ -65,10 +89,15 @@ public class Profile extends Command {
     }
   }
 
-  // Sends an embed containing information about the mentioned user
+  /**
+   * Sends an embed containing information about the mentioned user.
+   *
+   * @param ce            object containing information about the command event
+   * @param display       object representing the embed
+   * @param mentionedUser user object representing the mentioned user
+   */
   private void setEmbedToDisplayMentionedUser(CommandEvent ce, EmbedBuilder display, User mentionedUser) {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
-
     display.setThumbnail(mentionedUser.getAvatarUrl());
     display.setDescription("**Tag:** " + mentionedUser.getAsMention()
         + "\n**Discord:** `" + mentionedUser.getAsTag()
@@ -76,34 +105,41 @@ public class Profile extends Command {
         + "`\n**Created:** `" + mentionedUser.getTimeCreated().format(dtf) + " GMT`"
         + "\n**Joined:** `" + retrieveServerMemberInServer(ce, mentionedUser.getId()).getTimeJoined().format(dtf) + " GMT`");
     display.addField("**Roles:**", returnUserRolesAsMentionable(ce.getMessage().getMentionedMembers().get(0)), false);
-
     Settings.sendEmbed(ce, display);
   }
 
-  /*
-   Method is divided into two categories as users can provide the user
-   ID by itself or make it mentionable by formatting it as <@UserID>.
-   Note: Some user IDs are 19 characters long instead of 18,
-   requiring the need for multiple similar switch cases.
+  /**
+   * Processes the user ID provided to a uniform format for look up.
+   * <p>
+   * Method is divided into two categories as users can provide the user ID by
+   * itself or make it mentionable by formatting it as <@UserID>. Some user IDs are
+   * 19 characters long instead of 18, requiring the need for multiple similar switch cases.
+   * </p>
+   *
+   * @param ce        object containing information about the command event
+   * @param display   object representing the embed
+   * @param arguments user provided arguments
    */
   private void processUserIDBeforeSettingEmbed(CommandEvent ce, EmbedBuilder display, String[] arguments) {
     switch (arguments[1].length()) {
-      case 18, 19 -> { // User ID
-        setEmbedToDisplayUserID(ce, display, arguments[1]);
-      }
-
-      case 21 -> { // <@UserID> (18 characters)
-        setEmbedToDisplayUserID(ce, display, arguments[1].substring(2, 20));
-      }
-      case 22 -> { // <@UserID> (19 characters)
-        setEmbedToDisplayUserID(ce, display, arguments[1].substring(2, 21));
-      }
-
+      case 18, 19 -> // User ID
+          setEmbedToDisplayUserID(ce, display, arguments[1]);
+      case 21 -> // <@UserID> (18 characters)
+          setEmbedToDisplayUserID(ce, display, arguments[1].substring(2, 20));
+      case 22 -> // <@UserID> (19 characters)
+          setEmbedToDisplayUserID(ce, display, arguments[1].substring(2, 21));
       default -> ce.getChannel().sendMessage("Invalid User ID input.").queue();
     }
   }
 
-  // Retrieves user based on user ID provided and sets the embed content
+  /**
+   * Sends an embed containing information about the user mentioned by user ID.
+   *
+   * @param ce      object containing information about the command event
+   * @param display object representing the embed
+   * @param userID  user ID to lookup
+   * @throws ErrorResponseException not a member of the Discord server
+   */
   private void setEmbedToDisplayUserID(CommandEvent ce, EmbedBuilder display, String userID) {
     Member serverMember = null;
     boolean isServerMember = false;
@@ -112,7 +148,7 @@ public class Profile extends Command {
       serverMember = retrieveServerMemberInServer(ce, userID);
       isServerMember = true;
       display.addField("**Roles:**", returnUserRolesAsMentionable(serverMember), false);
-    } catch (ErrorResponseException notAMemberOfServer) {
+    } catch (ErrorResponseException e) {
     }
 
     User user = ce.getJDA().retrieveUserById(userID).complete();
@@ -122,16 +158,26 @@ public class Profile extends Command {
     display.setDescription("**Tag:** " + user.getAsMention() + "\n**Discord:** `" + user.getAsTag()
         + "`\n**User ID:** `" + user.getId() + "`\n**Created:** `" + user.getTimeCreated().format(dtf) + " GMT`"
         + (isServerMember ? "\n**Joined:** `" + serverMember.getTimeJoined().format(dtf) + " GMT`" : ""));
-
     Settings.sendEmbed(ce, display);
   }
 
-  // Returns user object if they are a member of the server as the command invoked
+  /**
+   * Determines whether the user is a member of the server as the command invoked.
+   *
+   * @param ce     object containing information about the command event
+   * @param userID user ID to lookup
+   * @return whether the user is a member of the Discord server
+   */
   private Member retrieveServerMemberInServer(CommandEvent ce, String userID) {
     return ce.getGuild().retrieveMemberById(userID).complete();
   }
 
-  // Retrieve role IDs from user as strings, then make the roles mentionable
+  /**
+   * Retrieves role IDs from user as Strings, then makes the roles mentionable.
+   *
+   * @param member object representing member of the Discord server
+   * @return list of mentionable roles belonging to the member
+   */
   private String returnUserRolesAsMentionable(Member member) {
     StringBuilder roleList = new StringBuilder();
     for (Role roleLongID : member.getRoles()) {

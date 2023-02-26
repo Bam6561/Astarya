@@ -22,13 +22,29 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 
+/**
+ * LucyferBot represents the Discord bot application as an object. Through
+ * event listeners and the command client (an object representing the bot's
+ * various command modules), the bot can process various Discord API requests
+ * given to it by users in Discord chat through the usage of its bot token.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.0
+ */
 public class LucyferBot {
   private static JDA api;
 
+  /**
+   * Initializes LucyferBot and associates all of its
+   * necessary components together as a singular application.
+   *
+   * @param args Command line parameters
+   * @throws Exception unknown error
+   */
   public static void main(String[] args) {
-    Dotenv dotenv = Dotenv.load();
-
     // Login
+    Dotenv dotenv = Dotenv.load();
     try {
       api = JDABuilder.createDefault(dotenv.get("BOT_TOKEN")).build().awaitReady();
       System.out.println("[" + api.getSelfUser().getName() + "#" +
@@ -37,7 +53,7 @@ public class LucyferBot {
       e.printStackTrace();
     }
 
-    // Presence
+    // Bot Presence
     api.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
     api.getPresence().setActivity(Activity.listening("Nothing"));
 
@@ -46,29 +62,33 @@ public class LucyferBot {
     EventWaiter waiter = new EventWaiter();
 
     // Prefixes
-    String prefix = "<";
+    String prefix = "a";
     String alternativePrefix = "L:";
 
-    // CommandClient settings
+    // Command Client settings
     commands.setOwnerId("204448598539239424"); // Bam#3531
     commands.setHelpWord("commands");
     commands.setPrefix(prefix);
     commands.setAlternativePrefix(alternativePrefix);
-
     commands.addCommands(new Avatar(), new Emote(), new Poll(waiter), new Remind(),
         new Server(), new Profile(), new Delete(), new Settings(prefix, alternativePrefix),
         new Shutdown(), new Ping(), new Choose(), new CoinFlip(), new HighOrLow(waiter), new Roll(),
         new ClearQueue(), new Join(), new Leave(), new Loop(), new NowPlaying(), new Pause(),
         new Play(), new PlayNext(), new Queue(), new Remove(), new Return(), new SearchTrack(waiter),
         new SetPosition(), new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
-
     CommandClient commandClient = commands.build();
 
-    // Bot
+    // Initialize LucyferBot
     api.addEventListener(commandClient, waiter, new MessageLog());
   }
 
+  /**
+   * Returns a JDA object that can be
+   * used to access the Discord API
+   *
+   * @return Discord API
+   */
   public JDA getApi() {
-    return this.api;
+    return api;
   }
 }

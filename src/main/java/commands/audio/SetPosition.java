@@ -8,15 +8,26 @@ import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
+/**
+ * SetPosition is a command invocation that sets the position of the currently playing track.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.2.11
+ */
 public class SetPosition extends Command {
   public SetPosition() {
     this.name = "setPosition";
     this.aliases = new String[]{"setposition", "setpos", "goto", "sp"};
     this.arguments = "[1]timeString";
-    this.help = "Sets the position of the currently playing audio track.";
+    this.help = "Sets the position of the currently playing track.";
   }
 
-  // Sets the position of the currently playing track
+  /**
+   * Determines whether the user is in the same voice channel as the bot to process a setPosition command request.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -24,21 +35,24 @@ public class SetPosition extends Command {
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
 
-    boolean userInVoiceChannel = ce.getMember().getVoiceState().inVoiceChannel();
-    boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-
-    if (userInVoiceChannel) {
+    try {
+      boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
       if (userInSameVoiceChannel) {
         parseSetPositionRequest(ce);
       } else {
         ce.getChannel().sendMessage("User not in the same voice channel.").queue();
       }
-    } else {
+    } catch (NullPointerException e) {
       ce.getChannel().sendMessage("User not in a voice channel.").queue();
     }
   }
 
-  // Validates setPosition request before proceeding
+  /**
+   * Processes user provided arguments to determine whether the setPosition command request was formatted correctly.
+   *
+   * @param ce object containing information about the command event
+   * @throws NumberFormatException user provided non-integer value
+   */
   private void parseSetPositionRequest(CommandEvent ce) {
     // Parse message for arguments
     String[] arguments = ce.getMessage().getContentRaw().split("\\s");
@@ -47,7 +61,7 @@ public class SetPosition extends Command {
     boolean validNumberOfArguments = numberOfArguments == 1;
     if (validNumberOfArguments) {
       try {
-        setPosition(ce, arguments[1]);
+        setTrackPosition(ce, arguments[1]);
       } catch (NumberFormatException error) {
         ce.getChannel().sendMessage("Invalid time frame. " +
             "Specify the section to be skipped to using hh:mm:ss.").queue();
@@ -57,8 +71,13 @@ public class SetPosition extends Command {
     }
   }
 
-  // Sets the position of the currently playing track
-  private void setPosition(CommandEvent ce, String trackPositionString) {
+  /**
+   * Sets the position of the currently playing track.
+   *
+   * @param ce                  object containing information about the command event
+   * @param trackPositionString user provided position of the track to be set to
+   */
+  private void setTrackPosition(CommandEvent ce, String trackPositionString) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
 
@@ -76,7 +95,7 @@ public class SetPosition extends Command {
         setPositionConfirmation.append("**Set Position:** {*").append(positionSet).
             append("*} [").append(ce.getAuthor().getAsTag()).append("]");
         ce.getChannel().sendMessage(setPositionConfirmation).queue();
-      } else { // Requested time exceeds track length
+      } else {
         ce.getChannel().sendMessage("Requested position exceeds track length.").queue();
       }
     } else {
@@ -84,7 +103,13 @@ public class SetPosition extends Command {
     }
   }
 
-  // Converts hh:mm:ss formats to long
+  /**
+   * Converts user provided hh:mm:ss format to long data type.
+   *
+   * @param ce                  object containing information about the command event
+   * @param trackPositionString user provided position of the track to be set to
+   * @return position of the track to be set to in long data type
+   */
   private long convertTimeToLong(CommandEvent ce, String trackPositionString) {
     String[] trackPositionTimeTypes = trackPositionString.split(":");
     long seconds = 0;
@@ -92,22 +117,17 @@ public class SetPosition extends Command {
     long hours = 0;
 
     switch (trackPositionTimeTypes.length) {
-      case 1 -> // Seconds
-          seconds = Integer.parseInt(trackPositionTimeTypes[0]);
-
-      case 2 -> { // Minutes, Seconds
+      case 1 -> seconds = Integer.parseInt(trackPositionTimeTypes[0]);
+      case 2 -> {
         minutes = Integer.parseInt(trackPositionTimeTypes[0]);
         seconds = Integer.parseInt(trackPositionTimeTypes[1]);
       }
-
-      case 3 -> { // Hours, Minutes, Seconds
+      case 3 -> {
         hours = Integer.parseInt(trackPositionTimeTypes[0]);
         minutes = Integer.parseInt(trackPositionTimeTypes[1]);
         seconds = Integer.parseInt(trackPositionTimeTypes[2]);
       }
-
-      default -> // Invalid argument
-          ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
     }
 
     // Conversion to milliseconds
@@ -117,7 +137,12 @@ public class SetPosition extends Command {
     return hours + minutes + seconds;
   }
 
-  // Converts long duration to conventional readable time
+  /**
+   * Converts long duration to conventional readable time.
+   *
+   * @param longTime duration of the track in long
+   * @return readable time format
+   */
   private String longTimeConversion(long longTime) {
     long days = longTime / 86400000 % 30;
     long hours = longTime / 3600000 % 24;

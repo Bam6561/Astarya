@@ -10,6 +10,14 @@ import net.dv8tion.jda.api.entities.Activity;
 
 import java.util.ArrayList;
 
+/**
+ * AudioScheduler is a component of LavaPlayer that handles the audio
+ * player's functionality related to playing tracks and track order.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.1.0
+ */
 public class AudioScheduler extends AudioEventAdapter {
   private final AudioPlayer audioPlayer;
   private ArrayList<AudioTrack> trackQueue;
@@ -19,21 +27,29 @@ public class AudioScheduler extends AudioEventAdapter {
 
   public AudioScheduler(AudioPlayer audioPlayer) {
     this.audioPlayer = audioPlayer;
-    this.trackQueue = new ArrayList<AudioTrack>();
-    this.requesterList = new ArrayList<String>();
-    this.skippedStack = new ArrayList<AudioTrack>();
+    this.trackQueue = new ArrayList<>();
+    this.requesterList = new ArrayList<>();
+    this.skippedStack = new ArrayList<>();
   }
 
-  // Adds track to track queue
-  public void queue(AudioTrack audioTrack) {
-    if (this.audioPlayer.getPlayingTrack() == null) { // Play request immediately if nothing playing
-      this.audioPlayer.startTrack(audioTrack, true);
+  /**
+   * Adds a track to the track queue, and if the audio player isn't
+   * currently playing anything, then play the track immediately.
+   *
+   * @param queuedTrack track to be added to the queue
+   */
+  public void queue(AudioTrack queuedTrack) {
+    if (this.audioPlayer.getPlayingTrack() == null) {
+      this.audioPlayer.startTrack(queuedTrack, true);
     } else {
-      this.trackQueue.add(audioTrack); // Add to queue
+      this.trackQueue.add(queuedTrack);
     }
   }
 
-  // Goes to next track in track queue
+  /**
+   * Goes to the next track in the track queue and removes the associated track requester. If
+   * the audio player has finished its track queue, then update the bot's presence and activity.
+   */
   public void nextTrack() {
     if (!this.trackQueue.isEmpty()) {
       this.audioPlayer.startTrack(this.trackQueue.get(0), false);
@@ -49,34 +65,49 @@ public class AudioScheduler extends AudioEventAdapter {
     }
   }
 
-  // Update presence when playing new track if not looped
+  /**
+   * Updates the bot's presence when playing a new track if the audio player isn't looped.
+   *
+   * @param audioPlayer           bot's audio player
+   * @param currentlyPlayingTrack track that is currently playing
+   */
   @Override
-  public void onTrackStart(AudioPlayer audioPlayer, AudioTrack audioTrack) {
+  public void onTrackStart(AudioPlayer audioPlayer, AudioTrack currentlyPlayingTrack) {
     if (!this.audioPlayerLoopState) {
       LucyferBot lucyferBot = new LucyferBot();
+      lucyferBot.getApi().getPresence().setActivity(Activity.listening(currentlyPlayingTrack.getInfo().title));
       lucyferBot.getApi().getPresence().setStatus(OnlineStatus.ONLINE);
-      lucyferBot.getApi().getPresence().setActivity(Activity.listening(audioTrack.getInfo().title));
     }
   }
 
-  // Loops track if looped
+  /**
+   * Queues a copy of the currently playing track if the audio player is looped.
+   *
+   * @param audioPlayer bot's audio player
+   * @param loopedTrack track that is currently looped
+   * @param endReason   whether the audio player can continue playing the next track
+   */
   @Override
-  public void onTrackEnd(AudioPlayer audioPlayer, AudioTrack audioTrack, AudioTrackEndReason endReason) {
+  public void onTrackEnd(AudioPlayer audioPlayer, AudioTrack loopedTrack, AudioTrackEndReason endReason) {
     if (endReason.mayStartNext) {
-      if (this.audioPlayerLoopState) {  // Loop
-        this.audioPlayer.startTrack(audioTrack.makeClone(), false);
+      if (this.audioPlayerLoopState) {
+        this.audioPlayer.startTrack(loopedTrack.makeClone(), false);
         return;
       }
       nextTrack();
     }
   }
 
-  // Access and add variables outside this class
-  public void addToRequesterList(String requester) { // Track requester array
-    this.requesterList.add(requester);
-  }
-
-  // Recently skipped songs go to the top, increment all existing track indices by 1
+  /**
+   * Adds a recently skipped track to the skipped track stack.
+   * <p>
+   * Recently skipped tracks go to the top and increment all existing track
+   * indices by 1. The maximum number of skipped tracks is the stack is 10,
+   * after which adding a new skipped track removes the least recent in the stack.
+   * </p>
+   *
+   * @param skippedTrack track that was recently skipped
+   */
   public void addToSkippedStack(AudioTrack skippedTrack) {
     this.skippedStack.add(0, skippedTrack);
     boolean skippedStackOverLimit = skippedStack.size() > 10;
@@ -85,7 +116,6 @@ public class AudioScheduler extends AudioEventAdapter {
     }
   }
 
-  // Get and set various variables outside this class
   public AudioPlayer getAudioPlayer() {
     return this.audioPlayer;
   }
@@ -108,5 +138,9 @@ public class AudioScheduler extends AudioEventAdapter {
 
   public void setAudioPlayerLoopState(boolean audioPlayerLoopState) {
     this.audioPlayerLoopState = audioPlayerLoopState;
+  }
+
+  public void addToRequesterList(String requester) {
+    this.requesterList.add(requester);
   }
 }

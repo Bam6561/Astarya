@@ -3,7 +3,16 @@ package commands.audio.managers;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 
-public class PlaybackManager { // Glues all LavaPlayer components together
+/**
+ * PlaybackManager is a LavaPlayer component that associates all
+ * LavaPlayer components together into one referencable instance object.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.1.0s
+ */
+
+public class PlaybackManager {
   public final AudioPlayer audioPlayer;
   public final AudioScheduler audioScheduler;
   private static AudioPlayerSendHandler sendHandler;

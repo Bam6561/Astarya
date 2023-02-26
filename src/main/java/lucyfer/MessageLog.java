@@ -2,123 +2,168 @@ package lucyfer;
 
 import commands.owner.Settings;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * MessageLog prints messages sent by users in Discord channels
+ * that the bot has access to view into the command terminal.
+ * <p>
+ * Strictly used for debugging purposes only, the log does not write any data into
+ * external files, and its content is lost upon closing the application's terminal window.
+ * </p>
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.0.0
+ */
 public class MessageLog extends ListenerAdapter {
-  public void onGuildMessageReceived(GuildMessageReceivedEvent ce) {
-    boolean isHuman = !ce.getMessage().isWebhookMessage() && (!ce.getMessage().getAuthor().isBot());
+  private String messageWithLinks;
+
+  /**
+   * Logs messages if they were sent by a human user and optionally flags
+   * suspicious links if the setting for moderatePotentialPhishing is true.
+   *
+   * @param messageE object containing information about the message event
+   */
+  public void onGuildMessageReceived(GuildMessageReceivedEvent messageE) {
+    boolean isHuman = !messageE.getMessage().isWebhookMessage() && !messageE.getMessage().getAuthor().isBot();
+    boolean moderatingPotentialPhishing = Settings.getModeratePotentialPhishing();
+
     if (isHuman) {
-      sendMessageLog(ce);
-      if (Settings.getModeratePotentialPhishing()) {
-        moderatePotentialPhishing(ce);
+      logMessage(messageE);
+      if (moderatingPotentialPhishing) {
+        scanLinksInMessage(messageE);
       }
     }
   }
 
-  // Logs sent messages in application console, used for debugging
-  // MM/dd(HH:mm)<Server>#channel[UserTag]:Text(MessageAttachment)
-  private void sendMessageLog(GuildMessageReceivedEvent ce) {
-    System.out.println(getTime() + getGuildName(ce) + getChannelName(ce) + getAuthorTag(ce) + getMessageContent(ce)
-        + (!ce.getMessage().getAttachments().isEmpty() ? getMessageAttachment(ce) : ""));
+  /**
+   * Logs human user sent messages into the application's
+   * terminal window and is formatted as follows:
+   * MM/dd(HH:mm)<Server>#channel[UserTag]:Text(MessageAttachment)
+   *
+   * @param messageE object containing information about the message event
+   */
+  private void logMessage(GuildMessageReceivedEvent messageE) {
+    System.out.println(getTime() + getGuildName(messageE)
+        + getChannelName(messageE) + getAuthorTag(messageE) + getMessageContent(messageE)
+        + (!messageE.getMessage().getAttachments().isEmpty() ? getMessageAttachment(messageE) : ""));
   }
 
-  // Get various variables for formatting messages logged
-  private static String getTime() {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd(HH:mm)");
-    LocalDateTime currentDateTime = LocalDateTime.now();
-    return currentDateTime.format(dtf);
-  }
+  /**
+   * Checks if the message contains any links. If a link is found, determine whether the link is a safe URL.
+   * <p>
+   * There may be multiple links in the message, so all links are checked individually
+   * until a potential phishing link is found or no more links exist in the message to check.
+   * </p>
+   *
+   * @param messageE object containing information about the message event
+   */
+  private void scanLinksInMessage(GuildMessageReceivedEvent messageE) {
+    String message = messageE.getMessage().getContentRaw().toLowerCase();
 
-  private static String getGuildName(GuildMessageReceivedEvent ce) {
-    return "<" + ce.getGuild().getName() + ">";
-  }
+    boolean containsLinks = message.contains("https://") || message.contains("http://");
+    boolean notLinkSchemeOnly = !(message.equals("https://") || message.equals("http://"));
+    boolean continueToCheckLinks = containsLinks && notLinkSchemeOnly;
 
-  private static String getChannelName(GuildMessageReceivedEvent ce) {
-    return "#" + ce.getChannel().getName() + "";
-  }
+    if (continueToCheckLinks) {
+      setMessageWithLinks(message);
+    }
 
-  private static String getAuthorTag(GuildMessageReceivedEvent ce) {
-    return "[" + ce.getAuthor().getAsTag() + "]:";
-  }
-
-  private static String getMessageContent(GuildMessageReceivedEvent ce) {
-    return (!ce.getMessage().getContentDisplay().isEmpty() ? ce.getMessage().getContentDisplay() + " " : "");
-  }
-
-  private static String getMessageAttachment(GuildMessageReceivedEvent event) {
-    return "(" + event.getMessage().getAttachments().get(0).getUrl() + ")";
-  }
-
-  // Delete potential phishing attempts
-  private void moderatePotentialPhishing(GuildMessageReceivedEvent ce) {
-    String message = ce.getMessage().getContentRaw().toLowerCase();
-
-    boolean containsLink = message.contains("https://") || message.contains("http://");
-    while (containsLink) { // Filter links from message
-      if (message.contains("https://")) { // Found https://
-        if (!message.equals("https://")) { // Doesn't contain scheme only
-          message = message.substring(message.indexOf("https://") + 8); // Separate scheme from URL
-          containsLink = isSafeURL(ce, message); // Unsafe URL content signals message deletion & ends loop immediately
-        } else { // Contains scheme only
-          containsLink = false;
-        }
-      } else if (message.contains("http://")) { // Found http://
-        if (!message.equals("http://")) { // Doesn't contain scheme only
-          message = message.substring(message.indexOf("http://") + 7); // Separate scheme from URL
-          containsLink = isSafeURL(ce, message); // Unsafe URL content signals message deletion & ends loop immediately
-        } else { // Contains scheme only
-          containsLink = false;
-        }
-      } else { // No more links in message
-        containsLink = false;
+    // Any unsafe URL content signals message deletion and ends the loop immediately
+    while (continueToCheckLinks) {
+      if (getMessageWithLinks().contains("https://")) {
+        continueToCheckLinks = isSafeURL(messageE, true);
+      } else if (getMessageWithLinks().contains("http://")) {
+        continueToCheckLinks = isSafeURL(messageE, false);
+      } else {
+        continueToCheckLinks = false;
       }
     }
   }
 
-  // Deletes message if any unsafe links are found
-  private boolean isSafeURL(GuildMessageReceivedEvent ce, String message) {
+  /**
+   * Separates the scheme from the URL and determines whether to delete the
+   * message if it contains a potential phishing link. If the currently scanned
+   * link tests negative,then continue to the next link in the message.
+   * <p>
+   * Each time this method is called, the message is truncated forward to the first
+   * URL instance found. Repeated usage of this method allow for dynamically checking
+   * all the links in the message, as it is reused as a parameter that is smaller each time.
+   * </p>
+   *
+   * @param messageE object containing information about a message event
+   * @param isHttps  whether the link is formatted https or http
+   * @return the status of whether the URL is safe
+   * @throws StringIndexOutOfBoundsException no space exists in the URL
+   * @throws InsufficientPermissionException bot does not have the manage messages permission
+   */
+  private boolean isSafeURL(GuildMessageReceivedEvent messageE, boolean isHttps) {
+    // Separate the scheme from the URL
+    if (isHttps) {
+      setMessageWithLinks(getMessageWithLinks().substring(getMessageWithLinks().indexOf("https://") + 8));
+    } else {
+      setMessageWithLinks(getMessageWithLinks().substring(getMessageWithLinks().indexOf("https://") + 7));
+    }
+
+    // Delimit the URL by space
     String link;
-    try { // Delimit url by space
-      link = message.substring(0, message.indexOf(" "));
-    } catch (StringIndexOutOfBoundsException error) { // No space
-      link = message;
+    try {
+      link = getMessageWithLinks().substring(0, getMessageWithLinks().indexOf(" "));
+    } catch (StringIndexOutOfBoundsException e) {
+      link = getMessageWithLinks();
     }
 
-    if (isPotentialPhishingLink(link)) { // Screen link
-      ce.getMessage().delete().queue();
-      ce.getChannel().sendMessage("**Potentially Dangerous Link!** "
-          + ce.getAuthor().getAsMention()).queue();
+    if (isPotentialPhishingLink(link)) {
+      try {
+        messageE.getMessage().delete().queue();
+        messageE.getChannel().sendMessage("**Potentially Dangerous Link!** "
+            + messageE.getAuthor().getAsMention()).queue();
+      } catch (InsufficientPermissionException e) {
+      }
       return false;
     }
 
-    return true; // Continue to next link if URL is deemed safe
+    return true; // Continue to the next link in the message if this URL is deemed safe
   }
 
-  // Definition for potentially risky links
+  /**
+   * Contains the definitions of potential phishing links.
+   * <p>
+   * To identify potentially risky links, a link's domain is first examined.
+   * If it identifies as a Discord related site, then several official patterns
+   * are excused. Otherwise, unrecognized patterns are marked for deletion.
+   * </p>
+   *
+   * @param link URL link
+   * @return whether the link is potentially risky and its message should be deleted
+   * @throws IndexOutOfBoundsException link has no subdirectories
+   */
   private boolean isPotentialPhishingLink(String link) {
+    // Separate subdirectories from the domain
     String domain;
-
-    // Separate subdirectories from domain
     try {
       domain = link.substring(0, link.indexOf("/"));
-    } catch (IndexOutOfBoundsException error) { // No subdirectories
+    } catch (IndexOutOfBoundsException e) {
       domain = link;
     }
 
-    // Contains discord
     if (domain.contains("discord")) {
       int discordIndex = domain.indexOf("discord");
 
-      if (!domain.contains("discordapp")) { // Discord
+      boolean isDiscordAppDomain = domain.contains("discordapp");
+      if (!isDiscordAppDomain) {
         domain = domain.substring(discordIndex + 7);
-      } else { // Discordapp
+      } else {
         domain = domain.substring(discordIndex + 10);
       }
 
-      switch (domain.length()) { // Validate top level domain
+      // Validate top level domain
+      switch (domain.length()) {
         case 0 -> {
           return false;
         }
@@ -148,5 +193,39 @@ public class MessageLog extends ListenerAdapter {
     return domain.contains("d1sc") || domain.contains("dlsc") || domain.contains("discod") ||
         domain.contains("discorcl") || domain.contains("discond") || domain.contains("discrond") ||
         domain.contains("discrod");
+  }
+
+  private static String getTime() {
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd(HH:mm)");
+    LocalDateTime currentDateTime = LocalDateTime.now();
+    return currentDateTime.format(dtf);
+  }
+
+  private static String getGuildName(GuildMessageReceivedEvent messageE) {
+    return "<" + messageE.getGuild().getName() + ">";
+  }
+
+  private static String getChannelName(GuildMessageReceivedEvent messageE) {
+    return "#" + messageE.getChannel().getName() + "";
+  }
+
+  private static String getAuthorTag(GuildMessageReceivedEvent messageE) {
+    return "[" + messageE.getAuthor().getAsTag() + "]:";
+  }
+
+  private static String getMessageContent(GuildMessageReceivedEvent messageE) {
+    return (!messageE.getMessage().getContentDisplay().isEmpty() ? messageE.getMessage().getContentDisplay() + " " : "");
+  }
+
+  private static String getMessageAttachment(GuildMessageReceivedEvent messageE) {
+    return "(" + messageE.getMessage().getAttachments().get(0).getUrl() + ")";
+  }
+
+  private String getMessageWithLinks() {
+    return this.messageWithLinks;
+  }
+
+  private void setMessageWithLinks(String message) {
+    this.messageWithLinks = message;
   }
 }

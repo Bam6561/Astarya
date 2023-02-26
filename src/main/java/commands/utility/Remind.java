@@ -5,6 +5,13 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+/**
+ * Remind is a command invocation that sets a timer and alerts the user when the time expires.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.0
+ */
 public class Remind extends Command {
   public Remind() {
     this.name = "remind";
@@ -14,7 +21,21 @@ public class Remind extends Command {
     this.ownerCommand = false;
   }
 
-  // Sends an embed containing user input information after an elapsed period of time
+  /**
+   * Processes user provided arguments to determine whether the remind command request was formatted correctly.
+   * <p>
+   * Users can provide time types that either come in the form of a String or a Char,
+   * so both variants are checked as to whether they exist and marked as to which
+   * argument they are provided in. The location of where the time type is located
+   * changes the parsing processing slightly, but the overall logic remains the same.
+   * </p>
+   * <p>
+   * After the time type is provided, the user can optionally
+   * provide a name for their reminder in additional arguments.
+   * </p>
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -36,7 +57,12 @@ public class Remind extends Command {
     }
   }
 
-  // Validate recognized time types
+  /**
+   * Checks for recognized time types.
+   *
+   * @param arguments user provided arguments
+   * @return whether the time type provided is valid
+   */
   private boolean checkValidTimeTypeProvided(String[] arguments) {
     int numberOfArguments = arguments.length;
     int indexLimit = 3; // Assume time type is in the ending argument
@@ -49,7 +75,6 @@ public class Remind extends Command {
     for (int i = 1; i < indexLimit; i++) {
       String argument = arguments[i]; // Time type string
       char lastChar = argument.charAt(arguments[i].length() - 1); // Time type char
-
       switch (argument) {
         case "hours", "hour", "hrs", "hr", "h", "minutes", "minute", "mins",
             "min", "m", "seconds", "second", "secs", "sec", "s" -> {
@@ -65,21 +90,34 @@ public class Remind extends Command {
     return false;
   }
 
-  // Check if first argument ends in s, m, h
+  /**
+   * Checks if the first argument ends in s, m, or h.
+   *
+   * @param arguments user provided arguments
+   * @return whether the time type exists in the first argument
+   */
   private boolean checkTimeTypeInFirstArgument(String[] arguments) {
     char timeType = arguments[1].charAt(arguments[1].length() - 1);
     return timeType == 's' || timeType == 'm' || timeType == 'h';
   }
 
-  /*
-  Where the user provides the time type affects the data parsing, so
-  this method handles the differences in one stream.
+  /**
+   * Processes the remind command request based on the time type's location.
+   * <p>
+   * Where the user provides the time type affects the data parsing, so
+   * this method handles the differences in one stream.
+   * </p>
+   *
+   * @param ce                  object containing information about the command event
+   * @param arguments           user provided arguments
+   * @param numberOfArguments   number of user provided arguments
+   * @param timeInFirstArgument whether the time type exists in the first argument
+   * @throws NumberFormatException user provided non-integer values
    */
   private void processTimeTypeBasedOnLocation(CommandEvent ce, String[] arguments, int numberOfArguments, boolean timeInFirstArgument) {
     try {
       char timeType;
       int timeDuration;
-
       if (timeInFirstArgument) {
         timeType = arguments[1].charAt(arguments[1].length() - 1);
         timeDuration = Integer.parseInt(arguments[1].substring(0, arguments[1].length() - 1));
@@ -92,10 +130,9 @@ public class Remind extends Command {
       if (validTimeDuration) { // Within the range of a day
         String timerName = "";
         timerName = setTimerName(arguments, numberOfArguments, timeInFirstArgument, timerName);
-
         setReminder(ce, timeDuration, timeType, timerName);
         setTimer(ce, timeDuration, timeType, timerName);
-      } else { // Outside range of 1 day
+      } else {
         ce.getChannel().sendMessage("Can only set timer for the maximum length of a day.").queue();
       }
     } catch (NumberFormatException e) {
@@ -104,17 +141,28 @@ public class Remind extends Command {
     }
   }
 
-  // Convert all variances of how to write time to uniform timeType
-  private char convertTimeStringToTimeType(String[] args) {
-    return switch (args[2]) {
+  /**
+   * Converts all variances of written time to uniform time types.
+   *
+   * @param arguments user provided arguments
+   * @return character representing either seconds, minutes, or hours
+   */
+  private char convertTimeStringToTimeType(String[] arguments) {
+    return switch (arguments[2]) {
       case "hours", "hour", "hrs", "hr", "h" -> 'h';
       case "minutes", "minute", "mins", "min", "m" -> 'm';
       case "seconds", "second", "secs", "sec", "s" -> 's';
-      default -> args[1].charAt(args[1].length() - 1);
+      default -> arguments[1].charAt(arguments[1].length() - 1);
     };
   }
 
-  // Validate time range within 1 day
+  /**
+   * Checks the time range is within 1 day.
+   *
+   * @param timeDuration duration of time
+   * @param timeType     type of time
+   * @return whether the time duration is within 1 day
+   */
   private boolean checkTimeDuration(int timeDuration, char timeType) {
     if (timeType == 'h' && timeDuration >= 0 && timeDuration <= 24) {
       return true;
@@ -125,9 +173,18 @@ public class Remind extends Command {
     }
   }
 
-  /*
-  Where the user provides the time type affects the timer name parsing, so
-  this method handles the differences in one stream.
+  /**
+   * Sets name of the reminder using user provided arguments.
+   * <p>
+   * Where the user provides the time type affects the data parsing, so
+   * this method handles the differences in one stream.
+   * </p>
+   *
+   * @param arguments           user provided arguments
+   * @param numberOfArguments   number of user provided arguments
+   * @param timeInFirstArgument whether the time type exists in the first argument
+   * @param timerName           name of the reminder
+   * @return name of the reminder
    */
   private String setTimerName(String[] arguments, int numberOfArguments, boolean timeInFirstArgument, String timerName) {
     if (timeInFirstArgument) {
@@ -156,7 +213,14 @@ public class Remind extends Command {
     return "";
   }
 
-  // Sends an embed containing visual reminder creation confirmation
+  /**
+   * Sends an embed containing confirmation for the creation of a reminder.
+   *
+   * @param ce           object containing information about a command event
+   * @param timeDuration duration of time
+   * @param timeType     type of time
+   * @param timerName    name of the reminder
+   */
   private void setReminder(CommandEvent ce, int timeDuration, char timeType, String timerName) {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Reminder__");
@@ -164,11 +228,15 @@ public class Remind extends Command {
         ? "Time set for `" + timerName.substring(0, timerName.length() - 1) +
         "` in (" + timeDuration + ") " + getTimeTypeString(timeType) + "."
         : "Timer set to mention you in (" + timeDuration + ") " + getTimeTypeString(timeType) + ".");
-
     Settings.sendEmbed(ce, display);
   }
 
-  // Character conversion to string
+  /**
+   * Converts the uniform time type characters to a readable form.
+   *
+   * @param timeType type of time
+   * @return the time type in a written form
+   */
   private String getTimeTypeString(char timeType) {
     if (timeType == 's') {
       return "seconds";
@@ -180,7 +248,14 @@ public class Remind extends Command {
     return null;
   }
 
-  // Creates a timer
+  /**
+   * Creates a timer for the user provided time duration.
+   *
+   * @param ce           object containing information about the command event
+   * @param timeDuration duration of time
+   * @param timeType     type of time
+   * @param timerName    name of the reminder
+   */
   private void setTimer(CommandEvent ce, int timeDuration, char timeType, String timerName) {
     new java.util.Timer().schedule(new java.util.TimerTask() {
       public void run() {
@@ -191,7 +266,13 @@ public class Remind extends Command {
     }, timeDurationIntoMilliseconds(timeDuration, timeType));
   }
 
-  // Millisecond conversion for application timer
+  /**
+   * Converts seconds, minutes, or hours into milliseconds.
+   *
+   * @param timeDuration duration of time
+   * @param timeType     type of time
+   * @return equivalent amount of time in milliseconds
+   */
   private int timeDurationIntoMilliseconds(int timeDuration, char timeType) {
     if (timeType == 's') {
       return timeDuration * 1000;

@@ -6,14 +6,25 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.managers.AudioManager;
 
+/**
+ * Leave is a command invocation that makes the bot leave the voice channel it's currently in.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.1.0
+ */
 public class Leave extends Command {
   public Leave() {
     this.name = "leave";
     this.aliases = new String[]{"leave", "l", "disconnect", "dc"};
-    this.help = "Bot leaves the voice channel it is in.";
+    this.help = "Bot leaves the voice channel it's in.";
   }
 
-  // Forces bot to leave its current voice channel
+  /**
+   * Forces the bot to leave the voice channel it's currently connected to.
+   *
+   * @param ce object that contains information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);

@@ -7,14 +7,25 @@ import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
+/**
+ * Loop is a command invocation that sets a boolean value of whether to loop the currently playing track.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.2.6
+ */
 public class Loop extends Command {
   public Loop() {
     this.name = "loop";
     this.aliases = new String[]{"loop", "repeat"};
-    this.help = "Loops the current audio track.";
+    this.help = "Loops the current track.";
   }
 
-  // Loops the currently playing track
+  /**
+   * Determines whether the user is in the same voice channel as the bot to process a loop command request.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -22,21 +33,23 @@ public class Loop extends Command {
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
 
-    boolean userInVoiceChannel = ce.getMember().getVoiceState().inVoiceChannel();
-    boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-
-    if (userInVoiceChannel) {
+    try {
+      boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
       if (userInSameVoiceChannel) {
         setAudioPlayerLoop(ce);
       } else {
         ce.getChannel().sendMessage("User not in the same voice channel.").queue();
       }
-    } else {
+    } catch (NullPointerException e) {
       ce.getChannel().sendMessage("User not in a voice channel.").queue();
     }
   }
 
-  // Sets the loop state of the audio player
+  /**
+   * Sets the loop boolean value of the audio player.
+   *
+   * @param ce object containing information about the command event
+   */
   private void setAudioPlayerLoop(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     boolean audioPlayerNotLooped = !audioScheduler.getAudioPlayerLoopState();

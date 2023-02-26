@@ -10,6 +10,13 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 import java.util.ArrayList;
 
+/**
+ * ClearQueue is a command invocation that clears the track queue.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.2.2
+ */
 public class ClearQueue extends Command {
   public ClearQueue() {
     this.name = "clearqueue";
@@ -17,7 +24,11 @@ public class ClearQueue extends Command {
     this.help = "Clears the track queue.";
   }
 
-  // Clears the track queue
+  /**
+   * Determines whether the user is in the same voice channel as the bot to process a clearQueue command request.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -25,21 +36,23 @@ public class ClearQueue extends Command {
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
 
-    boolean userInVoiceChannel = ce.getMember().getVoiceState().inVoiceChannel();
-    boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-
-    if (userInVoiceChannel) {
+    try {
+      boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
       if (userInSameVoiceChannel) {
         clearTrackQueue(ce);
       } else {
         ce.getChannel().sendMessage("User not in the same voice channel.").queue();
       }
-    } else {
+    } catch (NullPointerException e) {
       ce.getChannel().sendMessage("User not in a voice channel.").queue();
     }
   }
 
-  // Clears the track queue
+  /**
+   * Clears the track queue and its associated requester list.
+   *
+   * @param ce object containing information about the command event
+   */
   private void clearTrackQueue(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
 

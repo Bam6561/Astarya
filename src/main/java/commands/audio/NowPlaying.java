@@ -8,14 +8,25 @@ import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
 
+/**
+ * NowPlaying is a command invocation that shows what track is currently playing.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.2.3
+ */
 public class NowPlaying extends Command {
   public NowPlaying() {
     this.name = "nowplaying";
     this.aliases = new String[]{"nowplaying", "np"};
-    this.help = "Shows what's currently playing.";
+    this.help = "Shows what track is currently playing.";
   }
 
-  // Displays currently playing track
+  /**
+   * Ignores all arguments and displays the currently playing track.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -23,7 +34,11 @@ public class NowPlaying extends Command {
     getNowPlaying(ce);
   }
 
-  // Displays currently playing track
+  /**
+   * Displays the currently playing track.
+   *
+   * @param ce object containing information about the command event
+   */
   private void getNowPlaying(CommandEvent ce) { // NowPlaying
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
@@ -47,21 +62,32 @@ public class NowPlaying extends Command {
     ce.getChannel().sendMessage(nowPlayingConfirmation).queue();
   }
 
-  // Conditional setting notices for nowPlaying
+  /**
+   * Adds conditional setting notes for the nowPlaying section.
+   *
+   * @param audioScheduler the bot's audio scheduler
+   * @param audioPlayer    the bot's audio player
+   * @param nowPlaying     String containing information about what track is currently playing
+   */
   private void audioPlayerIsPausedOrLoopedNotice(AudioScheduler audioScheduler, AudioPlayer audioPlayer,
-                                                 StringBuilder nowPlayingConfirmation) {
+                                                 StringBuilder nowPlaying) {
     boolean audioPlayerIsPaused = audioPlayer.isPaused();
     boolean audioPlayerIsLooped = audioScheduler.getAudioPlayerLoopState();
 
     if (audioPlayerIsPaused) {
-      nowPlayingConfirmation.append("(Paused) ");
+      nowPlaying.append("(Paused) ");
     }
     if (audioPlayerIsLooped) {
-      nowPlayingConfirmation.append("(Loop) ");
+      nowPlaying.append("(Loop) ");
     }
   }
 
-  // Converts long duration to conventional readable time
+  /**
+   * Converts long duration to conventional readable time.
+   *
+   * @param longTime duration of the track in long
+   * @return readable time format
+   */
   private String longTimeConversion(long longTime) {
     long days = longTime / 86400000 % 30;
     long hours = longTime / 3600000 % 24;

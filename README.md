@@ -2,13 +2,14 @@
   <h3>LucyferBot</h3>
   <img src="https://i.ibb.co/q7vdKJJ/lucyfer-Bot128x128.png" alt="lucyfer-Bot128x128">
 
-  [![Stargazers][stars-shield]][stars-url] [![License][license-shield]][license-url]
+[![Stargazers][stars-shield]][stars-url] [![License][license-shield]][license-url]
 
 </div>
 
 ## About The Project
 
-Discord bot written in Java using the JDA wrapper. Optional Spotify API integration for more audio playback functionality.
+Discord bot written in Java using the JDA wrapper. Optional Spotify API integration for more audio playback
+functionality.
 
 ### Built With
 
@@ -27,24 +28,25 @@ Discord bot written in Java using the JDA wrapper. Optional Spotify API integrat
 3. Add the Bot functionality in the Application's settings.
 4. Copy your bot's login token.
 5. Create an .env file.
-6. In your .env file, write a line containing `BOT_TOKEN =` followed by your bot's login token enclosed by double quotes.
-It should look like this: `BOT_TOKEN = "12345"`.
+6. In your .env file, write a line containing `BOT_TOKEN =` followed by your bot's login token enclosed by double
+   quotes. It should look like this: `BOT_TOKEN = "12345"`.
 7. Navigate to OAUTH2, then go to the URL Generator section in the dropdown.
-8. Under scopes, checkmark `Bot`, and optionally add the `Manage Messages` permission if you plan to use the bot to delete messages for you.
+8. Under scopes, checkmark `Bot`, and optionally add the `Manage Messages` permission if you plan to use the bot to
+   delete messages for you.
 9. Finally, invite the bot to your Discord server by copying the generated URL and pasting it into your browser.
-10. Optionally, if you want the bot to be able to interact with Spotify links containing songs, playlists, and albums, then create two other variables
-in your .env file called `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`.
+10. Optionally, if you want the bot to be able to interact with Spotify links containing songs, playlists, and albums,
+    then create two other variables in your .env file called `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`.
 11. Go to [Spotify For Developers](https://developer.spotify.com/) and create an account.
 12. Go to your Dashboard and create a Spotify Application.
 13. Repeating the process in step #6, add in the .env file the tokens for your Client ID and Client Secret.
 
 ## Contributing
 
-1.  Fork the Project
-2.  Create your Feature Branch
-3.  Commit your Changes
-4.  Push to the Branch
-5.  Open a Pull Request
+1. Fork the Project
+2. Create your Feature Branch
+3. Commit your Changes
+4. Push to the Branch
+5. Open a Pull Request
 
 ## License
 

@@ -7,6 +7,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.Random;
 
+/**
+ * CoinFlip is a command invocation that simulates coin flips.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.0
+ */
 public class CoinFlip extends Command {
   public CoinFlip() {
     this.name = "flip";
@@ -15,7 +22,11 @@ public class CoinFlip extends Command {
     this.help = "Flips a coin.";
   }
 
-  // Sends an embed containing results of x number of coin flips
+  /**
+   * Either flips a coin once or multiple times.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -25,13 +36,17 @@ public class CoinFlip extends Command {
     int numberOfArguments = arguments.length - 1;
 
     switch (numberOfArguments) {
-      case 0 -> oneCoinFlip(ce); // Flip a coin once
-      case 1 -> multipleCoinFlips(ce, arguments); // Flip a coin multiple times
-      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue(); // Invalid arguments
+      case 0 -> oneCoinFlip(ce);
+      case 1 -> multipleCoinFlips(ce, arguments);
+      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
     }
   }
 
-  // Flips a coin once
+  /**
+   * Flips a coin once.
+   *
+   * @param ce object containing information about the command event
+   */
   private void oneCoinFlip(CommandEvent ce) {
     Random random = new Random();
     String flipResult = "";
@@ -45,13 +60,18 @@ public class CoinFlip extends Command {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Coin Flip__");
     display.setDescription(flipResult);
-
     Settings.sendEmbed(ce, display);
   }
 
-  // Flips a coin multiple times
+  /**
+   * Checks whether the user requested number of flips is an integer and is in range of 1-10.
+   *
+   * @param ce        object containing information about the command event
+   * @param arguments user provided arguments
+   * @throws NumberFormatException user provided a non-integer value
+   */
   private void multipleCoinFlips(CommandEvent ce, String[] arguments) {
-    try { // Ensure requested number of flips is an integer
+    try {
       int numberOfFlips = Integer.parseInt(arguments[1]);
       boolean validNumberOfFlips = (numberOfFlips >= 1) && (numberOfFlips <= 10);
       if (validNumberOfFlips) {
@@ -59,17 +79,23 @@ public class CoinFlip extends Command {
       } else {
         ce.getChannel().sendMessage("Specify an integer between (1-10) times to flip the coin.").queue();
       }
-    } catch (NumberFormatException error) { // Non-integer input
+    } catch (NumberFormatException error) {
       ce.getChannel().sendMessage("Specify an integer between (1-10) times to flip the coin.").queue();
     }
   }
 
-  // Generates multiple coin flip results
+  /**
+   * Sends the results of flipping a coin multiple times.
+   *
+   * @param ce            object containing information about the command event
+   * @param numberOfFlips number of times to flip a coin
+   */
   private void multipleFlipResults(CommandEvent ce, int numberOfFlips) {
     Random rand = new Random();
     StringBuilder flipResults = new StringBuilder();
 
-    for (int i = 0; i < numberOfFlips; i++) { // Generate list of flip results
+    // Generate a list of flip results
+    for (int i = 0; i < numberOfFlips; i++) {
       if (rand.nextInt(2) == 0) {
         flipResults.append("\n").append(i + 1).append(": **(Heads)** ");
       } else {
@@ -80,7 +106,6 @@ public class CoinFlip extends Command {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Coin Flips__");
     display.setDescription(flipResults.toString());
-
     Settings.sendEmbed(ce, display);
   }
 }

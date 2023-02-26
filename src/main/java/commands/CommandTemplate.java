@@ -4,6 +4,13 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
 
+/**
+ * CommandTemplate is a command invocation that does something. We just don't know what yet.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.0
+ */
 public class CommandTemplate extends Command {
   public CommandTemplate() {
     this.name = "";
@@ -13,7 +20,11 @@ public class CommandTemplate extends Command {
     this.ownerCommand = false;
   }
 
-  // Method does something
+  /**
+   * This method also does something. Mysterious.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);

@@ -8,6 +8,13 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
+/**
+ * Avatar is a command invocation that provides the user's profile picture.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.0
+ */
 public class Avatar extends Command {
   public Avatar() {
     this.name = "avatar";
@@ -16,7 +23,15 @@ public class Avatar extends Command {
     this.help = "Provides the user's profile picture.";
   }
 
-  // Sends an embed containing mentioned user's profile picture
+  /**
+   * Processes user provided arguments to determine whether the avatar
+   * command request is for the self-user, mentioned user, or user ID.
+   * <p>
+   * Users can provide an additional argument after the primary avatar request that changes the avatar's size.
+   * </p>
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -29,9 +44,8 @@ public class Avatar extends Command {
     EmbedBuilder display = new EmbedBuilder();
 
     switch (numberOfArguments) {
-      case 1 -> { // Self
-        setEmbedToSelf(ce, display, avatarSize);
-      }
+      case 1 -> // Self
+          setEmbedToSelf(ce, display, avatarSize);
 
       case 2 -> { // Mention || UserID || Self & Size
         boolean mentionedUser = !ce.getMessage().getMentionedMembers().isEmpty();
@@ -57,78 +71,141 @@ public class Avatar extends Command {
         }
       }
 
-      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue(); // Invalid arguments
+      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
     }
   }
 
-  // Set embed to self user's profile picture
+  /**
+   * Sets embed to self-user's profile picture.
+   *
+   * @param ce         object containing information about the command event
+   * @param display    object representing the embed
+   * @param avatarSize requested size of the avatar image
+   */
   private void setEmbedToSelf(CommandEvent ce, EmbedBuilder display, String avatarSize) {
     User self = ce.getMember().getUser();
     sendEmbed(ce, display, self.getName(), "Resolution: " + avatarSize + "x" + avatarSize,
         self.getAvatarUrl() + "?size=" + avatarSize);
   }
 
-  // Set embed to mentioned user's profile picture
+  /**
+   * Sets embed to mentioned users profile picture.
+   *
+   * @param ce         object containing information about the command event
+   * @param display    object representing the embed
+   * @param avatarSize requested size of the avatar image
+   */
   private void setEmbedToMentionedUser(CommandEvent ce, EmbedBuilder display, String avatarSize) {
     Member member = ce.getMessage().getMentionedMembers().get(0);
     sendEmbed(ce, display, member.getEffectiveName(), "Resolution: " + avatarSize + "x" + avatarSize,
         member.getUser().getAvatarUrl() + "?size=" + avatarSize);
   }
 
-  // Set embed to user ID's profile picture
+  /**
+   * Sets embed to identified user by user ID's profile picture.
+   *
+   * @param ce         object containing information about the command event
+   * @param display    object representing the embed
+   * @param avatarSize requested size of the avatar image
+   */
   private void setEmbedToUserID(CommandEvent ce, EmbedBuilder display, String[] arguments, String avatarSize) {
     User user = ce.getJDA().retrieveUserById(arguments[1]).complete();
     sendEmbed(ce, display, user.getName(), "Resolution: " + avatarSize + "x" + avatarSize,
         user.getAvatarUrl() + "?size=" + avatarSize);
   }
 
-  // Set embed to self user and change avatar size
+  /**
+   * Sets embed to self-user's profile picture and changes the avatar image size.
+   *
+   * @param ce         object containing information about the command event
+   * @param display    object representing the embed
+   * @param arguments  user provided arguments
+   * @param avatarSize requested size of the avatar image
+   */
   private void setEmbedToSelfAndSize(CommandEvent ce, EmbedBuilder display, String[] arguments, String avatarSize) {
     User user = ce.getMember().getUser();
     sendEmbed(ce, display, user.getName(),
-        user.getAvatarUrl() + "?size=" + setImageSize(ce, arguments, 1, avatarSize, display));
+        user.getAvatarUrl() + "?size=" + setAvatarImageSize(ce, arguments, 1, avatarSize, display));
   }
 
-  // Set embed to mentioned user and change avatar size
+  /**
+   * Sets embed to mentioned user's profile picture and changes the avatar image size.
+   *
+   * @param ce         object containing information about the command event
+   * @param display    object representing the embed
+   * @param arguments  user provided arguments
+   * @param avatarSize requested size of the image
+   */
   private void setEmbedToMentionAndSize(CommandEvent ce, EmbedBuilder display, String[] arguments, String avatarSize) {
     Member member = ce.getMessage().getMentionedMembers().get(0);
     sendEmbed(ce, display, member.getEffectiveName(),
-        member.getUser().getAvatarUrl() + "?size=" + setImageSize(ce, arguments, 2, avatarSize, display));
+        member.getUser().getAvatarUrl() + "?size=" + setAvatarImageSize(ce, arguments, 2, avatarSize, display));
   }
 
-  // Set embed to user ID and change avatar size
+  /**
+   * Sets embed to identified user by user ID's profile picture and changes the avatar size.
+   *
+   * @param ce         object containing information about the command event
+   * @param display    object representing the embed
+   * @param arguments  user provided arguments
+   * @param avatarSize requested size of the avatar image
+   * @throws ErrorResponseException user ID does not exist
+   */
   private void setEmbedToUserIDAndSize(CommandEvent ce, EmbedBuilder display, String[] arguments, String avatarSize) {
     try { // Verify UserID
       User user = ce.getJDA().retrieveUserById(arguments[1]).complete();
       sendEmbed(ce, display, user.getName(),
-          user.getAvatarUrl() + "?size=" + setImageSize(ce, arguments, 2, avatarSize, display));
-    } catch (ErrorResponseException error) { // Invalid UserID
+          user.getAvatarUrl() + "?size=" + setAvatarImageSize(ce, arguments, 2, avatarSize, display));
+    } catch (ErrorResponseException e) {
       ce.getChannel().sendMessage("Invalid User ID.").queue();
     }
   }
 
-  // Embed without avatar size provided
-  private void sendEmbed(CommandEvent ce, EmbedBuilder display, String title, String description, String image) {
+  /**
+   * Sends an embed with the default sized avatar (x1024).
+   *
+   * @param ce          object containing information about the command event
+   * @param display     object representing the embed
+   * @param title       user's name
+   * @param description avatar size
+   * @param avatarImage user's avatar image
+   */
+  private void sendEmbed(CommandEvent ce, EmbedBuilder display, String title, String description, String avatarImage) {
     display.setTitle(title);
     display.setDescription(description);
-    display.setImage(image);
-
+    display.setImage(avatarImage);
     Settings.sendEmbed(ce, display);
   }
 
-  // Embed with avatar size provided
-  private void sendEmbed(CommandEvent ce, EmbedBuilder display, String title, String image) {
+  /**
+   * Sends an embed with a custom avatar size provided (x128, x256, x512, x1024).
+   *
+   * @param ce          object containing information about the command event
+   * @param display     object representing the embed
+   * @param title       user's name
+   * @param avatarImage user's avatar image
+   */
+  private void sendEmbed(CommandEvent ce, EmbedBuilder display, String title, String avatarImage) {
     display.setTitle(title);
-    display.setImage(image);
-
+    display.setImage(avatarImage);
     Settings.sendEmbed(ce, display);
   }
 
-  // Changes default avatar size
-  private String setImageSize(CommandEvent ce, String[] args, int argument, String avatarSize, EmbedBuilder display) {
-    switch (args[argument]) {
-      case "128", "256", "512", "1024" -> avatarSize = args[argument];
-      default -> ce.getChannel().sendMessage("Image only come in square sizes of 128, 256, 512, & 1024.").queue();
+  /**
+   * Changes the avatar image size if it is an accepted size. Otherwise, remain the default size (x1024).
+   *
+   * @param ce                          object containing information about the command event
+   * @param arguments                   user provided arguments
+   * @param requestedAvatarSizeLocation which user provided argument is the avatar size request
+   * @param avatarSize                  requested size of the avatar
+   * @param display                     object representing the embed
+   * @return resolution of the avatar image
+   */
+  private String setAvatarImageSize(CommandEvent ce, String[] arguments, int requestedAvatarSizeLocation,
+                                    String avatarSize, EmbedBuilder display) {
+    switch (arguments[requestedAvatarSizeLocation]) {
+      case "128", "256", "512", "1024" -> avatarSize = arguments[requestedAvatarSizeLocation];
+      default -> ce.getChannel().sendMessage("Avatars only come in square sizes of 128, 256, 512, & 1024.").queue();
     }
     display.setDescription("Resolution: " + avatarSize + "x" + avatarSize);
     return avatarSize;

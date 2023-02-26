@@ -12,6 +12,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+/**
+ * Shuffle is a command invocation that shuffles the track queue.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.2.6
+ */
 public class Shuffle extends Command {
   public Shuffle() {
     this.name = "shuffle";
@@ -19,7 +26,11 @@ public class Shuffle extends Command {
     this.help = "Shuffles the queue.";
   }
 
-  // Shuffles the track queue
+  /**
+   * Determines whether the user is in the same voice channel as the bot to process a shuffle command request.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -27,21 +38,23 @@ public class Shuffle extends Command {
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
 
-    boolean userInVoiceChannel = ce.getMember().getVoiceState().inVoiceChannel();
-    boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-
-    if (userInVoiceChannel) {
+    try {
+      boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
       if (userInSameVoiceChannel) {
         shuffleQueue(ce);
       } else {
         ce.getChannel().sendMessage("User not in the same voice channel.").queue();
       }
-    } else {
+    } catch (NullPointerException e) {
       ce.getChannel().sendMessage("User not in a voice channel.").queue();
     }
   }
 
-  // Shuffles the track queue
+  /**
+   * Shuffles the track queue.
+   *
+   * @param ce object containing information about the command event
+   */
   private void shuffleQueue(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
 

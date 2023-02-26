@@ -7,6 +7,14 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Settings is a command invocation that provides information on
+ * the bot's settings and provides the option to change them.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.0
+ */
 public class Settings extends Command {
   private static String prefix;
   private static String alternativePrefix;
@@ -25,6 +33,12 @@ public class Settings extends Command {
     this.ownerCommand = true;
   }
 
+  /**
+   * Either sends an embed containing all settings and their boolean values or
+   * allows the user to change the settings based on the number of arguments provided.
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -34,14 +48,18 @@ public class Settings extends Command {
     int numberOfArguments = arguments.length - 1;
 
     switch (numberOfArguments) {
-      case 0 -> displaySettingsMenu(ce); // Display main menu
-      case 2 -> changeSettings(ce, arguments);// Change settings
-      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue(); // Invalid arguments
+      case 0 -> sendSettingsMenu(ce);
+      case 2 -> changeSettings(ce, arguments);
+      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
     }
   }
 
-  // Sends an embed containing bot settings
-  private void displaySettingsMenu(CommandEvent ce) {
+  /**
+   * Sends an embed containing the bot's settings' boolean values.
+   *
+   * @param ce object containing information about the command event
+   */
+  private void sendSettingsMenu(CommandEvent ce) {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Settings__");
     display.setDescription("**Prefix:** `" + prefix +
@@ -50,11 +68,15 @@ public class Settings extends Command {
         "`" + "\n**EmbedDecay:** `" + embedDecay + "`"
         + "\n**EmbedDecayTime:** `" + embedDecayTime + "`s"
         + "\n**ModeratePotentialPhishing:** `" + moderatePotentialPhishing + "`");
-
     sendEmbed(ce, display);
   }
 
-  // Directs to setting type to be changed
+  /**
+   * Checks which setting type the user is attempting to change.
+   *
+   * @param ce        object containing information about the command event
+   * @param arguments user provided arguments
+   */
   private void changeSettings(CommandEvent ce, String[] arguments) {
     String settingType = arguments[1].toLowerCase();
 
@@ -67,33 +89,49 @@ public class Settings extends Command {
     }
   }
 
-  // Changes delete invoke setting
+  /**
+   * Changes the delete invoke's setting to true or false.
+   *
+   * @param ce            object containing information about the command event
+   * @param settingChange the boolean value to be changed to
+   */
   private void setDeleteInvokeSetting(CommandEvent ce, String settingChange) {
     settingChange = settingChange.toLowerCase();
     boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
     if (settingChangeIsBoolean) {
       setDeleteInvoke(Boolean.parseBoolean(settingChange));
       ce.getChannel().sendMessage("DeleteInvoke has been set to `" + getDeleteInvoke() + "`.").queue();
-    } else { // Non-boolean value
+    } else {
       ce.getChannel().sendMessage("Specify true or false.").queue();
     }
   }
 
-  // Changes embed decay setting
+  /**
+   * Changes the embed decay's setting to true or false.
+   *
+   * @param ce            object containing information about the command event
+   * @param settingChange the boolean value to be changed to
+   */
   private void setEmbedDecaySetting(CommandEvent ce, String settingChange) {
     settingChange = settingChange.toLowerCase();
     boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
     if (settingChangeIsBoolean) {
       setEmbedDecay(Boolean.parseBoolean(settingChange));
       ce.getChannel().sendMessage("EmbedDecay has been set to `" + getEmbedDecay() + "`.").queue();
-    } else { // Non-boolean value
+    } else {
       ce.getChannel().sendMessage("Specify true or false.").queue();
     }
   }
 
-  // Changes embed decay time setting
+  /**
+   * Changes the embed decay time's setting to true or false.
+   *
+   * @param ce            object containing information about the command event
+   * @param settingChange the boolean value to be changed to
+   * @throws NumberFormatException user provided non-integer value
+   */
   private void setEmbedDecayTimeSetting(CommandEvent ce, String settingChange) {
-    try { // Ensure argument is an integer
+    try {
       int timeValue = Integer.parseInt(settingChange);
       boolean validTimeValue = (timeValue >= 15) && (timeValue <= 120);
       if (validTimeValue) {
@@ -102,13 +140,17 @@ public class Settings extends Command {
       } else {
         ce.getChannel().sendMessage("Specify an integer between 15 - 120.").queue();
       }
-
-    } catch (NumberFormatException error) { // Non-integer value
+    } catch (NumberFormatException e) {
       ce.getChannel().sendMessage("Specify an integer between 15 - 120.").queue();
     }
   }
 
-  // Changes moderate potential phishing setting
+  /**
+   * Changes the moderate potential phishing's setting to true or false.
+   *
+   * @param ce            object containing information about the command event
+   * @param settingChange the boolean value to be changed to
+   */
   private void setModeratePotentialPhishingSetting(CommandEvent ce, String settingChange) {
     settingChange = settingChange.toLowerCase();
     boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
@@ -116,30 +158,42 @@ public class Settings extends Command {
       setModeratePotentialPhishing(Boolean.parseBoolean(settingChange));
       ce.getChannel().sendMessage("ModeratePotentialPhishing has been set " +
           "to `" + getModeratePotentialPhishing() + "`.").queue();
-    } else { // Non-boolean value
+    } else {
       ce.getChannel().sendMessage("Specify true or false.").queue();
     }
   }
 
-  // Deletes command invocations
+  /**
+   * Deletes users' command invocations.
+   *
+   * @param ce object containing information about the command event
+   */
   public static void deleteInvoke(CommandEvent ce) {
     if (deleteInvoke) {
       ce.getMessage().delete().queue();
     }
   }
 
-  // Sends a pre-set embed configuration into message channel
+  /**
+   * Sends a pre-set embed configuration into the text channel.
+   *
+   * @param ce      object containing information about the command event
+   * @param display object representing the embed
+   */
   public static void sendEmbed(CommandEvent ce, EmbedBuilder display) {
     ce.getChannel().sendTyping().queue();
-
     display.setColor(0x80000f);
     display.setFooter(ce.getMember().getUser().getAsTag());
     display.setTimestamp(Instant.now());
-
     Settings.embedDecay(ce, display);
   }
 
-  // Embeds auto delete after a period of time
+  /**
+   * Automatically deletes embeds after an elapsed period of time.
+   *
+   * @param ce      object containing information about the command event
+   * @param display object representing the embed
+   */
   public static void embedDecay(CommandEvent ce, EmbedBuilder display) {
     if (embedDecay) {
       ce.getChannel().sendMessage(display.build()).complete().delete().queueAfter(embedDecayTime, TimeUnit.SECONDS);
@@ -148,7 +202,6 @@ public class Settings extends Command {
     }
   }
 
-  // Get and set various variables
   public static String getPrefix() {
     return Settings.prefix;
   }

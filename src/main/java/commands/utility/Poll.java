@@ -9,6 +9,13 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Poll is a command invocation that creates a reaction vote with up to 10 options.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.0
+ */
 public class Poll extends Command {
   private EventWaiter waiter;
 
@@ -20,7 +27,14 @@ public class Poll extends Command {
     this.waiter = waiter;
   }
 
-  // Sends an embed with up to 10 reactions based on number of user provided options
+  /**
+   * Processes user provided arguments to determine whether the poll command request was formatted correctly.
+   * <p>
+   * Users can provide up to 10 options in the poll, separated by commas, but no more than one.
+   * </p>
+   *
+   * @param ce object containing information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -59,16 +73,26 @@ public class Poll extends Command {
     }
   }
 
-  // Parse arguments for options
-  private String[] parseOptions(String[] args) {
+  /**
+   * Splits user provided arguments into an array of poll options with the comma character as a delimiter.
+   *
+   * @param arguments user provided arguments
+   * @return array of poll options
+   */
+  private String[] parseOptions(String[] arguments) {
     StringBuilder optionsStringBuilder = new StringBuilder();
-    for (int i = 1; i < args.length; i++) {
-      optionsStringBuilder.append(args[i]).append(" ");
+    for (int i = 1; i < arguments.length; i++) {
+      optionsStringBuilder.append(arguments[i]).append(" ");
     }
-    return optionsStringBuilder.toString().split(","); // Split choices provided
+    return optionsStringBuilder.toString().split(","); // Split options provided
   }
 
-  // Check for empty spaces in options
+  /**
+   * Checks for empty options.
+   *
+   * @param options array of options provided by the user
+   * @return whether there exists an empty option in the array
+   */
   private boolean checkForEmptyPollOptions(String[] options) {
     for (String option : options) { // Find the first blank option (if any)
       if (option.equals(" ")) return true;
@@ -76,7 +100,12 @@ public class Poll extends Command {
     return false;
   }
 
-  // Sends an embed containing poll information
+  /**
+   * Sends an embed containing poll information.
+   *
+   * @param ce      object containing information about the command event
+   * @param options user provided options
+   */
   private void createPoll(CommandEvent ce, String[] options) {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Poll__");
@@ -91,7 +120,11 @@ public class Poll extends Command {
     Settings.sendEmbed(ce, display);
   }
 
-  // Adds reactions to the poll embed
+  /**
+   * Adds reactions to the poll embed.
+   *
+   * @param options user provided options
+   */
   private void setPollOptions(String[] options) {
     int numberOfOptions = options.length;
 

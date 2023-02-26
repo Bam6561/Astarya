@@ -7,6 +7,13 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 
+/**
+ * Join is a command invocation that makes the bot join the same voice channel as the user.
+ *
+ * @author Danny Nguyen
+ * @version 1.5.4
+ * @since 1.1.0
+ */
 public class Join extends Command {
   public Join() {
     this.name = "join";
@@ -14,7 +21,12 @@ public class Join extends Command {
     this.help = "Bot joins the same voice channel as the user.";
   }
 
-  // Connects bot to the same voice channel as the user
+  /**
+   * Determines whether the bot is available to join the same voice channel as the user by checking
+   * that the user is in a voice channel and that the bot is not already in a voice channel.
+   *
+   * @param ce object that contains information about the command event
+   */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
@@ -38,7 +50,11 @@ public class Join extends Command {
     }
   }
 
-  // Attempts to join the same voice channel as the user
+  /**
+   * Attempts to connect the bot to the same voice channel as the user.
+   *
+   * @param ce object that contains information about the command event
+   */
   private void joinVoiceChannel(CommandEvent ce) {
     VoiceChannel voiceChannel = ce.getMember().getVoiceState().getChannel();
     AudioManager audioManager = ce.getGuild().getAudioManager();
