@@ -9,7 +9,9 @@
 ## About The Project
 
 Discord bot written in Java using the JDA wrapper. Optional Spotify API integration for more audio playback
-functionality.
+functionality. 
+
+See the [Wiki](https://github.com/Bam6561/LucyferBot/wiki) for documentation on its commands.
 
 ### Built With
 
