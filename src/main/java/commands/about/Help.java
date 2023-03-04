@@ -6,7 +6,7 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 /**
- * Help command provides documentation on LucyferBot's commands.
+ * Help is a command invocation that provides documentation on LucyferBot's commands.
  *
  * @author Danny Nguyen
  * @version 1.5.4

@@ -6,7 +6,7 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 /**
- * Credits command shows a list of credits for the bot.
+ * Credits is a command invocation that shows a list of credits for the bot.
  *
  * @author Danny Nguyen
  * @version 1.5.4

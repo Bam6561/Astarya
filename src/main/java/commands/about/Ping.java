@@ -5,7 +5,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
 
 /**
- * Ping responds with the response time of the bot in milliseconds.
+ * Ping is a command invocation that responds with the response time of the bot in milliseconds.
  *
  * @author Danny Nguyen
  * @version 1.5.4
