@@ -62,7 +62,7 @@ public class LucyferBot {
     EventWaiter waiter = new EventWaiter();
 
     // Prefixes
-    String prefix = "a";
+    String prefix = "<";
     String alternativePrefix = "L:";
 
     // Command Client settings
