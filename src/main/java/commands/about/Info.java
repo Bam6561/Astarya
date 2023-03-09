@@ -38,7 +38,7 @@ public class Info extends Command {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Info__");
     display.setDescription("**Developer:** Bam#3531"
-        + "\n**Developer ID: 204448598539239424**"
+        + "\n**Developer ID:** 204448598539239424"
         + "\n**Bot:** " + jda.getSelfUser().getAsMention()
         + "\n**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` " +
         "\n**Version:** `1.5.4` \n**Language:** `Java` " +
