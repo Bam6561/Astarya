@@ -19,8 +19,8 @@
       </ul>
     <li><a href="#setup"> Setup </a></li>
       <ul>
-        <li><a href="core-function"> Core Function </a></li>
-        <li><a href="spotify-integration"> Spotify Integration </a></li>
+        <li><a href="#core-function"> Core Function </a></li>
+        <li><a href="#spotify-integration"> Spotify Integration </a></li>
       </ul>
     <li><a href="#contributing"> Contributing </a></li>
     <li><a href="#license"> License </a></li>
@@ -28,7 +28,6 @@
     <li><a href="#acknowledgements"> Acknowledgements </a></li>
   </ol>
 </details>
-
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
