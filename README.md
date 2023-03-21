@@ -10,14 +10,14 @@
 </div>
 
 <!-- TABLE OF CONTENTS -->
-<details> 
+<details open> 
   <summary><b> Table of Contents </b></summary>
   <ol>
     <li><a href="#about-the-project"> About The Project </a></li>
-    <li><a href="#setup"> Setup </a></li>
       <ul>
         <li><a href="#built-with"> Built With </a></li>
       </ul>
+    <li><a href="#setup"> Setup </a></li>
     <li><a href="#contributing"> Contributing </a></li>
     <li><a href="#license"> License </a></li>
     <li><a href="#contact"> Contact <a/></li>
@@ -31,6 +31,8 @@ Discord bot written in Java using the JDA wrapper. Optional Spotify API integrat
 functionality. 
 
 See the [Wiki](https://github.com/Bam6561/LucyferBot/wiki) for documentation on its commands.
+
+<p align="right"><a href="#top">Back to Top</a></p>
 
 ### Built With
 - [Dotenv](https://github.com/cdimascio/dotenv-java)
