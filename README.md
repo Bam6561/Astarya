@@ -41,7 +41,7 @@ See the [Wiki](https://github.com/Bam6561/LucyferBot/wiki) for documentation on 
 - [Spotify](https://developer.spotify.com/dashboard/)
 - [Spotify Web API](https://github.com/spotify-web-api-java/spotify-web-api-java)
 
-<p align="right"><a href="#top">Go to Top</a></p>
+<p align="right"><a href="#top">Back to Top</a></p>
 
 <!-- SETUP -->
 ## Setup
@@ -62,7 +62,7 @@ See the [Wiki](https://github.com/Bam6561/LucyferBot/wiki) for documentation on 
 12. Go to your Dashboard and create a Spotify Application.
 13. Repeating the process in step #6, add in the .env file the tokens for your Client ID and Client Secret.
 
-<p align="right"><a href="#top">Go to Top</a></p>
+<p align="right"><a href="#top">Back to Top</a></p>
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -72,13 +72,13 @@ See the [Wiki](https://github.com/Bam6561/LucyferBot/wiki) for documentation on 
 4. Push to the Branch
 5. Open a Pull Request
 
-<p align="right"><a href="#top">Go to Top</a></p>
+<p align="right"><a href="#top">Back to Top</a></p>
 
 <!-- LICENSE -->
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
 
-<p align="right"><a href="#top">Go to Top</a></p>
+<p align="right"><a href="#top">Back to Top</a></p>
 
 <!-- CONTACT -->
 ## Contact
@@ -86,7 +86,7 @@ Danny Nguyen - [LinkedIn](https://www.linkedin.com/in/ndanny09/) - ndanny09@gmai
 
 Project Link: https://github.com/Bam6561/LucyferBot
 
-<p align="right"><a href="#top">Go to Top</a></p>
+<p align="right"><a href="#top">Back to Top</a></p>
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
@@ -95,7 +95,7 @@ Project Link: https://github.com/Bam6561/LucyferBot
 - [TechToolBox](https://www.youtube.com/c/TechToolboxOfficial)
 - [README Template](https://github.com/othneildrew/Best-README-Template#prerequisites)
 
-<p align="right"><a href="#top">Go to Top</a></p>
+<p align="right"><a href="#top">Back to Top</a></p>
 
 <!-- SHIELDS -->
 [stars-shield]: https://img.shields.io/github/stars/Bam6561/LucyferBot
