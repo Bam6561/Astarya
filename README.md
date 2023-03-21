@@ -1,3 +1,5 @@
+<a name="top"></a>
+
 <div align="center">
   <h3>LucyferBot</h3>
   <img src="https://i.ibb.co/q7vdKJJ/lucyfer-Bot128x128.png" alt="lucyfer-Bot128x128">
@@ -6,15 +8,30 @@
 
 </div>
 
-## About The Project
+<!-- TABLE OF CONTENTS -->
+<details> 
+  <summary><b> Table of Contents </b></summary>
+  <ol>
+    <li><a href="#about-the-project"> About The Project </a></li>
+    <li><a href="#setup"> Setup </a></li>
+      <ul>
+        <li><a href="#built-with"> Built With </a></li>
+      </ul>
+    <li><a href="#contributing"> Contributing </a></li>
+    <li><a href="#license"> License </a></li>
+    <li><a href="#contact"> Contact <a/></li>
+    <li><a href="#acknowledgements"> Acknowledgements </li>
+</details>
 
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
 Discord bot written in Java using the JDA wrapper. Optional Spotify API integration for more audio playback
 functionality. 
 
 See the [Wiki](https://github.com/Bam6561/LucyferBot/wiki) for documentation on its commands.
 
 ### Built With
-
 - [Dotenv](https://github.com/cdimascio/dotenv-java)
 - [JSON](https://github.com/stleary/JSON-java)
 - [JDA](https://github.com/DV8FromTheWorld/JDA)
@@ -23,8 +40,10 @@ See the [Wiki](https://github.com/Bam6561/LucyferBot/wiki) for documentation on 
 - [Spotify](https://developer.spotify.com/dashboard/)
 - [Spotify Web API](https://github.com/spotify-web-api-java/spotify-web-api-java)
 
-## Setup
+<p align="right"><a href="#top">Go to Top</a></p>
 
+<!-- SETUP -->
+## Setup
 1. Clone the repo.
 2. Create a [Discord Application](https://discord.com/developers/docs/intro).
 3. Add the Bot functionality in the Application's settings.
@@ -42,36 +61,44 @@ See the [Wiki](https://github.com/Bam6561/LucyferBot/wiki) for documentation on 
 12. Go to your Dashboard and create a Spotify Application.
 13. Repeating the process in step #6, add in the .env file the tokens for your Client ID and Client Secret.
 
-## Contributing
+<p align="right"><a href="#top">Go to Top</a></p>
 
+<!-- CONTRIBUTING -->
+## Contributing
 1. Fork the Project
 2. Create your Feature Branch
 3. Commit your Changes
 4. Push to the Branch
 5. Open a Pull Request
 
-## License
+<p align="right"><a href="#top">Go to Top</a></p>
 
+<!-- LICENSE -->
+## License
 Distributed under the MIT License. See `LICENSE` for more information.
 
-## Contact
+<p align="right"><a href="#top">Go to Top</a></p>
 
+<!-- CONTACT -->
+## Contact
 Danny Nguyen - [LinkedIn](https://www.linkedin.com/in/ndanny09/) - ndanny09@gmail.com
 
 Project Link: https://github.com/Bam6561/LucyferBot
 
-## Acknowledgements
+<p align="right"><a href="#top">Go to Top</a></p>
 
+<!-- ACKNOWLEDGEMENTS -->
+## Acknowledgements
 - [Kody Simpson](https://www.youtube.com/c/KodySimpson)
 - [MenuDocs](https://www.youtube.com/c/MenuDocs)
 - [TechToolBox](https://www.youtube.com/c/TechToolboxOfficial)
 - [README Template](https://github.com/othneildrew/Best-README-Template#prerequisites)
 
+<p align="right"><a href="#top">Go to Top</a></p>
+
+<!-- SHIELDS -->
 [stars-shield]: https://img.shields.io/github/stars/Bam6561/LucyferBot
-
 [stars-url]: https://github.com/Bam6561/LucyferBot/stargazers
-
 [license-shield]: https://img.shields.io/github/license/Bam6561/LucyferBot
-
 [license-url]: https://github.com/Bam6561/LucyferBot/blob/main/LICENSE
 
