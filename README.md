@@ -103,10 +103,10 @@ Project Link: https://github.com/Bam6561/LucyferBot
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
-- [Kody Simpson](https://www.youtube.com/c/KodySimpson)
-- [MenuDocs](https://www.youtube.com/c/MenuDocs)
-- [TechToolBox](https://www.youtube.com/c/TechToolboxOfficial)
-- [README Template](https://github.com/othneildrew/Best-README-Template#prerequisites)
+* [Kody Simpson](https://www.youtube.com/c/KodySimpson)
+* [MenuDocs](https://www.youtube.com/c/MenuDocs)
+* [TechToolBox](https://www.youtube.com/c/TechToolboxOfficial)
+* [README Template](https://github.com/othneildrew/Best-README-Template#prerequisites)
 
 <p align="right"><a href="#top">Back to Top</a></p>
 
@@ -115,4 +115,3 @@ Project Link: https://github.com/Bam6561/LucyferBot
 [stars-url]: https://github.com/Bam6561/LucyferBot/stargazers
 [license-shield]: https://img.shields.io/github/license/Bam6561/LucyferBot
 [license-url]: https://github.com/Bam6561/LucyferBot/blob/main/LICENSE
-
