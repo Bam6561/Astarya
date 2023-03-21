@@ -1,5 +1,6 @@
 <a name="top"></a>
 
+<!-- LOGO -->
 <div align="center">
   <h3>LucyferBot</h3>
   <img src="https://i.ibb.co/q7vdKJJ/lucyfer-Bot128x128.png" alt="lucyfer-Bot128x128">
