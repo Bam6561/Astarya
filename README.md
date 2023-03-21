@@ -19,7 +19,7 @@
       </ul>
     <li><a href="#setup"> Setup </a></li>
       <ul>
-        <li><a href="core-functionality"> Core Integration </a></li>
+        <li><a href="core-function"> Core Function </a></li>
         <li><a href="spotify-integration"> Spotify Integration </a></li>
       </ul>
     <li><a href="#contributing"> Contributing </a></li>
@@ -53,7 +53,7 @@ See the [Wiki](https://github.com/Bam6561/LucyferBot/wiki) for documentation on 
 <!-- SETUP -->
 ## Setup
 
-### Core Functionality
+### Core Function
 1. Clone the repo.
 2. Create a [Discord Application](https://discord.com/developers/docs/intro).
 3. Add the Bot functionality in the Application's settings.
@@ -66,12 +66,14 @@ See the [Wiki](https://github.com/Bam6561/LucyferBot/wiki) for documentation on 
    delete messages for you.
 9. Finally, invite the bot to your Discord server by copying the generated URL and pasting it into your browser.
 
+<p align="right"><a href="#top">Back to Top</a></p>
+
 ### Spotify Integration
 1. Optionally, if you want the bot to be able to interact with Spotify links containing songs, playlists, and albums,
     then create two other variables in your .env file called `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`.
 2. Go to [Spotify For Developers](https://developer.spotify.com/) and create an account.
 3. Go to your Dashboard and create a Spotify Application.
-4. Repeating the process in step #6, add in the .env file the tokens for your Client ID and Client Secret.
+4. Repeating the process in step #6 for Core Function setup, add in the .env file the tokens for your Client ID and Client Secret.
 
 <p align="right"><a href="#top">Back to Top</a></p>
 
