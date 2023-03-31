@@ -10,12 +10,13 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  * Profile is a command invocation that provides information on the user.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.0
  */
 public class Profile extends Command {
@@ -77,9 +78,9 @@ public class Profile extends Command {
    * @throws Exception unknown error
    */
   private void setEmbedToDisplayMentionedUserOrProcessUserID(CommandEvent ce, EmbedBuilder display, String[] arguments) {
-    boolean mentionedAnyUsers = !ce.getMessage().getMentionedUsers().isEmpty();
+    boolean mentionedAnyUsers = !ce.getMessage().getMentions().getUsers().isEmpty();
     if (mentionedAnyUsers) { // Mention
-      setEmbedToDisplayMentionedUser(ce, display, ce.getMessage().getMentionedUsers().get(0));
+      setEmbedToDisplayMentionedUser(ce, display, ce.getMessage().getMentions().getUsers().get(0));
     } else { // UserID
       try {
         processUserIDBeforeSettingEmbed(ce, display, arguments);
@@ -104,7 +105,7 @@ public class Profile extends Command {
         + "`\n**User ID:** `" + mentionedUser.getId()
         + "`\n**Created:** `" + mentionedUser.getTimeCreated().format(dtf) + " GMT`"
         + "\n**Joined:** `" + retrieveServerMemberInServer(ce, mentionedUser.getId()).getTimeJoined().format(dtf) + " GMT`");
-    display.addField("**Roles:**", returnUserRolesAsMentionable(ce.getMessage().getMentionedMembers().get(0)), false);
+    display.addField("**Roles:**", returnUserRolesAsMentionable(ce.getMessage().getMentions().getMembers().get(0)), false);
     Settings.sendEmbed(ce, display);
   }
 
@@ -173,17 +174,21 @@ public class Profile extends Command {
   }
 
   /**
-   * Retrieves role IDs from user as Strings, then makes the roles mentionable.
+   * Retrieves roles from user, then combines all the role names into a String.
    *
    * @param member object representing member of the Discord server
-   * @return list of mentionable roles belonging to the member
+   * @return list of role names belonging to the member
    */
   private String returnUserRolesAsMentionable(Member member) {
-    StringBuilder roleList = new StringBuilder();
-    for (Role roleLongID : member.getRoles()) {
-      String roleID = roleLongID.toString();
-      roleList.append("<@&").append(roleID, roleID.length() - 19, roleID.length() - 1).append("> ");
+    ArrayList<Role> roleList = new ArrayList<>();
+    roleList.addAll(member.getRoles());
+    StringBuilder roleNames = new StringBuilder();
+    int i = 0;
+    while (i != roleList.size()-1){
+      roleNames.append(roleList.get(i).getName()).append(", ");
+      i++;
     }
-    return roleList.toString();
+    roleNames.append(roleList.get(roleList.size()-1).getName());
+    return roleNames.toString();
   }
 }

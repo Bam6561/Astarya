@@ -5,7 +5,8 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Poll is a command invocation that creates a reaction vote with up to 10 options.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.0
  */
 public class Poll extends Command {
@@ -128,20 +129,20 @@ public class Poll extends Command {
   private void setPollOptions(String[] options) {
     int numberOfOptions = options.length;
 
-    waiter.waitForEvent(GuildMessageReceivedEvent.class,
+    waiter.waitForEvent(MessageReceivedEvent.class,
         w -> !w.getMessage().getEmbeds().isEmpty()
             && (w.getMessage().getEmbeds().get(0).getTitle().equals("__Poll__")),
         w -> {
-          w.getMessage().addReaction("1️⃣").queue();
-          if (numberOfOptions >= 2) w.getMessage().addReaction("2️⃣").queue();
-          if (numberOfOptions >= 3) w.getMessage().addReaction("3️⃣").queue();
-          if (numberOfOptions >= 4) w.getMessage().addReaction("4️⃣").queue();
-          if (numberOfOptions >= 5) w.getMessage().addReaction("5️⃣").queue();
-          if (numberOfOptions >= 6) w.getMessage().addReaction("6️⃣").queue();
-          if (numberOfOptions >= 7) w.getMessage().addReaction("7️⃣").queue();
-          if (numberOfOptions >= 8) w.getMessage().addReaction("8️⃣").queue();
-          if (numberOfOptions >= 9) w.getMessage().addReaction("9️⃣").queue();
-          if (numberOfOptions == 10) w.getMessage().addReaction("0️⃣").queue();
+          w.getMessage().addReaction(Emoji.fromFormatted("1️⃣")).queue();
+          if (numberOfOptions >= 2) w.getMessage().addReaction(Emoji.fromFormatted("2️⃣")).queue();
+          if (numberOfOptions >= 3) w.getMessage().addReaction(Emoji.fromFormatted("3️⃣")).queue();
+          if (numberOfOptions >= 4) w.getMessage().addReaction(Emoji.fromFormatted("4️⃣")).queue();
+          if (numberOfOptions >= 5) w.getMessage().addReaction(Emoji.fromFormatted("5️⃣")).queue();
+          if (numberOfOptions >= 6) w.getMessage().addReaction(Emoji.fromFormatted("6️⃣")).queue();
+          if (numberOfOptions >= 7) w.getMessage().addReaction(Emoji.fromFormatted("7️⃣")).queue();
+          if (numberOfOptions >= 8) w.getMessage().addReaction(Emoji.fromFormatted("8️⃣")).queue();
+          if (numberOfOptions >= 9) w.getMessage().addReaction(Emoji.fromFormatted("9️⃣")).queue();
+          if (numberOfOptions == 10) w.getMessage().addReaction(Emoji.fromFormatted("0️⃣")).queue();
         }, 15, TimeUnit.SECONDS, () -> {
         });
   }

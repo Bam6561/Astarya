@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
  * Leave is a command invocation that makes the bot leave the voice channel it's currently in.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.1.0
  */
 public class Leave extends Command {
@@ -30,7 +30,7 @@ public class Leave extends Command {
     Settings.deleteInvoke(ce);
 
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
-    boolean botIsInVoiceChannel = botVoiceState.inVoiceChannel();
+    boolean botIsInVoiceChannel = botVoiceState.inAudioChannel();
 
     if (botIsInVoiceChannel) {
       AudioManager audioManager = ce.getGuild().getAudioManager();

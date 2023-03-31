@@ -21,6 +21,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 /**
  * LucyferBot represents the Discord bot application as an object. Through
@@ -46,7 +47,9 @@ public class LucyferBot {
     // Login
     Dotenv dotenv = Dotenv.load();
     try {
-      api = JDABuilder.createDefault(dotenv.get("BOT_TOKEN")).build().awaitReady();
+      api = JDABuilder.createDefault(dotenv.get("BOT_TOKEN")).enableIntents(GatewayIntent.MESSAGE_CONTENT,
+          GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.GUILD_VOICE_STATES,
+          GatewayIntent.SCHEDULED_EVENTS).build().awaitReady();
       System.out.println("[" + api.getSelfUser().getName() + "#" +
           api.getSelfUser().getDiscriminator() + "] is online.");
     } catch (Exception e) {

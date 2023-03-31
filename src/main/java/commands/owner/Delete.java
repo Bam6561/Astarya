@@ -3,7 +3,7 @@ package commands.owner;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * Delete is a command invocation that clears a number of 2-100 recent messages.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.0
  */
 public class Delete extends Command {

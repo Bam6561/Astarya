@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  * Info is a command invocation that details information about the bot and its developer.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.0
  */
 public class Info extends Command {
@@ -41,7 +41,7 @@ public class Info extends Command {
         + "\n**Developer ID:** 204448598539239424"
         + "\n**Bot:** " + jda.getSelfUser().getAsMention()
         + "\n**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` " +
-        "\n**Version:** `1.5.4` \n**Language:** `Java` " +
+        "\n**Version:** `1.6` \n**Language:** `Java` " +
         "\n**Source:** https://github.com/Bam6561/LucyferBot \n**Uptime:** " + getUptime());
     display.setThumbnail(jda.getSelfUser().getAvatarUrl());
     Settings.sendEmbed(ce, display);

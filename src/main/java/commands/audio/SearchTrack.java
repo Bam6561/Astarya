@@ -9,7 +9,7 @@ import commands.audio.managers.PlaybackManager;
 import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * to add to the queue using a query of user provided arguments.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
@@ -98,7 +98,7 @@ public class SearchTrack extends Command {
    * @throws NumberFormatException user provided non-integer value
    */
   private void awaitUserResponse(CommandEvent ce) {
-    waiter.waitForEvent(GuildMessageReceivedEvent.class,
+    waiter.waitForEvent(MessageReceivedEvent.class,
         // Message sent matches invoker user's ID
         w -> Long.parseLong(w.getMessage().getAuthor().getId()) == getInvokerUserID(),
         w -> {

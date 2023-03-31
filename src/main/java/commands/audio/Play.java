@@ -2,22 +2,22 @@ package commands.audio;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import com.wrapper.spotify.SpotifyApi;
-import com.wrapper.spotify.exceptions.SpotifyWebApiException;
-import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
-import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
-import com.wrapper.spotify.requests.data.albums.GetAlbumsTracksRequest;
-import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
-import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
 import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.apache.hc.core5.http.ParseException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import se.michaelthelin.spotify.SpotifyApi;
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.credentials.ClientCredentials;
+import se.michaelthelin.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
+import se.michaelthelin.spotify.requests.data.albums.GetAlbumsTracksRequest;
+import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistRequest;
+import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 
 import java.io.IOException;
 
@@ -34,7 +34,7 @@ import java.io.IOException;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.1.0
  */
 public class Play extends Command {
@@ -59,7 +59,7 @@ public class Play extends Command {
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
 
-    boolean botNotAlreadyInVoiceChannel = !botVoiceState.inVoiceChannel();
+    boolean botNotAlreadyInVoiceChannel = !botVoiceState.inAudioChannel();
     try {
       if (botNotAlreadyInVoiceChannel) {
         joinVoiceChannel(ce);
@@ -83,14 +83,14 @@ public class Play extends Command {
    * @param ce object that contains information about the command event
    */
   private void joinVoiceChannel(CommandEvent ce) {
-    VoiceChannel voiceChannel = ce.getMember().getVoiceState().getChannel();
+    AudioChannel audioChannel = ce.getMember().getVoiceState().getChannel();
     AudioManager audioManager = ce.getGuild().getAudioManager();
 
     try {
-      audioManager.openAudioConnection(voiceChannel);
-      ce.getChannel().sendMessage("Connected to <#" + voiceChannel.getId() + ">").queue();
+      audioManager.openAudioConnection(audioChannel);
+      ce.getChannel().sendMessage("Connected to <#" + audioChannel.getId() + ">").queue();
     } catch (Exception e) { // Insufficient permissions
-      ce.getChannel().sendMessage("Unable to join <#" + voiceChannel.getId() + ">").queue();
+      ce.getChannel().sendMessage("Unable to join <#" + audioChannel.getId() + ">").queue();
     }
   }
 
@@ -370,7 +370,6 @@ public class Play extends Command {
     for (int j = 0; j < jsonTrackArtists.length(); j++) {
       fullTrackRequest.append(jsonTrackArtists.getJSONObject(j).getString("name"));
     }
-    String youtubeSearchQuery = "ytsearch:" + String.join(" ", fullTrackRequest);
-    return youtubeSearchQuery;
+    return "ytsearch:" + String.join(" ", fullTrackRequest);
   }
 }

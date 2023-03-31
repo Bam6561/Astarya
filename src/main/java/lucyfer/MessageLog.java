@@ -1,7 +1,7 @@
 package lucyfer;
 
 import commands.owner.Settings;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.0.0
  */
 public class MessageLog extends ListenerAdapter {
@@ -29,7 +29,7 @@ public class MessageLog extends ListenerAdapter {
    *
    * @param messageE object containing information about the message event
    */
-  public void onGuildMessageReceived(GuildMessageReceivedEvent messageE) {
+  public void onMessageReceived(MessageReceivedEvent messageE) {
     boolean isHuman = !messageE.getMessage().isWebhookMessage() && !messageE.getMessage().getAuthor().isBot();
     boolean moderatingPotentialPhishing = Settings.getModeratePotentialPhishing();
 
@@ -48,7 +48,7 @@ public class MessageLog extends ListenerAdapter {
    *
    * @param messageE object containing information about the message event
    */
-  private void logMessage(GuildMessageReceivedEvent messageE) {
+  private void logMessage(MessageReceivedEvent messageE) {
     System.out.println(getTime() + getGuildName(messageE)
         + getChannelName(messageE) + getAuthorTag(messageE) + getMessageContent(messageE)
         + (!messageE.getMessage().getAttachments().isEmpty() ? getMessageAttachment(messageE) : ""));
@@ -63,7 +63,7 @@ public class MessageLog extends ListenerAdapter {
    *
    * @param messageE object containing information about the message event
    */
-  private void scanLinksInMessage(GuildMessageReceivedEvent messageE) {
+  private void scanLinksInMessage(MessageReceivedEvent messageE) {
     String message = messageE.getMessage().getContentRaw().toLowerCase();
 
     boolean containsLinks = message.contains("https://") || message.contains("http://");
@@ -102,7 +102,7 @@ public class MessageLog extends ListenerAdapter {
    * @throws StringIndexOutOfBoundsException no space exists in the URL
    * @throws InsufficientPermissionException bot does not have the manage messages permission
    */
-  private boolean isSafeURL(GuildMessageReceivedEvent messageE, boolean isHttps) {
+  private boolean isSafeURL(MessageReceivedEvent messageE, boolean isHttps) {
     // Separate the scheme from the URL
     if (isHttps) {
       setMessageWithLinks(getMessageWithLinks().substring(getMessageWithLinks().indexOf("https://") + 8));
@@ -201,23 +201,23 @@ public class MessageLog extends ListenerAdapter {
     return currentDateTime.format(dtf);
   }
 
-  private static String getGuildName(GuildMessageReceivedEvent messageE) {
+  private static String getGuildName(MessageReceivedEvent messageE) {
     return "<" + messageE.getGuild().getName() + ">";
   }
 
-  private static String getChannelName(GuildMessageReceivedEvent messageE) {
+  private static String getChannelName(MessageReceivedEvent messageE) {
     return "#" + messageE.getChannel().getName() + "";
   }
 
-  private static String getAuthorTag(GuildMessageReceivedEvent messageE) {
+  private static String getAuthorTag(MessageReceivedEvent messageE) {
     return "[" + messageE.getAuthor().getAsTag() + "]:";
   }
 
-  private static String getMessageContent(GuildMessageReceivedEvent messageE) {
+  private static String getMessageContent(MessageReceivedEvent messageE) {
     return (!messageE.getMessage().getContentDisplay().isEmpty() ? messageE.getMessage().getContentDisplay() + " " : "");
   }
 
-  private static String getMessageAttachment(GuildMessageReceivedEvent messageE) {
+  private static String getMessageAttachment(MessageReceivedEvent messageE) {
     return "(" + messageE.getMessage().getAttachments().get(0).getUrl() + ")";
   }
 

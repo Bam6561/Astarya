@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.0
  */
 public class Settings extends Command {
@@ -196,9 +196,9 @@ public class Settings extends Command {
    */
   public static void embedDecay(CommandEvent ce, EmbedBuilder display) {
     if (embedDecay) {
-      ce.getChannel().sendMessage(display.build()).complete().delete().queueAfter(embedDecayTime, TimeUnit.SECONDS);
+      ce.getChannel().sendMessageEmbeds(display.build()).complete().delete().queueAfter(embedDecayTime, TimeUnit.SECONDS);
     } else {
-      ce.getChannel().sendMessage(display.build()).queue();
+      ce.getChannel().sendMessageEmbeds(display.build()).queue();
     }
   }
 

@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException;
  * Avatar is a command invocation that provides the user's profile picture.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.0
  */
 public class Avatar extends Command {
@@ -48,7 +48,7 @@ public class Avatar extends Command {
           setEmbedToSelf(ce, display, avatarSize);
 
       case 2 -> { // Mention || UserID || Self & Size
-        boolean mentionedUser = !ce.getMessage().getMentionedMembers().isEmpty();
+        boolean mentionedUser = !ce.getMessage().getMentions().getMembers().isEmpty();
         boolean validUserID = (arguments[1].length() == 18) || (arguments[1].length() == 19);
         if (mentionedUser) {
           setEmbedToMentionedUser(ce, display, avatarSize);
@@ -60,7 +60,7 @@ public class Avatar extends Command {
       }
 
       case 3 -> { // Mention & Size || UserID & Size
-        boolean mentionedUser = !ce.getMessage().getMentionedMembers().isEmpty();
+        boolean mentionedUser = !ce.getMessage().getMentions().getMembers().isEmpty();
         boolean validUserID = (arguments[1].length() == 18) || (arguments[1].length() == 19);
         if (mentionedUser) {
           setEmbedToMentionAndSize(ce, display, arguments, avatarSize);
@@ -96,7 +96,7 @@ public class Avatar extends Command {
    * @param avatarSize requested size of the avatar image
    */
   private void setEmbedToMentionedUser(CommandEvent ce, EmbedBuilder display, String avatarSize) {
-    Member member = ce.getMessage().getMentionedMembers().get(0);
+    Member member = ce.getMessage().getMentions().getMembers().get(0);
     sendEmbed(ce, display, member.getEffectiveName(), "Resolution: " + avatarSize + "x" + avatarSize,
         member.getUser().getAvatarUrl() + "?size=" + avatarSize);
   }
@@ -137,7 +137,7 @@ public class Avatar extends Command {
    * @param avatarSize requested size of the image
    */
   private void setEmbedToMentionAndSize(CommandEvent ce, EmbedBuilder display, String[] arguments, String avatarSize) {
-    Member member = ce.getMessage().getMentionedMembers().get(0);
+    Member member = ce.getMessage().getMentions().getMembers().get(0);
     sendEmbed(ce, display, member.getEffectiveName(),
         member.getUser().getAvatarUrl() + "?size=" + setAvatarImageSize(ce, arguments, 2, avatarSize, display));
   }

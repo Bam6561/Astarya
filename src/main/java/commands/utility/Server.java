@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
  * Server is a command invocation that provides information on the Discord server.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.0
  */
 public class Server extends Command {
@@ -44,7 +44,7 @@ public class Server extends Command {
         + "\n**Channels:** `" + (textChannelCount + voiceChannelCount)
         + "` (`" + textChannelCount + "` Text | `" + voiceChannelCount + "` Voice)"
         + "\n**Roles:** `" + server.getRoles().size()
-        + "` **Emotes:** `" + server.getEmotes().size()
+        + "` **Emotes:** `" + server.getEmojis().size()
         + "` **Boosts:** `" + server.getBoostCount() + "`");
     display.setThumbnail(server.getIconUrl());
     display.setImage(server.getBannerUrl());

@@ -5,8 +5,9 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * to guess whether the next number will be higher or lower.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6
  * @since 1.0
  */
 public class HighOrLow extends Command {
@@ -106,20 +107,20 @@ public class HighOrLow extends Command {
    */
   private void handleGameReactions(CommandEvent ce) {
     // Add reactions
-    waiter.waitForEvent(GuildMessageReceivedEvent.class,
+    waiter.waitForEvent(MessageReceivedEvent.class,
         w -> !w.getMessage().getEmbeds().isEmpty()
             && (w.getMessage().getEmbeds().get(0).getTitle().equals("__HighOrLow__")),
         w -> {
-          w.getMessage().addReaction("🔼").queue();
-          w.getMessage().addReaction("🔽").queue();
+          w.getMessage().addReaction(Emoji.fromFormatted("🔼")).queue();
+          w.getMessage().addReaction(Emoji.fromFormatted("🔽")).queue();
         }, 15, TimeUnit.SECONDS, () -> {
         });
 
     // Wait for the original user to react to the embed
-    waiter.waitForEvent(GuildMessageReactionAddEvent.class,
+    waiter.waitForEvent(MessageReactionAddEvent.class,
         w -> Long.parseLong(w.getMember().getUser().getId()) == (getPlayerID())
-            && (w.getReactionEmote().getName().equals("🔼")
-            || (w.getReactionEmote().getName().equals("🔽"))),
+            && (w.getReaction().getEmoji().getName().equals("🔼")
+            || (w.getReaction().getEmoji().getName().equals("🔽"))),
         w -> displayGameResults(ce), 15, TimeUnit.SECONDS, () -> {
         });
   }
