@@ -2,12 +2,12 @@
 
 <!-- LOGO -->
 <div align="center">
-  <h3>LucyferBot</h3>
-  <img src="https://i.ibb.co/q7vdKJJ/lucyfer-Bot128x128.png" alt="lucyfer-Bot128x128">
+  <h3>Astarya</h3>
+  <img src="https://i.ibb.co/9sFBrX8/astarya-bot128x128.png" alt="astarya-bot128x128">
 
   [![Stargazers][stars-shield]][stars-url] [![License][license-shield]][license-url]
 
-  <a href="https://github.com/Bam6561/LucyferBot/wiki">Wiki</a>
+  <a href="https://github.com/Bam6561/Astarya/wiki">Wiki</a>
 </div>
 
 <!-- TABLE OF CONTENTS -->
@@ -35,7 +35,9 @@
 Discord bot written in Java using the JDA wrapper. Optional Spotify API integration for more audio playback
 functionality. 
 
-See the [Wiki](https://github.com/Bam6561/LucyferBot/wiki) for documentation on its commands.
+See the [Wiki](https://github.com/Bam6561/Astarya/wiki) for documentation on its commands.
+
+Formerly known as LucyferBot.
 
 <p align="right"><a href="#top">Back to Top</a></p>
 
@@ -97,7 +99,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Contact
 Danny Nguyen - [LinkedIn](https://www.linkedin.com/in/ndanny09/) - ndanny09@gmail.com
 
-Project Link: https://github.com/Bam6561/LucyferBot
+Project Link: https://github.com/Bam6561/Astarya
 
 <p align="right"><a href="#top">Back to Top</a></p>
 
@@ -111,7 +113,7 @@ Project Link: https://github.com/Bam6561/LucyferBot
 <p align="right"><a href="#top">Back to Top</a></p>
 
 <!-- SHIELDS -->
-[stars-shield]: https://img.shields.io/github/stars/Bam6561/LucyferBot
-[stars-url]: https://github.com/Bam6561/LucyferBot/stargazers
-[license-shield]: https://img.shields.io/github/license/Bam6561/LucyferBot
-[license-url]: https://github.com/Bam6561/LucyferBot/blob/main/LICENSE
+[stars-shield]: https://img.shields.io/github/stars/Bam6561/Astarya
+[stars-url]: https://github.com/Bam6561/Astarya/stargazers
+[license-shield]: https://img.shields.io/github/license/Bam6561/Astarya
+[license-url]: https://github.com/Bam6561/Astarya/blob/main/LICENSE
