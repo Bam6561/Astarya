@@ -15,7 +15,7 @@ public class Ping extends Command {
   public Ping() {
     this.name = "ping";
     this.aliases = new String[]{"ping", "ms"};
-    this.help = "Responds with the response time of the bot in milliseconds.";
+    this.help = "Responds with the response time of Astarya in milliseconds.";
   }
 
   /**

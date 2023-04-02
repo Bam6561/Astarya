@@ -34,14 +34,14 @@ import java.io.IOException;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.6.1
  * @since 1.1.0
  */
 public class Play extends Command {
 
   public Play() {
     this.name = "play";
-    this.aliases = new String[]{"play", "p", "add"};
+    this.aliases = new String[]{"play", "p"};
     this.help = "Adds a track to the queue.";
     this.arguments = ("[1]URL [2++]YouTubeQuery");
   }

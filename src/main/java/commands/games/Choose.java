@@ -11,7 +11,7 @@ import java.util.Random;
  * Choose is a command invocation that chooses randomly between any number of options.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.1
  * @since 1.0
  */
 public class Choose extends Command {
@@ -19,7 +19,7 @@ public class Choose extends Command {
 
   public Choose() {
     this.name = "choose";
-    this.aliases = new String[]{"choose", "choice", "pick", "option"};
+    this.aliases = new String[]{"choose", "pick"};
     this.arguments = "[1, ++]Options";
     this.help = "Chooses randomly between any number of options.";
   }

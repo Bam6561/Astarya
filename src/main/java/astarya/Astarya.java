@@ -1,4 +1,4 @@
-package lucyfer;
+package astarya;
 
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
@@ -24,20 +24,20 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 /**
- * LucyferBot represents the Discord bot application as an object. Through
+ * Astarya represents the Discord bot application as an object. Through
  * event listeners and the command client (an object representing the bot's
  * various command modules), the bot can process various Discord API requests
  * given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.1
  * @since 1.0
  */
-public class LucyferBot {
+public class Astarya {
   private static JDA api;
 
   /**
-   * Initializes LucyferBot and associates all of its
+   * Initializes Astarya and associates all of its
    * necessary components together as a singular application.
    *
    * @param args Command line parameters
@@ -81,7 +81,7 @@ public class LucyferBot {
         new SetPosition(), new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
     CommandClient commandClient = commands.build();
 
-    // Initialize LucyferBot
+    // Initialize AstaryaBot
     api.addEventListener(commandClient, waiter, new MessageLog());
   }
 

@@ -17,7 +17,7 @@ public class Leave extends Command {
   public Leave() {
     this.name = "leave";
     this.aliases = new String[]{"leave", "l", "disconnect", "dc"};
-    this.help = "Bot leaves the voice channel it's in.";
+    this.help = "Leaves the voice channel it's in.";
   }
 
   /**

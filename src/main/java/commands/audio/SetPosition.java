@@ -12,13 +12,13 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * SetPosition is a command invocation that sets the position of the currently playing track.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.1
  * @since 1.2.11
  */
 public class SetPosition extends Command {
   public SetPosition() {
     this.name = "setPosition";
-    this.aliases = new String[]{"setposition", "setpos", "goto", "sp"};
+    this.aliases = new String[]{"setposition", "setpos", "sp"};
     this.arguments = "[1]timeString";
     this.help = "Sets the position of the currently playing track.";
   }

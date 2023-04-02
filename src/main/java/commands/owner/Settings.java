@@ -26,7 +26,7 @@ public class Settings extends Command {
   public Settings(String prefix, String alternativePrefix) {
     this.name = "settings";
     this.aliases = new String[]{"settings", "config"};
-    this.arguments = "[1]Setting [2]True/False";
+    this.arguments = "[0]MainMenu [1]Setting [2]True/False";
     this.help = "Provides information on the bot's settings.";
     this.prefix = prefix;
     this.alternativePrefix = alternativePrefix;
@@ -196,7 +196,8 @@ public class Settings extends Command {
    */
   public static void embedDecay(CommandEvent ce, EmbedBuilder display) {
     if (embedDecay) {
-      ce.getChannel().sendMessageEmbeds(display.build()).complete().delete().queueAfter(embedDecayTime, TimeUnit.SECONDS);
+      ce.getChannel().sendMessageEmbeds(display.build()).complete().
+          delete().queueAfter(embedDecayTime, TimeUnit.SECONDS);
     } else {
       ce.getChannel().sendMessageEmbeds(display.build()).queue();
     }

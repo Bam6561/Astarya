@@ -9,13 +9,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Remind is a command invocation that sets a timer and alerts the user when the time expires.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.1
  * @since 1.0
  */
 public class Remind extends Command {
   public Remind() {
     this.name = "remind";
-    this.aliases = new String[]{"remind", "alert", "timer"};
+    this.aliases = new String[]{"remind", "timer"};
     this.arguments = "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName";
     this.help = "Sets a timer and alerts the user when the time expires.";
     this.ownerCommand = false;

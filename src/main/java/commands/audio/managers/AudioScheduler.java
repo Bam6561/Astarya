@@ -4,7 +4,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import lucyfer.LucyferBot;
+import astarya.Astarya;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 
@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * player's functionality related to playing tracks and track order.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.1
  * @since 1.1.0
  */
 public class AudioScheduler extends AudioEventAdapter {
@@ -59,9 +59,9 @@ public class AudioScheduler extends AudioEventAdapter {
       }
     } else { // Update presence when not playing audio
       this.audioPlayer.stopTrack();
-      LucyferBot lucyferBot = new LucyferBot();
-      lucyferBot.getApi().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
-      lucyferBot.getApi().getPresence().setActivity(Activity.listening("Nothing"));
+      Astarya Astarya = new Astarya();
+      Astarya.getApi().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
+      Astarya.getApi().getPresence().setActivity(Activity.listening("Nothing"));
     }
   }
 
@@ -74,9 +74,9 @@ public class AudioScheduler extends AudioEventAdapter {
   @Override
   public void onTrackStart(AudioPlayer audioPlayer, AudioTrack currentlyPlayingTrack) {
     if (!this.audioPlayerLoopState) {
-      LucyferBot lucyferBot = new LucyferBot();
-      lucyferBot.getApi().getPresence().setActivity(Activity.listening(currentlyPlayingTrack.getInfo().title));
-      lucyferBot.getApi().getPresence().setStatus(OnlineStatus.ONLINE);
+      Astarya Astarya = new Astarya();
+      Astarya.getApi().getPresence().setActivity(Activity.listening(currentlyPlayingTrack.getInfo().title));
+      Astarya.getApi().getPresence().setStatus(OnlineStatus.ONLINE);
     }
   }
 

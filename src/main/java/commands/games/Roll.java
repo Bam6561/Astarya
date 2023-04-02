@@ -12,13 +12,13 @@ import java.util.Random;
  * randomly generates integers based on a user provided range.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.1
  * @since 1.0
  */
 public class Roll extends Command {
   public Roll() {
     this.name = "roll";
-    this.aliases = new String[]{"roll", "rng", "dice", "random"};
+    this.aliases = new String[]{"roll", "rng", "dice"};
     this.arguments = "[0]Once [1]NumberOfRolls [2]Min [3]Max";
     this.help = "Dice roll and random integer generator.";
   }

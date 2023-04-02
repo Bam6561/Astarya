@@ -6,18 +6,18 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 /**
- * Help is a command invocation that provides documentation on LucyferBot's commands.
+ * Help is a command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.1
  * @since 1.0
  */
 public class Help extends Command {
   public Help() {
     this.name = "help";
-    this.aliases = new String[]{"help", "manual", "instructions"};
-    this.arguments = "[0]Help [1]CommandName";
-    this.help = "Provides documentation on LucyferBot's commands.";
+    this.aliases = new String[]{"help"};
+    this.arguments = "[0]MainMenu | [1]CommandName";
+    this.help = "Provides documentation on Astarya's commands.";
   }
 
   /**
@@ -37,177 +37,164 @@ public class Help extends Command {
 
     EmbedBuilder display = new EmbedBuilder();
     switch (numberOfArguments) {
-      case 0 -> sendHelpMainMenu(ce, display);
-      case 1 -> buildDetailedCommandHelpEmbed(ce, display, arguments[1].toLowerCase());
-      default -> ce.getChannel().sendMessage("Try typing " + Settings.getPrefix()
-          + "commands for a full command list. You can also refer to the wiki here:" +
-          "<https://github.com/Bam6561/LucyferBot/wiki>").queue();
+      case 0 -> sendHelpMainMenu(display);
+      case 1 -> buildDetailedCommandHelpEmbed(display, arguments[1].toLowerCase());
+      default -> display.setDescription("Type `" + Settings.getPrefix() +
+          "commands` to get a list of commands available. You can also refer to " +
+          "[Astarya's Wiki](https://github.com/Bam6561/Astarya/wiki).");
     }
+    Settings.sendEmbed(ce, display);
   }
 
   /**
    * Sends an embed containing all bot commands available to the user.
    *
-   * @param ce      object containing information about the command event
    * @param display object representing the embed
    */
-  private void sendHelpMainMenu(CommandEvent ce, EmbedBuilder display) {
+  private void sendHelpMainMenu(EmbedBuilder display) {
     display.setTitle("__Help__");
-    display.setDescription("Type help [CommandName] for more details on the usage of each command. " +
-        "See <https://github.com/Bam6561/LucyferBot/wiki> for equivalent documentation.");
-    display.addField("**About:**", "<credits <help <info <ping ", true);
-    display.addField("**Audio:**", "<clearQueue <join <leave <loop <nowPlaying " +
-        "<pause <playNext <play <queue <remove <return <searchTrack <setPosition <shuffle <skip <swap", true);
-    display.addField("**Games:**", "<choose <coinflip <highorlow <roll", true);
-    display.addField("**Owner:**", "<delete <settings <shutdown", true);
-    display.addField("**Utility:**", "<avatar <emote <poll <profile <remind <server", true);
-    Settings.sendEmbed(ce, display);
+    display.setDescription("Type `" + Settings.getPrefix() + "help <CommandName>` " +
+        "for more details on each command. Alternatively, see " +
+        "[Astarya's Wiki](https://github.com/Bam6561/Astarya/wiki).");
+    display.addField("About", "> credits | help | info | ping ", true);
+    display.addField("Audio", "> clearQueue | join | leave | loop | " +
+        "nowPlaying | pause | playNext | play | queue | remove | return | " +
+        "searchTrack | setPosition | shuffle | skip | swap", true);
+    display.addField("Games", "> choose | coinflip | highorlow | roll", true);
+    display.addField("Owner", "> delete | settings | shutdown", true);
+    display.addField("Utility", "> avatar | emote | poll | profile | remind | server", true);
   }
 
   /**
    * Fills out parameters for an embed containing detailed documentation of a command.
    *
-   * @param ce          object containing information about the command event
    * @param display     object representing the embed
    * @param commandName name of the command to be referenced for documentation
    */
-  private void buildDetailedCommandHelpEmbed(CommandEvent ce, EmbedBuilder display, String commandName) {
+  private void buildDetailedCommandHelpEmbed(EmbedBuilder display, String commandName) {
     switch (commandName) {
-      case "avatar", "pfp" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Avatar__",
+      case "avatar", "pfp" -> sendDetailedCommandHelpEmbed(display, "__Help: Avatar__",
           "Provides the user's profile picture. By default, the size of the image is 1024x1024. "
               + "Additional arguments adjust the size of the image in choices of 128, 256, & 512.",
-          "avatar, pfp", "[0]Self [1]Mention/UserID/Size [2]Size",
-          "avatar, avatar 256, avatar @Bam, avatar 204448598539239424, avatar @Bam 512, avatar 204448598539239424 128");
-      case "choose", "choice", "pick", "options" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Choose__",
+          "avatar, pfp", "[0]Self | [1]Mention/UserID/Size | [2]Size",
+          "avatar | avatar 128 | avatar @Bam | avatar 204448598539239424 | " +
+              "avatar @Bam 256 | avatar 204448598539239424 512");
+      case "choose", "pick" -> sendDetailedCommandHelpEmbed(display, "__Help: Choose__",
           "Chooses randomly between any number of options. " +
               "The options are arguments separated by commas.",
-          "choose, choice, pick, option", "[1, ++]Options",
+          "choose, pick", "[1, ++]Options",
           "choose Take out the trash, Do the laundry, Walk the dog");
-      case "clearqueue", "clearq", "clear" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: ClearQueue__",
+      case "clearqueue", "clear" -> sendDetailedCommandHelpEmbed(display, "__Help: ClearQueue__",
           "Clears the track queue.", "clearqueue, clear", "[0]ClearQueue",
           "clearqueue");
-      case "coinflip", "flip" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Coin Flip__",
-          "Flips a coin any number of times. " +
-              "Argument dictates how many times (1-10) to flip the coin.",
-          "coinflip, flip", "[0]Once [1]NumberOfFlips",
-          "flip, flip 5");
-      case "credits" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Credits__",
-          "Shows a list of credits for the bot.",
-          "credits", "[0]Credits", "credits");
-      case "delete", "purge, wipe" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Delete__",
-          "Deletes a number of recent messages. " +
-              "Argument provides how many (2-100).",
-          "delete, purge, wipe", "[1]NumberOfMessagesToDelete", "delete 15");
-      case "emote", "emoji" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Emote__",
-          "Provides the mentioned custom emote as a file. " +
-              "Argument is the requested emote.",
-          "emote, emoji", "[1]Emote", "emote :happyFeetDance:");
-      case "help", "manual", "instructions" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Help__",
-          "Provides documentation on LucyferBot's commands. " +
+      case "coinflip", "flip" -> sendDetailedCommandHelpEmbed(display, "__Help: Coin Flip__",
+          "Flips a coin any number of times. Argument dictates how many times (1-10) to flip the coin.",
+          "coinflip, flip", "[0]Once | [1]NumberOfFlips", "flip | flip 5");
+      case "credits" -> sendDetailedCommandHelpEmbed(display, "__Help: Credits__",
+          "Shows a list of credits for Astarya.", "credits", "[0]Credits", "credits");
+      case "delete", "purge" -> sendDetailedCommandHelpEmbed(display, "__Help: Delete__",
+          "Deletes a number of recent messages. Argument provides amount to delete (2-100).",
+          "delete, purge", "[1]NumberOfMessages", "delete 15");
+      case "emote", "emoji" -> sendDetailedCommandHelpEmbed(display, "__Help: Emote__",
+          "Provides the mentioned custom emote as a file. Argument is the requested emote.",
+          "emote, emoji", "[1]Emote", "emote :watameSnacks:");
+      case "help" -> sendDetailedCommandHelpEmbed(display, "__Help: Help__",
+          "Provides documentation on Astarya's commands. " +
               "Argument describes more detailed command usage.",
-          "help, manual, instructions",
-          "[0]HelpMainMenu [1]CommandName", "help help");
-      case "highorlow", "guess" -> sendDetailedCommandHelpEmbed(ce, display, "Command: __HighOrLow__",
+          "help", "[0]MainMenu | [1]CommandName", "help help");
+      case "highorlow", "guess" -> sendDetailedCommandHelpEmbed(display, "__Help: HighOrLow__",
           "Guess whether the next number will be higher or lower!",
           "highorlow, guess", "[0]HighOrLow", "highorlow");
-      case "info", "about" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Info__",
-          "Details information about the bot and its developer.",
+      case "info", "about" -> sendDetailedCommandHelpEmbed(display, "__Help: Info__",
+          "Details information about Astarya and its developer.",
           "info, about", "[0]Info", "info");
-      case "join", "j" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Join__",
-          "Bot joins the same voice channel as the user.", "join, j",
+      case "join", "j" -> sendDetailedCommandHelpEmbed(display, "__Help: Join__",
+          "Joins the same voice channel as the user.", "join, j",
           "[0]Join", "join");
-      case "leave", "l", "disconnect", "dc" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Leave__",
-          "Bot leaves the voice channel it's in.", "leave, l, disconnect, dc",
+      case "leave", "l", "disconnect", "dc" -> sendDetailedCommandHelpEmbed(display, "__Help: Leave__",
+          "Leaves the voice channel it's in.", "leave, l, disconnect, dc",
           "[0]Leave", "leave");
-      case "loop", "repeat" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Loops__",
+      case "loop", "repeat" -> sendDetailedCommandHelpEmbed(display, "__Help: Loops__",
           "Loops the current track.",
           "loop, repeat", "[0]Loop", "loop");
-      case "nowplaying", "np" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: NowPlaying__",
+      case "nowplaying", "np" -> sendDetailedCommandHelpEmbed(display, "__Help: NowPlaying__",
           "Shows what track is currently playing.", "nowplaying, np",
           "[0]NowPlaying", "nowplaying");
-      case "pause", "stop" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Pause__",
-          "Pauses the audio player. Bot's activity changes may be rate limited if done rapidly.",
+      case "pause", "stop" -> sendDetailedCommandHelpEmbed(display, "__Help: Pause__",
+          "Pauses the audio player. Astarya's activity changes may be rate limited if done rapidly.",
           "pause, stop", "[0]Pause", "pause");
-      case "ping", "ms" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Ping__",
-          "Responds with the response time of the bot in milliseconds.",
+      case "ping", "ms" -> sendDetailedCommandHelpEmbed(display, "__Help: Ping__",
+          "Responds with the response time of Astarya in milliseconds.",
           "ping, ms", "[0]Ping", "ping");
-      case "play", "p", "add" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Play__",
-          """
-              Adds a track to the queue. Limit of Spotify playlists is 100 at a time. Limit of Spotify albums is 50 at a time. \s
-              **Sources:** YouTube links/playlists, Discord media links, Spotify songs/playlists/albums\s
-              **File Types:** MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams\s""",
-          "play, p, add", "[1]URL, [2++]YouTubeQuery",
-          "play https://www.youtube.com/watch?v=dQw4w9WgXcQ, play Cleverly Disguised Rickrolls");
-      case "playnext", "after" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: PlayNext__",
+      case "play", "p" -> sendDetailedCommandHelpEmbed(display, "__Help: Play__",
+          "Adds a track to the queue. Spotify playlists are limited to the most recent 100 songs added. " +
+              "Spotify albums are limited to 50 songs at a time. \n" +
+              "**Sources** \n > - YouTube: links/playlists \n> - Discord: media links \n> - Spotify: songs/playlists/albums \n" +
+              "**Supported File Types** \n > MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams",
+          "play, p", "[1]URL | [2++]YouTubeQuery",
+          "play https://www.youtube.com/watch?v=dQw4w9WgXcQ | play Cleverly Disguised Rickrolls");
+      case "playnext", "after" -> sendDetailedCommandHelpEmbed(display, "__Help: PlayNext__",
           "Sets the next track to be played in the queue.",
           "playnext, after", "[1]QueueNumber", "playnext 3");
-      case "poll", "react", "vote" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Poll__",
-          "Creates a reaction vote with up to 10 options. " +
-              "The options are arguments separated by commas.",
-          "poll, react, vote", "[2, ++]PollOptions",
-          "poll hot pizza, cold pizza");
-      case "profile", "whois", "who", "user" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Profile__",
-          "Provides information on the user.",
-          "profile, whois, who, user", "[0]Self [1]Mention/UserID",
-          "profile, profile @Bam, profile 204448598539239424");
-      case "queue", "q" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Queue__",
+      case "poll", "vote" -> sendDetailedCommandHelpEmbed(display, "__Help: Poll__",
+          "Creates a reaction vote with up to 10 options. The options are arguments separated by commas.",
+          "poll, vote", "[2, ++]PollOptions", "poll hot pizza, cold pizza");
+      case "profile", "whois", "user" -> sendDetailedCommandHelpEmbed(display, "__Help: Profile__",
+          "Provides information on the user.", "profile, whois, user",
+          "[0]Self | [1]Mention/UserID", "profile | profile @Bam | profile 204448598539239424");
+      case "queue", "q" -> sendDetailedCommandHelpEmbed(display, "__Help: Queue__",
           "Provides a list of tracks queued.", "queue, q",
-          "[0]Queue, [1]PageNumber", "queue, queue 1");
-      case "remind", "alert", "timer" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Remind__",
+          "[0]Queue | [1]PageNumber", "queue | queue 1");
+      case "remind", "timer" -> sendDetailedCommandHelpEmbed(display, "__Help: Remind__",
           "Sets a timer and alerts the user when the time expires for up to " +
               "a day's maximum length. Arguments provide the time duration, type, " +
-              "and event name. The bot recognizes the following data types for 1 argument: " +
-              "(0-86400)s, (0-1440)m, (0-24)h - and for 2+ arguments: hours, hour, hrs, hr, " +
-              "h, minutes, minute, mins, min, m, seconds, second, secs, sec, s.",
-          "remind, alert, timer",
-          "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName",
-          "remind (0-86400)s, remind (0-1440)m, remind (0-24)h, "
-              + "remind TimeDurationTimeType EventName, remind TimeDuration TimeType EventName");
-      case "remove", "rm", "r" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Remove__",
-          "Removes track(s) from the queue.", "remove, rm, r",
-          "[1]QueueNumber, [1, ++]QueueNumbers", "remove 1, remove 2 4 5");
-      case "return", "ret", "unskip" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Return__",
-          "Returns a recently skipped track to the queue.", "return, ret, unskip",
-          "[0]RecentlySkipped, [1]SkippedStackNumber", "return, return 1");
-      case "roll", "rng", "dice", "random" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Roll__",
+              "and event name. Astarya recognizes the following time types: \n" +
+              "> - 1 argument: (0-86400)s, (0-1440)m, (0-24)h \n" +
+              "> - 2+ arguments: hours, hour, hrs, hr, h, minutes, minute, mins, min, m, seconds, second, secs, sec, s.",
+          "remind, timer",
+          "[1]TimeDuration&TimeType/Time | [2]TimeDuration/TimeType/EventName | [3++]EventName",
+          "remind (0-86400)s | remind (0-1440)m | remind (0-24)h | "
+              + "remind TimeDurationTimeType EventName | remind TimeDuration TimeType EventName");
+      case "remove", "r" -> sendDetailedCommandHelpEmbed(display, "__Help: Remove__",
+          "Removes track(s) from the queue.", "remove, r",
+          "[1]QueueNumber | [1, ++]QueueNumbers", "remove 1 | remove 2 4 5");
+      case "return", "ret" -> sendDetailedCommandHelpEmbed(display, "__Help: Return__",
+          "Returns a recently skipped track to the queue.", "return, ret",
+          "[0]RecentlySkipped | [1]SkippedStackNumber", "return | return 1");
+      case "roll", "rng", "dice" -> sendDetailedCommandHelpEmbed(display, "__Help: Roll__",
           "Dice roll and random integer generator. No arguments to roll once. "
               + "One argument to roll 1-10 times. Three arguments to set how many times to roll" +
-              " your own custom range of minimum and maximum values.",
-          "roll, rng, dice, random", "[0]Once [1]NumberOfRolls [2]Minimum [3]Maximum",
-          "roll, roll 9, roll 7 5 100");
-      case "searchtrack", "search", "find" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: SearchTrack__",
-          "Searches for a track to add to the queue.", "searchtrack, search, find",
-          "[1++]YouTubeQuery -> [1]SearchResultNumber", "search towa pallete, 1");
-      case "server", "serverinfo" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Server__",
+              " a custom range of minimum and maximum values.",
+          "roll, rng, dice", "[0]Once | [1]NumberOfRolls | [2]Minimum | [3]Maximum",
+          "roll | roll 10 | roll 2 25 50");
+      case "searchtrack", "search", "st" -> sendDetailedCommandHelpEmbed(display, "__Help: SearchTrack__",
+          "Searches for a track to add to the queue.", "searchtrack, search, st",
+          "[1++]YouTubeQuery -> [1]SearchResultNumber", "search towa pallete");
+      case "server" -> sendDetailedCommandHelpEmbed(display, "__Help: Server__",
           "Provides information on the Discord server.",
-          "server, serverinfo,", "[0]Server", "serverinfo");
-      case "setposition", "setpos", "goto" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: SetPosition__",
-          "Sets the position of the currently playing track. \":\" separates" +
-              "the time types from hours:minutes:seconds.",
-          "setposition, setpos, goto", "[1]TimeString",
-          "setposition 124, set position 2:04");
-      case "settings", "config" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Settings__",
-          "Provides information on bot settings.",
-          "settings, config",
-          "[0]Settings [1]Setting [2]True/False",
-          "settings, settings (setting) (true/false) ");
-      case "shuffle", "mix" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Shuffle__",
-          "Shuffles the queue.", "shuffle, mix", "[0]Shuffle",
-          "shuffle");
-      case "shutdown", "nuke" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Shutdown__",
-          "Shuts the bot down.",
-          "shutdown, nuke", "[0]Shutdown", "shutdown");
-      case "skip", "s", "next" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Skip__",
-          "Skips the currently playing track. Bot's activity changes may be rate limited if done rapidly.",
+          "server", "[0]Server", "server");
+      case "setposition", "setpos" -> sendDetailedCommandHelpEmbed(display, "__Help: SetPosition__",
+          "Sets the position of the currently playing track. " +
+              "\":\" separates the time types from hours:minutes:seconds.",
+          "setposition, setpos", "[1]TimeString",
+          "setposition 150 | setposition 2:30");
+      case "settings", "config" -> sendDetailedCommandHelpEmbed(display, "__Help: Settings__",
+          "Provides information on Astarya settings.", "settings, config",
+          "[0]MainMenu | [1]Setting | [2]True/False", "settings | settings deleteinvoke true");
+      case "shuffle", "mix" -> sendDetailedCommandHelpEmbed(display, "__Help: Shuffle__",
+          "Shuffles the queue.", "shuffle, mix", "[0]Shuffle", "shuffle");
+      case "shutdown" -> sendDetailedCommandHelpEmbed(display, "__Help: Shutdown__",
+          "Shuts Astarya down.", "shutdown", "[0]Shutdown", "shutdown");
+      case "skip", "s", "next" -> sendDetailedCommandHelpEmbed(display, "__Help: Skip__",
+          "Skips the currently playing track. Astarya's activity changes may be rate limited if done rapidly.",
           "skip, s, next", "[0]Skip", "skip");
-      case "swap", "switch" -> sendDetailedCommandHelpEmbed(ce, display, "__Command: Swap__",
-          "Swaps the position of a track in queue with another.",
-          "swap, switch", "[1]QueueNumber [2]QueueNumber",
-          "swap 2 4");
+      case "swap", "switch" -> sendDetailedCommandHelpEmbed(display, "__Help: Swap__",
+          "Swaps the position of a track in queue with another.", "swap, switch",
+          "[1]QueueNumber | [2]QueueNumber", "swap 2 4");
       default -> {
-        display.setTitle("__Command Not Found__");
-        display.setDescription("Try typing " + Settings.getPrefix() + "commands for a full command list.");
-        Settings.sendEmbed(ce, display);
+        display.setTitle("__Help: Command Not Found__");
+        display.setDescription("Type `" + Settings.getPrefix() + "commands` to get a list of commands available. " +
+            "You can also refer to [Astarya's Wiki](https://github.com/Bam6561/Astarya/wiki).");
       }
     }
   }
@@ -215,7 +202,6 @@ public class Help extends Command {
   /**
    * Sends an embed containing detailed documentation of a command.
    *
-   * @param ce          object containing information about the command event
    * @param display     object representing the embed
    * @param title       name of the command
    * @param description description of the command
@@ -223,13 +209,12 @@ public class Help extends Command {
    * @param arguments   arguments the command will accept for different variations of usage
    * @param examples    examples of how to use the command
    */
-  private void sendDetailedCommandHelpEmbed(CommandEvent ce, EmbedBuilder display, String title,
+  private void sendDetailedCommandHelpEmbed(EmbedBuilder display, String title,
                                             String description, String aliases, String arguments, String examples) {
     display.setTitle(title);
     display.setDescription(description);
-    display.addField("**Aliases:**", aliases, false);
-    display.addField("**Arguments:**", arguments, false);
-    display.addField("**Examples:**", examples, false);
-    Settings.sendEmbed(ce, display);
+    display.addField("Aliases", aliases, false);
+    display.addField("Arguments", arguments, false);
+    display.addField("Examples", examples, false);
   }
 }

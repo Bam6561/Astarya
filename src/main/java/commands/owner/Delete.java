@@ -11,14 +11,14 @@ import java.util.List;
  * Delete is a command invocation that clears a number of 2-100 recent messages.
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.6.1
  * @since 1.0
  */
 public class Delete extends Command {
   public Delete() {
     this.name = "delete";
-    this.aliases = new String[]{"delete", "purge", "wipe"};
-    this.arguments = "[1]NumberOfMessagesToDelete";
+    this.aliases = new String[]{"delete", "purge"};
+    this.arguments = "[1]NumberOfMessages";
     this.help = "Clears a number of 2-100 recent messages.";
     this.ownerCommand = true;
   }

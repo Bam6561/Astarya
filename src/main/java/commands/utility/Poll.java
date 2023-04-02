@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Poll is a command invocation that creates a reaction vote with up to 10 options.
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.6.1
  * @since 1.0
  */
 public class Poll extends Command {
@@ -22,7 +22,7 @@ public class Poll extends Command {
 
   public Poll(EventWaiter waiter) {
     this.name = "poll";
-    this.aliases = new String[]{"poll", "vote", "react"};
+    this.aliases = new String[]{"poll", "vote"};
     this.arguments = "[2, ++]PollOptions";
     this.help = "Creates a reaction vote with up to 10 options.";
     this.waiter = waiter;

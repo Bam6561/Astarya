@@ -16,13 +16,13 @@ import java.util.ArrayList;
  * Profile is a command invocation that provides information on the user.
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.6.1
  * @since 1.0
  */
 public class Profile extends Command {
   public Profile() {
     this.name = "whois";
-    this.aliases = new String[]{"profile", "whois", "who", "user"};
+    this.aliases = new String[]{"profile", "whois", "user"};
     this.arguments = "[0]Self [1]Mention/UserID";
     this.help = "Provides information on the user.";
   }

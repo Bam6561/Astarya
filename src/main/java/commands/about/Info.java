@@ -13,14 +13,14 @@ import java.time.format.DateTimeFormatter;
  * Info is a command invocation that details information about the bot and its developer.
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.6.1
  * @since 1.0
  */
 public class Info extends Command {
   public Info() {
     this.name = "info";
     this.aliases = new String[]{"info"};
-    this.help = "Details information about the bot and its developer.";
+    this.help = "Details information about Astarya and its developer.";
   }
 
   /**
@@ -37,12 +37,14 @@ public class Info extends Command {
 
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Info__");
-    display.setDescription("**Developer:** Bam#3531"
-        + "\n**Developer ID:** 204448598539239424"
-        + "\n**Bot:** " + jda.getSelfUser().getAsMention()
-        + "\n**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` " +
-        "\n**Version:** `1.6` \n**Language:** `Java` " +
-        "\n**Source:** https://github.com/Bam6561/LucyferBot \n**Uptime:** " + getUptime());
+    display.setDescription("**Developer:** Bam#3531 \n" +
+        "**Developer ID:** 204448598539239424 \n" +
+        "**Bot:** " + jda.getSelfUser().getAsMention() + "\n" +
+        "**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` \n" +
+        "**Version:** `1.6.1` \n" +
+        "**Language:** `Java` \n" +
+        "**Source Code:** [GitHub](https://github.com/Bam6561/Astarya) \n" +
+        "**Uptime:** " + getUptime());
     display.setThumbnail(jda.getSelfUser().getAvatarUrl());
     Settings.sendEmbed(ce, display);
   }

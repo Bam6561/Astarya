@@ -17,7 +17,7 @@ public class Emote extends Command {
     this.name = "emote";
     this.aliases = new String[]{"emote", "emoji"};
     this.arguments = "[1]Emote";
-    this.help = "Provides mentioned emote as a file.";
+    this.help = "Provides the mentioned emote as a file.";
   }
 
   /**

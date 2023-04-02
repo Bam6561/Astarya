@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class ClearQueue extends Command {
   public ClearQueue() {
     this.name = "clearqueue";
-    this.aliases = new String[]{"clearqueue", "clearq", "clear"};
+    this.aliases = new String[]{"clearqueue", "clear"};
     this.help = "Clears the track queue.";
   }
 

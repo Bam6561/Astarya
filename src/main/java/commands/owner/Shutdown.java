@@ -8,14 +8,14 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Shutdown is a command invocation that shuts the bot down.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.1
  * @since 1.0
  */
 public class Shutdown extends Command {
   public Shutdown() {
     this.name = "shutdown";
-    this.aliases = new String[]{"shutdown", "nuke"};
-    this.help = "Shuts the bot down.";
+    this.aliases = new String[]{"shutdown"};
+    this.help = "Shuts Astarya down.";
     this.ownerCommand = true;
   }
 

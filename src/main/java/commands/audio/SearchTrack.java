@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * to add to the queue using a query of user provided arguments.
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.6.1
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
@@ -28,7 +28,7 @@ public class SearchTrack extends Command {
 
   public SearchTrack(EventWaiter waiter) {
     this.name = "searchtrack";
-    this.aliases = new String[]{"searchtrack", "search", "find", "st"};
+    this.aliases = new String[]{"searchtrack", "search", "st"};
     this.arguments = "[1++]YouTubeQuery";
     this.help = "Searches for a track to add to the queue.";
     this.waiter = waiter;

@@ -1,4 +1,4 @@
-package lucyfer;
+package astarya;
 
 import commands.owner.Settings;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;

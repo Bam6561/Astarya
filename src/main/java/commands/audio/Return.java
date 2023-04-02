@@ -16,13 +16,13 @@ import java.util.ArrayList;
  * and provides an option to return a recently skipped track to the queue.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.1
  * @since 1.5.2
  */
 public class Return extends Command {
   public Return() {
     this.name = "return";
-    this.aliases = new String[]{"return", "ret", "unskip"};
+    this.aliases = new String[]{"return", "ret"};
     this.arguments = "[0]RecentlySkipped, [1]SkippedStackNumber";
     this.help = "Returns a recently skipped track to the queue.";
   }
