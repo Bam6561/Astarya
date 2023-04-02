@@ -180,7 +180,7 @@ public class Help extends Command {
           "setposition 150 | setposition 2:30");
       case "settings", "config" -> sendDetailedCommandHelpEmbed(display, "__Help: Settings__",
           "Provides information on Astarya settings.", "settings, config",
-          "[0]MainMenu | [1]Setting | [2]True/False", "settings | settings deleteinvoke true");
+          "[0]MainMenu | [1]Setting | [2]True/False", "settings | settings deleteinvoke | settings deleteinvoke true");
       case "shuffle", "mix" -> sendDetailedCommandHelpEmbed(display, "__Help: Shuffle__",
           "Shuffles the queue.", "shuffle, mix", "[0]Shuffle", "shuffle");
       case "shutdown" -> sendDetailedCommandHelpEmbed(display, "__Help: Shutdown__",

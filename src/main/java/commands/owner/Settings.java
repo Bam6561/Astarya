@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.6.2
  * @since 1.0
  */
 public class Settings extends Command {
@@ -182,7 +182,7 @@ public class Settings extends Command {
    */
   public static void sendEmbed(CommandEvent ce, EmbedBuilder display) {
     ce.getChannel().sendTyping().queue();
-    display.setColor(0x80000f);
+    display.setColor(0x006fb1);
     display.setFooter(ce.getMember().getUser().getAsTag());
     display.setTimestamp(Instant.now());
     Settings.embedDecay(ce, display);

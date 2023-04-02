@@ -31,7 +31,7 @@ public class Shutdown extends Command {
     EmbedBuilder display = new EmbedBuilder();
     display.setTitle("__Shutdown__");
     display.setDescription("Well, it was fun while it lasted. Change the world... " +
-        "my final message. Goodbye. **Lucyfer is shutting down.**");
+        "my final message. Goodbye. **Astarya is shutting down.**");
     Settings.sendEmbed(ce, display);
 
     ce.getJDA().shutdown();

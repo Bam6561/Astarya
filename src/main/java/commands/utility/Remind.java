@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Remind is a command invocation that sets a timer and alerts the user when the time expires.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.2
  * @since 1.0
  */
 public class Remind extends Command {
@@ -76,13 +76,13 @@ public class Remind extends Command {
       String argument = arguments[i]; // Time type string
       char lastChar = argument.charAt(arguments[i].length() - 1); // Time type char
       switch (argument) {
-        case "hours", "hour", "hrs", "hr", "h", "minutes", "minute", "mins",
+        case "days", "day", "d", "hours", "hour", "hrs", "hr", "h", "minutes", "minute", "mins",
             "min", "m", "seconds", "second", "secs", "sec", "s" -> {
           return true;
         }
       }
       switch (lastChar) {
-        case 's', 'm', 'h' -> {
+        case 'd', 'h', 'm', 's' -> {
           return true;
         }
       }
@@ -91,14 +91,14 @@ public class Remind extends Command {
   }
 
   /**
-   * Checks if the first argument ends in s, m, or h.
+   * Checks if the first argument ends in d, h, m, or s.
    *
    * @param arguments user provided arguments
    * @return whether the time type exists in the first argument
    */
   private boolean checkTimeTypeInFirstArgument(String[] arguments) {
     char timeType = arguments[1].charAt(arguments[1].length() - 1);
-    return timeType == 's' || timeType == 'm' || timeType == 'h';
+    return timeType == 'd' || timeType == 'h' || timeType == 'm' || timeType == 's';
   }
 
   /**
@@ -127,17 +127,16 @@ public class Remind extends Command {
       }
 
       boolean validTimeDuration = checkTimeDuration(timeDuration, timeType);
-      if (validTimeDuration) { // Within the range of a day
+      if (validTimeDuration) { // Within the range of a week
         String timerName = "";
         timerName = setTimerName(arguments, numberOfArguments, timeInFirstArgument, timerName);
         setReminder(ce, timeDuration, timeType, timerName);
         setTimer(ce, timeDuration, timeType, timerName);
       } else {
-        ce.getChannel().sendMessage("Can only set timer for the maximum length of a day.").queue();
+        ce.getChannel().sendMessage("Can only set timer for the maximum length of a week.").queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage("Specify a valid numerical value, followed by an accepted time type.")
-          .queue();
+      ce.getChannel().sendMessage("Specify a valid numerical value, followed by an accepted time type.").queue();
     }
   }
 
@@ -149,6 +148,7 @@ public class Remind extends Command {
    */
   private char convertTimeStringToTimeType(String[] arguments) {
     return switch (arguments[2]) {
+      case "days", "day", "d" -> 'd';
       case "hours", "hour", "hrs", "hr", "h" -> 'h';
       case "minutes", "minute", "mins", "min", "m" -> 'm';
       case "seconds", "second", "secs", "sec", "s" -> 's';
@@ -157,19 +157,21 @@ public class Remind extends Command {
   }
 
   /**
-   * Checks the time range is within 1 day.
+   * Checks the time range is within 1 week.
    *
    * @param timeDuration duration of time
    * @param timeType     type of time
-   * @return whether the time duration is within 1 day
+   * @return whether the time duration is within 1 week.
    */
   private boolean checkTimeDuration(int timeDuration, char timeType) {
-    if (timeType == 'h' && timeDuration >= 0 && timeDuration <= 24) {
+    if (timeType == 'd' && timeDuration >= 0 && timeDuration <= 7) {
       return true;
-    } else if (timeType == 'm' && timeDuration >= 0 && timeDuration <= 1440) {
+    } else if (timeType == 'h' && timeDuration >= 0 && timeDuration <= 168) {
+      return true;
+    } else if (timeType == 'm' && timeDuration >= 0 && timeDuration <= 10080) {
       return true;
     } else {
-      return (timeType == 's' && timeDuration >= 0 && timeDuration <= 86400);
+      return (timeType == 's' && timeDuration >= 0 && timeDuration <= 604800);
     }
   }
 
@@ -238,12 +240,19 @@ public class Remind extends Command {
    * @return the time type in a written form
    */
   private String getTimeTypeString(char timeType) {
-    if (timeType == 's') {
-      return "seconds";
-    } else if (timeType == 'm') {
-      return "minutes";
-    } else if (timeType == 'h') {
-      return "hours";
+    switch (timeType){
+      case 'd' -> {
+        return "days";
+      }
+      case 'h' -> {
+        return "hours";
+      }
+      case 'm' -> {
+        return "minutes";
+      }
+      case 's' -> {
+        return "seconds";
+      }
     }
     return null;
   }
@@ -274,12 +283,19 @@ public class Remind extends Command {
    * @return equivalent amount of time in milliseconds
    */
   private int timeDurationIntoMilliseconds(int timeDuration, char timeType) {
-    if (timeType == 's') {
-      return timeDuration * 1000;
-    } else if (timeType == 'm') {
-      return timeDuration * 60000;
-    } else if (timeType == 'h') {
-      return timeDuration * 3600000;
+    switch (timeType) {
+      case 'd' -> {
+        return timeDuration * 86400000;
+      }
+      case 'h' -> {
+        return timeDuration * 3600000;
+      }
+      case 'm' -> {
+        return timeDuration * 60000;
+      }
+      case 's' -> {
+        return timeDuration * 1000;
+      }
     }
     return -1;
   }

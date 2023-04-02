@@ -66,7 +66,7 @@ public class Astarya {
 
     // Prefixes
     String prefix = "<";
-    String alternativePrefix = "L:";
+    String alternativePrefix = "A:";
 
     // Command Client settings
     commands.setOwnerId("204448598539239424"); // Bam#3531

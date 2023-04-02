@@ -19,7 +19,7 @@ public class SetPosition extends Command {
   public SetPosition() {
     this.name = "setPosition";
     this.aliases = new String[]{"setposition", "setpos", "sp"};
-    this.arguments = "[1]timeString";
+    this.arguments = "[1]TimeString";
     this.help = "Sets the position of the currently playing track.";
   }
 
