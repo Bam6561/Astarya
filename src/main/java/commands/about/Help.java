@@ -9,14 +9,14 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Help is a command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.3
  * @since 1.0
  */
 public class Help extends Command {
   public Help() {
     this.name = "help";
     this.aliases = new String[]{"help"};
-    this.arguments = "[0]MainMenu | [1]CommandName";
+    this.arguments = "[0]MainMenu [1]CommandName";
     this.help = "Provides documentation on Astarya's commands.";
   }
 
@@ -62,7 +62,7 @@ public class Help extends Command {
         "searchTrack | setPosition | shuffle | skip | swap", true);
     display.addField("Games", "> choose | coinflip | highorlow | roll", true);
     display.addField("Owner", "> delete | settings | shutdown", true);
-    display.addField("Utility", "> avatar | emote | poll | profile | remind | server", true);
+    display.addField("Utility", "> emote | poll | profile | remind | server", true);
   }
 
   /**
@@ -73,12 +73,6 @@ public class Help extends Command {
    */
   private void buildDetailedCommandHelpEmbed(EmbedBuilder display, String commandName) {
     switch (commandName) {
-      case "avatar", "pfp" -> sendDetailedCommandHelpEmbed(display, "__Help: Avatar__",
-          "Provides the user's profile picture. By default, the size of the image is 1024x1024. "
-              + "Additional arguments adjust the size of the image in choices of 128, 256, & 512.",
-          "avatar, pfp", "[0]Self | [1]Mention/UserID/Size | [2]Size",
-          "avatar | avatar 128 | avatar @Bam | avatar 204448598539239424 | " +
-              "avatar @Bam 256 | avatar 204448598539239424 512");
       case "choose", "pick" -> sendDetailedCommandHelpEmbed(display, "__Help: Choose__",
           "Chooses randomly between any number of options. " +
               "The options are arguments separated by commas.",
@@ -89,7 +83,7 @@ public class Help extends Command {
           "clearqueue");
       case "coinflip", "flip" -> sendDetailedCommandHelpEmbed(display, "__Help: Coin Flip__",
           "Flips a coin any number of times. Argument dictates how many times (1-10) to flip the coin.",
-          "coinflip, flip", "[0]Once | [1]NumberOfFlips", "flip | flip 5");
+          "coinflip, flip", "[0]Once [1]NumberOfFlips", "flip | flip 5");
       case "credits" -> sendDetailedCommandHelpEmbed(display, "__Help: Credits__",
           "Shows a list of credits for Astarya.", "credits", "[0]Credits", "credits");
       case "delete", "purge" -> sendDetailedCommandHelpEmbed(display, "__Help: Delete__",
@@ -101,7 +95,7 @@ public class Help extends Command {
       case "help" -> sendDetailedCommandHelpEmbed(display, "__Help: Help__",
           "Provides documentation on Astarya's commands. " +
               "Argument describes more detailed command usage.",
-          "help", "[0]MainMenu | [1]CommandName", "help help");
+          "help", "[0]MainMenu [1]CommandName", "help help");
       case "highorlow", "guess" -> sendDetailedCommandHelpEmbed(display, "__Help: HighOrLow__",
           "Guess whether the next number will be higher or lower!",
           "highorlow, guess", "[0]HighOrLow", "highorlow");
@@ -131,7 +125,7 @@ public class Help extends Command {
               "Spotify albums are limited to 50 songs at a time. \n" +
               "**Sources** \n > - YouTube: links/playlists \n> - Discord: media links \n> - Spotify: songs/playlists/albums \n" +
               "**Supported File Types** \n > MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams",
-          "play, p", "[1]URL | [2++]YouTubeQuery",
+          "play, p", "[1]URL [2++]YouTubeQuery",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ | play Cleverly Disguised Rickrolls");
       case "playnext", "after" -> sendDetailedCommandHelpEmbed(display, "__Help: PlayNext__",
           "Sets the next track to be played in the queue.",
@@ -140,32 +134,34 @@ public class Help extends Command {
           "Creates a reaction vote with up to 10 options. The options are arguments separated by commas.",
           "poll, vote", "[2, ++]PollOptions", "poll hot pizza, cold pizza");
       case "profile", "whois", "user" -> sendDetailedCommandHelpEmbed(display, "__Help: Profile__",
-          "Provides information on the user.", "profile, whois, user",
-          "[0]Self | [1]Mention/UserID", "profile | profile @Bam | profile 204448598539239424");
+          "Provides information about a user.", "profile, whois, user",
+          "[0]Self [1]Mention/UserID/<@UserId> [1+]Name/Nickname", "profile | profile @Bam | " +
+              "profile 204448598539239424 | profile <@204448598539239424> | profile Bam | profile Bam's Nickname");
       case "queue", "q" -> sendDetailedCommandHelpEmbed(display, "__Help: Queue__",
           "Provides a list of tracks queued.", "queue, q",
-          "[0]Queue | [1]PageNumber", "queue | queue 1");
+          "[0]Queue [1]PageNumber", "queue | queue 1");
       case "remind", "timer" -> sendDetailedCommandHelpEmbed(display, "__Help: Remind__",
           "Sets a timer and alerts the user when the time expires for up to " +
               "a day's maximum length. Arguments provide the time duration, type, " +
               "and event name. Astarya recognizes the following time types: \n" +
-              "> - 1 argument: (0-86400)s, (0-1440)m, (0-24)h \n" +
-              "> - 2+ arguments: hours, hour, hrs, hr, h, minutes, minute, mins, min, m, seconds, second, secs, sec, s.",
+              "> - 1 argument: (0-7)d, (0-168)h, (0-10080)m, (0-604800)s \n" +
+              "> - 2+ arguments: days, day, d, hours, hour, hrs, hr, h, " +
+              "minutes, minute, mins, min, m, seconds, second, secs, sec, s.",
           "remind, timer",
-          "[1]TimeDuration&TimeType/Time | [2]TimeDuration/TimeType/EventName | [3++]EventName",
-          "remind (0-86400)s | remind (0-1440)m | remind (0-24)h | "
+          "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName",
+          "remind (0-7)d | remind (0-168)h | remind (0-10080)m | remind (0-604800)s | "
               + "remind TimeDurationTimeType EventName | remind TimeDuration TimeType EventName");
       case "remove", "r" -> sendDetailedCommandHelpEmbed(display, "__Help: Remove__",
           "Removes track(s) from the queue.", "remove, r",
-          "[1]QueueNumber | [1, ++]QueueNumbers", "remove 1 | remove 2 4 5");
+          "[1]QueueNumber [1, ++]QueueNumbers", "remove 1 | remove 2 4 5");
       case "return", "ret" -> sendDetailedCommandHelpEmbed(display, "__Help: Return__",
           "Returns a recently skipped track to the queue.", "return, ret",
-          "[0]RecentlySkipped | [1]SkippedStackNumber", "return | return 1");
+          "[0]RecentlySkipped [1]SkippedStackNumber", "return | return 1");
       case "roll", "rng", "dice" -> sendDetailedCommandHelpEmbed(display, "__Help: Roll__",
           "Dice roll and random integer generator. No arguments to roll once. "
               + "One argument to roll 1-10 times. Three arguments to set how many times to roll" +
               " a custom range of minimum and maximum values.",
-          "roll, rng, dice", "[0]Once | [1]NumberOfRolls | [2]Minimum | [3]Maximum",
+          "roll, rng, dice", "[0]Once [1]NumberOfRolls [2]Minimum [3]Maximum",
           "roll | roll 10 | roll 2 25 50");
       case "searchtrack", "search", "st" -> sendDetailedCommandHelpEmbed(display, "__Help: SearchTrack__",
           "Searches for a track to add to the queue.", "searchtrack, search, st",
@@ -180,7 +176,7 @@ public class Help extends Command {
           "setposition 150 | setposition 2:30");
       case "settings", "config" -> sendDetailedCommandHelpEmbed(display, "__Help: Settings__",
           "Provides information on Astarya settings.", "settings, config",
-          "[0]MainMenu | [1]Setting | [2]True/False", "settings | settings deleteinvoke | settings deleteinvoke true");
+          "[0]MainMenu [1]Setting [2]True/False", "settings | settings deleteinvoke | settings deleteinvoke true");
       case "shuffle", "mix" -> sendDetailedCommandHelpEmbed(display, "__Help: Shuffle__",
           "Shuffles the queue.", "shuffle, mix", "[0]Shuffle", "shuffle");
       case "shutdown" -> sendDetailedCommandHelpEmbed(display, "__Help: Shutdown__",
@@ -190,7 +186,7 @@ public class Help extends Command {
           "skip, s, next", "[0]Skip", "skip");
       case "swap", "switch" -> sendDetailedCommandHelpEmbed(display, "__Help: Swap__",
           "Swaps the position of a track in queue with another.", "swap, switch",
-          "[1]QueueNumber | [2]QueueNumber", "swap 2 4");
+          "[1]QueueNumber [2]QueueNumber", "swap 2 4");
       default -> {
         display.setTitle("__Help: Command Not Found__");
         display.setDescription("Type `" + Settings.getPrefix() + "commands` to get a list of commands available. " +

@@ -22,7 +22,7 @@ public class Swap extends Command {
   public Swap() {
     this.name = "switch";
     this.aliases = new String[]{"swap", "switch", "sw"};
-    this.arguments = "[1]QueueNumber [2] QueueNumber";
+    this.arguments = "[1]QueueNumber [2]QueueNumber";
     this.help = "Swaps the position of a track in queue with another.";
   }
 

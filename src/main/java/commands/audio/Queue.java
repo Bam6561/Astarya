@@ -27,7 +27,7 @@ public class Queue extends Command {
   public Queue() {
     this.name = "queue";
     this.aliases = new String[]{"queue", "q"};
-    this.arguments = "[0]Queue, [1]PageNumber";
+    this.arguments = "[0]Queue [1]PageNumber";
     this.help = "Provides a list of tracks queued.";
   }
 

@@ -22,6 +22,8 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 /**
  * Astarya represents the Discord bot application as an object. Through
@@ -30,7 +32,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
  * given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.3
  * @since 1.0
  */
 public class Astarya {
@@ -47,9 +49,10 @@ public class Astarya {
     // Login
     Dotenv dotenv = Dotenv.load();
     try {
-      api = JDABuilder.createDefault(dotenv.get("BOT_TOKEN")).enableIntents(GatewayIntent.MESSAGE_CONTENT,
-          GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.GUILD_VOICE_STATES,
-          GatewayIntent.SCHEDULED_EVENTS).build().awaitReady();
+      api = JDABuilder.createDefault(dotenv.get("BOT_TOKEN")).setMemberCachePolicy(MemberCachePolicy.ALL).
+          enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
+              GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_VOICE_STATES,
+              GatewayIntent.SCHEDULED_EVENTS).enableCache(CacheFlag.ACTIVITY, CacheFlag.ONLINE_STATUS).build().awaitReady();
       System.out.println("[" + api.getSelfUser().getName() + "#" +
           api.getSelfUser().getDiscriminator() + "] is online.");
     } catch (Exception e) {
@@ -73,15 +76,15 @@ public class Astarya {
     commands.setHelpWord("commands");
     commands.setPrefix(prefix);
     commands.setAlternativePrefix(alternativePrefix);
-    commands.addCommands(new Avatar(), new Emote(), new Poll(waiter), new Remind(),
-        new Server(), new Profile(), new Delete(), new Settings(prefix, alternativePrefix),
+    commands.addCommands(new Emote(), new Poll(waiter), new Profile(), new Remind(),
+        new Server(), new Delete(), new Settings(prefix, alternativePrefix),
         new Shutdown(), new Ping(), new Choose(), new CoinFlip(), new HighOrLow(waiter), new Roll(),
         new ClearQueue(), new Join(), new Leave(), new Loop(), new NowPlaying(), new Pause(),
         new Play(), new PlayNext(), new Queue(), new Remove(), new Return(), new SearchTrack(waiter),
         new SetPosition(), new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
     CommandClient commandClient = commands.build();
 
-    // Initialize AstaryaBot
+    // Initialize Astarya
     api.addEventListener(commandClient, waiter, new MessageLog());
   }
 

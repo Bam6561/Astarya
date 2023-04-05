@@ -22,7 +22,7 @@ public class Remove extends Command {
   public Remove() {
     this.name = "remove";
     this.aliases = new String[]{"remove", "rm", "r"};
-    this.arguments = "[1]QueueNumber, [1, ++]QueueNumbers";
+    this.arguments = "[1]QueueNumber [1, ++]QueueNumbers";
     this.help = "Removes track(s) from the queue.";
   }
 

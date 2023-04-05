@@ -6,7 +6,7 @@
 
     <groupId>ndanny09</groupId>
     <artifactId>LucyferBot</artifactId>
-    <version>1.6.1</version>
+    <version>1.6.3</version>
 
     <build>
         <plugins>

@@ -23,7 +23,7 @@ public class Return extends Command {
   public Return() {
     this.name = "return";
     this.aliases = new String[]{"return", "ret"};
-    this.arguments = "[0]RecentlySkipped, [1]SkippedStackNumber";
+    this.arguments = "[0]RecentlySkipped [1]SkippedStackNumber";
     this.help = "Returns a recently skipped track to the queue.";
   }
 

@@ -5,10 +5,10 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
 
 /**
- * CommandTemplate is a command invocation that does something. We just don't know what yet.
+ * CommandTemplate does something. We just don't know what yet.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.3
  * @since 1.0
  */
 public class CommandTemplate extends Command {
@@ -23,14 +23,10 @@ public class CommandTemplate extends Command {
   /**
    * This method also does something. Mysterious.
    *
-   * @param ce object containing information about the command event
+   * @param ce the command event
    */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-
-    // Parse raw message for arguments (if necessary)
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length;
   }
 }

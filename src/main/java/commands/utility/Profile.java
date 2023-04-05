@@ -5,190 +5,192 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Mentions;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Profile is a command invocation that provides information on the user.
+ * Profile sends an embed containing information about a user
+ * and adds additional details if they're a mutual guild member.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.3
  * @since 1.0
  */
 public class Profile extends Command {
   public Profile() {
-    this.name = "whois";
+    this.name = "profile";
     this.aliases = new String[]{"profile", "whois", "user"};
-    this.arguments = "[0]Self [1]Mention/UserID";
-    this.help = "Provides information on the user.";
+    this.arguments = "[0]Self [1]Mention/UserId [1+]Name/Nickname";
+    this.help = "Provides information about a user.";
   }
 
   /**
-   * Processes user provided arguments to determine what type of profile command interaction is being
-   * requested. Available options are to look up the self-user, mentioned user, or a user via their ID.
+   * Sets the target for the Profile command.
+   * <p>
+   * No parameters set the command invoker as the target.
+   * Parameters can target a user by: mention, user id, name, or nickname.
+   * </p>
    *
-   * @param ce object containing information about the command event
+   * @param ce the command event
    */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
-
-    EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__Profile__");
-
-    switch (numberOfArguments) {
-      case 0 -> setEmbedToDisplaySelf(ce, display, ce.getMember().getUser());
-      case 1 -> setEmbedToDisplayMentionedUserOrProcessUserID(ce, display, arguments);
-      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
-    }
-  }
-
-  /**
-   * Sends an embed containing information about the self-user who invoked the command.
-   *
-   * @param ce       object containing information about the command event
-   * @param display  object representing the embed
-   * @param selfUser user object representing the user who invoked the command
-   */
-  private void setEmbedToDisplaySelf(CommandEvent ce, EmbedBuilder display, User selfUser) {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
-    display.setThumbnail(selfUser.getAvatarUrl());
-    display.setDescription("**Tag:** " + selfUser.getAsMention() + "\n**Discord:** `" + selfUser.getAsTag()
-        + "`\n**User ID:** `" + selfUser.getId() + "`\n**Created:** `" + selfUser.getTimeCreated().format(dtf)
-        + " GMT`\n**Joined:** `" + ce.getMember().getTimeJoined().format(dtf) + " GMT`");
-    display.addField("**Roles:**", returnUserRolesAsMentionable(ce.getMember()), false);
-    Settings.sendEmbed(ce, display);
-  }
-
-  /**
-   * Determines from user provided arguments whether the user intends
-   * to look up a mentioned user or a user through their user ID.
-   *
-   * @param ce        object containing information about the command event
-   * @param display   object representing the embed
-   * @param arguments user provided arguments
-   * @throws Exception unknown error
-   */
-  private void setEmbedToDisplayMentionedUserOrProcessUserID(CommandEvent ce, EmbedBuilder display, String[] arguments) {
-    boolean mentionedAnyUsers = !ce.getMessage().getMentions().getUsers().isEmpty();
-    if (mentionedAnyUsers) { // Mention
-      setEmbedToDisplayMentionedUser(ce, display, ce.getMessage().getMentions().getUsers().get(0));
-    } else { // UserID
-      try {
-        processUserIDBeforeSettingEmbed(ce, display, arguments);
-      } catch (Exception e) {
-        ce.getChannel().sendMessage("User ID not recognized.").queue();
+    if (ce.getArgs().isBlank()) { // Target: Self
+      sendProfileEmbed(ce, ce.getMember(), ce.getMember().getUser());
+    } else {
+      Mentions mentions = ce.getMessage().getMentions();
+      if (!mentions.getMembers().isEmpty()) { // Target: Mention
+        Member member = mentions.getMembers().get(0);
+        sendProfileEmbed(ce, mentions.getMembers().get(0), member.getUser());
+      } else { // Target: User Id | Nickname | Name
+        useUserIdOrNameAsTarget(ce);
       }
     }
   }
 
   /**
-   * Sends an embed containing information about the mentioned user.
+   * Sets the target for the Profile command by either a user id, nickname, or name.
    *
-   * @param ce            object containing information about the command event
-   * @param display       object representing the embed
-   * @param mentionedUser user object representing the mentioned user
+   * @param ce the command event
+   * @throws NumberFormatException  parameter not user id
+   * @throws ErrorResponseException invalid user id
    */
-  private void setEmbedToDisplayMentionedUser(CommandEvent ce, EmbedBuilder display, User mentionedUser) {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
-    display.setThumbnail(mentionedUser.getAvatarUrl());
-    display.setDescription("**Tag:** " + mentionedUser.getAsMention()
-        + "\n**Discord:** `" + mentionedUser.getAsTag()
-        + "`\n**User ID:** `" + mentionedUser.getId()
-        + "`\n**Created:** `" + mentionedUser.getTimeCreated().format(dtf) + " GMT`"
-        + "\n**Joined:** `" + retrieveServerMemberInServer(ce, mentionedUser.getId()).getTimeJoined().format(dtf) + " GMT`");
-    display.addField("**Roles:**", returnUserRolesAsMentionable(ce.getMessage().getMentions().getMembers().get(0)), false);
-    Settings.sendEmbed(ce, display);
+  private void useUserIdOrNameAsTarget(CommandEvent ce) {
+    String parameters = ce.getArgs();
+    try { // Target: User Id
+      User user = ce.getJDA().retrieveUserById(parameters).complete();
+      Member member = ce.getGuild().getMemberById(user.getId());
+      sendProfileEmbed(ce, member, user);
+    } catch (NumberFormatException | ErrorResponseException invalidUserId) {
+      // Attempt to match a member by nickname or name
+      List<Member> members;
+      members = ce.getGuild().getMembersByNickname(parameters, true);
+      if (members.isEmpty()) {
+        members = ce.getGuild().getMembersByName(parameters, true);
+      }
+      if (!members.isEmpty()) { // Target: Nickname or Name
+        sendProfileEmbed(ce, members.get(0), members.get(0).getUser());
+      } else {
+        try { // Target: <@UserId>
+          User user = ce.getJDA().retrieveUserById(parameters.substring(2, parameters.length() - 1)).complete();
+          sendProfileEmbed(ce, null, user);
+        } catch (NumberFormatException | ErrorResponseException invalidUserId2) {
+          ce.getTextChannel().sendMessage("User not found.").queue();
+        }
+      }
+    }
   }
 
   /**
-   * Processes the user ID provided to a uniform format for look up.
+   * Sends an embed containing information about a user and
+   * adds additional details if they're a mutual guild member.
    * <p>
-   * Method is divided into two categories as users can provide the user ID by
-   * itself or make it mentionable by formatting it as <@UserID>. Some user IDs are
-   * 19 characters long instead of 18, requiring the need for multiple similar switch cases.
+   * If the user is a mutual guild member, the following details are added:
+   * Online Status, Activity, Mention, Joined, Boosted, Timed Out, Avatar: Server, & Roles.
    * </p>
    *
-   * @param ce        object containing information about the command event
-   * @param display   object representing the embed
-   * @param arguments user provided arguments
+   * @param ce     the command event
+   * @param member the guild member
+   * @param user   the Discord user
    */
-  private void processUserIDBeforeSettingEmbed(CommandEvent ce, EmbedBuilder display, String[] arguments) {
-    switch (arguments[1].length()) {
-      case 18, 19 -> // User ID
-          setEmbedToDisplayUserID(ce, display, arguments[1]);
-      case 21 -> // <@UserID> (18 characters)
-          setEmbedToDisplayUserID(ce, display, arguments[1].substring(2, 20));
-      case 22 -> // <@UserID> (19 characters)
-          setEmbedToDisplayUserID(ce, display, arguments[1].substring(2, 21));
-      default -> ce.getChannel().sendMessage("Invalid User ID input.").queue();
+  private void sendProfileEmbed(CommandEvent ce, Member member, User user) {
+    EmbedBuilder embed = new EmbedBuilder();
+    boolean isGuildMember = member != null;
+
+    // Embed Header
+    embed.setAuthor("Profile");
+    embed.setTitle(user.getAsTag());
+    embed.setThumbnail(isGuildMember ?
+        member.getEffectiveAvatarUrl() + "?size=1024" : user.getEffectiveAvatarUrl() + "?size=1024");
+
+    // Online Status, Activity, Mention
+    if (isGuildMember) {
+      embed.appendDescription(getOnlineStatusAsEmoji(member) + "\n");
+      if (!member.getActivities().isEmpty()) {
+        embed.appendDescription(member.getActivities().get(0).getName() + "\n");
+      }
+      embed.appendDescription("**Mention:** " + member.getAsMention() + "\n");
+    }
+
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/d/yy hh:mm");
+    DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("M/d hh:mm");
+
+    // Id, Created
+    embed.appendDescription("**Id:** `" + user.getId() + "`\n");
+    embed.appendDescription("**Created:** `" + user.getTimeCreated().format(dtf) + "`\n");
+
+    // Joined, Boosted, Timed Out
+    if (isGuildMember) {
+      embed.appendDescription("**Joined:** `" + member.getTimeJoined().format(dtf) + "`\n");
+      if (member.isBoosting()) {
+        embed.appendDescription("**Boosted:** `" + member.getTimeBoosted().format(dtf) + "`\n");
+      }
+      if (member.isTimedOut()) {
+        embed.appendDescription("**Timed Out:** `" + member.getTimeOutEnd().format(dtf2) + "`\n");
+      }
+    }
+
+    // Avatar: Global | Server
+    embed.addField("Avatar", "[Global](" + user.getEffectiveAvatarUrl() + "?size=1024) " +
+        (isGuildMember ? "| [Server](" + member.getEffectiveAvatarUrl() + "?size=1024)" : ""), false);
+
+    // Banner: Global
+    String userBannerURL = user.retrieveProfile().complete().getBannerUrl();
+    if (userBannerURL != null) {
+      embed.addField("Banner", "[Global](" + userBannerURL + "?size=2048)", false);
+    }
+
+    // Roles
+    if ((isGuildMember) && (!member.getRoles().isEmpty()))
+      embed.addField("Roles", getRolesAsMentions(member), false);
+
+    Settings.sendEmbed(ce, embed);
+  }
+
+  /**
+   * @param member the guild member
+   * @return String containing an online status's associated emoji and name
+   */
+  private String getOnlineStatusAsEmoji(Member member) {
+    switch (member.getOnlineStatus().toString()) {
+      case "ONLINE" -> {
+        return Emoji.fromUnicode("U+1F7E2").getFormatted() + " Online";
+      }
+      case "IDLE" -> {
+        return Emoji.fromUnicode("U+1F7E0").getFormatted() + " Idle";
+      }
+      case "DO_NOT_DISTURB" -> {
+        return Emoji.fromUnicode("U+1F534").getFormatted() + " Do Not Disturb";
+      }
+      case "OFFLINE" -> {
+        return Emoji.fromUnicode("U+25CF").getFormatted() + " Offline";
+      }
+      default -> {
+        return Emoji.fromUnicode("U+2753").getFormatted() + " Unknown";
+      }
     }
   }
 
   /**
-   * Sends an embed containing information about the user mentioned by user ID.
-   *
-   * @param ce      object containing information about the command event
-   * @param display object representing the embed
-   * @param userID  user ID to lookup
-   * @throws ErrorResponseException not a member of the Discord server
+   * @param member the guild member
+   * @return String containing the member's roles as mentions
    */
-  private void setEmbedToDisplayUserID(CommandEvent ce, EmbedBuilder display, String userID) {
-    Member serverMember = null;
-    boolean isServerMember = false;
-
-    try { // Add user's roles to embed only if they are a server member
-      serverMember = retrieveServerMemberInServer(ce, userID);
-      isServerMember = true;
-      display.addField("**Roles:**", returnUserRolesAsMentionable(serverMember), false);
-    } catch (ErrorResponseException e) {
-    }
-
-    User user = ce.getJDA().retrieveUserById(userID).complete();
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
-
-    display.setThumbnail(user.getAvatarUrl());
-    display.setDescription("**Tag:** " + user.getAsMention() + "\n**Discord:** `" + user.getAsTag()
-        + "`\n**User ID:** `" + user.getId() + "`\n**Created:** `" + user.getTimeCreated().format(dtf) + " GMT`"
-        + (isServerMember ? "\n**Joined:** `" + serverMember.getTimeJoined().format(dtf) + " GMT`" : ""));
-    Settings.sendEmbed(ce, display);
-  }
-
-  /**
-   * Determines whether the user is a member of the server as the command invoked.
-   *
-   * @param ce     object containing information about the command event
-   * @param userID user ID to lookup
-   * @return whether the user is a member of the Discord server
-   */
-  private Member retrieveServerMemberInServer(CommandEvent ce, String userID) {
-    return ce.getGuild().retrieveMemberById(userID).complete();
-  }
-
-  /**
-   * Retrieves roles from user, then combines all the role names into a String.
-   *
-   * @param member object representing member of the Discord server
-   * @return list of role names belonging to the member
-   */
-  private String returnUserRolesAsMentionable(Member member) {
-    ArrayList<Role> roleList = new ArrayList<>();
-    roleList.addAll(member.getRoles());
-    StringBuilder roleNames = new StringBuilder();
+  private String getRolesAsMentions(Member member) {
+    List<Role> roles = member.getRoles();
+    StringBuilder rolesAsMentions = new StringBuilder();
     int i = 0;
-    while (i != roleList.size()-1){
-      roleNames.append(roleList.get(i).getName()).append(", ");
+    while (i != roles.size()) {
+      rolesAsMentions.append(roles.get(i).getAsMention()).append(" ");
       i++;
     }
-    roleNames.append(roleList.get(roleList.size()-1).getName());
-    return roleNames.toString();
+    return rolesAsMentions.toString().trim();
   }
 }
