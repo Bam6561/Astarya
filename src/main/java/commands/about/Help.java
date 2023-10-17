@@ -134,7 +134,7 @@ public class Help extends Command {
           "Creates a reaction vote with up to 10 options. The options are arguments separated by commas.",
           "poll, vote", "[2, ++]PollOptions", "poll hot pizza, cold pizza");
       case "profile", "whois", "user" -> sendDetailedCommandHelpEmbed(display, "__Help: Profile__",
-          "Provides information about a user.", "profile, whois, user",
+          "Returns information about a user.", "profile, whois, user",
           "[0]Self [1]Mention/UserID/<@UserId> [1+]Name/Nickname", "profile | profile @Bam | " +
               "profile 204448598539239424 | profile <@204448598539239424> | profile Bam | profile Bam's Nickname");
       case "queue", "q" -> sendDetailedCommandHelpEmbed(display, "__Help: Queue__",

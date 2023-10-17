@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.6.2
+ * @version 1.6.4
  * @since 1.0
  */
 public class Settings extends Command {
@@ -22,6 +22,7 @@ public class Settings extends Command {
   private static boolean embedDecay = false;
   private static int embedDecayTime = 30;
   private static boolean moderatePotentialPhishing = true;
+  private static boolean embedTwitterLinks = true;
 
   public Settings(String prefix, String alternativePrefix) {
     this.name = "settings";
@@ -67,7 +68,8 @@ public class Settings extends Command {
         + "\n**DeleteInvoke**: `" + deleteInvoke +
         "`" + "\n**EmbedDecay:** `" + embedDecay + "`"
         + "\n**EmbedDecayTime:** `" + embedDecayTime + "`s"
-        + "\n**ModeratePotentialPhishing:** `" + moderatePotentialPhishing + "`");
+        + "\n**ModeratePotentialPhishing:** `" + moderatePotentialPhishing + "`"
+        + "\n**EmbedTwitterLinks:** `" +embedTwitterLinks + "`");
     sendEmbed(ce, display);
   }
 
@@ -85,6 +87,7 @@ public class Settings extends Command {
       case "embeddecay" -> setEmbedDecaySetting(ce, arguments[2]);
       case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, arguments[2]);
       case "moderatepotentialphishing" -> setModeratePotentialPhishingSetting(ce, arguments[2]);
+      case "embedtwitterlinks" -> setEmbedTwitterLinksSetting(ce,arguments[2]);
       default -> ce.getChannel().sendMessage("Setting not found.").queue();
     }
   }
@@ -164,6 +167,24 @@ public class Settings extends Command {
   }
 
   /**
+   * Changes the embed Twitter links setting to true or false.
+   *
+   * @param ce            object containing information about the command event
+   * @param settingChange the boolean value to be changed to
+   */
+  private void setEmbedTwitterLinksSetting(CommandEvent ce, String settingChange) {
+    settingChange = settingChange.toLowerCase();
+    boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
+    if (settingChangeIsBoolean) {
+      setEmbedTwitterLinks(Boolean.parseBoolean(settingChange));
+      ce.getChannel().sendMessage("EmbedTwitterLinks has been set " +
+          "to `" + getEmbedTwitterLinks() + "`.").queue();
+    } else {
+      ce.getChannel().sendMessage("Specify true or false.").queue();
+    }
+  }
+
+  /**
    * Deletes users' command invocations.
    *
    * @param ce object containing information about the command event
@@ -223,6 +244,8 @@ public class Settings extends Command {
     return Settings.moderatePotentialPhishing;
   }
 
+  public static boolean getEmbedTwitterLinks() { return Settings.embedTwitterLinks; }
+
   private void setDeleteInvoke(boolean deleteInvoke) {
     this.deleteInvoke = deleteInvoke;
   }
@@ -237,5 +260,9 @@ public class Settings extends Command {
 
   private void setModeratePotentialPhishing(boolean moderatePotentialPhishing) {
     this.moderatePotentialPhishing = moderatePotentialPhishing;
+  }
+
+  private void setEmbedTwitterLinks(boolean embedTwitterLinks) {
+    this.embedTwitterLinks = embedTwitterLinks;
   }
 }

@@ -72,7 +72,7 @@ public class Astarya {
     String alternativePrefix = "A:";
 
     // Command Client settings
-    commands.setOwnerId("204448598539239424"); // Bam#3531
+    commands.setOwnerId("204448598539239424"); // Bam#6561
     commands.setHelpWord("commands");
     commands.setPrefix(prefix);
     commands.setAlternativePrefix(alternativePrefix);

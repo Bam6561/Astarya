@@ -2,6 +2,7 @@ package astarya;
 
 import commands.owner.Settings;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -17,26 +18,31 @@ import java.time.format.DateTimeFormatter;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.6.4
  * @since 1.0.0
  */
 public class MessageLog extends ListenerAdapter {
   private String messageWithLinks;
 
   /**
-   * Logs messages if they were sent by a human user and optionally flags
-   * suspicious links if the setting for moderatePotentialPhishing is true.
+   * Logs messages if they were sent by a human user, optionally flags
+   * suspicious links if the setting for moderatePotentialPhishing is true,
+   * and embeds Twitter links if the setting for embedTwitterLinks is true.
    *
    * @param messageE object containing information about the message event
    */
   public void onMessageReceived(MessageReceivedEvent messageE) {
     boolean isHuman = !messageE.getMessage().isWebhookMessage() && !messageE.getMessage().getAuthor().isBot();
     boolean moderatingPotentialPhishing = Settings.getModeratePotentialPhishing();
+    boolean embedTwitterLinks = Settings.getEmbedTwitterLinks();
 
     if (isHuman) {
       logMessage(messageE);
       if (moderatingPotentialPhishing) {
         scanLinksInMessage(messageE);
+      }
+      if (embedTwitterLinks) {
+        scanTwitterLinks(messageE);
       }
     }
   }
@@ -193,6 +199,32 @@ public class MessageLog extends ListenerAdapter {
     return domain.contains("d1sc") || domain.contains("dlsc") || domain.contains("discod") ||
         domain.contains("discorcl") || domain.contains("discond") || domain.contains("discrond") ||
         domain.contains("discrod");
+  }
+
+  /**
+   * Checks if message starts with a Twitter media link. If a link
+   * is found, replace its domain with vxtwitter to embed its content.
+   *
+   * @param messageE object containing information about the message event
+   */
+  private void scanTwitterLinks(MessageReceivedEvent messageE) {
+    String message = messageE.getMessage().getContentRaw().toLowerCase();
+
+    boolean isTwitterLink = (message.contains("https://twitter.com/") || message.contains("https://x.com/"));
+    boolean isTwitterMedia = message.contains("/status/");
+
+    // Replace domain and delete original message if permissions allow
+    if (isTwitterLink && isTwitterMedia) {
+      message = "[" +messageE.getAuthor().getAsTag() +"]\n" + message;
+      message = message.replace("/twitter.com/", "/vxtwitter.com/");
+      message = message.replace("/x.com/", "/vxtwitter.com/");
+
+      try {
+        messageE.getMessage().delete().queue();
+      } catch (ErrorResponseException e) {}
+
+      messageE.getChannel().sendMessage(message).queue();
+    }
   }
 
   private static String getTime() {

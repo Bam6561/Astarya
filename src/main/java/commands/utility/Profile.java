@@ -5,7 +5,6 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Mentions;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -15,26 +14,26 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * Profile sends an embed containing information about a user
- * and adds additional details if they're a mutual guild member.
+ * Profile returns an embed containing information about a
+ * user and adds additional details if they're in the guild.
  *
  * @author Danny Nguyen
- * @version 1.6.3
- * @since 1.0
+ * @version 1.6.4
+ * @since 1.6.3
  */
 public class Profile extends Command {
   public Profile() {
     this.name = "profile";
     this.aliases = new String[]{"profile", "whois", "user"};
-    this.arguments = "[0]Self [1]Mention/UserId [1+]Name/Nickname";
-    this.help = "Provides information about a user.";
+    this.arguments = "[0]Self [1]Mention/UserID/<@UserId> [1+]Name/Nickname";
+    this.help = "Returns information about a user.";
   }
 
   /**
-   * Sets the target for the Profile command.
+   * Sets the target for the command.
    * <p>
-   * No parameters set the command invoker as the target.
-   * Parameters can target a user by: mention, user id, name, or nickname.
+   * No parameters provided default to the user.
+   * Targets can be set by providing a mention, user id, nickname or name.
    * </p>
    *
    * @param ce the command event
@@ -42,29 +41,29 @@ public class Profile extends Command {
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
-
-    if (ce.getArgs().isBlank()) { // Target: Self
+    String parameters = ce.getArgs();
+    if (parameters.isBlank()) { // Target: Self
       sendProfileEmbed(ce, ce.getMember(), ce.getMember().getUser());
     } else {
-      Mentions mentions = ce.getMessage().getMentions();
-      if (!mentions.getMembers().isEmpty()) { // Target: Mention
-        Member member = mentions.getMembers().get(0);
-        sendProfileEmbed(ce, mentions.getMembers().get(0), member.getUser());
-      } else { // Target: User Id | Nickname | Name
-        useUserIdOrNameAsTarget(ce);
+      List<Member> mentions = ce.getMessage().getMentions().getMembers();
+      if (!mentions.isEmpty()) { // Target: Mention
+        Member member = mentions.get(0);
+        sendProfileEmbed(ce, member, member.getUser());
+      } else { // Target: User Id, Nickname, or Name
+        targetUserIdOrName(ce, parameters);
       }
     }
   }
 
   /**
-   * Sets the target for the Profile command by either a user id, nickname, or name.
+   * Sets the target for the command by either a user id, nickname, or name.
    *
-   * @param ce the command event
+   * @param ce         the command event
+   * @param parameters user provided parameters
    * @throws NumberFormatException  parameter not user id
    * @throws ErrorResponseException invalid user id
    */
-  private void useUserIdOrNameAsTarget(CommandEvent ce) {
-    String parameters = ce.getArgs();
+  private void targetUserIdOrName(CommandEvent ce, String parameters) {
     try { // Target: User Id
       User user = ce.getJDA().retrieveUserById(parameters).complete();
       Member member = ce.getGuild().getMemberById(user.getId());
@@ -90,10 +89,10 @@ public class Profile extends Command {
   }
 
   /**
-   * Sends an embed containing information about a user and
-   * adds additional details if they're a mutual guild member.
+   * Returns an embed containing information about a user
+   * and adds additional details if they're in the guild.
    * <p>
-   * If the user is a mutual guild member, the following details are added:
+   * If the user is in the guild, the following details are added:
    * Online Status, Activity, Mention, Joined, Boosted, Timed Out, Avatar: Server, & Roles.
    * </p>
    *
@@ -149,8 +148,9 @@ public class Profile extends Command {
     }
 
     // Roles
-    if ((isGuildMember) && (!member.getRoles().isEmpty()))
+    if ((isGuildMember) && (!member.getRoles().isEmpty())) {
       embed.addField("Roles", getRolesAsMentions(member), false);
+    }
 
     Settings.sendEmbed(ce, embed);
   }
@@ -186,10 +186,8 @@ public class Profile extends Command {
   private String getRolesAsMentions(Member member) {
     List<Role> roles = member.getRoles();
     StringBuilder rolesAsMentions = new StringBuilder();
-    int i = 0;
-    while (i != roles.size()) {
+    for (int i = 0; i < roles.size(); i++) {
       rolesAsMentions.append(roles.get(i).getAsMention()).append(" ");
-      i++;
     }
     return rolesAsMentions.toString().trim();
   }
