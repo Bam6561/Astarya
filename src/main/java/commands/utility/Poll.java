@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Poll is a command invocation that creates a reaction vote with up to 10 options.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.5
  * @since 1.0
  */
 public class Poll extends Command {
@@ -109,7 +109,7 @@ public class Poll extends Command {
    */
   private void createPoll(CommandEvent ce, String[] options) {
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__Poll__");
+    display.setAuthor("Poll");
 
     StringBuilder displayOptions = new StringBuilder();
     displayOptions.append("It's time to vote!\n");
@@ -131,7 +131,7 @@ public class Poll extends Command {
 
     waiter.waitForEvent(MessageReceivedEvent.class,
         w -> !w.getMessage().getEmbeds().isEmpty()
-            && (w.getMessage().getEmbeds().get(0).getTitle().equals("__Poll__")),
+            && (w.getMessage().getEmbeds().get(0).getDescription().contains("It's time to vote!")),
         w -> {
           w.getMessage().addReaction(Emoji.fromFormatted("1️⃣")).queue();
           if (numberOfOptions >= 2) w.getMessage().addReaction(Emoji.fromFormatted("2️⃣")).queue();

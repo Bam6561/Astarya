@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.6.4
+ * @version 1.6.5
  * @since 1.0
  */
 public class Settings extends Command {
@@ -62,7 +62,7 @@ public class Settings extends Command {
    */
   private void sendSettingsMenu(CommandEvent ce) {
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__Settings__");
+    display.setAuthor("Settings");
     display.setDescription("**Prefix:** `" + prefix +
         "` \n**AlternatePrefix:** `" + alternativePrefix + "`"
         + "\n**DeleteInvoke**: `" + deleteInvoke +

@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
  * Server is a command invocation that provides information on the Discord server.
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.6.5
  * @since 1.0
  */
 public class Server extends Command {
@@ -37,7 +37,8 @@ public class Server extends Command {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
 
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__" + server.getName() + "__");
+    display.setAuthor("Server");
+    display.setTitle(server.getName());
     display.setDescription("**Owner:** " + server.getOwner().getAsMention()
         + "\n**Server ID:** `" + server.getId()
         + "`\n**Time Created:** `" + server.getTimeCreated().format(dtf) + " GMT`"

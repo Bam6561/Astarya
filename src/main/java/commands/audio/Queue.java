@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * of tracks queued and what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.5
  * @since 1.2.0
  */
 public class Queue extends Command {
@@ -109,7 +109,7 @@ public class Queue extends Command {
 
       // Display queue page
       EmbedBuilder display = new EmbedBuilder();
-      display.setTitle("__**Queue**__");
+      display.setAuthor("Queue");
       display.setDescription(queuePageEmbedNowPlaying);
       display.addField("**Tracks:**", String.valueOf(queuePage), false);
       Settings.sendEmbed(ce, display);

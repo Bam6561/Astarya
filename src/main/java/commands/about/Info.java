@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  * Info is a command invocation that details information about the bot and its developer.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.5
  * @since 1.0
  */
 public class Info extends Command {
@@ -36,12 +36,12 @@ public class Info extends Command {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
 
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__Info__");
+    display.setAuthor("Info");
     display.setDescription("**Developer:** Bam#3531 \n" +
         "**Developer ID:** 204448598539239424 \n" +
         "**Bot:** " + jda.getSelfUser().getAsMention() + "\n" +
         "**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` \n" +
-        "**Version:** `1.6.4` \n" +
+        "**Version:** `1.6.5` \n" +
         "**Language:** `Java` \n" +
         "**Source Code:** [GitHub](https://github.com/Bam6561/Astarya) \n" +
         "**Uptime:** " + getUptime());

@@ -11,7 +11,7 @@ import java.util.Random;
  * CoinFlip is a command invocation that simulates coin flips.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.5
  * @since 1.0
  */
 public class CoinFlip extends Command {
@@ -58,7 +58,7 @@ public class CoinFlip extends Command {
     }
 
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__Coin Flip__");
+    display.setAuthor("Coin Flip");
     display.setDescription(flipResult);
     Settings.sendEmbed(ce, display);
   }
@@ -104,7 +104,7 @@ public class CoinFlip extends Command {
     }
 
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__Coin Flips__");
+    display.setAuthor("Coin Flips");
     display.setDescription(flipResults.toString());
     Settings.sendEmbed(ce, display);
   }

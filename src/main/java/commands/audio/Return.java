@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * and provides an option to return a recently skipped track to the queue.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.5
  * @since 1.5.2
  */
 public class Return extends Command {
@@ -102,7 +102,7 @@ public class Return extends Command {
       }
 
       EmbedBuilder display = new EmbedBuilder();
-      display.setTitle("__**Recently Skipped**__");
+      display.setAuthor("Recently Skipped");
       display.addField("**Tracks:**", String.valueOf(skippedStackPage), false);
       Settings.sendEmbed(ce, display);
     } else {

@@ -11,7 +11,7 @@ import java.util.Random;
  * Choose is a command invocation that chooses randomly between any number of options.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.5
  * @since 1.0
  */
 public class Choose extends Command {
@@ -62,7 +62,7 @@ public class Choose extends Command {
       int randomOption = random.nextInt(options.length);
 
       EmbedBuilder display = new EmbedBuilder();
-      display.setTitle("__Choice__");
+      display.setAuthor("Choice");
       display.setDescription("Based on the options you provided... \n\n" + getOptionsString()
           + "\n\n**I have chosen:** \n||" + options[randomOption] + "||");
       Settings.sendEmbed(ce, display);

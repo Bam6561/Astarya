@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Shutdown is a command invocation that shuts the bot down.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.5
  * @since 1.0
  */
 public class Shutdown extends Command {
@@ -29,7 +29,7 @@ public class Shutdown extends Command {
     Settings.deleteInvoke(ce);
 
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__Shutdown__");
+    display.setAuthor("Shutdown");
     display.setDescription("Well, it was fun while it lasted. Change the world... " +
         "my final message. Goodbye. **Astarya is shutting down.**");
     Settings.sendEmbed(ce, display);

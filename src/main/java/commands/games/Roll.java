@@ -12,7 +12,7 @@ import java.util.Random;
  * randomly generates integers based on a user provided range.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.5
  * @since 1.0
  */
 public class Roll extends Command {
@@ -57,7 +57,7 @@ public class Roll extends Command {
   private void dieRoll(CommandEvent ce) {
     Random rand = new Random();
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__Roll__");
+    display.setAuthor("Roll");
     display.setDescription("You rolled a **(" + (rand.nextInt(6) + 1) + ")**.");
     Settings.sendEmbed(ce, display);
   }
@@ -99,7 +99,7 @@ public class Roll extends Command {
     }
 
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__Rolls__");
+    display.setAuthor("Rolls");
     display.setDescription(rollResults.toString());
     Settings.sendEmbed(ce, display);
   }
@@ -156,7 +156,7 @@ public class Roll extends Command {
     }
 
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__RNG__");
+    display.setAuthor("RNG");
     display.setDescription(rollResults.toString());
     Settings.sendEmbed(ce, display);
   }

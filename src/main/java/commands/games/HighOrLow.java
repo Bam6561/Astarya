@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * to guess whether the next number will be higher or lower.
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.6.5
  * @since 1.0
  */
 public class HighOrLow extends Command {
@@ -94,7 +94,7 @@ public class HighOrLow extends Command {
    */
   private void displayGameScreen(CommandEvent ce) {
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__HighOrLow__");
+    display.setAuthor("High or Low");
     display.setDescription("My number is (" + getFirstNumber() + ") from a range of numbers from 1 - 100. "
         + "\nWill the next number I think of be higher or lower?");
     Settings.sendEmbed(ce, display);
@@ -109,7 +109,7 @@ public class HighOrLow extends Command {
     // Add reactions
     waiter.waitForEvent(MessageReceivedEvent.class,
         w -> !w.getMessage().getEmbeds().isEmpty()
-            && (w.getMessage().getEmbeds().get(0).getTitle().equals("__HighOrLow__")),
+            && (w.getMessage().getEmbeds().get(0).getDescription().contains("Will the next number I think of be higher or lower?")),
         w -> {
           w.getMessage().addReaction(Emoji.fromFormatted("🔼")).queue();
           w.getMessage().addReaction(Emoji.fromFormatted("🔽")).queue();
@@ -137,7 +137,7 @@ public class HighOrLow extends Command {
         if (ongoingGame()) {
           setOngoingGame(false);
           EmbedBuilder display = new EmbedBuilder();
-          display.setTitle("__HighOrLow__");
+          display.setAuthor("High or Low");
           display
               .setDescription(ce.getMember().getAsMention() + " took too long to choose, and the game has expired!");
           Settings.sendEmbed(ce, display);
@@ -158,10 +158,10 @@ public class HighOrLow extends Command {
 
     EmbedBuilder display = new EmbedBuilder();
     if (getFirstNumber() > getSecondNumber()) {
-      display.setTitle("__HighOrLow__");
+      display.setAuthor("High or Low");
       display.setDescription("||I thought of (" + getSecondNumber() + "). The number was lower!||");
     } else {
-      display.setTitle("__HighOrLow__");
+      display.setAuthor("High or Low");
       display.setDescription("||I thought of (" + getSecondNumber() + "). The number was higher!||");
     }
     Settings.sendEmbed(ce, display);

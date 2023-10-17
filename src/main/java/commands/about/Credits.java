@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Credits is a command invocation that shows a list of credits for the bot.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.5
  * @since 1.0
  */
 public class Credits extends Command {
@@ -29,7 +29,7 @@ public class Credits extends Command {
     Settings.deleteInvoke(ce);
 
     EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("__Credits__");
+    display.setAuthor("Credits");
     display.setThumbnail(ce.getSelfUser().getAvatarUrl());
     display.setDescription("Thank you to the following resources used in " +
         "Astarya's development, as well as all my friends who use the bot " +

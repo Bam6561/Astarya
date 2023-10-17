@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Help is a command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.6.3
+ * @version 1.6.5
  * @since 1.0
  */
 public class Help extends Command {
@@ -52,7 +52,7 @@ public class Help extends Command {
    * @param display object representing the embed
    */
   private void sendHelpMainMenu(EmbedBuilder display) {
-    display.setTitle("__Help__");
+    display.setAuthor("Help");
     display.setDescription("Type `" + Settings.getPrefix() + "help <CommandName>` " +
         "for more details on each command. Alternatively, see " +
         "[Astarya's Wiki](https://github.com/Bam6561/Astarya/wiki).");
@@ -188,7 +188,7 @@ public class Help extends Command {
           "Swaps the position of a track in queue with another.", "swap, switch",
           "[1]QueueNumber [2]QueueNumber", "swap 2 4");
       default -> {
-        display.setTitle("__Help: Command Not Found__");
+        display.setAuthor("Help: Command Not Found");
         display.setDescription("Type `" + Settings.getPrefix() + "commands` to get a list of commands available. " +
             "You can also refer to [Astarya's Wiki](https://github.com/Bam6561/Astarya/wiki).");
       }
@@ -207,7 +207,7 @@ public class Help extends Command {
    */
   private void sendDetailedCommandHelpEmbed(EmbedBuilder display, String title,
                                             String description, String aliases, String arguments, String examples) {
-    display.setTitle(title);
+    display.setAuthor(title);
     display.setDescription(description);
     display.addField("Aliases", aliases, false);
     display.addField("Arguments", arguments, false);
