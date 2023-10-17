@@ -12,7 +12,7 @@ import java.util.Random;
  * randomly generates integers based on a user provided range.
  *
  * @author Danny Nguyen
- * @version 1.6.5
+ * @version 1.6.6
  * @since 1.0
  */
 public class Roll extends Command {
@@ -37,15 +37,15 @@ public class Roll extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    switch (numberOfArguments) {
+    switch (numberOfParameters) {
       case 0 -> dieRoll(ce);
-      case 1 -> multipleDieRolls(ce, arguments);
-      case 3 -> customRangeRolls(ce, arguments);
-      default -> ce.getChannel().sendMessage("Invalid argument format.").queue();
+      case 1 -> multipleDieRolls(ce, parameters);
+      case 3 -> customRangeRolls(ce, parameters);
+      default -> ce.getChannel().sendMessage("Invalid parameter format.").queue();
     }
   }
 
@@ -66,12 +66,12 @@ public class Roll extends Command {
    * Checks whether the user requested number of rolls is an integer and within a valid range of 1-10.
    *
    * @param ce        object containing information about the command event
-   * @param arguments user provided arguments
+   * @param parameters user provided parameters
    * @throws NumberFormatException user provided non-integer value
    */
-  private void multipleDieRolls(CommandEvent ce, String[] arguments) {
+  private void multipleDieRolls(CommandEvent ce, String[] parameters) {
     try {
-      int numberOfRolls = Integer.parseInt(arguments[1]);
+      int numberOfRolls = Integer.parseInt(parameters[1]);
       boolean validNumberOfRolls = (numberOfRolls >= 1) && (numberOfRolls <= 10);
       if (validNumberOfRolls) {
         multipleDieRollsResults(ce, numberOfRolls);
@@ -110,14 +110,14 @@ public class Roll extends Command {
    * equal to each other, and the minimum is not larger than the maximum value.
    *
    * @param ce        object containing information about the command event
-   * @param arguments user provided arguments
+   * @param parameters user provided parameters
    * @throws NumberFormatException user provided non-integer value
    */
-  private void customRangeRolls(CommandEvent ce, String[] arguments) {
+  private void customRangeRolls(CommandEvent ce, String[] parameters) {
     try {
-      int numberOfRolls = Integer.parseInt(arguments[1]);
-      int min = Integer.parseInt(arguments[2]);
-      int max = Integer.parseInt(arguments[3]);
+      int numberOfRolls = Integer.parseInt(parameters[1]);
+      int min = Integer.parseInt(parameters[2]);
+      int max = Integer.parseInt(parameters[3]);
 
       boolean validNumberOfRolls = (numberOfRolls >= 1) && (numberOfRolls <= 10);
       boolean minAndMaxAreZeroOrPositive = (min >= 0) && (max >= 0);
@@ -190,7 +190,7 @@ public class Roll extends Command {
   }
 
   /**
-   * Sends error messages for invalid arguments provided by the user.
+   * Sends error messages for invalid parameters provided by the user.
    *
    * @param ce                         object containing information about the command event
    * @param validNumberOfRolls         number of rolls is between 1-10

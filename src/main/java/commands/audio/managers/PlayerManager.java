@@ -22,7 +22,7 @@ import java.util.Map;
  * search queries into playable tracks for the AudioScheduler.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.6
  * @since 1.1.0
  */
 public class PlayerManager {
@@ -41,7 +41,7 @@ public class PlayerManager {
   }
 
   /**
-   * Creates an AudioTrack object based on user provided arguments
+   * Creates an AudioTrack object based on user provided parameters
    * after the play command request to put in the track queue.
    * <p>
    * YouTube video links and media files are handled by the trackLoaded method.

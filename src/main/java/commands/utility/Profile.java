@@ -18,14 +18,14 @@ import java.util.List;
  * user and adds additional details if they're in the guild.
  *
  * @author Danny Nguyen
- * @version 1.6.4
+ * @version 1.6.6
  * @since 1.6.3
  */
 public class Profile extends Command {
   public Profile() {
     this.name = "profile";
     this.aliases = new String[]{"profile", "whois", "user"};
-    this.arguments = "[0]Self [1]Mention/UserID/<@UserId> [1+]Name/Nickname";
+    this.arguments = "[0]Self [1]Mention/UserId/<@UserId> [1+]Name/Nickname";
     this.help = "Returns information about a user.";
   }
 

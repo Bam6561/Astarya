@@ -11,7 +11,7 @@ import java.util.List;
  * Delete is a command invocation that clears a number of 2-100 recent messages.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.6
  * @since 1.0
  */
 public class Delete extends Command {
@@ -24,7 +24,7 @@ public class Delete extends Command {
   }
 
   /**
-   * Processes user provided arguments to determine whether delete command request was formatted correctly.
+   * Processes user provided parameters to determine whether delete command request was formatted correctly.
    *
    * @param ce object containing information about the command event
    */
@@ -32,14 +32,14 @@ public class Delete extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    if (numberOfArguments == 1) {
-      parseDeleteMessagesRequest(ce, arguments);
+    if (numberOfParameters == 1) {
+      parseDeleteMessagesRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
 
@@ -47,12 +47,12 @@ public class Delete extends Command {
    * Checks whether the number of messages to delete is an integer and within valid range.
    *
    * @param ce        object containing information about the command event
-   * @param arguments user provided arguments
+   * @param parameters user provided parameters
    * @throws NumberFormatException user provided non-integer value
    */
-  private void parseDeleteMessagesRequest(CommandEvent ce, String[] arguments) {
+  private void parseDeleteMessagesRequest(CommandEvent ce, String[] parameters) {
     try {
-      int numberOfMessagesToDelete = Integer.parseInt(arguments[1]);
+      int numberOfMessagesToDelete = Integer.parseInt(parameters[1]);
       boolean validNumberOfMessagesToDelete = (numberOfMessagesToDelete >= 2) && (numberOfMessagesToDelete <= 100);
       if (validNumberOfMessagesToDelete) {
         deleteRecentMessages(ce, numberOfMessagesToDelete);

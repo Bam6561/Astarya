@@ -11,7 +11,7 @@ import java.util.Random;
  * Choose is a command invocation that chooses randomly between any number of options.
  *
  * @author Danny Nguyen
- * @version 1.6.5
+ * @version 1.6.6
  * @since 1.0
  */
 public class Choose extends Command {
@@ -25,7 +25,7 @@ public class Choose extends Command {
   }
 
   /**
-   * Processes whether user provided any arguments outside the command invocation.
+   * Processes whether user provided any parameters outside the command invocation.
    * <p>
    * Users can provide any number of options separated by a comma.
    * </p>
@@ -36,12 +36,12 @@ public class Choose extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    if (numberOfArguments != 0) {
-      chooseOption(ce, arguments);
+    if (numberOfParameters != 0) {
+      chooseOption(ce, parameters);
     } else {
       ce.getChannel().sendMessage("Options need to be separated by a comma.").queue();
     }
@@ -51,10 +51,10 @@ public class Choose extends Command {
    * Sends an embed containing a random choice from user provided options.
    *
    * @param ce        object containing information about the command event
-   * @param arguments user provided arguments
+   * @param parameters user provided parameters
    */
-  private void chooseOption(CommandEvent ce, String[] arguments) {
-    String[] options = separateOptionsFromArguments(arguments);
+  private void chooseOption(CommandEvent ce, String[] parameters) {
+    String[] options = separateOptionsFromParameters(parameters);
     boolean noEmptyOptionProvided = !checkIfEmptyOptionProvided(options);
     if (noEmptyOptionProvided) {
       // Randomly choose an option from provided options
@@ -72,15 +72,15 @@ public class Choose extends Command {
   }
 
   /**
-   * Splits user provided arguments into an array of options with the comma character as a delimiter.
+   * Splits user provided parameters into an array of options with the comma character as a delimiter.
    *
-   * @param arguments user provided arguments
+   * @param parameters user provided parameters
    * @return array of options
    */
-  private String[] separateOptionsFromArguments(String[] arguments) {
+  private String[] separateOptionsFromParameters(String[] parameters) {
     StringBuilder optionsStringBuilder = new StringBuilder();
-    for (int i = 1; i < arguments.length; i++) {
-      optionsStringBuilder.append(arguments[i]).append(" ");
+    for (int i = 1; i < parameters.length; i++) {
+      optionsStringBuilder.append(parameters[i]).append(" ");
     }
     setOptionsString(optionsStringBuilder.toString()); // Store user input options
     return optionsString.split(","); // Split options provided

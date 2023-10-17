@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * PlayNext is a command invocation that sets the next track to be played in the queue.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.6
  * @since 1.2.13
  */
 public class PlayNext extends Command {
@@ -50,25 +50,25 @@ public class PlayNext extends Command {
   }
 
   /**
-   * Processes user provided arguments to determine whether the playNext command request was formatted correctly.
+   * Processes user provided parameters to determine whether the playNext command request was formatted correctly.
    *
    * @param ce object containing information about the command event
    * @throws NumberFormatException user provided non-integer value
    */
   private void parsePlayNextRequest(CommandEvent ce) {
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length;
 
-    boolean validNumberOfArguments = numberOfArguments == 2;
-    if (validNumberOfArguments) {
+    boolean validNumberOfParameters = numberOfParameters == 2;
+    if (validNumberOfParameters) {
       try {
-        playNext(ce, Integer.parseInt(arguments[1]));
+        playNext(ce, Integer.parseInt(parameters[1]));
       } catch (NumberFormatException error) {
         ce.getChannel().sendMessage("Specify an integer to play the next track number.").queue();
       }
     } else {
-      ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
 

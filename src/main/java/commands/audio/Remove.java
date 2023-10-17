@@ -15,7 +15,7 @@ import java.util.Collections;
  * Remove is a command invocation that removes track(s) from the queue.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.6
  * @since 1.2.2
  */
 public class Remove extends Command {
@@ -57,22 +57,22 @@ public class Remove extends Command {
    * @throws NumberFormatException user provided non-integer value
    */
   private void parseRemoveTrackRequest(CommandEvent ce) {
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    switch (numberOfArguments) {
-      case 0 -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+    switch (numberOfParameters) {
+      case 0 -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
       case 1 -> {
         try {
-          removeTrack(ce, Integer.parseInt(arguments[1]));
+          removeTrack(ce, Integer.parseInt(parameters[1]));
         } catch (NumberFormatException e) {
           ce.getChannel().sendMessage("Specify what queue number to be removed with an integer.").queue();
         }
       }
       default -> {
         try {
-          ArrayList<Integer> queueIndicesToBeRemoved = parseMultipleTrackRemoveRequest(arguments, numberOfArguments);
+          ArrayList<Integer> queueIndicesToBeRemoved = parseMultipleTrackRemoveRequest(parameters, numberOfParameters);
           removeMultipleTracks(ce, queueIndicesToBeRemoved);
         } catch (NumberFormatException e) {
           ce.getChannel().sendMessage("Specify what queue numbers to be removed with an integer " +
@@ -116,19 +116,19 @@ public class Remove extends Command {
   }
 
   /**
-   * Checks whether user provided arguments are integers and
+   * Checks whether user provided parameters are integers and
    * adds the values into an ArrayList to be mass removed.
    *
-   * @param arguments         user provided arguments
-   * @param numberOfArguments number of user provided arguments
+   * @param parameters         user provided parameters
+   * @param numberOfParameters number of user provided parameters
    * @return ArrayList of queue indices to be removed
    */
-  private ArrayList<Integer> parseMultipleTrackRemoveRequest(String[] arguments, int numberOfArguments) {
+  private ArrayList<Integer> parseMultipleTrackRemoveRequest(String[] parameters, int numberOfParameters) {
     ArrayList<Integer> queueIndicesToBeRemoved = new ArrayList<>();
     // Validate and convert values to integers
-    for (int i = 1; i < numberOfArguments + 1; i++) {
-      arguments[i] = arguments[i].replace(",", "");
-      queueIndicesToBeRemoved.add(Integer.valueOf(arguments[i]));
+    for (int i = 1; i < numberOfParameters + 1; i++) {
+      parameters[i] = parameters[i].replace(",", "");
+      queueIndicesToBeRemoved.add(Integer.valueOf(parameters[i]));
     }
     return queueIndicesToBeRemoved;
   }

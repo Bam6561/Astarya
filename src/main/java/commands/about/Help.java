@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Help is a command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.6.5
+ * @version 1.6.6
  * @since 1.0
  */
 public class Help extends Command {
@@ -22,8 +22,8 @@ public class Help extends Command {
 
   /**
    * Either sends an embed containing all bot commands available to the user or
-   * detailed documentation of a command if an additional argument is provided.
-   * Otherwise, an invalid number of arguments reference a link to the online wiki.
+   * detailed documentation of a command if an additional parameter is provided.
+   * Otherwise, an invalid number of parameters reference a link to the online wiki.
    *
    * @param ce object containing information about the command event
    */
@@ -31,14 +31,14 @@ public class Help extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
     EmbedBuilder display = new EmbedBuilder();
-    switch (numberOfArguments) {
+    switch (numberOfParameters) {
       case 0 -> sendHelpMainMenu(display);
-      case 1 -> buildDetailedCommandHelpEmbed(display, arguments[1].toLowerCase());
+      case 1 -> buildDetailedCommandHelpEmbed(display, parameters[1].toLowerCase());
       default -> display.setDescription("Type `" + Settings.getPrefix() +
           "commands` to get a list of commands available. You can also refer to " +
           "[Astarya's Wiki](https://github.com/Bam6561/Astarya/wiki).");
@@ -75,26 +75,26 @@ public class Help extends Command {
     switch (commandName) {
       case "choose", "pick" -> sendDetailedCommandHelpEmbed(display, "__Help: Choose__",
           "Chooses randomly between any number of options. " +
-              "The options are arguments separated by commas.",
+              "The options are parameters separated by commas.",
           "choose, pick", "[1, ++]Options",
           "choose Take out the trash, Do the laundry, Walk the dog");
       case "clearqueue", "clear" -> sendDetailedCommandHelpEmbed(display, "__Help: ClearQueue__",
           "Clears the track queue.", "clearqueue, clear", "[0]ClearQueue",
           "clearqueue");
       case "coinflip", "flip" -> sendDetailedCommandHelpEmbed(display, "__Help: Coin Flip__",
-          "Flips a coin any number of times. Argument dictates how many times (1-10) to flip the coin.",
+          "Flips a coin any number of times. Parameter dictates how many times (1-10) to flip the coin.",
           "coinflip, flip", "[0]Once [1]NumberOfFlips", "flip | flip 5");
       case "credits" -> sendDetailedCommandHelpEmbed(display, "__Help: Credits__",
           "Shows a list of credits for Astarya.", "credits", "[0]Credits", "credits");
       case "delete", "purge" -> sendDetailedCommandHelpEmbed(display, "__Help: Delete__",
-          "Deletes a number of recent messages. Argument provides amount to delete (2-100).",
+          "Deletes a number of recent messages. Parameter provides amount to delete (2-100).",
           "delete, purge", "[1]NumberOfMessages", "delete 15");
       case "emote", "emoji" -> sendDetailedCommandHelpEmbed(display, "__Help: Emote__",
-          "Provides the mentioned custom emote as a file. Argument is the requested emote.",
+          "Provides the mentioned custom emote as a file. Parameter is the requested emote.",
           "emote, emoji", "[1]Emote", "emote :watameSnacks:");
       case "help" -> sendDetailedCommandHelpEmbed(display, "__Help: Help__",
           "Provides documentation on Astarya's commands. " +
-              "Argument describes more detailed command usage.",
+              "Parameter describes more detailed command usage.",
           "help", "[0]MainMenu [1]CommandName", "help help");
       case "highorlow", "guess" -> sendDetailedCommandHelpEmbed(display, "__Help: HighOrLow__",
           "Guess whether the next number will be higher or lower!",
@@ -131,21 +131,21 @@ public class Help extends Command {
           "Sets the next track to be played in the queue.",
           "playnext, after", "[1]QueueNumber", "playnext 3");
       case "poll", "vote" -> sendDetailedCommandHelpEmbed(display, "__Help: Poll__",
-          "Creates a reaction vote with up to 10 options. The options are arguments separated by commas.",
+          "Creates a reaction vote with up to 10 options. The options are parameters separated by commas.",
           "poll, vote", "[2, ++]PollOptions", "poll hot pizza, cold pizza");
       case "profile", "whois", "user" -> sendDetailedCommandHelpEmbed(display, "__Help: Profile__",
           "Returns information about a user.", "profile, whois, user",
-          "[0]Self [1]Mention/UserID/<@UserId> [1+]Name/Nickname", "profile | profile @Bam | " +
+          "[0]Self [1]Mention/UserId/<@UserId> [1+]Name/Nickname", "profile | profile @Bam | " +
               "profile 204448598539239424 | profile <@204448598539239424> | profile Bam | profile Bam's Nickname");
       case "queue", "q" -> sendDetailedCommandHelpEmbed(display, "__Help: Queue__",
           "Provides a list of tracks queued.", "queue, q",
           "[0]Queue [1]PageNumber", "queue | queue 1");
       case "remind", "timer" -> sendDetailedCommandHelpEmbed(display, "__Help: Remind__",
           "Sets a timer and alerts the user when the time expires for up to " +
-              "a day's maximum length. Arguments provide the time duration, type, " +
+              "a day's maximum length. Parameters provide the time duration, type, " +
               "and event name. Astarya recognizes the following time types: \n" +
-              "> - 1 argument: (0-7)d, (0-168)h, (0-10080)m, (0-604800)s \n" +
-              "> - 2+ arguments: days, day, d, hours, hour, hrs, hr, h, " +
+              "> - 1 parameter: (0-7)d, (0-168)h, (0-10080)m, (0-604800)s \n" +
+              "> - 2+ parameters: days, day, d, hours, hour, hrs, hr, h, " +
               "minutes, minute, mins, min, m, seconds, second, secs, sec, s.",
           "remind, timer",
           "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName",
@@ -158,8 +158,8 @@ public class Help extends Command {
           "Returns a recently skipped track to the queue.", "return, ret",
           "[0]RecentlySkipped [1]SkippedStackNumber", "return | return 1");
       case "roll", "rng", "dice" -> sendDetailedCommandHelpEmbed(display, "__Help: Roll__",
-          "Dice roll and random integer generator. No arguments to roll once. "
-              + "One argument to roll 1-10 times. Three arguments to set how many times to roll" +
+          "Dice roll and random integer generator. No parameters to roll once. "
+              + "One parameter to roll 1-10 times. Three parameters to set how many times to roll" +
               " a custom range of minimum and maximum values.",
           "roll, rng, dice", "[0]Once [1]NumberOfRolls [2]Minimum [3]Maximum",
           "roll | roll 10 | roll 2 25 50");
@@ -202,15 +202,15 @@ public class Help extends Command {
    * @param title       name of the command
    * @param description description of the command
    * @param aliases     aliases of the command
-   * @param arguments   arguments the command will accept for different variations of usage
+   * @param parameters   parameters the command will accept for different variations of usage
    * @param examples    examples of how to use the command
    */
   private void sendDetailedCommandHelpEmbed(EmbedBuilder display, String title,
-                                            String description, String aliases, String arguments, String examples) {
+                                            String description, String aliases, String parameters, String examples) {
     display.setAuthor(title);
     display.setDescription(description);
     display.addField("Aliases", aliases, false);
-    display.addField("Arguments", arguments, false);
+    display.addField("Parameters", parameters, false);
     display.addField("Examples", examples, false);
   }
 }

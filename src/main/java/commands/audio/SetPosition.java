@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * SetPosition is a command invocation that sets the position of the currently playing track.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.6
  * @since 1.2.11
  */
 public class SetPosition extends Command {
@@ -48,26 +48,26 @@ public class SetPosition extends Command {
   }
 
   /**
-   * Processes user provided arguments to determine whether the setPosition command request was formatted correctly.
+   * Processes user provided parameters to determine whether the setPosition command request was formatted correctly.
    *
    * @param ce object containing information about the command event
    * @throws NumberFormatException user provided non-integer value
    */
   private void parseSetPositionRequest(CommandEvent ce) {
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    boolean validNumberOfArguments = numberOfArguments == 1;
-    if (validNumberOfArguments) {
+    boolean validNumberOfParameters = numberOfParameters == 1;
+    if (validNumberOfParameters) {
       try {
-        setTrackPosition(ce, arguments[1]);
+        setTrackPosition(ce, parameters[1]);
       } catch (NumberFormatException error) {
         ce.getChannel().sendMessage("Invalid time frame. " +
             "Specify the section to be skipped to using hh:mm:ss.").queue();
       }
     } else {
-      ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
 
@@ -127,7 +127,7 @@ public class SetPosition extends Command {
         minutes = Integer.parseInt(trackPositionTimeTypes[1]);
         seconds = Integer.parseInt(trackPositionTimeTypes[2]);
       }
-      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      default -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
 
     // Conversion to milliseconds

@@ -17,14 +17,14 @@ import java.util.concurrent.TimeUnit;
  * to guess whether the next number will be higher or lower.
  *
  * @author Danny Nguyen
- * @version 1.6.5
+ * @version 1.6.6
  * @since 1.0
  */
 public class HighOrLow extends Command {
   private EventWaiter waiter;
   private int firstNumber;
   private int secondNumber;
-  private long playerID;
+  private long playerId;
   private boolean ongoingGame;
 
   public HighOrLow(EventWaiter waiter) {
@@ -34,7 +34,7 @@ public class HighOrLow extends Command {
     this.waiter = waiter;
     this.firstNumber = 0;
     this.secondNumber = 0;
-    this.playerID = 0;
+    this.playerId = 0;
     this.ongoingGame = false;
   }
 
@@ -69,7 +69,7 @@ public class HighOrLow extends Command {
    */
   private void startGame(CommandEvent ce) {
     setOngoingGame(true);
-    setPlayerID(Long.parseLong(ce.getMember().getUser().getId()));
+    setPlayerId(Long.parseLong(ce.getMember().getUser().getId()));
     generateRandomPairOfNumbers();
   }
 
@@ -118,7 +118,7 @@ public class HighOrLow extends Command {
 
     // Wait for the original user to react to the embed
     waiter.waitForEvent(MessageReactionAddEvent.class,
-        w -> Long.parseLong(w.getMember().getUser().getId()) == (getPlayerID())
+        w -> Long.parseLong(w.getMember().getUser().getId()) == (getPlayerId())
             && (w.getReaction().getEmoji().getName().equals("🔼")
             || (w.getReaction().getEmoji().getName().equals("🔽"))),
         w -> displayGameResults(ce), 15, TimeUnit.SECONDS, () -> {
@@ -154,7 +154,7 @@ public class HighOrLow extends Command {
    */
   private void displayGameResults(CommandEvent ce) {
     setOngoingGame(false);
-    setPlayerID(0);
+    setPlayerId(0);
 
     EmbedBuilder display = new EmbedBuilder();
     if (getFirstNumber() > getSecondNumber()) {
@@ -175,8 +175,8 @@ public class HighOrLow extends Command {
     return this.secondNumber;
   }
 
-  private long getPlayerID() {
-    return this.playerID;
+  private long getPlayerId() {
+    return this.playerId;
   }
 
   private boolean ongoingGame() {
@@ -191,8 +191,8 @@ public class HighOrLow extends Command {
     this.secondNumber = secondNumber;
   }
 
-  private void setPlayerID(long playerID) {
-    this.playerID = playerID;
+  private void setPlayerId(long playerId) {
+    this.playerId = playerId;
   }
 
   private void setOngoingGame(boolean status) {

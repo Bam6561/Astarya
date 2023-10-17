@@ -34,7 +34,7 @@ import java.io.IOException;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.6
  * @since 1.1.0
  */
 public class Play extends Command {
@@ -96,19 +96,19 @@ public class Play extends Command {
 
   /**
    * Either adds Spotify tracks and Discord media files or a YouTube video
-   * using user provided arguments for the search query to the track queue.
+   * using user provided parameters for the search query to the track queue.
    *
    * @param ce object containing information about the command event
    */
   private void parsePlayRequest(CommandEvent ce) {
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    switch (numberOfArguments) {
-      case 0 -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
-      case 1 -> handleSpotifyAndMediaLinks(ce, arguments);
-      default -> handleYouTubeSearchQuery(ce, arguments, numberOfArguments);
+    switch (numberOfParameters) {
+      case 0 -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      case 1 -> handleSpotifyAndMediaLinks(ce, parameters);
+      default -> handleYouTubeSearchQuery(ce, parameters, numberOfParameters);
     }
   }
 
@@ -120,28 +120,28 @@ public class Play extends Command {
    * </p>
    *
    * @param ce        object containing information about the command event
-   * @param arguments user provided arguments
+   * @param parameters user provided parameters
    */
-  private void handleSpotifyAndMediaLinks(CommandEvent ce, String[] arguments) {
+  private void handleSpotifyAndMediaLinks(CommandEvent ce, String[] parameters) {
     Dotenv dotenv = Dotenv.load();
-    String spotifyClientID = dotenv.get("SPOTIFY_CLIENT_ID");
+    String spotifyClientId = dotenv.get("SPOTIFY_CLIENT_ID");
     String spotifyClientSecret = dotenv.get("SPOTIFY_CLIENT_SECRET");
 
-    boolean missingSpotifyAPIKey = spotifyClientID == null || spotifyClientSecret == null;
-    boolean isSpotifyLink = arguments[1].contains("https://open.spotify.com/");
+    boolean missingSpotifyAPIKey = spotifyClientId == null || spotifyClientSecret == null;
+    boolean isSpotifyLink = parameters[1].contains("https://open.spotify.com/");
 
     if (isSpotifyLink) {
       if (!missingSpotifyAPIKey) {
-        boolean isSpotifyTrack = arguments[1].contains("https://open.spotify.com/track/");
-        boolean isSpotifyPlayList = arguments[1].contains("https://open.spotify.com/playlist/");
-        boolean isSpotifyAlbum = arguments[1].contains("https://open.spotify.com/album/");
+        boolean isSpotifyTrack = parameters[1].contains("https://open.spotify.com/track/");
+        boolean isSpotifyPlayList = parameters[1].contains("https://open.spotify.com/playlist/");
+        boolean isSpotifyAlbum = parameters[1].contains("https://open.spotify.com/album/");
 
         if (isSpotifyTrack) {
-          processSpotifyTrackID(ce, arguments, spotifyClientID, spotifyClientSecret);
+          processSpotifyTrackId(ce, parameters, spotifyClientId, spotifyClientSecret);
         } else if (isSpotifyPlayList) {
-          processSpotifyPlaylistID(ce, arguments, spotifyClientID, spotifyClientSecret);
+          processSpotifyPlaylistId(ce, parameters, spotifyClientId, spotifyClientSecret);
         } else if (isSpotifyAlbum) {
-          processSpotifyAlbumID(ce, arguments, spotifyClientID, spotifyClientSecret);
+          processSpotifyAlbumId(ce, parameters, spotifyClientId, spotifyClientSecret);
         } else {
           ce.getChannel().sendMessage("Spotify feature not supported.").queue();
         }
@@ -150,21 +150,21 @@ public class Play extends Command {
             "in the bot's .env file.").queue();
       }
     } else {
-      PlayerManager.getINSTANCE().createAudioTrack(ce, arguments[1], false);
+      PlayerManager.getINSTANCE().createAudioTrack(ce, parameters[1], false);
     }
   }
 
   /**
-   * Builds a YouTube search query using user provided arguments and adds its first result to the track queue.
+   * Builds a YouTube search query using user provided parameters and adds its first result to the track queue.
    *
    * @param ce                object containing information about the command event
-   * @param arguments         user provided arguments
-   * @param numberOfArguments number of user provided arguments
+   * @param parameters         user provided parameters
+   * @param numberOfParameters number of user provided parameters
    */
-  private void handleYouTubeSearchQuery(CommandEvent ce, String[] arguments, int numberOfArguments) {
+  private void handleYouTubeSearchQuery(CommandEvent ce, String[] parameters, int numberOfParameters) {
     StringBuilder searchQuery = new StringBuilder();
-    for (int i = 1; i < numberOfArguments + 1; i++) {
-      searchQuery.append(arguments[i]);
+    for (int i = 1; i < numberOfParameters + 1; i++) {
+      searchQuery.append(parameters[i]);
     }
     String youtubeSearchQuery = "ytsearch:" + String.join(" ", searchQuery);
     PlayerManager.getINSTANCE().createAudioTrack(ce, youtubeSearchQuery, false);
@@ -174,17 +174,17 @@ public class Play extends Command {
    * Checks if the Spotify track link was formatted correctly before adding the track to the queue.
    *
    * @param ce                  object containing information about the command event
-   * @param arguments           user provided arguments
-   * @param spotifyClientID     Spotify API key's client ID
+   * @param parameters           user provided parameters
+   * @param spotifyClientId     Spotify API key's client Id
    * @param spotifyClientSecret Spotify API key's client secret
    */
-  private void processSpotifyTrackID(CommandEvent ce, String[] arguments,
-                                     String spotifyClientID, String spotifyClientSecret) {
-    String spotifyTrack = arguments[1].substring(31); // Remove https portion
+  private void processSpotifyTrackId(CommandEvent ce, String[] parameters,
+                                     String spotifyClientId, String spotifyClientSecret) {
+    String spotifyTrack = parameters[1].substring(31); // Remove https portion
     if (spotifyTrack.length() >= 22) {
-      addSpotifyTrackToQueue(ce, spotifyTrack, spotifyClientID, spotifyClientSecret);
+      addSpotifyTrackToQueue(ce, spotifyTrack, spotifyClientId, spotifyClientSecret);
     } else {
-      ce.getChannel().sendMessage("Invalid Spotify track ID.").queue();
+      ce.getChannel().sendMessage("Invalid Spotify track Id.").queue();
     }
   }
 
@@ -192,17 +192,17 @@ public class Play extends Command {
    * Checks if the Spotify playlist link was formatted correctly before adding the track to the queue.
    *
    * @param ce                  object containing information about the command event
-   * @param arguments           user provided arguments
-   * @param spotifyClientID     Spotify API key's client ID
+   * @param parameters           user provided parameters
+   * @param spotifyClientId     Spotify API key's client Id
    * @param spotifyClientSecret Spotify API key's client secret
    */
-  private void processSpotifyPlaylistID(CommandEvent ce, String[] arguments,
-                                        String spotifyClientID, String spotifyClientSecret) {
-    String spotifyPlaylist = arguments[1].substring(34); // Remove https portion
+  private void processSpotifyPlaylistId(CommandEvent ce, String[] parameters,
+                                        String spotifyClientId, String spotifyClientSecret) {
+    String spotifyPlaylist = parameters[1].substring(34); // Remove https portion
     if (spotifyPlaylist.length() >= 22) {
-      playSpotifyPlaylistRequest(ce, spotifyPlaylist, spotifyClientID, spotifyClientSecret);
+      playSpotifyPlaylistRequest(ce, spotifyPlaylist, spotifyClientId, spotifyClientSecret);
     } else {
-      ce.getChannel().sendMessage("Invalid Spotify playlist ID").queue();
+      ce.getChannel().sendMessage("Invalid Spotify playlist Id").queue();
     }
   }
 
@@ -210,43 +210,43 @@ public class Play extends Command {
    * Checks if the Spotify album link was formatted correctly before adding the track to the queue.
    *
    * @param ce                  object containing information about the command event
-   * @param arguments           user provided arguments
-   * @param spotifyClientID     Spotify API key's client ID
+   * @param parameters           user provided parameters
+   * @param spotifyClientId     Spotify API key's client Id
    * @param spotifyClientSecret Spotify API key's client secret
    */
-  private void processSpotifyAlbumID(CommandEvent ce, String[] arguments,
-                                     String spotifyClientID, String spotifyClientSecret) {
-    String spotifyAlbum = arguments[1].substring(31); // Remove https portion
+  private void processSpotifyAlbumId(CommandEvent ce, String[] parameters,
+                                     String spotifyClientId, String spotifyClientSecret) {
+    String spotifyAlbum = parameters[1].substring(31); // Remove https portion
     if (spotifyAlbum.length() >= 22) {
-      playSpotifyAlbumRequest(ce, spotifyAlbum, spotifyClientID, spotifyClientSecret);
+      playSpotifyAlbumRequest(ce, spotifyAlbum, spotifyClientId, spotifyClientSecret);
     } else {
-      ce.getChannel().sendMessage("Invalid Spotify album ID").queue();
+      ce.getChannel().sendMessage("Invalid Spotify album Id").queue();
     }
   }
 
   /**
-   * Deciphers Spotify song names through their Spotify track ID,
+   * Deciphers Spotify song names through their Spotify track Id,
    * adds the track's associated artists with the song name as a
    * search query on YouTube, and adds the first result to the track queue.
    *
    * @param ce                  object containing information about the command event
-   * @param spotifyTrack        Spotify track identified by track ID
-   * @param spotifyClientID     Spotify API key's client ID
+   * @param spotifyTrack        Spotify track identified by track Id
+   * @param spotifyClientId     Spotify API key's client Id
    * @param spotifyClientSecret Spotify API key's client secret
    */
   private void addSpotifyTrackToQueue(CommandEvent ce, String spotifyTrack,
-                                      String spotifyClientID, String spotifyClientSecret) {
-    // ID & Query -> ID only
+                                      String spotifyClientId, String spotifyClientSecret) {
+    // Id & Query -> Id only
     spotifyTrack = spotifyTrack.substring(0, 22);
     try {
       // Generate Spotify API access token
-      SpotifyApi spotifyApi = new SpotifyApi.Builder().setClientId(spotifyClientID)
+      SpotifyApi spotifyApi = new SpotifyApi.Builder().setClientId(spotifyClientId)
           .setClientSecret(spotifyClientSecret).build();
       ClientCredentialsRequest clientCredentialsRequest = spotifyApi.clientCredentials().build();
       ClientCredentials clientCredentials = clientCredentialsRequest.execute();
       spotifyApi.setAccessToken(clientCredentials.getAccessToken());
 
-      // Match track with ID and get track's artists
+      // Match track with Id and get track's artists
       GetTrackRequest getTrackRequest = spotifyApi.getTrack(spotifyTrack).build();
       JSONObject jsonTrack = new JSONObject(getTrackRequest.getJson());
       JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONObject("album").
@@ -260,7 +260,7 @@ public class Play extends Command {
   }
 
   /**
-   * Deciphers Spotify song names through their Spotify playlist ID,
+   * Deciphers Spotify song names through their Spotify playlist Id,
    * adds the track's associated artists with the song name as a
    * search query on YouTube, and adds the first result to the track queue.
    * <p>
@@ -268,25 +268,25 @@ public class Play extends Command {
    * </p>
    *
    * @param ce                  object containing information about the command event
-   * @param spotifyPlaylist     Spotify playlist identified by track ID
-   * @param spotifyClientID     Spotify API key's client ID
+   * @param spotifyPlaylist     Spotify playlist identified by track Id
+   * @param spotifyClientId     Spotify API key's client Id
    * @param spotifyClientSecret Spotify API key's client secret
    */
   private void playSpotifyPlaylistRequest(CommandEvent ce, String spotifyPlaylist,
-                                          String spotifyClientID, String spotifyClientSecret) {
-    // ID & Query -> ID only
+                                          String spotifyClientId, String spotifyClientSecret) {
+    // Id & Query -> Id only
     spotifyPlaylist = spotifyPlaylist.substring(0, 22);
     try {
       // Generate Spotify API access token
       SpotifyApi spotifyApi = new SpotifyApi.Builder()
-          .setClientId(spotifyClientID)
+          .setClientId(spotifyClientId)
           .setClientSecret(spotifyClientSecret)
           .build();
       ClientCredentialsRequest clientCredentialsRequest = spotifyApi.clientCredentials().build();
       ClientCredentials clientCredentials = clientCredentialsRequest.execute();
       spotifyApi.setAccessToken(clientCredentials.getAccessToken());
 
-      // Match playlist with ID and get playlist's tracks
+      // Match playlist with Id and get playlist's tracks
       GetPlaylistRequest getPlaylistRequest = spotifyApi.getPlaylist(spotifyPlaylist).build();
       JSONObject jsonPlaylist = new JSONObject(getPlaylistRequest.getJson());
       JSONArray jsonTracks = new JSONArray(jsonPlaylist.getJSONObject("tracks").
@@ -310,7 +310,7 @@ public class Play extends Command {
   }
 
   /**
-   * Deciphers Spotify song names through their Spotify playlist ID,
+   * Deciphers Spotify song names through their Spotify playlist Id,
    * adds the track's associated artists with the song name as a
    * search query on YouTube, and adds the first result to the track queue.
    * <p>
@@ -318,25 +318,25 @@ public class Play extends Command {
    * </p>
    *
    * @param ce                  object containing information about the command event
-   * @param spotifyAlbum        Spotify playlist identified by track ID
-   * @param spotifyClientID     Spotify API key's client ID
+   * @param spotifyAlbum        Spotify playlist identified by track Id
+   * @param spotifyClientId     Spotify API key's client Id
    * @param spotifyClientSecret Spotify API key's client secret
    */
   private void playSpotifyAlbumRequest(CommandEvent ce, String spotifyAlbum,
-                                       String spotifyClientID, String spotifyClientSecret) {
-    // ID & Query -> ID only
+                                       String spotifyClientId, String spotifyClientSecret) {
+    // Id & Query -> Id only
     spotifyAlbum = spotifyAlbum.substring(0, 22);
     try {
       // Generate Spotify API access token
       SpotifyApi spotifyApi = new SpotifyApi.Builder()
-          .setClientId(spotifyClientID)
+          .setClientId(spotifyClientId)
           .setClientSecret(spotifyClientSecret)
           .build();
       ClientCredentialsRequest clientCredentialsRequest = spotifyApi.clientCredentials().build();
       ClientCredentials clientCredentials = clientCredentialsRequest.execute();
       spotifyApi.setAccessToken(clientCredentials.getAccessToken());
 
-      // Match playlist with ID and get album's tracks
+      // Match playlist with Id and get album's tracks
       GetAlbumsTracksRequest getAlbumsTracksRequest = spotifyApi.getAlbumsTracks(spotifyAlbum).limit(50).build();
       JSONObject jsonAlbum = new JSONObject(getAlbumsTracksRequest.getJson());
       JSONArray jsonTracks = new JSONArray(jsonAlbum.getJSONArray("items").toString());

@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.6.5
+ * @version 1.6.6
  * @since 1.0
  */
 public class Settings extends Command {
@@ -36,7 +36,7 @@ public class Settings extends Command {
 
   /**
    * Either sends an embed containing all settings and their boolean values or
-   * allows the user to change the settings based on the number of arguments provided.
+   * allows the user to change the settings based on the number of parameters provided.
    *
    * @param ce object containing information about the command event
    */
@@ -44,14 +44,14 @@ public class Settings extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    switch (numberOfArguments) {
+    switch (numberOfParameters) {
       case 0 -> sendSettingsMenu(ce);
-      case 2 -> changeSettings(ce, arguments);
-      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      case 2 -> changeSettings(ce, parameters);
+      default -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
 
@@ -77,17 +77,17 @@ public class Settings extends Command {
    * Checks which setting type the user is attempting to change.
    *
    * @param ce        object containing information about the command event
-   * @param arguments user provided arguments
+   * @param parameters user provided parameters
    */
-  private void changeSettings(CommandEvent ce, String[] arguments) {
-    String settingType = arguments[1].toLowerCase();
+  private void changeSettings(CommandEvent ce, String[] parameters) {
+    String settingType = parameters[1].toLowerCase();
 
     switch (settingType) {
-      case "deleteinvoke" -> setDeleteInvokeSetting(ce, arguments[2]);
-      case "embeddecay" -> setEmbedDecaySetting(ce, arguments[2]);
-      case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, arguments[2]);
-      case "moderatepotentialphishing" -> setModeratePotentialPhishingSetting(ce, arguments[2]);
-      case "embedtwitterlinks" -> setEmbedTwitterLinksSetting(ce,arguments[2]);
+      case "deleteinvoke" -> setDeleteInvokeSetting(ce, parameters[2]);
+      case "embeddecay" -> setEmbedDecaySetting(ce, parameters[2]);
+      case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, parameters[2]);
+      case "moderatepotentialphishing" -> setModeratePotentialPhishingSetting(ce, parameters[2]);
+      case "embedtwitterlinks" -> setEmbedTwitterLinksSetting(ce,parameters[2]);
       default -> ce.getChannel().sendMessage("Setting not found.").queue();
     }
   }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * of tracks queued and what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.6.5
+ * @version 1.6.6
  * @since 1.2.0
  */
 public class Queue extends Command {
@@ -35,7 +35,7 @@ public class Queue extends Command {
    * Either sends an embed containing information about the track queue with 10
    * results on each page or what track is currently playing if nothing is queued.
    * <p>
-   * Users can optionally provide a queue page to be displayed with an additional argument.
+   * Users can optionally provide a queue page to be displayed with an additional parameter.
    * </p>
    *
    * @param ce object containing information about the command event
@@ -45,21 +45,21 @@ public class Queue extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    switch (numberOfArguments) {
+    switch (numberOfParameters) {
       case 0 -> // First queue page
           getTrackQueuePage(ce, 0);
       case 1 -> {
         try { // Search for queue page
-          getTrackQueuePage(ce, Integer.parseInt(arguments[1]) - 1);
+          getTrackQueuePage(ce, Integer.parseInt(parameters[1]) - 1);
         } catch (NumberFormatException error) {
           ce.getChannel().sendMessage("Specify an integer for queue page number.").queue();
         }
       }
-      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      default -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
 

@@ -16,15 +16,15 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * SearchTrack is a command invocation that searches for a track
- * to add to the queue using a query of user provided arguments.
+ * to add to the queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.6
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
   private EventWaiter waiter;
-  private long invokerUserID;
+  private long invokerUserId;
 
   public SearchTrack(EventWaiter waiter) {
     this.name = "searchtrack";
@@ -32,7 +32,7 @@ public class SearchTrack extends Command {
     this.arguments = "[1++]YouTubeQuery";
     this.help = "Searches for a track to add to the queue.";
     this.waiter = waiter;
-    this.invokerUserID = 0;
+    this.invokerUserId = 0;
   }
 
   /**
@@ -53,7 +53,7 @@ public class SearchTrack extends Command {
       boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
       if (userInSameVoiceChannel) {
         processSearchTrackRequest(ce);
-        setInvokerUserID(Long.parseLong(ce.getAuthor().getId())); // Lock searchTrack command request to requester
+        setInvokerUserId(Long.parseLong(ce.getAuthor().getId())); // Lock searchTrack command request to requester
         try { // Small delay to ignore command invocation as user response
           Thread.sleep(50);
         } catch (InterruptedException e) {
@@ -73,20 +73,20 @@ public class SearchTrack extends Command {
    * @param ce object containing information about the command event
    */
   private void processSearchTrackRequest(CommandEvent ce) {
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    if (numberOfArguments > 0) {
+    if (numberOfParameters > 0) {
       // Input search query into YouTube
       StringBuilder searchQuery = new StringBuilder();
-      for (int i = 1; i < numberOfArguments; i++) {
-        searchQuery.append(arguments[i]);
+      for (int i = 1; i < numberOfParameters; i++) {
+        searchQuery.append(parameters[i]);
       }
       String youtubeSearchQuery = "ytsearch:" + String.join(" ", searchQuery);
       PlayerManager.getINSTANCE().searchAudioTrack(ce, youtubeSearchQuery);
     } else {
-      ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
 
@@ -99,20 +99,20 @@ public class SearchTrack extends Command {
    */
   private void awaitUserResponse(CommandEvent ce) {
     waiter.waitForEvent(MessageReceivedEvent.class,
-        // Message sent matches invoker user's ID
-        w -> Long.parseLong(w.getMessage().getAuthor().getId()) == getInvokerUserID(),
+        // Message sent matches invoker user's Id
+        w -> Long.parseLong(w.getMessage().getAuthor().getId()) == getInvokerUserId(),
         w -> {
-          setInvokerUserID(0);
-          // Parse message for arguments
-          String[] arguments = w.getMessage().getContentRaw().split("\\s");
+          setInvokerUserId(0);
+          // Parse message for parameters
+          String[] parameters = w.getMessage().getContentRaw().split("\\s");
           try {
-            handleUserResponse(ce, Integer.parseInt(arguments[0]));
+            handleUserResponse(ce, Integer.parseInt(parameters[0]));
           } catch (NumberFormatException e) {
-            setInvokerUserID(0);
+            setInvokerUserId(0);
             ce.getChannel().sendMessage("Responses must be an integer.").queue();
           }
         }, 15, TimeUnit.SECONDS, () -> { // Timeout
-          setInvokerUserID(0);
+          setInvokerUserId(0);
           ce.getChannel().sendMessage("No response. Search timed out.").queue();
         });
   }
@@ -146,7 +146,7 @@ public class SearchTrack extends Command {
           append("` {*").append(trackDuration).append("*} ").append(requester);
       ce.getChannel().sendMessage(userResponseConfirmation).queue();
     } catch (IndexOutOfBoundsException e) {
-      setInvokerUserID(0);
+      setInvokerUserId(0);
       ce.getChannel().sendMessage("Responses must be in range of 1-5.").queue();
     }
   }
@@ -168,11 +168,11 @@ public class SearchTrack extends Command {
         (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
   }
 
-  private long getInvokerUserID() {
-    return this.invokerUserID;
+  private long getInvokerUserId() {
+    return this.invokerUserId;
   }
 
-  private void setInvokerUserID(long invokerUserID) {
-    this.invokerUserID = invokerUserID;
+  private void setInvokerUserId(long invokerUserId) {
+    this.invokerUserId = invokerUserId;
   }
 }

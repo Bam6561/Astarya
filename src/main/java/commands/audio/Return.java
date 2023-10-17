@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * and provides an option to return a recently skipped track to the queue.
  *
  * @author Danny Nguyen
- * @version 1.6.5
+ * @version 1.6.6
  * @since 1.5.2
  */
 public class Return extends Command {
@@ -58,21 +58,21 @@ public class Return extends Command {
    * @throws NumberFormatException user provided non-integer value
    */
   private void parseReturnTrackRequest(CommandEvent ce) {
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    switch (numberOfArguments) {
+    switch (numberOfParameters) {
       case 0 -> displaySkippedTracksStack(ce);
       case 1 -> {
         try {
-          int returnStackIndex = Integer.parseInt(arguments[1]);
+          int returnStackIndex = Integer.parseInt(parameters[1]);
           returnTrackRequest(ce, returnStackIndex);
         } catch (NumberFormatException e) {
           ce.getChannel().sendMessage("Specify what stack number to be returned with an integer.").queue();
         }
       }
-      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      default -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
 

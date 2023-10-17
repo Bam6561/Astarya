@@ -15,7 +15,7 @@ import java.util.Collections;
  * Swap is a command invocation that swaps the position of a track in queue with another.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.6
  * @since 1.2.14
  */
 public class Swap extends Command {
@@ -51,29 +51,29 @@ public class Swap extends Command {
   }
 
   /**
-   * Processes user provided arguments to determine whether the swap command request was formatted correctly.
+   * Processes user provided parameters to determine whether the swap command request was formatted correctly.
    *
    * @param ce object containing information about the command event
    * @throws NumberFormatException user provided non-integer values
    */
   private void parseSwapRequest(CommandEvent ce) {
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    boolean validNumberOfArguments = numberOfArguments == 2;
-    if (validNumberOfArguments) {
+    boolean validNumberOfParameters = numberOfParameters == 2;
+    if (validNumberOfParameters) {
       try {
         // Displayed index to users are different from data index, so subtract 1
-        int originalIndex = Integer.parseInt(arguments[1]) - 1;
-        int swapIndex = Integer.parseInt(arguments[2]) - 1;
+        int originalIndex = Integer.parseInt(parameters[1]) - 1;
+        int swapIndex = Integer.parseInt(parameters[2]) - 1;
 
         swapTracks(ce, originalIndex, swapIndex);
       } catch (NumberFormatException e) {
         ce.getChannel().sendMessage("Specify integers to swap tracks in queue.").queue();
       }
     } else {
-      ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
 

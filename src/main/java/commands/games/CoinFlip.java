@@ -11,7 +11,7 @@ import java.util.Random;
  * CoinFlip is a command invocation that simulates coin flips.
  *
  * @author Danny Nguyen
- * @version 1.6.5
+ * @version 1.6.6
  * @since 1.0
  */
 public class CoinFlip extends Command {
@@ -31,14 +31,14 @@ public class CoinFlip extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    switch (numberOfArguments) {
+    switch (numberOfParameters) {
       case 0 -> oneCoinFlip(ce);
-      case 1 -> multipleCoinFlips(ce, arguments);
-      default -> ce.getChannel().sendMessage("Invalid number of arguments.").queue();
+      case 1 -> multipleCoinFlips(ce, parameters);
+      default -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
 
@@ -67,12 +67,12 @@ public class CoinFlip extends Command {
    * Checks whether the user requested number of flips is an integer and is in range of 1-10.
    *
    * @param ce        object containing information about the command event
-   * @param arguments user provided arguments
+   * @param parameters user provided parameters
    * @throws NumberFormatException user provided a non-integer value
    */
-  private void multipleCoinFlips(CommandEvent ce, String[] arguments) {
+  private void multipleCoinFlips(CommandEvent ce, String[] parameters) {
     try {
-      int numberOfFlips = Integer.parseInt(arguments[1]);
+      int numberOfFlips = Integer.parseInt(parameters[1]);
       boolean validNumberOfFlips = (numberOfFlips >= 1) && (numberOfFlips <= 10);
       if (validNumberOfFlips) {
         multipleFlipResults(ce, numberOfFlips);

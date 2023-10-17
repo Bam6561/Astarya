@@ -12,7 +12,7 @@ import commands.owner.Settings;
  * NowPlaying is a command invocation that shows what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.6
  * @since 1.2.3
  */
 public class NowPlaying extends Command {
@@ -23,7 +23,7 @@ public class NowPlaying extends Command {
   }
 
   /**
-   * Ignores all arguments and displays the currently playing track.
+   * Ignores all parameters and displays the currently playing track.
    *
    * @param ce object containing information about the command event
    */

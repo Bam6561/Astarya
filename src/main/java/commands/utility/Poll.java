@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Poll is a command invocation that creates a reaction vote with up to 10 options.
  *
  * @author Danny Nguyen
- * @version 1.6.5
+ * @version 1.6.6
  * @since 1.0
  */
 public class Poll extends Command {
@@ -29,7 +29,7 @@ public class Poll extends Command {
   }
 
   /**
-   * Processes user provided arguments to determine whether the poll command request was formatted correctly.
+   * Processes user provided parameters to determine whether the poll command request was formatted correctly.
    * <p>
    * Users can provide up to 10 options in the poll, separated by commas, but no more than one.
    * </p>
@@ -40,13 +40,13 @@ public class Poll extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    // Parse message for arguments
-    String[] arguments = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfArguments = arguments.length - 1;
+    // Parse message for parameters
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
 
-    boolean optionsProvided = numberOfArguments != 0;
+    boolean optionsProvided = numberOfParameters != 0;
     if (optionsProvided) {
-      String[] options = parseOptions(arguments);
+      String[] options = parseOptions(parameters);
 
       boolean noEmptyOptions = !checkForEmptyPollOptions(options);
       if (noEmptyOptions) { // Prepare poll
@@ -75,15 +75,15 @@ public class Poll extends Command {
   }
 
   /**
-   * Splits user provided arguments into an array of poll options with the comma character as a delimiter.
+   * Splits user provided parameters into an array of poll options with the comma character as a delimiter.
    *
-   * @param arguments user provided arguments
+   * @param parameters user provided parameters
    * @return array of poll options
    */
-  private String[] parseOptions(String[] arguments) {
+  private String[] parseOptions(String[] parameters) {
     StringBuilder optionsStringBuilder = new StringBuilder();
-    for (int i = 1; i < arguments.length; i++) {
-      optionsStringBuilder.append(arguments[i]).append(" ");
+    for (int i = 1; i < parameters.length; i++) {
+      optionsStringBuilder.append(parameters[i]).append(" ");
     }
     return optionsStringBuilder.toString().split(","); // Split options provided
   }
