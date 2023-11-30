@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.6.7
  * @since 1.0
  */
 public class Settings extends Command {
@@ -21,7 +21,6 @@ public class Settings extends Command {
   private static boolean deleteInvoke = false;
   private static boolean embedDecay = false;
   private static int embedDecayTime = 30;
-  private static boolean moderatePotentialPhishing = true;
   private static boolean embedTwitterLinks = true;
 
   public Settings(String prefix, String alternativePrefix) {
@@ -68,7 +67,6 @@ public class Settings extends Command {
         + "\n**DeleteInvoke**: `" + deleteInvoke +
         "`" + "\n**EmbedDecay:** `" + embedDecay + "`"
         + "\n**EmbedDecayTime:** `" + embedDecayTime + "`s"
-        + "\n**ModeratePotentialPhishing:** `" + moderatePotentialPhishing + "`"
         + "\n**EmbedTwitterLinks:** `" +embedTwitterLinks + "`");
     sendEmbed(ce, display);
   }
@@ -86,7 +84,6 @@ public class Settings extends Command {
       case "deleteinvoke" -> setDeleteInvokeSetting(ce, parameters[2]);
       case "embeddecay" -> setEmbedDecaySetting(ce, parameters[2]);
       case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, parameters[2]);
-      case "moderatepotentialphishing" -> setModeratePotentialPhishingSetting(ce, parameters[2]);
       case "embedtwitterlinks" -> setEmbedTwitterLinksSetting(ce,parameters[2]);
       default -> ce.getChannel().sendMessage("Setting not found.").queue();
     }
@@ -145,24 +142,6 @@ public class Settings extends Command {
       }
     } catch (NumberFormatException e) {
       ce.getChannel().sendMessage("Specify an integer between 15 - 120.").queue();
-    }
-  }
-
-  /**
-   * Changes the moderate potential phishing's setting to true or false.
-   *
-   * @param ce            object containing information about the command event
-   * @param settingChange the boolean value to be changed to
-   */
-  private void setModeratePotentialPhishingSetting(CommandEvent ce, String settingChange) {
-    settingChange = settingChange.toLowerCase();
-    boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
-    if (settingChangeIsBoolean) {
-      setModeratePotentialPhishing(Boolean.parseBoolean(settingChange));
-      ce.getChannel().sendMessage("ModeratePotentialPhishing has been set " +
-          "to `" + getModeratePotentialPhishing() + "`.").queue();
-    } else {
-      ce.getChannel().sendMessage("Specify true or false.").queue();
     }
   }
 
@@ -240,10 +219,6 @@ public class Settings extends Command {
     return Settings.embedDecayTime;
   }
 
-  public static boolean getModeratePotentialPhishing() {
-    return Settings.moderatePotentialPhishing;
-  }
-
   public static boolean getEmbedTwitterLinks() { return Settings.embedTwitterLinks; }
 
   private void setDeleteInvoke(boolean deleteInvoke) {
@@ -256,10 +231,6 @@ public class Settings extends Command {
 
   private void setEmbedDecayTime(int embedDecayTime) {
     this.embedDecayTime = embedDecayTime;
-  }
-
-  private void setModeratePotentialPhishing(boolean moderatePotentialPhishing) {
-    this.moderatePotentialPhishing = moderatePotentialPhishing;
   }
 
   private void setEmbedTwitterLinks(boolean embedTwitterLinks) {
