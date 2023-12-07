@@ -17,13 +17,13 @@ import java.time.format.DateTimeFormatter;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.8.1
+ * @version 1.6.9
  * @since 1.0.0
  */
 public class MessageLog extends ListenerAdapter {
   /**
-   * Logs messages if they were sent by a human user and embeds Twitter media
-   * and Instagram reel links if the setting for embedMediaLinks is true.
+   * Logs messages if they were sent by a human user and embeds Twitter, Reddit,
+   * and Instagram media links if the setting for embedMediaLinks is true.
    *
    * @param messageE object containing information about the message event
    */
@@ -53,8 +53,13 @@ public class MessageLog extends ListenerAdapter {
   }
 
   /**
-   * Checks if message contains a Twitter media or Instagram reel link. If a link is found, replace
-   * Twitter's domain with vxtwitter and/or Instagram's domain with ddinstagram to embed its content.
+   * Checks if message contains a Twitter, Reddit, or Instagram media link.
+   *
+   * If a link is found, replace
+   * - Twitter's domain with vxtwitter
+   * - Reddit's domain with rxddit
+   * - Instagram's domain with ddinstagram
+   * to embed its content.
    *
    * @param messageE object containing information about the message event
    */
@@ -64,15 +69,19 @@ public class MessageLog extends ListenerAdapter {
 
     boolean isTwitterLink = (checkMessage.contains("https://twitter.com/") || checkMessage.contains("https://x.com/"));
     boolean isTwitterMedia = checkMessage.contains("/status/");
+    boolean isRedditMedia = checkMessage.contains("https://www.reddit.com/");
     boolean isInstagramReel = checkMessage.contains("https://www.instagram.com/reel");
 
     // Replace domain and delete original message if permissions allow
-    if ((isTwitterLink && isTwitterMedia) || isInstagramReel) {
+    if ((isTwitterLink && isTwitterMedia) || isRedditMedia || isInstagramReel) {
       message = "[" + messageE.getAuthor().getAsTag() + "]\n" + message;
 
       if (isTwitterMedia){
         message = message.replace("/twitter.com/", "/vxtwitter.com/");
         message = message.replace("/x.com/", "/vxtwitter.com/");
+      }
+      if (isRedditMedia) {
+        message = message.replace("www.reddit", "www.rxddit");
       }
       if (isInstagramReel) {
         message = message.replace("www.instagram", "www.ddinstagram");
