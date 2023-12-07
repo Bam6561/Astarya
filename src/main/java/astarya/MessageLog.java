@@ -17,13 +17,13 @@ import java.time.format.DateTimeFormatter;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.9
+ * @version 1.6.10
  * @since 1.0.0
  */
 public class MessageLog extends ListenerAdapter {
   /**
    * Logs messages if they were sent by a human user and embeds Twitter, Reddit,
-   * and Instagram media links if the setting for embedMediaLinks is true.
+   * Instagram, and Pixiv media links if the setting for embedMediaLinks is true.
    *
    * @param messageE object containing information about the message event
    */
@@ -53,12 +53,13 @@ public class MessageLog extends ListenerAdapter {
   }
 
   /**
-   * Checks if message contains a Twitter, Reddit, or Instagram media link.
+   * Checks if message contains a Twitter, Reddit, Instagram, or Pixiv media link.
    *
    * If a link is found, replace
    * - Twitter's domain with vxtwitter
    * - Reddit's domain with rxddit
    * - Instagram's domain with ddinstagram
+   * - Pixiv's domain with phixiv
    * to embed its content.
    *
    * @param messageE object containing information about the message event
@@ -71,9 +72,10 @@ public class MessageLog extends ListenerAdapter {
     boolean isTwitterMedia = checkMessage.contains("/status/");
     boolean isRedditMedia = checkMessage.contains("https://www.reddit.com/");
     boolean isInstagramReel = checkMessage.contains("https://www.instagram.com/reel");
+    boolean isPixiv = checkMessage.contains("https://www.pixiv.net/");
 
     // Replace domain and delete original message if permissions allow
-    if ((isTwitterLink && isTwitterMedia) || isRedditMedia || isInstagramReel) {
+    if ((isTwitterLink && isTwitterMedia) || isRedditMedia || isInstagramReel || isPixiv) {
       message = "[" + messageE.getAuthor().getAsTag() + "]\n" + message;
 
       if (isTwitterMedia){
@@ -85,6 +87,9 @@ public class MessageLog extends ListenerAdapter {
       }
       if (isInstagramReel) {
         message = message.replace("www.instagram", "www.ddinstagram");
+      }
+      if (isPixiv){
+        message = message.replace("www.pixiv.net","www.phixiv.net");
       }
 
       try {
