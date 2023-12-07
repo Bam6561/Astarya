@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.6.7
+ * @version 1.6.8
  * @since 1.0
  */
 public class Settings extends Command {
@@ -21,7 +21,7 @@ public class Settings extends Command {
   private static boolean deleteInvoke = false;
   private static boolean embedDecay = false;
   private static int embedDecayTime = 30;
-  private static boolean embedTwitterLinks = true;
+  private static boolean embedMediaLinks = true;
 
   public Settings(String prefix, String alternativePrefix) {
     this.name = "settings";
@@ -67,7 +67,7 @@ public class Settings extends Command {
         + "\n**DeleteInvoke**: `" + deleteInvoke +
         "`" + "\n**EmbedDecay:** `" + embedDecay + "`"
         + "\n**EmbedDecayTime:** `" + embedDecayTime + "`s"
-        + "\n**EmbedTwitterLinks:** `" +embedTwitterLinks + "`");
+        + "\n**EmbedMediaLinks:** `" + embedMediaLinks + "`");
     sendEmbed(ce, display);
   }
 
@@ -84,7 +84,7 @@ public class Settings extends Command {
       case "deleteinvoke" -> setDeleteInvokeSetting(ce, parameters[2]);
       case "embeddecay" -> setEmbedDecaySetting(ce, parameters[2]);
       case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, parameters[2]);
-      case "embedtwitterlinks" -> setEmbedTwitterLinksSetting(ce,parameters[2]);
+      case "embedmedialinks" -> setEmbedMediaLinksSetting(ce,parameters[2]);
       default -> ce.getChannel().sendMessage("Setting not found.").queue();
     }
   }
@@ -146,18 +146,18 @@ public class Settings extends Command {
   }
 
   /**
-   * Changes the embed Twitter links setting to true or false.
+   * Changes the embed media links setting to true or false.
    *
    * @param ce            object containing information about the command event
    * @param settingChange the boolean value to be changed to
    */
-  private void setEmbedTwitterLinksSetting(CommandEvent ce, String settingChange) {
+  private void setEmbedMediaLinksSetting(CommandEvent ce, String settingChange) {
     settingChange = settingChange.toLowerCase();
     boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
     if (settingChangeIsBoolean) {
-      setEmbedTwitterLinks(Boolean.parseBoolean(settingChange));
-      ce.getChannel().sendMessage("EmbedTwitterLinks has been set " +
-          "to `" + getEmbedTwitterLinks() + "`.").queue();
+      setEmbedMediaLinks(Boolean.parseBoolean(settingChange));
+      ce.getChannel().sendMessage("EmbedMediaLinks has been set " +
+          "to `" + getEmbedMediaLinks() + "`.").queue();
     } else {
       ce.getChannel().sendMessage("Specify true or false.").queue();
     }
@@ -219,7 +219,7 @@ public class Settings extends Command {
     return Settings.embedDecayTime;
   }
 
-  public static boolean getEmbedTwitterLinks() { return Settings.embedTwitterLinks; }
+  public static boolean getEmbedMediaLinks() { return Settings.embedMediaLinks; }
 
   private void setDeleteInvoke(boolean deleteInvoke) {
     this.deleteInvoke = deleteInvoke;
@@ -233,7 +233,7 @@ public class Settings extends Command {
     this.embedDecayTime = embedDecayTime;
   }
 
-  private void setEmbedTwitterLinks(boolean embedTwitterLinks) {
-    this.embedTwitterLinks = embedTwitterLinks;
+  private void setEmbedMediaLinks(boolean embedMediaLinks) {
+    this.embedMediaLinks = embedMediaLinks;
   }
 }

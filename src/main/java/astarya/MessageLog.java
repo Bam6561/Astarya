@@ -17,24 +17,24 @@ import java.time.format.DateTimeFormatter;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.7
+ * @version 1.6.8
  * @since 1.0.0
  */
 public class MessageLog extends ListenerAdapter {
   /**
-   * Logs messages if they were sent by a human user and embeds
-   * Twitter links if the setting for embedTwitterLinks is true.
+   * Logs messages if they were sent by a human user and embeds Twitter media
+   * and Instagram reel links if the setting for embedMediaLinks is true.
    *
    * @param messageE object containing information about the message event
    */
   public void onMessageReceived(MessageReceivedEvent messageE) {
     boolean isHuman = !messageE.getMessage().isWebhookMessage() && !messageE.getMessage().getAuthor().isBot();
-    boolean embedTwitterLinks = Settings.getEmbedTwitterLinks();
+    boolean embedMediaLinks = Settings.getEmbedMediaLinks();
 
     if (isHuman) {
       logMessage(messageE);
-      if (embedTwitterLinks) {
-        scanTwitterLinks(messageE);
+      if (embedMediaLinks) {
+        scanForMediaLinks(messageE);
       }
     }
   }
@@ -53,27 +53,35 @@ public class MessageLog extends ListenerAdapter {
   }
 
   /**
-   * Checks if message contains a Twitter media link. If a link
-   * is found, replace its domain with vxtwitter to embed its content.
+   * Checks if message contains a Twitter media or Instagram reel link. If a link is found, replace
+   * Twitter's domain with vxtwitter and/or Instagram's domain with ddinstagram to embed its content.
    *
    * @param messageE object containing information about the message event
    */
-  private void scanTwitterLinks(MessageReceivedEvent messageE) {
+  private void scanForMediaLinks(MessageReceivedEvent messageE) {
     String message = messageE.getMessage().getContentRaw();
     String checkMessage = message.toLowerCase();
 
     boolean isTwitterLink = (checkMessage.contains("https://twitter.com/") || checkMessage.contains("https://x.com/"));
     boolean isTwitterMedia = checkMessage.contains("/status/");
+    boolean isInstagramReel = checkMessage.contains("https://www.instagram.com/reel/");
 
     // Replace domain and delete original message if permissions allow
-    if (isTwitterLink && isTwitterMedia) {
-      message = "[" +messageE.getAuthor().getAsTag() +"]\n" + message;
-      message = message.replace("/twitter.com/", "/vxtwitter.com/");
-      message = message.replace("/x.com/", "/vxtwitter.com/");
+    if ((isTwitterLink && isTwitterMedia) || isInstagramReel) {
+      message = "[" + messageE.getAuthor().getAsTag() + "]\n" + message;
+
+      if (isTwitterMedia){
+        message = message.replace("/twitter.com/", "/vxtwitter.com/");
+        message = message.replace("/x.com/", "/vxtwitter.com/");
+      }
+      if (isInstagramReel) {
+        message = message.replace("www.instagram", "www.ddinstagram");
+      }
 
       try {
         messageE.getMessage().delete().queue();
-      } catch (ErrorResponseException e) {}
+      } catch (ErrorResponseException e) {
+      }
 
       messageE.getChannel().sendMessage(message).queue();
     }
