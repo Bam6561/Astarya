@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Help is a command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.6.11
  * @since 1.0
  */
 public class Help extends Command {
@@ -31,7 +31,6 @@ public class Help extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    // Parse message for parameters
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
     int numberOfParameters = parameters.length - 1;
 
@@ -60,7 +59,7 @@ public class Help extends Command {
     display.addField("Audio", "> clearQueue | join | leave | loop | " +
         "nowPlaying | pause | playNext | play | queue | remove | return | " +
         "searchTrack | setPosition | shuffle | skip | swap", true);
-    display.addField("Games", "> choose | coinflip | highorlow | roll", true);
+    display.addField("Games", "> choose | coinflip | highorlow | pandorasbox | roll", true);
     display.addField("Owner", "> delete | settings | shutdown", true);
     display.addField("Utility", "> emote | poll | profile | remind | server", true);
   }
@@ -114,6 +113,10 @@ public class Help extends Command {
       case "nowplaying", "np" -> sendDetailedCommandHelpEmbed(display, "Help: NowPlaying",
           "Shows what track is currently playing.", "nowplaying, np",
           "[0]NowPlaying", "nowplaying");
+      case "pandorasbox", "pb" -> sendDetailedCommandHelpEmbed(display, "Help: PandorasBox",
+          "Returns a random scenario prompt. Prompts' subjects are substituted if paramaters are provided.",
+          "pandorasbox, pb", "[0]Self [1]VC/DC/* [1 ++]*",
+          "pandorasbox, pandorasbox vc, pandorasbox dc, pandorasbox John Constantine");
       case "pause", "stop" -> sendDetailedCommandHelpEmbed(display, "Help: Pause",
           "Pauses the audio player. Astarya's activity changes may be rate limited if done rapidly.",
           "pause, stop", "[0]Pause", "pause");
@@ -202,7 +205,7 @@ public class Help extends Command {
    * @param title       name of the command
    * @param description description of the command
    * @param aliases     aliases of the command
-   * @param parameters   parameters the command will accept for different variations of usage
+   * @param parameters  parameters the command will accept for different variations of usage
    * @param examples    examples of how to use the command
    */
   private void sendDetailedCommandHelpEmbed(EmbedBuilder display, String title,

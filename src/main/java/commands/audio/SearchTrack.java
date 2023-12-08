@@ -73,7 +73,6 @@ public class SearchTrack extends Command {
    * @param ce object containing information about the command event
    */
   private void processSearchTrackRequest(CommandEvent ce) {
-    // Parse message for parameters
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
     int numberOfParameters = parameters.length - 1;
 
@@ -103,7 +102,6 @@ public class SearchTrack extends Command {
         w -> Long.parseLong(w.getMessage().getAuthor().getId()) == getInvokerUserId(),
         w -> {
           setInvokerUserId(0);
-          // Parse message for parameters
           String[] parameters = w.getMessage().getContentRaw().split("\\s");
           try {
             handleUserResponse(ce, Integer.parseInt(parameters[0]));

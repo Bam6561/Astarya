@@ -57,7 +57,6 @@ public class Swap extends Command {
    * @throws NumberFormatException user provided non-integer values
    */
   private void parseSwapRequest(CommandEvent ce) {
-    // Parse message for parameters
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
     int numberOfParameters = parameters.length - 1;
 

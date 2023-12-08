@@ -36,11 +36,12 @@ public class Profile extends Command {
    * Targets can be set by providing a mention, user id, nickname or name.
    * </p>
    *
-   * @param ce the command event
+   * @param ce object containing information about the command event
    */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
+
     String parameters = ce.getArgs();
     if (parameters.isBlank()) { // Target: Self
       sendProfileEmbed(ce, ce.getMember(), ce.getMember().getUser());

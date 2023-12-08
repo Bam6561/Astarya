@@ -56,7 +56,6 @@ public class PlayNext extends Command {
    * @throws NumberFormatException user provided non-integer value
    */
   private void parsePlayNextRequest(CommandEvent ce) {
-    // Parse message for parameters
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
     int numberOfParameters = parameters.length;
 

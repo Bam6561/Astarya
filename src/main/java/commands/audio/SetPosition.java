@@ -54,7 +54,6 @@ public class SetPosition extends Command {
    * @throws NumberFormatException user provided non-integer value
    */
   private void parseSetPositionRequest(CommandEvent ce) {
-    // Parse message for parameters
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
     int numberOfParameters = parameters.length - 1;
 

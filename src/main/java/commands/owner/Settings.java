@@ -43,7 +43,6 @@ public class Settings extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    // Parse message for parameters
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
     int numberOfParameters = parameters.length - 1;
 
@@ -74,7 +73,7 @@ public class Settings extends Command {
   /**
    * Checks which setting type the user is attempting to change.
    *
-   * @param ce        object containing information about the command event
+   * @param ce         object containing information about the command event
    * @param parameters user provided parameters
    */
   private void changeSettings(CommandEvent ce, String[] parameters) {
@@ -84,7 +83,7 @@ public class Settings extends Command {
       case "deleteinvoke" -> setDeleteInvokeSetting(ce, parameters[2]);
       case "embeddecay" -> setEmbedDecaySetting(ce, parameters[2]);
       case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, parameters[2]);
-      case "embedmedialinks" -> setEmbedMediaLinksSetting(ce,parameters[2]);
+      case "embedmedialinks" -> setEmbedMediaLinksSetting(ce, parameters[2]);
       default -> ce.getChannel().sendMessage("Setting not found.").queue();
     }
   }
@@ -219,7 +218,9 @@ public class Settings extends Command {
     return Settings.embedDecayTime;
   }
 
-  public static boolean getEmbedMediaLinks() { return Settings.embedMediaLinks; }
+  public static boolean getEmbedMediaLinks() {
+    return Settings.embedMediaLinks;
+  }
 
   private void setDeleteInvoke(boolean deleteInvoke) {
     this.deleteInvoke = deleteInvoke;

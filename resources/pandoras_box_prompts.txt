@@ -1,0 +1,412 @@
+Breaking News: <subject> is trending online! What was their social media post?
+Breaking News: <subject> is trending online! What video of theirs blew up?
+Breaking News: <subject> is trending online! How are they responding to the publicity?
+Breaking News: <subject> just started a cult! What are some of the cult’s principles?
+Breaking News: <subject> just started a cult! Who is the cult’s most loyal followers?
+Breaking News: <subject> just started a cult! What was their last speech to their following?
+Breaking News: <subject> is starring in a movie! What role are they playing?
+Breaking News: <subject> is starring in a movie! What’s the movie about?
+Breaking News: <subject> is starring in a movie! What happens during their screen time?
+Breaking News: <subject> just got out of a relationship! What did they do wrong?
+Breaking News: <subject> just got out of a relationship! Why weren’t they compatible with their partner?
+Breaking News: <subject> just got out of a relationship! What happens now?
+Breaking News: <subject> is starting a movement! What does their movement hope to accomplish?
+Breaking News: <subject> is starting a movement! How is their movement spreading its message?
+Breaking News: <subject> is starting a movement! How is the movement recruiting new members?
+Breaking News: <subject> just got canceled! What was their hot take?
+Breaking News: <subject> just got canceled! What video of theirs from the past resurfaced?
+Breaking News: <subject> just got canceled! How are their fans turning against them?
+Breaking News: <subject> just wrote a song! What are some of the song’s lyrics?
+Breaking News: <subject> just wrote a song! What's the song’s chorus?
+Breaking News: <subject> just wrote a song! What other artists does the track feature?
+Breaking News: <subject> just became a parent! What are they naming their child?
+Breaking News: <subject> just became a parent! What are some lessons they’re planning to teach their child?
+Breaking News: <subject> just became a parent! How did this happen?
+Breaking News: <subject> just wrote a play! Who is the play casting?
+Breaking News: <subject> just wrote a play! What happens at the climax of the play?
+Breaking News: <subject> just wrote a play! Why did the play fail financially?
+Breaking News: <subject> just became a physical trainer! What unconventional exercises do they perform with their clients?
+Breaking News: <subject> just became a physical trainer! What did they do to get their gym membership revoked?
+Breaking News: <subject> just became a physical trainer! What does their training consist of?
+Breaking News: <subject> just graduated! What did they major in?
+Breaking News: <subject> just graduated! What are the names of some courses they took?
+Breaking News: <subject> just graduated! What did they have to do to afford their tuition?
+Breaking News: <subject> has fled the country! What are the news headlines saying about them?
+Breaking News: <subject> has fled the country! What caused them to flee the country?
+Breaking News: <subject> has fled the country! What did they have to smuggle through airport security?
+Breaking News: <subject> just started a YouTube channel! What are the channels’ videos about?
+Breaking News: <subject> just started a YouTube channel! Why do the channel’s videos get demonetized?
+Breaking News: <subject> just started a YouTube channel! What's the channel’s most popular video?
+Breaking News: <subject> is opening a gallery! What types of objects are in the gallery?
+Breaking News: <subject> is opening a gallery! What’s the rarest object in the gallery?
+Breaking News: <subject> is opening a gallery! How did they obtain the rarest object in the gallery?
+Breaking News: <subject> just commissioned an art piece! What kind of artist did they commission?
+Breaking News: <subject> just commissioned an art piece! What were the commission’s details?
+Breaking News: <subject> just commissioned an art piece! What kind of drama happened between the artist and <subject> that caused the artist to quit midway?
+Breaking News: <subject> is running for office! What's their political agenda?
+Breaking News: <subject> is running for office! What's their campaign slogan?
+Breaking News: <subject> is running for office! What happens during their term in office?
+Breaking News: <subject> just came back from a date! What did they say as an icebreaker?
+Breaking News: <subject> just came back from a date! Where did they take their date?
+Breaking News: <subject> just came back from a date! How did the date go?
+Breaking News: <subject> just wrote a book! What's the book’s title?
+Breaking News: <subject> just wrote a book! What's the book’s plot?
+Breaking News: <subject> just wrote a book! Who are the main characters in the book?
+Breaking News: <subject> just got married! What are their wedding vows?
+Breaking News: <subject> just got married! Who showed up to object to the union?
+Breaking News: <subject> just got married! What leads to their divorce?
+Breaking News: <subject> just became a health guru! What kind of lifestyle are they promoting?
+Breaking News: <subject> just became a health guru! What types of foods are in their diet?
+Breaking News: <subject> just became a health guru! What life hack do they have to give you today?
+Breaking News: <subject> just invented something! What are some of the invention’s core features?
+Breaking News: <subject> just invented something! How is the invention made?
+Breaking News: <subject> just invented something! What's the invention’s impact on the world?
+Breaking News: <subject> just developed a game! What’s the game’s title?
+Breaking News: <subject> just developed a game! What are steam reviews saying about their game?
+Breaking News: <subject> just developed a game! What is the next planned update or DLC for the game?
+Breaking News: <subject> has been arrested! What crime did they commit?
+Breaking News: <subject> has been arrested! How did the police pin the crime on them?
+Breaking News: <subject> has been arrested! What's their punishment?
+Breaking News: <subject> just started a new job! What are some of their job responsibilities?
+Breaking News: <subject> just started a new job! What’s their strangest workplace story?
+Breaking News: <subject> just started a new job! What’s their boss like?
+Breaking News: <subject> has created a new sport! How are points scored?
+Breaking News: <subject> has created a new sport! What weird rule keeps penalizing the players?
+Breaking News: <subject> has created a new sport! Why was the sport trending on Twitter recently?
+Breaking News: <subject> just became a manga artist! What’s the strangest scene they had to censor?
+Breaking News: <subject> just became a manga artist! What are some incorrect translations of their manga?
+Breaking News: <subject> just became a manga artist! Why did the manga’s recent cover become controversial?
+Breaking News: <subject> just graduated! What vanity titles were they nominated for?
+Breaking News: <subject> just graduated! What did they major in?
+Breaking News: <subject> just graduated! What did they do while walking across the stage to accept their reward?
+Breaking News: <subject> just died! What were their last words?
+Breaking News: <subject> just died! What did they leave behind in their will?
+Breaking News: <subject> just died! What were they trying to do that led to their death?
+Breaking News: <subject> is the final boss in a video game! What’s their comically obvious weakness?
+Breaking News: <subject> is the final boss in a video game! What’s their attack pattern like?
+Breaking News: <subject> is the final boss in a video game! What reward do you get after defeating them?
+Breaking News: <subject> has been sent to prison! How did they escape?
+Breaking News: <subject> has been sent to prison! What crime were they sentenced for?
+Breaking News: <subject> has been sent to prison! What’s their cellmate like?
+Help me film an apology video as <subject>. Make the video unaware to their audience.
+Help me film an apology video as <subject>. Make the situation worse.
+Help me film an apology video as <subject>. Justify their actions by blaming their faults on someone else.
+Help me explain how to <task>. Put it through Google Translate for five of your choice languages, then finally back to English.
+Help me explain how to <task>. Overcomplicate the instructions.
+Help me explain how to <task>. Assume the reader is an idiot.
+Help me lawyer up! <subject> is in court. Present evidence against them.
+Help me lawyer up! <subject> is in court. Defend their actions.
+Help me lawyer up! <subject> is in court. Describe what you saw as a witness.
+Help me invent a new slang word or phrase. Demonstrate it in a sentence.
+Help me invent a new slang word or phrase. Explain how it got popular.
+Help me invent a new slang word or phrase. What are its origins?
+Help me pick a controversial opinion. Defend it.
+Help me pick a controversial opinion. Commercialize it.
+Help me pick a controversial opinion. Make it worse.
+Help me third-party <subject>’s date. Ruin it.
+Help me third-party <subject>’s date. Wingman for them.
+Help me third-party <subject>’s date. Steal their date.
+Help me with a pick-up line. The pick-up line must be cringe.
+Help me with a pick-up line. Theme it around a hobby of yours.
+Help me with a pick-up line. Make the receiver consider a restraining order.
+Help me write an essay to qualify for a Ph.D. Write the opening paragraph.
+Help me write an essay to qualify for a Ph.D. Write the ending paragraph.
+Help me write an essay to qualify for a Ph.D. Thank the people who made the journey possible.
+Help me find self-peace for <subject>. Explain their life’s purpose.
+Help me find self-peace for <subject>. Create a bucket list for them to accomplish.
+Help me find self-peace for <subject>. Tell them their future via fortunetelling.
+Help me get <subject> off that ledge. Dare them to jump.
+Help me get <subject> off that ledge. Reason with them to step back to safety.
+Help me get <subject> off that ledge. Offer an alternate activity.
+Help me prepare for the dinner party tonight. Create a three-course meal.
+Help me prepare for the dinner party tonight. Set up an elaborate prank for the guests.
+Help me prepare for the dinner party tonight. Decide the main topic of discussion.
+Help me create click-bait. Develop a title using only search terms.
+Help me create click-bait. Describe the thumbnail.
+Help me create click-bait. Conceptualize a misleading ad.
+Help me showcase <subject>’s abstract masterpiece. Explain the composition of the painting.
+Help me showcase <subject>’s abstract masterpiece. Discuss how the painting was created.
+Help me showcase <subject>’s abstract masterpiece. Share what events inspired the artwork.
+Help me create a sports team. Decide a mascot for the team.
+Help me create a sports team. Come up with a motto.
+Help me create a sports team. Present the team’s signature pose.
+Help me give some life advice to children. Make it terrible.
+Help me give some life advice to children. Explain a topic that they shouldn’t know about at their age.
+Help me give some life advice to children. Project your insecurities while giving advice.
+Help me start a company. Describe the types of services the company offers.
+Help me start a company. Detail the company’s bestselling product.
+Help me start a company. Create a company motto.
+Help me go viral. Describe the video.
+Help me go viral. Tweet a hot take.
+Help me go viral. Start a trend.
+Help me write a news article. Come up with a clickbait title.
+Help me write a news article. Discredit <subject>’s reputation.
+Help me write a news article. Explain how two completely unrelated topics are connected.
+Help me tell a story. <subject> writes the first sentence. Complete the paragraph for them.
+Help me tell a story. <subject> presents a sequence of emojis. Explain what they mean.
+Help me tell a story. <subject> provides the characters. Describe how they interact in a room together.
+Help me harass <subject>. Threaten them.
+Help me harass <subject>. Target their insecurities.
+Help me harass <subject>. Blackmail them.
+Help me develop a video game. Discuss the main objectives to win.
+Help me develop a video game. Describe the game’s cast of characters.
+Help me develop a video game. Provide a list of patch notes for the most recent version.
+Help me make some new friends. Create an awkward first impression.
+Help me make some new friends. Suggest some communities to start socializing in.
+Help me make some new friends. Give misleading advice.
+Help me rob a bank. Detail what mistakes get the group arrested.
+Help me rob a bank. Present the plans for the heist.
+Help me rob a bank. Describe the equipment used in the heist.
+Help me scam <subject>. Create an advertisement they’d respond to.
+Help me scam <subject>. Simulate a conversation with them.
+Help me scam <subject>. Detail any confidential information you gained from them.
+Help me improve <subject>’s resume. Add an About Me section.
+Help me improve <subject>’s resume. Criticize questionable sections <subject> chose to include.
+Help me improve <subject>’s resume. Make up references for <subject> to use.
+Help me interview with <subject>. Provide results for a background check on them.
+Help me interview with <subject>. Create a list of questions to ask.
+Help me interview with <subject>. Describe the lengths you had to go through to secure an interview with them.
+Help me review <subject>’s job application. Accept them and outline what bullet points on their resume impressed you the most.
+Help me review <subject>’s job application. Rudely reject them.
+Help me review <subject>’s job application. Respond with an inconclusive statement as to whether they’ve been accepted or not.
+Help me respond to <subject>’s criticism. Threaten them.
+Help me respond to <subject>’s criticism. Reply to one of their opinions disrespectfully.
+Help me respond to <subject>’s criticism. Passive aggressively mention their past to discredit them.
+Help me design a video game character. Create an attack move for them.
+Help me design a video game character. Describe the character’s appearance.
+Help me design a video game character. Outline the character’s backstory.
+Help me make some music. Write out what the song sounds like if it were transcribed by YouTube captions.
+Help me make some music. Outline what clips, instruments, or audio files that will be used in the song.
+Help me make some music. Provide some adlibs.
+Hypothetically speaking, if <subject> had one wish, what would they wish for?
+Hypothetically speaking, if <subject> had one wish, what would they be willing to sacrifice for it?
+Hypothetically speaking, <subject> needed to adopt a child. What could be the reason?
+Hypothetically speaking, you can instantly become an expert in any one thing. What is it?
+Hypothetically speaking, what’s one event <subject> would prevent from happening in history?
+Hypothetically speaking, if you were comically evil, what elaborate plan would you have to conquer the world?
+Hypothetically speaking, if you were comically evil, what elaborate plan would you have to defeat the main protagonist?
+Hypothetically speaking, if you were comically evil, what elaborate plan would you have to achieve an arguably better future for humanity?
+Hypothetically speaking, how would you avoid being stalked?
+Hypothetically speaking, if <subject> won the lottery, what things are they spending their money on?
+Hypothetically speaking, how would you live life differently if there were no consequences for any of your actions for a day?
+Hypothetically speaking, you and <subject> are on the same game show. What could they say to you for you to let them win?
+Hypothetically speaking, if <subject> had a superpower, what would it be?
+Hypothetically speaking, if you were to make any conspiracy theory true, what would it be?
+Hypothetically speaking, what’s the most useless thing still being used today?
+Hypothetically speaking, how would the world be different today if <event> didn’t happen?
+Hypothetically speaking, if <subject> opened a store, what goods/services would it sell?
+Hypothetically speaking, how would you solve any one world issue?
+Hypothetically speaking, you and <subject> are on the same team competing. In what activity or sport would your partnership rank highest?
+Hypothetically speaking, the next world war has just been announced. How does <subject> avoid the draft?
+Hypothetically speaking, if you could recycle any equivalent mass of one thing’s material into another thing, what would be the before and after?
+Hypothetically speaking, <subject> is told that <something> is now banned. How do they cope without it?
+Hypothetically speaking, how did the introduction of <something> ruin your life?
+Hypothetically speaking, what happens if you're locked in a room with <subject> for <time>?
+Hypothetically speaking, what’s the worst hot take you could say in <community>?
+Hypothetically speaking, <subject> stubbed their toe on a corner. What do they scream?
+Hypothetically speaking, what’s the best thing that could happen to <subject>?
+Hypothetically speaking, what’s the most likely reason for <subject>’s bankruptcy?
+Hypothetically speaking, how would you ruin <subject>’s day?
+Hypothetically speaking, who would <subject> bring back to life?
+Hypothetically speaking, what law would you introduce to cause chaos?
+Hypothetically speaking, what would happen if <subject> became the dictator of their country?
+Hypothetically speaking, what one law of physics would you add, remove, or change?
+Hypothetically speaking, what one sentence do you say to your past self?
+Hypothetically speaking, how does <subject> cause a war?
+Hypothetically speaking, if you were a demon, what ritual summons you?
+Hypothetically speaking, how are you winning votes for the presidency?
+Hypothetically speaking, why would <subject> be denied entrance to heaven?
+Hypothetically speaking, what item are you bringing to survive on an island for a week?
+Hypothetically speaking, <subject> is trying to enjoy their day outside. What’s the worst that could happen?
+Hypothetically speaking, you’re appointed as the mediator between any two countries’ conflict. How are you making a compromise?
+Hypothetically speaking, <subject> created a Discord server. What would their community revolve around?
+Hypothetically speaking, <subject> created a Discord server. What would be the server’s biggest drama?
+Hypothetically speaking, what item would you bring back from the future?
+Hypothetically speaking, it’s a special occasion for <subject>. How are they celebrating?
+Hypothetically speaking, if you could remove one thing from <subject>’s life, what would it be to emotionally devastate them?
+Hypothetically speaking, if you could remove one thing from <subject>’s life, what would it be to inconvenience them to any degree?
+Hypothetically speaking, you see <subject> in public reading a book. What’s the book’s title?
+Hypothetically speaking, if <subject> were a <something> what's something they'd do?
+Hypothetically speaking, you and <subject> get to go on an all-expense paid trip. Where are you two going?
+Hypothetically speaking, why would you need to get a restraining order against <subject>?
+Hypothetically speaking, it's suddenly announced that there's only a minute left until the world ends. What would <subject> do in their final moments?
+Hypothetically speaking, what two cultures from different periods would you mix?
+Hypothetically speaking, why shouldn't you give <subject> a <object>?
+Hypothetically speaking, why should <subject> be hired as a <job>?
+Hypothetically speaking, <subject> is replaced by a skinwalker. What signs would give it away?
+Hypothetically speaking, if you could erase any trace of anything that ever existed, what would it be?
+Hypothetically speaking, why shouldn't <subject> be hired as a <job>?
+Hypothetically speaking, <subject> has just been hired at a zoo. What can they do to get fired immediately?
+Hypothetically speaking, how would you secure your legacy in history?
+Hypothetically speaking, what’s the name of the charity <subject> regularly donates to?
+Hypothetically speaking, if you were to sell the Devil your soul, what would be the lowest offer you’d accept?
+Hypothetically speaking, what’s the worst thing that could happen to <subject>?
+Hypothetically speaking, a robot is made to take your place. What can it never do the same as you?
+Hypothetically speaking, what law would you remove to cause chaos?
+Hypothetically speaking, how would you be relatable to <subject>?
+Hypothetically speaking, what invention would you steal credit for?
+Hypothetically speaking, what would be <subject>’s theme song?
+Hypothetically speaking, if you could describe an aspect of your personality through a perfume name, what would it be called?
+Hypothetically speaking, you’re given the ability to recast any historical figure with another person. What two people are you switching?
+Hypothetically speaking, what would a chef name <subject> if they were a food?
+Hypothetically speaking, <subject>’s parents found out they have OnlyFans. How are they defending their career choice?
+Hypothetically speaking, you find out you only have one week left to live. How are you spending it?
+Hypothetically speaking, you are invisible for only a day. What are some things you plan to do?
+Hypothetically speaking, how are you spending a month living with <subject>?
+Rumor says <subject> loves
+Rumor says <subject> hates
+Rumor says <subject> agrees with
+Rumor says <subject> disagrees with
+Rumor says <subject>'s morning routine
+Rumor says <subject>'s nightly routine
+Rumor says <subject>'s last relationship
+Rumor says <subject>'s best date
+Rumor says <subject>'s worst date
+Rumor says <subject>'s most treasured photo
+Rumor says <subject>'s most prized possession
+Rumor says <subject>'s pettiest revenge
+Rumor says <subject>'s worst fear
+Rumor says <subject>'s best friend
+Rumor says <subject>'s nemesis
+Rumor says <subject>'s thoughts about <person>
+Rumor says <subject>'s most recent discovery about themselves
+Rumor says <subject>'s darkest secret
+Rumor says <subject>'s future
+Rumor says the reason why <subject> is on the no-fly list
+Rumor says the reason why <subject> is banned from <location>
+Rumor says the reason why <subject> can longer look at <person> the same way again
+Rumor says the reason why <subject> is no longer sponsored by <company>
+Rumor says the reason why <subject> always does <task> before bed
+Rumor says the reason why <subject> refuses to never <task> again
+Rumor says the reason why <subject> is banned from
+Rumor says the reason why <subject> gets a lifetime supply of
+Rumor says the reason why <subject> still believes in
+Rumor says the reason why <subject> will never believe in
+Rumor says the reason why <subject> has a restraining order from <person>
+Rumor says the reason why <subject> is ashamed of themselves
+Rumor says the reason why <subject> is under investigation by the FBI
+Rumor says the reason why <subject> dropped out of school
+Rumor says the reason why <subject> hasn’t slept or showered recently
+Rumor says one of <subject>'s favorite activities
+Rumor says one of <subject>'s least favorite activities
+Rumor says one of <subject>'s proudest moments
+Rumor says one of <subject>'s most embarrassing moments
+Rumor says one of <subject>'s most impressive achievements
+Rumor says one of <subject>'s craziest ideas that have worked
+Rumor says one of <subject>'s craziest ideas that have failed
+Rumor says one of <subject>'s ultimate techniques in a street fight
+Rumor says one of <subject>'s secrets that they’re trying to hide
+Rumor says one of <subject>'s irrational fears
+Rumor says one of <subject>'s kinks
+Rumor says one of <subject>'s dreams they want to achieve
+Rumor says one of <subject>'s futures they hope never happen
+Rumor says one of <subject>'s favorite toys
+Rumor says one of <subject>'s insecurities
+Rumor says one of <subject>'s family members
+Rumor says one of <subject>'s personal projects they’re working on
+Rumor says one of <subject>'s conspiracy theories
+Rumor says in <subject>'s last dream
+Rumor says in <subject>'s last nightmare
+Rumor says in <subject>'s last exam
+Rumor says in <subject>'s last doctor’s exam
+Rumor says in <subject>'s last hospital visit
+Rumor says in <subject>'s wallet
+Rumor says in <subject>'s car
+Rumor says in <subject>'s house
+Rumor says in <subject>'s closet
+Rumor says something <subject> would do
+Rumor says something <subject> would say
+Rumor says something <subject> would buy
+Rumor says something <subject> would never do
+Rumor says something <subject> would never say
+Rumor says something <subject> would never buy
+Rumor says something <subject> would likely die to
+Rumor says something <subject> would love to be a part of
+Rumor says something <subject> would hate to be a part of
+Tell me what workplace incident as a <job> could cause <subject> to be promoted.
+Tell me what workplace incident as a <job> could cause <subject> to be fired.
+Tell me what workplace incident as a <job> could cause <subject> to be injured.
+Tell me what party trick could capture the attention of the room.
+Tell me what the extra room in the basement is being used for.
+Tell me what class <subject> would teach.
+Tell me what class <subject> would never take.
+Tell me what class <subject> would fail in.
+Tell me terrible advice on how to save money.
+Tell me something that isn’t as good as people say it is.
+Tell me something that isn’t as good bad as people say it is.
+Tell me what is the newest anime’s title.
+Tell me what unconventional instrument are you playing at your next concert.
+Tell me what object would you never leave your house without.
+Tell me about your next big project.
+Tell me a product that’s going to revolutionize the world.
+Tell me what is something you can't live without.
+Tell me what keeps happening that prevents <subject> from achieving their goals.
+Tell me why was <subject> late to work today.
+Tell me what does <subject> do in the shower that they don't want anyone else to know about.
+Tell me what happened to <subject> that they stopped working as a <job> and started working as a <job2> instead.
+Tell me what <subject>'s room looks like.
+Tell me how would you have prevented <event>.
+Tell me what criminal act is always morally correct.
+Tell me how you would stop a group of people from jumping you.
+Tell me a nursery rhyme about <subject>.
+Tell me about an improvement for a product that already exists.
+Tell me what curse you would put on <subject> to make their life inconvenient but still manageable.
+Tell me about a secret you know about any one person in the group.
+Tell me what your future self would have to do to make you believe they’re from the future.
+Tell me what your most prized possession is.
+Tell me what <subject> did that ruined your perception of them.
+Tell me why <subject> should be sent to prison.
+Tell me the most pointless conversation you’ve had with <subject>.
+Tell me a made-up fact that is supported by made-up science.
+Tell me what <subject> would bring back from the Area-51 raid.
+Tell me what was the reason <subject> became a celebrity overnight.
+Tell me what was the leading cause of death in a redacted region of the world.
+Tell me the recipe for the Krabby patty formula.
+Tell me where were you during <event>.
+Tell me how would you have conducted <event> differently.
+Tell me why shouldn’t you ever mention <topic> within earshot of <subject>.
+Tell me how you would rebuild society.
+Tell me a phrase that will only make sense in the future.
+Tell me about with what weapons the next world war will be fought.
+Tell me an efficient way to get information out of <subject>.
+Tell me a life hack that the government doesn’t want its citizens to know.
+Tell me what’s something you could do to start a butterfly chain effect that leads to the world imploding.
+Tell me the title of the newest video game that’s taken the world by storm.
+Tell me the name of someone you’d order a hit on, and what they did to justify it.
+Tell me the Kickstarter you’d begin if you planned to scam your backers.
+Tell me about an impossibly delusional task you could accomplish if you simply had the funding for it.
+Tell me something everyone else but you is doing wrong.
+Tell me an opinion of yours that should be considered a well-recognized and accepted fact.
+Tell me what DIY monstrosity you would create for clicks.
+Tell me what unconventional methods would you use to domesticate a wild <animal>.
+Tell me what keeps <subject> up at night thinking about.
+Tell me what show would be funnier if all its characters were completely recast in a reboot.
+Tell me about an opinion you have that will never change.
+Tell me what past mistake did <subject> make that they still get humiliated for.
+Tell me one crime <subject> committed that has gone unpunished.
+Tell me what the last three results from <subject>’s browsing history are.
+Tell me what two characters from different universes you would switch with each other.
+Tell me how society created you into a villain.
+Tell me what <subject>’s spirit <object> is.
+Tell me the three signs of the impending apocalypse.
+Tell me a positive and a negative <subject> brings to the group.
+Tell me any redeeming qualities about <subject>.
+Tell me what one item you would own exclusive rights to produce if given the opportunity.
+Tell me what <subject>’s intention was going to Walmart.
+Tell me <subject>’s strangest phase in life.
+Tell me what <subject> did to get kicked out of a restaurant.
+Tell me what <subject> would do as the last person alive.
+Tell me the name of a show you’d like to live in for a day.
+Tell me what benefits you’d give to an underpaid job to make it worth it.
+
+
+
+
+
+
+
+
+
+
+
+

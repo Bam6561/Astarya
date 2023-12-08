@@ -8,7 +8,7 @@ import commands.owner.Settings;
  * CommandTemplate does something. We just don't know what yet.
  *
  * @author Danny Nguyen
- * @version 1.6.3
+ * @version 1.6.11
  * @since 1.0
  */
 public class CommandTemplate extends Command {
@@ -23,10 +23,13 @@ public class CommandTemplate extends Command {
   /**
    * This method also does something. Mysterious.
    *
-   * @param ce the command event
+   * @param ce object containing information about the command event
    */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
+
+    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+    int numberOfParameters = parameters.length - 1;
   }
 }

@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.10
+ * @version 1.6.11
  * @since 1.0.0
  */
 public class MessageLog extends ListenerAdapter {
@@ -71,11 +71,11 @@ public class MessageLog extends ListenerAdapter {
     boolean isTwitterLink = (checkMessage.contains("https://twitter.com/") || checkMessage.contains("https://x.com/"));
     boolean isTwitterMedia = checkMessage.contains("/status/");
     boolean isRedditMedia = checkMessage.contains("https://www.reddit.com/");
-    boolean isInstagramReel = checkMessage.contains("https://www.instagram.com/reel");
+    boolean isInstagramMedia = checkMessage.contains("https://www.instagram.com/");
     boolean isPixiv = checkMessage.contains("https://www.pixiv.net/");
 
     // Replace domain and delete original message if permissions allow
-    if ((isTwitterLink && isTwitterMedia) || isRedditMedia || isInstagramReel || isPixiv) {
+    if ((isTwitterLink && isTwitterMedia) || isRedditMedia || isInstagramMedia || isPixiv) {
       message = "[" + messageE.getAuthor().getAsTag() + "]\n" + message;
 
       if (isTwitterMedia){
@@ -85,7 +85,7 @@ public class MessageLog extends ListenerAdapter {
       if (isRedditMedia) {
         message = message.replace("www.reddit", "www.rxddit");
       }
-      if (isInstagramReel) {
+      if (isInstagramMedia) {
         message = message.replace("www.instagram", "www.ddinstagram");
       }
       if (isPixiv){

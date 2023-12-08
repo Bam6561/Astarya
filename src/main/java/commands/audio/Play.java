@@ -101,7 +101,6 @@ public class Play extends Command {
    * @param ce object containing information about the command event
    */
   private void parsePlayRequest(CommandEvent ce) {
-    // Parse message for parameters
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
     int numberOfParameters = parameters.length - 1;
 
