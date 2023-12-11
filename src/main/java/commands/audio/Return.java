@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * and provides an option to return a recently skipped track to the queue.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.1
  * @since 1.5.2
  */
 public class Return extends Command {
@@ -136,7 +136,7 @@ public class Return extends Command {
 
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
       audioScheduler.queue(skippedTrack, requester);
-      skippedTracksStack.remove(skippedTrack);
+      skippedTracksStack.remove(skippedTracksStackIndex - 1);
     } catch (IndexOutOfBoundsException e) {
       ce.getChannel().sendMessage("Queue number does not exist.").queue();
     }

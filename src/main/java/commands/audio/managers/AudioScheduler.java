@@ -54,6 +54,7 @@ public class AudioScheduler extends AudioEventAdapter {
     if (!this.trackQueue.isEmpty()) {
       this.audioPlayer.startTrack(this.trackQueue.get(0).getAudioTrack(), false);
       this.trackQueue.remove(0);
+    } else if (this.audioPlayerLooped) {
     } else { // Update presence when not playing audio
       this.audioPlayer.stopTrack();
       Astarya Astarya = new Astarya();

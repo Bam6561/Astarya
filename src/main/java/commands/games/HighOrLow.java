@@ -109,7 +109,8 @@ public class HighOrLow extends Command {
     // Add reactions
     waiter.waitForEvent(MessageReceivedEvent.class,
         w -> !w.getMessage().getEmbeds().isEmpty()
-            && (w.getMessage().getEmbeds().get(0).getDescription().contains("Will the next number I think of be higher or lower?")),
+            && (w.getMessage().getEmbeds().get(0).getDescription()
+            .contains("Will the next number I think of be higher or lower?")),
         w -> {
           w.getMessage().addReaction(Emoji.fromFormatted("🔼")).queue();
           w.getMessage().addReaction(Emoji.fromFormatted("🔽")).queue();

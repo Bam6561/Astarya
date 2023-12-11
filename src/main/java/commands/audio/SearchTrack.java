@@ -7,7 +7,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlaybackManager;
 import commands.audio.managers.PlayerManager;
-import commands.audio.objects.TrackQueueIndex;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -20,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * to add to the queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.1
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
@@ -55,10 +54,6 @@ public class SearchTrack extends Command {
       if (userInSameVoiceChannel) {
         processSearchTrackRequest(ce);
         setInvokerUserId(Long.parseLong(ce.getAuthor().getId())); // Lock searchTrack command request to requester
-        try { // Small delay to ignore command invocation as user response
-          Thread.sleep(50);
-        } catch (InterruptedException e) {
-        }
         awaitUserResponse(ce);
       } else {
         ce.getChannel().sendMessage("User not in the same voice channel.").queue();
@@ -98,7 +93,7 @@ public class SearchTrack extends Command {
    * @throws NumberFormatException user provided non-integer value
    */
   private void awaitUserResponse(CommandEvent ce) {
-    waiter.waitForEvent(MessageReceivedEvent.class,
+    ce.getChannel().sendTyping().queue(response -> waiter.waitForEvent(MessageReceivedEvent.class,
         // Message sent matches invoker user's Id
         w -> Long.parseLong(w.getMessage().getAuthor().getId()) == getInvokerUserId(),
         w -> {
@@ -113,7 +108,7 @@ public class SearchTrack extends Command {
         }, 15, TimeUnit.SECONDS, () -> { // Timeout
           setInvokerUserId(0);
           ce.getChannel().sendMessage("No response. Search timed out.").queue();
-        });
+        }));
   }
 
   /**
@@ -128,14 +123,12 @@ public class SearchTrack extends Command {
       PlaybackManager playbackManager = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild());
       AudioScheduler audioScheduler = playbackManager.audioScheduler;
       ArrayList<AudioTrack> searchTrackResults = PlayerManager.getINSTANCE().getSearchTrackResults();
-      //ArrayList<AudioTrack> searchTrackResults = PlayerManager.getINSTANCE().getSearchTrackResults();
 
       // Displayed index to users are different from data index, so subtract 1
       AudioTrack track = searchTrackResults.get(searchTrackResultsIndex - 1);
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
 
-
-      audioScheduler.getTrackQueue().add(new TrackQueueIndex(track, requester));
+      audioScheduler.queue(track, requester);
 
       // SearchTrack confirmation
       String trackDuration = longTimeConversion(track.getDuration());
