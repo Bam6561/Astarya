@@ -5,6 +5,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
+import commands.audio.objects.TrackQueueIndex;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  * and provides an option to return a recently skipped track to the queue.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.0
  * @since 1.5.2
  */
 public class Return extends Command {
@@ -87,22 +88,22 @@ public class Return extends Command {
    */
   private void displaySkippedTracksStack(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-    ArrayList<AudioTrack> skippedStack = audioScheduler.getSkippedStack();
+    ArrayList<TrackQueueIndex> skippedTracks = audioScheduler.getSkippedTracksStack();
 
-    boolean skippedStackNotEmpty = !skippedStack.isEmpty();
-    if (skippedStackNotEmpty) {
+    boolean skippedTracksStackNotEmpty = !skippedTracks.isEmpty();
+    if (skippedTracksStackNotEmpty) {
       // Build skipped stack page
-      StringBuilder skippedStackPage = new StringBuilder();
-      for (int i = 0; i < skippedStack.size(); i++) {
-        String trackDuration = longTimeConversion(skippedStack.get(i).getDuration());
-        skippedStackPage.append("**[").append(i + 1).append("]** `").
-            append(skippedStack.get(i).getInfo().title)
+      StringBuilder skippedTracksStackPage = new StringBuilder();
+      for (int i = 0; i < skippedTracks.size(); i++) {
+        String trackDuration = longTimeConversion(skippedTracks.get(i).getAudioTrack().getDuration());
+        skippedTracksStackPage.append("**[").append(i + 1).append("]** `").
+            append(skippedTracks.get(i).getAudioTrack().getInfo().title)
             .append("` {*").append(trackDuration).append("*} ").append("\n");
       }
 
       EmbedBuilder display = new EmbedBuilder();
       display.setAuthor("Recently Skipped");
-      display.addField("**Tracks:**", String.valueOf(skippedStackPage), false);
+      display.addField("**Tracks:**", String.valueOf(skippedTracksStackPage), false);
       Settings.sendEmbed(ce, display);
     } else {
       ce.getChannel().sendMessage("There are no recently skipped tracks.").queue();
@@ -112,17 +113,17 @@ public class Return extends Command {
   /**
    * Returns a track from recently skipped tracks stack.
    *
-   * @param ce                object containing information about the command event
-   * @param skippedStackIndex track index in the skipped tracks stack to be returned
+   * @param ce                      object containing information about the command event
+   * @param skippedTracksStackIndex track index in the skipped tracks stack to be returned
    * @throws IndexOutOfBoundsException user provided index out of range of skipped tracks stack
    */
-  private void returnTrackRequest(CommandEvent ce, int skippedStackIndex) {
+  private void returnTrackRequest(CommandEvent ce, int skippedTracksStackIndex) {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-      ArrayList<AudioTrack> skippedStack = audioScheduler.getSkippedStack();
+      ArrayList<TrackQueueIndex> skippedTracksStack = audioScheduler.getSkippedTracksStack();
 
       // Displayed index to users are different from data index, so subtract 1
-      AudioTrack skippedTrack = skippedStack.get(skippedStackIndex - 1);
+      AudioTrack skippedTrack = skippedTracksStack.get(skippedTracksStackIndex - 1).getAudioTrack();
 
       // Return confirmation
       StringBuilder returnTrackConfirmation = new StringBuilder();
@@ -133,8 +134,9 @@ public class Return extends Command {
           .append("[").append(ce.getAuthor().getAsTag()).append("]");
       ce.getChannel().sendMessage(returnTrackConfirmation).queue();
 
-      audioScheduler.queue(skippedTrack);
-      audioScheduler.getSkippedStack().remove(skippedTrack);
+      String requester = "[" + ce.getAuthor().getAsTag() + "]";
+      audioScheduler.queue(skippedTrack, requester);
+      skippedTracksStack.remove(skippedTrack);
     } catch (IndexOutOfBoundsException e) {
       ce.getChannel().sendMessage("Queue number does not exist.").queue();
     }

@@ -5,6 +5,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
+import commands.audio.objects.TrackQueueIndex;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  * PlayNext is a command invocation that sets the next track to be played in the queue.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.0
  * @since 1.2.13
  */
 public class PlayNext extends Command {
@@ -82,25 +83,24 @@ public class PlayNext extends Command {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
 
-      // Storage objects to access
-      ArrayList<AudioTrack> trackQueue = audioScheduler.getTrackQueue();
-      ArrayList<String> requesterList = audioScheduler.getRequesterList();
+      ArrayList<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
 
       // Displayed index to users are different from data index so subtract 1
       queueNumber = queueNumber - 1;
 
-      AudioTrack audioTrack = trackQueue.get(queueNumber);
+      AudioTrack audioTrack = trackQueue.get(queueNumber).getAudioTrack();
       String trackDuration = longTimeConversion(audioTrack.getDuration());
 
       trackQueue.remove(queueNumber);
-      trackQueue.add(0, audioTrack);
+      String requester = "[" + ce.getAuthor().getAsTag() + "]";
+      trackQueue.add(0, new TrackQueueIndex(audioTrack, requester));
 
       // Send playNext confirmation
       StringBuilder playNextConfirmation = new StringBuilder();
       playNextConfirmation.append("**Play Next:** **[").append(queueNumber + 1).
           append("]** `").append(audioTrack.getInfo().title).
           append("` {*").append(trackDuration).append("*} ").
-          append(requesterList.get(queueNumber)).append(" [").
+          append(trackQueue.get(queueNumber).getRequester()).append(" [").
           append(ce.getAuthor().getAsTag()).append("]");
       ce.getChannel().sendMessage(playNextConfirmation).queue();
     } catch (IndexOutOfBoundsException error) {

@@ -5,6 +5,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
+import commands.audio.objects.TrackQueueIndex;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
@@ -12,7 +13,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * Skip is a command invocation that skips the currently playing track in the audio player.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.7.0
  * @since 1.2.4
  */
 public class Skip extends Command {
@@ -57,7 +58,8 @@ public class Skip extends Command {
 
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
-      audioScheduler.addToSkippedStack(audioPlayer.getPlayingTrack().makeClone());
+      String requester = "[" + ce.getAuthor().getAsTag() + "]";
+      audioScheduler.addToSkippedTracksStack(new TrackQueueIndex(audioPlayer.getPlayingTrack().makeClone(), requester));
       audioScheduler.nextTrack();
       StringBuilder skipTrackConfirmation = new StringBuilder();
       skipTrackConfirmation.append("**Skip:** [").append(ce.getAuthor().getAsTag()).append("]");

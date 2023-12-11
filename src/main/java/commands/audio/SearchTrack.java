@@ -7,6 +7,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlaybackManager;
 import commands.audio.managers.PlayerManager;
+import commands.audio.objects.TrackQueueIndex;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * to add to the queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.0
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
@@ -133,9 +134,8 @@ public class SearchTrack extends Command {
       AudioTrack track = searchTrackResults.get(searchTrackResultsIndex - 1);
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
 
-      // Add track and requester to queue
-      audioScheduler.queue(track);
-      audioScheduler.getRequesterList().add(requester);
+
+      audioScheduler.getTrackQueue().add(new TrackQueueIndex(track, requester));
 
       // SearchTrack confirmation
       String trackDuration = longTimeConversion(track.getDuration());

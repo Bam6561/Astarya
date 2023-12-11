@@ -2,9 +2,9 @@ package commands.audio;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
+import commands.audio.objects.TrackQueueIndex;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
@@ -16,7 +16,7 @@ import java.util.Random;
  * Shuffle is a command invocation that shuffles the track queue.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.7.0
  * @since 1.2.6
  */
 public class Shuffle extends Command {
@@ -58,15 +58,12 @@ public class Shuffle extends Command {
   private void shuffleQueue(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
 
-    // Storage objects to access
-    ArrayList<AudioTrack> trackQueue = audioScheduler.getTrackQueue();
-    ArrayList<String> requesterList = audioScheduler.getRequesterList();
+    ArrayList<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
 
     Random rand = new Random();
     for (int i = 0; i < trackQueue.size(); i++) {
       int indexSwitch = rand.nextInt(trackQueue.size());
       Collections.swap(trackQueue, i, indexSwitch);
-      Collections.swap(requesterList, i, indexSwitch);
     }
 
     StringBuilder shuffleConfirmation = new StringBuilder();

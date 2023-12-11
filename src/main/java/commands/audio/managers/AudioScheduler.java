@@ -1,10 +1,11 @@
 package commands.audio.managers;
 
+import astarya.Astarya;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import astarya.Astarya;
+import commands.audio.objects.TrackQueueIndex;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 
@@ -15,34 +16,33 @@ import java.util.ArrayList;
  * player's functionality related to playing tracks and track order.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.7.0
  * @since 1.1.0
  */
+
 public class AudioScheduler extends AudioEventAdapter {
   private final AudioPlayer audioPlayer;
-  private ArrayList<AudioTrack> trackQueue;
-  private ArrayList<String> requesterList;
-  private ArrayList<AudioTrack> skippedStack;
-  private Boolean audioPlayerLoopState = false;
+  private ArrayList<TrackQueueIndex> trackQueue;
+  private ArrayList<TrackQueueIndex> skippedTracksStack;
+  private Boolean audioPlayerLooped = false;
 
   public AudioScheduler(AudioPlayer audioPlayer) {
     this.audioPlayer = audioPlayer;
     this.trackQueue = new ArrayList<>();
-    this.requesterList = new ArrayList<>();
-    this.skippedStack = new ArrayList<>();
+    this.skippedTracksStack = new ArrayList<>();
   }
 
   /**
    * Adds a track to the track queue, and if the audio player isn't
    * currently playing anything, then play the track immediately.
    *
-   * @param queuedTrack track to be added to the queue
+   * @param track track to be added to the queue
    */
-  public void queue(AudioTrack queuedTrack) {
+  public void queue(AudioTrack track, String requester) {
     if (this.audioPlayer.getPlayingTrack() == null) {
-      this.audioPlayer.startTrack(queuedTrack, true);
+      this.audioPlayer.startTrack(track, true);
     } else {
-      this.trackQueue.add(queuedTrack);
+      this.trackQueue.add(new TrackQueueIndex(track, requester));
     }
   }
 
@@ -52,11 +52,8 @@ public class AudioScheduler extends AudioEventAdapter {
    */
   public void nextTrack() {
     if (!this.trackQueue.isEmpty()) {
-      this.audioPlayer.startTrack(this.trackQueue.get(0), false);
+      this.audioPlayer.startTrack(this.trackQueue.get(0).getAudioTrack(), false);
       this.trackQueue.remove(0);
-      if (!this.requesterList.isEmpty()) {
-        this.requesterList.remove(0);
-      }
     } else { // Update presence when not playing audio
       this.audioPlayer.stopTrack();
       Astarya Astarya = new Astarya();
@@ -73,7 +70,7 @@ public class AudioScheduler extends AudioEventAdapter {
    */
   @Override
   public void onTrackStart(AudioPlayer audioPlayer, AudioTrack currentlyPlayingTrack) {
-    if (!this.audioPlayerLoopState) {
+    if (!this.audioPlayerLooped) {
       Astarya Astarya = new Astarya();
       Astarya.getApi().getPresence().setActivity(Activity.listening(currentlyPlayingTrack.getInfo().title));
       Astarya.getApi().getPresence().setStatus(OnlineStatus.ONLINE);
@@ -90,9 +87,8 @@ public class AudioScheduler extends AudioEventAdapter {
   @Override
   public void onTrackEnd(AudioPlayer audioPlayer, AudioTrack loopedTrack, AudioTrackEndReason endReason) {
     if (endReason.mayStartNext) {
-      if (this.audioPlayerLoopState) {
+      if (this.audioPlayerLooped) {
         this.audioPlayer.startTrack(loopedTrack.makeClone(), false);
-        return;
       }
       nextTrack();
     }
@@ -108,11 +104,11 @@ public class AudioScheduler extends AudioEventAdapter {
    *
    * @param skippedTrack track that was recently skipped
    */
-  public void addToSkippedStack(AudioTrack skippedTrack) {
-    this.skippedStack.add(0, skippedTrack);
-    boolean skippedStackOverLimit = skippedStack.size() > 10;
-    if (skippedStackOverLimit) {
-      skippedStack.remove(9);
+  public void addToSkippedTracksStack(TrackQueueIndex skippedTrack) {
+    this.skippedTracksStack.add(skippedTrack);
+    boolean skippedTracksStackOverLimit = skippedTracksStack.size() > 10;
+    if (skippedTracksStackOverLimit) {
+      skippedTracksStack.remove(9);
     }
   }
 
@@ -120,27 +116,19 @@ public class AudioScheduler extends AudioEventAdapter {
     return this.audioPlayer;
   }
 
-  public ArrayList<AudioTrack> getTrackQueue() {
+  public ArrayList<TrackQueueIndex> getTrackQueue() {
     return this.trackQueue;
   }
 
-  public ArrayList<String> getRequesterList() {
-    return this.requesterList;
+  public ArrayList<TrackQueueIndex> getSkippedTracksStack() {
+    return this.skippedTracksStack;
   }
 
-  public ArrayList<AudioTrack> getSkippedStack() {
-    return this.skippedStack;
+  public boolean getAudioPlayerLooped() {
+    return this.audioPlayerLooped;
   }
 
-  public boolean getAudioPlayerLoopState() {
-    return this.audioPlayerLoopState;
-  }
-
-  public void setAudioPlayerLoopState(boolean audioPlayerLoopState) {
-    this.audioPlayerLoopState = audioPlayerLoopState;
-  }
-
-  public void addToRequesterList(String requester) {
-    this.requesterList.add(requester);
+  public void setAudioPlayerLooped(boolean audioPlayerLooped) {
+    this.audioPlayerLooped = audioPlayerLooped;
   }
 }

@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
+import commands.audio.objects.TrackQueueIndex;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  * of tracks queued and what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.0
  * @since 1.2.0
  */
 public class Queue extends Command {
@@ -73,9 +74,7 @@ public class Queue extends Command {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
 
-    // Storage objects to access
-    ArrayList<AudioTrack> trackQueue = audioScheduler.getTrackQueue();
-    ArrayList<String> requesterList = audioScheduler.getRequesterList();
+    ArrayList<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
 
     if (!trackQueue.isEmpty()) {
       // Adjust page requested, get number of total pages, and find first queue index on the page
@@ -83,7 +82,7 @@ public class Queue extends Command {
 
       // Populate page with track entries
       StringBuilder queuePage = new StringBuilder();
-      createPage(queuePage, trackQueue, requesterList);
+      createPage(queuePage, trackQueue);
 
       // Add nowPlaying on queue page
       StringBuilder queuePageEmbedNowPlaying = new StringBuilder();
@@ -166,23 +165,21 @@ public class Queue extends Command {
    * next ten indices or the last track entry  in the track queue.
    * </p>
    *
-   * @param queuePage     contents of the queue page
-   * @param trackQueue    ArrayList containing the track queue
-   * @param requesterList ArrayList containing the track requesters
+   * @param queuePage  contents of the queue page
+   * @param trackQueue tracks in the queue
    */
-  private void createPage(StringBuilder queuePage, ArrayList<AudioTrack> trackQueue,
-                          ArrayList<String> requesterList) {
+  private void createPage(StringBuilder queuePage, ArrayList<TrackQueueIndex> trackQueue) {
     // Calculate last track entry to be displayed
     int numberOfTracksInQueue = trackQueue.size();
     int lastQueueIndexOnPage = Math.min((getFirstQueueIndexOnPage() + 10), numberOfTracksInQueue);
 
     // Build contents of queue page embed
     for (int i = firstQueueIndexOnPage; i < lastQueueIndexOnPage; i++) {
-      String trackDuration = longTimeConversion(trackQueue.get(i).getDuration());
+      String trackDuration = longTimeConversion(trackQueue.get(i).getAudioTrack().getDuration());
       queuePage.append("**[").append(i + 1).append("]** `").
-          append(trackQueue.get(i).getInfo().title)
+          append(trackQueue.get(i).getAudioTrack().getInfo().title)
           .append("` {*").append(trackDuration).append("*} ").
-          append(requesterList.get(i)).append("\n");
+          append(trackQueue.get(i).getRequester()).append("\n");
     }
   }
 
@@ -223,7 +220,7 @@ public class Queue extends Command {
   private void audioPlayerIsPausedOrLoopedNotice(AudioScheduler audioScheduler,
                                                  AudioPlayer audioPlayer, StringBuilder nowPlaying) {
     boolean audioPlayerIsPaused = audioPlayer.isPaused();
-    boolean audioPlayerIsLooped = audioScheduler.getAudioPlayerLoopState();
+    boolean audioPlayerIsLooped = audioScheduler.getAudioPlayerLooped();
     if (audioPlayerIsPaused) {
       nowPlaying.append("(Paused) ");
     }

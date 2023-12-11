@@ -12,7 +12,7 @@ import commands.owner.Settings;
  * NowPlaying is a command invocation that shows what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.0
  * @since 1.2.3
  */
 public class NowPlaying extends Command {
@@ -72,7 +72,7 @@ public class NowPlaying extends Command {
   private void audioPlayerIsPausedOrLoopedNotice(AudioScheduler audioScheduler, AudioPlayer audioPlayer,
                                                  StringBuilder nowPlaying) {
     boolean audioPlayerIsPaused = audioPlayer.isPaused();
-    boolean audioPlayerIsLooped = audioScheduler.getAudioPlayerLoopState();
+    boolean audioPlayerIsLooped = audioScheduler.getAudioPlayerLooped();
 
     if (audioPlayerIsPaused) {
       nowPlaying.append("(Paused) ");

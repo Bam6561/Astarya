@@ -5,6 +5,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
+import commands.audio.objects.TrackQueueIndex;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
@@ -15,7 +16,7 @@ import java.util.Collections;
  * Swap is a command invocation that swaps the position of a track in queue with another.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.0
  * @since 1.2.14
  */
 public class Swap extends Command {
@@ -88,13 +89,11 @@ public class Swap extends Command {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
 
-      // Storage objects to access
-      ArrayList<AudioTrack> trackQueue = audioScheduler.getTrackQueue();
-      ArrayList<String> requesterList = audioScheduler.getRequesterList();
+      ArrayList<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
 
       // Audio track objects
-      AudioTrack originalTrack = trackQueue.get(originalIndex);
-      AudioTrack swapTrack = trackQueue.get(swapIndex);
+      AudioTrack originalTrack = trackQueue.get(originalIndex).getAudioTrack();
+      AudioTrack swapTrack = trackQueue.get(swapIndex).getAudioTrack();
 
       Collections.swap(trackQueue, originalIndex, swapIndex);
 
@@ -108,10 +107,10 @@ public class Swap extends Command {
           append(ce.getAuthor().getAsTag()).append("]\n**[").append(originalIndex + 1).
           append("]** `").append(originalTrack.getInfo().title).
           append("` {*").append(originalTrackDuration).append("*} ").
-          append(requesterList.get(originalIndex)).append("\n**[").
+          append(trackQueue.get(originalIndex).getRequester()).append("\n**[").
           append(swapIndex + 1).append("]** `").append(swapTrack.getInfo().title).
           append("` {*").append(swapTrackDuration).append("*} ").
-          append(requesterList.get(swapIndex));
+          append(trackQueue.get(swapIndex).getRequester());
       ce.getChannel().sendMessage(swapConfirmation).queue();
     } catch (IndexOutOfBoundsException e) {
       ce.getChannel().sendMessage("Queue number does not exist.").queue();

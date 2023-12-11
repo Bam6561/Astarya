@@ -118,7 +118,7 @@ public class Play extends Command {
    * of tracks within Spotify track, playlist, and album links to play from YouTube.
    * </p>
    *
-   * @param ce        object containing information about the command event
+   * @param ce         object containing information about the command event
    * @param parameters user provided parameters
    */
   private void handleSpotifyAndMediaLinks(CommandEvent ce, String[] parameters) {
@@ -156,7 +156,7 @@ public class Play extends Command {
   /**
    * Builds a YouTube search query using user provided parameters and adds its first result to the track queue.
    *
-   * @param ce                object containing information about the command event
+   * @param ce                 object containing information about the command event
    * @param parameters         user provided parameters
    * @param numberOfParameters number of user provided parameters
    */
@@ -173,7 +173,7 @@ public class Play extends Command {
    * Checks if the Spotify track link was formatted correctly before adding the track to the queue.
    *
    * @param ce                  object containing information about the command event
-   * @param parameters           user provided parameters
+   * @param parameters          user provided parameters
    * @param spotifyClientId     Spotify API key's client Id
    * @param spotifyClientSecret Spotify API key's client secret
    */
@@ -191,7 +191,7 @@ public class Play extends Command {
    * Checks if the Spotify playlist link was formatted correctly before adding the track to the queue.
    *
    * @param ce                  object containing information about the command event
-   * @param parameters           user provided parameters
+   * @param parameters          user provided parameters
    * @param spotifyClientId     Spotify API key's client Id
    * @param spotifyClientSecret Spotify API key's client secret
    */
@@ -209,7 +209,7 @@ public class Play extends Command {
    * Checks if the Spotify album link was formatted correctly before adding the track to the queue.
    *
    * @param ce                  object containing information about the command event
-   * @param parameters           user provided parameters
+   * @param parameters          user provided parameters
    * @param spotifyClientId     Spotify API key's client Id
    * @param spotifyClientSecret Spotify API key's client secret
    */

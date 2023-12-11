@@ -22,7 +22,7 @@ import java.util.Map;
  * search queries into playable tracks for the AudioScheduler.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.0
  * @since 1.1.0
  */
 public class PlayerManager {
@@ -149,8 +149,7 @@ public class PlayerManager {
    */
   private void addTrackToQueue(AudioScheduler audioScheduler,
                                AudioTrack track, String requester) {
-    audioScheduler.queue(track);
-    audioScheduler.getRequesterList().add(requester);
+    audioScheduler.queue(track, requester);
   }
 
   /**

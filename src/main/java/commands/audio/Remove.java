@@ -2,9 +2,9 @@ package commands.audio;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
+import commands.audio.objects.TrackQueueIndex;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
@@ -15,7 +15,7 @@ import java.util.Collections;
  * Remove is a command invocation that removes track(s) from the queue.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.0
  * @since 1.2.2
  */
 public class Remove extends Command {
@@ -92,9 +92,7 @@ public class Remove extends Command {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
 
-      // Storage objects to access
-      ArrayList<AudioTrack> trackQueue = audioScheduler.getTrackQueue();
-      ArrayList<String> requesterList = audioScheduler.getRequesterList();
+      ArrayList<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
 
       // Displayed index to users are different from data index, so subtract 1
       queueIndex = queueIndex - 1;
@@ -102,13 +100,12 @@ public class Remove extends Command {
       // Remove confirmation
       StringBuilder removeTrackConfirmation = new StringBuilder();
       removeTrackConfirmation.append("**Removed:** **[").append(queueIndex + 1).append("]** `")
-          .append(trackQueue.get(queueIndex).getInfo().title).append("`")
-          .append(requesterList.get(queueIndex))
+          .append(trackQueue.get(queueIndex).getAudioTrack().getInfo().title).append("`")
+          .append(trackQueue.get(queueIndex).getRequester())
           .append(" *[").append(ce.getAuthor().getAsTag()).append("]*");
       ce.getChannel().sendMessage(removeTrackConfirmation).queue();
 
       trackQueue.remove(queueIndex);
-      requesterList.remove(queueIndex);
     } catch (IndexOutOfBoundsException error) {
       ce.getChannel().sendMessage("Queue number does not exist.").queue();
     }
