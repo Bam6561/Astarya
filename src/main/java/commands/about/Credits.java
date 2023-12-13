@@ -35,6 +35,7 @@ public class Credits extends Command {
         "Astarya's development, as well as all my friends who use the bot " +
         "regularly and leave feedback so the experience is as bug-free as possible.");
     display.addField("APIs", "> [Discord](https://discord.com) | " +
+        "[Genius](https://genius.com) | " +
         "[Spotify](https://open.spotify.com)", false);
     display.addField("Libraries & Wrappers", "> [JDA](https://github.com/DV8FromTheWorld/JDA) | " +
         "[JDA-Chewtils](https://github.com/Chew/JDA-Chewtils) | " +

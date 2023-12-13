@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
  * Join is a command invocation that makes the bot join the same voice channel as the user.
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.7.2
  * @since 1.1.0
  */
 public class Join extends Command {
@@ -22,7 +22,7 @@ public class Join extends Command {
   }
 
   /**
-   * Determines whether the bot is available to join the same voice channel as the user by checking
+   * Checks if the bot is available to join the same voice channel as the user by checking
    * that the user is in a voice channel and that the bot is not already in a voice channel.
    *
    * @param ce object that contains information about the command event
@@ -35,15 +35,15 @@ public class Join extends Command {
     GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
 
     boolean userInVoiceChannel = userVoiceState.inAudioChannel();
-    boolean botNotAlreadyInVoiceChannel = !botVoiceState.inAudioChannel();
-    boolean botIsAvailableToJoinSameVoiceChannel = userInVoiceChannel && botNotAlreadyInVoiceChannel;
+    boolean botAlreadyInVoiceChannel = botVoiceState.inAudioChannel();
+    boolean botIsAvailableToJoinSameVoiceChannel = userInVoiceChannel && !botAlreadyInVoiceChannel;
 
     if (botIsAvailableToJoinSameVoiceChannel) {
       joinVoiceChannel(ce);
     } else {
       if (!userInVoiceChannel) {
         ce.getChannel().sendMessage("User not in a voice channel.").queue();
-      } else if (!botNotAlreadyInVoiceChannel) {
+      } else if (botAlreadyInVoiceChannel) {
         String alreadyConnected = "Already connected to <#" + botVoiceState.getChannel().getId() + ">";
         ce.getChannel().sendMessage(alreadyConnected).queue();
       }

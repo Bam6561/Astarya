@@ -17,13 +17,13 @@ import java.util.ArrayList;
  * of tracks queued and what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.2
  * @since 1.2.0
  */
 public class Queue extends Command {
   private int pageRequested;
   private int numberOfPages;
-  private int firstQueueIndexOnPage;
+  private int firstTrackQueueIndexOnPage;
 
   public Queue() {
     this.name = "queue";
@@ -50,12 +50,11 @@ public class Queue extends Command {
     int numberOfParameters = parameters.length - 1;
 
     switch (numberOfParameters) {
-      case 0 -> // First queue page
-          getTrackQueuePage(ce, 0);
-      case 1 -> {
-        try { // Search for queue page
-          getTrackQueuePage(ce, Integer.parseInt(parameters[1]) - 1);
-        } catch (NumberFormatException error) {
+      case 0 -> interpretQueuePage(ce, 0); // First queue page
+      case 1 -> { // Search for queue page
+        try {
+          interpretQueuePage(ce, Integer.parseInt(parameters[1]) - 1);
+        } catch (NumberFormatException e) {
           ce.getChannel().sendMessage("Specify an integer for queue page number.").queue();
         }
       }
@@ -64,57 +63,25 @@ public class Queue extends Command {
   }
 
   /**
-   * Sends an embed containing a track queue page that displays
-   * what's currently playing and up to ten tracks on the page.
+   * Either sends an embed containing a track queue page or what track is currently playing.
    *
    * @param ce            object containing information about the command event
    * @param pageRequested user provided page number to be displayed
    */
-  public void getTrackQueuePage(CommandEvent ce, int pageRequested) {
+  public void interpretQueuePage(CommandEvent ce, int pageRequested) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
 
     ArrayList<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
 
     if (!trackQueue.isEmpty()) {
-      // Adjust page requested, get number of total pages, and find first queue index on the page
       calculatePageToDisplay(trackQueue.size(), pageRequested);
-
-      // Populate page with track entries
-      StringBuilder queuePage = new StringBuilder();
-      createPage(queuePage, trackQueue);
-
-      // Add nowPlaying on queue page
-      StringBuilder queuePageEmbedNowPlaying = new StringBuilder();
-      queuePageEmbedNowPlaying.append("**Now Playing:** ");
-      audioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, queuePageEmbedNowPlaying);
-
-      boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
-      if (currentlyPlayingTrack) {
-        AudioTrack audioTrack = audioPlayer.getPlayingTrack();
-        String trackPosition = longTimeConversion(audioTrack.getPosition());
-        String trackDuration = longTimeConversion(audioTrack.getDuration());
-
-        queuePageEmbedNowPlaying.append("`").append(audioTrack.getInfo().title).
-            append("` {*").append(trackPosition).append("*-*").
-            append(trackDuration).append("*}\nPage `").append(getPageRequested() + 1).
-            append("` / `").append(getNumberOfPages()).append("`");
-      } else {
-        queuePageEmbedNowPlaying.append("`").append("Nothing")
-            .append("`\nPage `").append(getPageRequested() + 1).
-            append("` / `").append(getNumberOfPages()).append("`");
-      }
-
-      // Display queue page
-      EmbedBuilder display = new EmbedBuilder();
-      display.setAuthor("Queue");
-      display.setDescription(queuePageEmbedNowPlaying);
-      display.addField("**Tracks:**", String.valueOf(queuePage), false);
-      Settings.sendEmbed(ce, display);
+      sendQueuePage(ce, audioScheduler, audioPlayer, trackQueue);
     } else { // Display nowPlaying only
-      nowPlaying(ce, audioScheduler, audioPlayer);
+      sendNowPlaying(ce, audioScheduler, audioPlayer);
     }
   }
+
 
   /**
    * Corrects user's requested page to view and determines which
@@ -155,7 +122,80 @@ public class Queue extends Command {
 
     setPageRequested(pageRequested);
     setNumberOfPages(numberOfPages);
-    setFirstQueueIndexOnPage(firstQueueIndexOnPage);
+    setFirstTrackQueueIndexOnPage(firstQueueIndexOnPage);
+  }
+
+  /**
+   * Sends the track queue page and the audio player's currently playing track.
+   *
+   * @param ce             object containing information about the command event
+   * @param audioScheduler bot's audio scheduler
+   * @param audioPlayer    bot's audio player
+   * @param trackQueue     arraylist containing the tracks
+   */
+  private void sendQueuePage(CommandEvent ce, AudioScheduler audioScheduler,
+                             AudioPlayer audioPlayer, ArrayList<TrackQueueIndex> trackQueue) {
+    EmbedBuilder display = new EmbedBuilder();
+    display.setAuthor("Queue");
+    display.setDescription(createNowPlayingQueuePage(audioScheduler, audioPlayer));
+    display.addField("**Tracks:**", createQueuePage(trackQueue), false);
+    Settings.sendEmbed(ce, display);
+  }
+
+  /**
+   * Sends the currently playing track.
+   *
+   * @param ce             object containing information about the command event
+   * @param audioScheduler the bot's audio scheduler
+   * @param audioPlayer    the bot's audio player
+   */
+  private void sendNowPlaying(CommandEvent ce, AudioScheduler audioScheduler, AudioPlayer audioPlayer) {
+    StringBuilder nowPlaying = new StringBuilder();
+
+    boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
+    if (currentlyPlayingTrack) {
+      AudioTrack audioTrack = audioPlayer.getPlayingTrack();
+      String trackPosition = longTimeConversion(audioTrack.getPosition());
+      String trackDuration = longTimeConversion(audioTrack.getDuration());
+
+      nowPlaying.append("**Now Playing:** ");
+      audioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, nowPlaying);
+      nowPlaying.append("`").append(audioTrack.getInfo().title).
+          append("` {*").append(trackPosition).append("*-*").append(trackDuration).append("*}");
+    } else {
+      nowPlaying.append("**Now Playing:** `Nothing`");
+    }
+    ce.getChannel().sendMessage(nowPlaying).queue();
+  }
+
+  /**
+   * Builds the nowPlaying component to the track queue page.
+   *
+   * @param audioScheduler bot's audio scheduler
+   * @param audioPlayer    bot's audio player
+   * @return nowPlaying component to track queue page
+   */
+  private String createNowPlayingQueuePage(AudioScheduler audioScheduler, AudioPlayer audioPlayer) {
+    StringBuilder nowPlaying = new StringBuilder();
+    nowPlaying.append("**Now Playing:** ");
+    audioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, nowPlaying);
+
+    boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
+    if (currentlyPlayingTrack) {
+      AudioTrack audioTrack = audioPlayer.getPlayingTrack();
+      String trackPosition = longTimeConversion(audioTrack.getPosition());
+      String trackDuration = longTimeConversion(audioTrack.getDuration());
+
+      nowPlaying.append("`").append(audioTrack.getInfo().title).
+          append("` {*").append(trackPosition).append("*-*").
+          append(trackDuration).append("*}\nPage `").append(getPageRequested() + 1).
+          append("` / `").append(getNumberOfPages()).append("`");
+    } else {
+      nowPlaying.append("`").append("Nothing")
+          .append("`\nPage `").append(getPageRequested() + 1).
+          append("` / `").append(getNumberOfPages()).append("`");
+    }
+    return nowPlaying.toString();
   }
 
   /**
@@ -165,49 +205,25 @@ public class Queue extends Command {
    * next ten indices or the last track entry  in the track queue.
    * </p>
    *
-   * @param queuePage  contents of the queue page
    * @param trackQueue tracks in the queue
+   * @return formatted text representing the tracks queue
    */
-  private void createPage(StringBuilder queuePage, ArrayList<TrackQueueIndex> trackQueue) {
+  private String createQueuePage(ArrayList<TrackQueueIndex> trackQueue) {
+    StringBuilder queuePage = new StringBuilder();
+
     // Calculate last track entry to be displayed
     int numberOfTracksInQueue = trackQueue.size();
-    int lastQueueIndexOnPage = Math.min((getFirstQueueIndexOnPage() + 10), numberOfTracksInQueue);
+    int lastQueueIndexOnPage = Math.min((getFirstTrackQueueIndexOnPage() + 10), numberOfTracksInQueue);
 
     // Build contents of queue page embed
-    for (int i = firstQueueIndexOnPage; i < lastQueueIndexOnPage; i++) {
+    for (int i = firstTrackQueueIndexOnPage; i < lastQueueIndexOnPage; i++) {
       String trackDuration = longTimeConversion(trackQueue.get(i).getAudioTrack().getDuration());
       queuePage.append("**[").append(i + 1).append("]** `").
           append(trackQueue.get(i).getAudioTrack().getInfo().title)
           .append("` {*").append(trackDuration).append("*} ").
           append(trackQueue.get(i).getRequester()).append("\n");
     }
-  }
-
-  /**
-   * Displays the currently playing track.
-   *
-   * @param ce             object containing information about the command event
-   * @param audioScheduler the bot's audio scheduler
-   * @param audioPlayer    the bot's audio player
-   */
-  private void nowPlaying(CommandEvent ce, AudioScheduler audioScheduler, AudioPlayer audioPlayer) {
-    StringBuilder nowPlaying = new StringBuilder();
-
-    boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
-    if (currentlyPlayingTrack) {
-      AudioTrack audioTrack = audioPlayer.getPlayingTrack();
-      String trackPosition = longTimeConversion(audioTrack.getPosition());
-      String trackDuration = longTimeConversion(audioTrack.getDuration());
-
-      // NowPlaying confirmation
-      nowPlaying.append("**Now Playing:** ");
-      audioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, nowPlaying);
-      nowPlaying.append("`").append(audioTrack.getInfo().title).
-          append("` {*").append(trackPosition).append("*-*").append(trackDuration).append("*}");
-    } else {
-      nowPlaying.append("**Now Playing:** `Nothing`");
-    }
-    ce.getChannel().sendMessage(nowPlaying).queue();
+    return queuePage.toString();
   }
 
   /**
@@ -254,8 +270,8 @@ public class Queue extends Command {
     return this.numberOfPages;
   }
 
-  private int getFirstQueueIndexOnPage() {
-    return this.firstQueueIndexOnPage;
+  private int getFirstTrackQueueIndexOnPage() {
+    return this.firstTrackQueueIndexOnPage;
   }
 
   private void setPageRequested(int pageRequested) {
@@ -266,7 +282,7 @@ public class Queue extends Command {
     this.numberOfPages = numberOfPages;
   }
 
-  private void setFirstQueueIndexOnPage(int firstQueueIndexOnPage) {
-    this.firstQueueIndexOnPage = firstQueueIndexOnPage;
+  private void setFirstTrackQueueIndexOnPage(int firstTrackQueueIndexOnPage) {
+    this.firstTrackQueueIndexOnPage = firstTrackQueueIndexOnPage;
   }
 }

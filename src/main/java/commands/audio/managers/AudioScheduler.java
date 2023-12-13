@@ -36,7 +36,7 @@ public class AudioScheduler extends AudioEventAdapter {
    * Adds a track to the track queue, and if the audio player isn't
    * currently playing anything, then play the track immediately.
    *
-   * @param track track to be added to the queue
+   * @param track track to be added to the track queue
    */
   public void queue(AudioTrack track, String requester) {
     if (this.audioPlayer.getPlayingTrack() == null) {

@@ -54,7 +54,7 @@ public class MessageLog extends ListenerAdapter {
 
   /**
    * Checks if message contains a Twitter, Reddit, Instagram, or Pixiv media link.
-   *
+   * <p>
    * If a link is found, replace
    * - Twitter's domain with vxtwitter
    * - Reddit's domain with rxddit
@@ -78,7 +78,7 @@ public class MessageLog extends ListenerAdapter {
     if ((isTwitterLink && isTwitterMedia) || isRedditMedia || isInstagramMedia || isPixiv) {
       message = "[" + messageE.getAuthor().getAsTag() + "]\n" + message;
 
-      if (isTwitterMedia){
+      if (isTwitterMedia) {
         message = message.replace("/twitter.com/", "/vxtwitter.com/");
         message = message.replace("/x.com/", "/vxtwitter.com/");
       }
@@ -88,13 +88,14 @@ public class MessageLog extends ListenerAdapter {
       if (isInstagramMedia) {
         message = message.replace("www.instagram", "www.ddinstagram");
       }
-      if (isPixiv){
-        message = message.replace("www.pixiv.net","www.phixiv.net");
+      if (isPixiv) {
+        message = message.replace("www.pixiv.net", "www.phixiv.net");
       }
 
       try {
         messageE.getMessage().delete().queue();
       } catch (ErrorResponseException e) {
+        System.out.println("Insufficient permissions to delete message.");
       }
 
       messageE.getChannel().sendMessage(message).queue();

@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Poll is a command invocation that creates a reaction vote with up to 10 options.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.2
  * @since 1.0
  */
 public class Poll extends Command {
@@ -29,7 +29,7 @@ public class Poll extends Command {
   }
 
   /**
-   * Processes user provided parameters to determine whether the poll command request was formatted correctly.
+   * Checks if the user provided options to read a poll command request.
    * <p>
    * Users can provide up to 10 options in the poll, separated by commas, but no more than one.
    * </p>
@@ -45,31 +45,26 @@ public class Poll extends Command {
 
     boolean optionsProvided = numberOfParameters != 0;
     if (optionsProvided) {
-      String[] options = parseOptions(parameters);
-
-      boolean noEmptyOptions = !checkForEmptyPollOptions(options);
-      if (noEmptyOptions) { // Prepare poll
-        int numberOfOptions = options.length;
-        boolean moreThanOneOption = numberOfOptions > 1;
-        boolean noMoreThanTenOptions = numberOfOptions < 11;
-        boolean validNumberOfOptions = moreThanOneOption && noMoreThanTenOptions;
-
-        if (validNumberOfOptions) {
-          createPoll(ce, options);
-          setPollOptions(options);
-        } else {
-          if (!moreThanOneOption) {
-            ce.getChannel().sendMessage("Specify more than 1 option.").queue();
-          }
-          if (!noMoreThanTenOptions) {
-            ce.getChannel().sendMessage("Specify only up to 10 options.").queue();
-          }
-        }
-      } else {
-        ce.getChannel().sendMessage("None of the options provided can be empty.").queue();
-      }
+      readPollRequest(ce, parameters);
     } else {
       ce.getChannel().sendMessage("Specify options separated by a comma.").queue();
+    }
+  }
+
+  /**
+   * Checks if user provided no empty parameters before creating a poll.
+   *
+   * @param ce         object containing information about the command event
+   * @param parameters user provided parameters
+   */
+  private void readPollRequest(CommandEvent ce, String[] parameters) {
+    String[] options = readOptions(parameters);
+
+    boolean noEmptyOptions = !checkForEmptyPollOptions(options);
+    if (noEmptyOptions) { // Prepare poll
+      processPollRequest(ce, options);
+    } else {
+      ce.getChannel().sendMessage("None of the options provided can be empty.").queue();
     }
   }
 
@@ -79,7 +74,7 @@ public class Poll extends Command {
    * @param parameters user provided parameters
    * @return array of poll options
    */
-  private String[] parseOptions(String[] parameters) {
+  private String[] readOptions(String[] parameters) {
     StringBuilder optionsStringBuilder = new StringBuilder();
     for (int i = 1; i < parameters.length; i++) {
       optionsStringBuilder.append(parameters[i]).append(" ");
@@ -98,6 +93,31 @@ public class Poll extends Command {
       if (option.equals(" ")) return true;
     }
     return false;
+  }
+
+  /**
+   * Creates a poll embed with emojis to react to.
+   *
+   * @param ce      object containing information about the command event
+   * @param options user provided options
+   */
+  private void processPollRequest(CommandEvent ce, String[] options) {
+    int numberOfOptions = options.length;
+    boolean moreThanOneOption = numberOfOptions > 1;
+    boolean noMoreThanTenOptions = numberOfOptions < 11;
+    boolean validNumberOfOptions = moreThanOneOption && noMoreThanTenOptions;
+
+    if (validNumberOfOptions) {
+      createPoll(ce, options);
+      setPollOptions(options);
+    } else {
+      if (!moreThanOneOption) {
+        ce.getChannel().sendMessage("Specify more than 1 option.").queue();
+      }
+      if (!noMoreThanTenOptions) {
+        ce.getChannel().sendMessage("Specify only up to 10 options.").queue();
+      }
+    }
   }
 
   /**

@@ -65,7 +65,7 @@ public class CoinFlip extends Command {
   /**
    * Checks whether the user requested number of flips is an integer and is in range of 1-10.
    *
-   * @param ce        object containing information about the command event
+   * @param ce         object containing information about the command event
    * @param parameters user provided parameters
    * @throws NumberFormatException user provided a non-integer value
    */
@@ -78,7 +78,7 @@ public class CoinFlip extends Command {
       } else {
         ce.getChannel().sendMessage("Specify an integer between (1-10) times to flip the coin.").queue();
       }
-    } catch (NumberFormatException error) {
+    } catch (NumberFormatException e) {
       ce.getChannel().sendMessage("Specify an integer between (1-10) times to flip the coin.").queue();
     }
   }

@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * ClearQueue is a command invocation that clears the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.2
  * @since 1.2.2
  */
 public class ClearQueue extends Command {
@@ -22,7 +22,7 @@ public class ClearQueue extends Command {
   }
 
   /**
-   * Determines whether the user is in the same voice channel as the bot to process a clearQueue command request.
+   * Checks if the user is in the same voice channel as the bot to read a clearQueue command request.
    *
    * @param ce object containing information about the command event
    */
@@ -46,7 +46,7 @@ public class ClearQueue extends Command {
   }
 
   /**
-   * Clears the track queue and its associated requester list.
+   * Clears the track queue and its associated requesters.
    *
    * @param ce object containing information about the command event
    */
@@ -54,7 +54,15 @@ public class ClearQueue extends Command {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
 
     audioScheduler.getTrackQueue().clear();
+    sendClearQueueConfirmation(ce);
+  }
 
+  /**
+   * Sends a confirmation the track queue was cleared.
+   *
+   * @param ce object containing information about the command event
+   */
+  private void sendClearQueueConfirmation(CommandEvent ce) {
     StringBuilder clearQueueConfirmation = new StringBuilder();
     clearQueueConfirmation.append("**Queue Clear:** [").append(ce.getAuthor().getAsTag()).append("]");
     ce.getChannel().sendMessage(clearQueueConfirmation).queue();

@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.6.8
+ * @version 1.7.2
  * @since 1.0
  */
 public class Settings extends Command {
@@ -48,7 +48,7 @@ public class Settings extends Command {
 
     switch (numberOfParameters) {
       case 0 -> sendSettingsMenu(ce);
-      case 2 -> changeSettings(ce, parameters);
+      case 2 -> interpretSettingsMenuChange(ce, parameters);
       default -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
@@ -71,31 +71,30 @@ public class Settings extends Command {
   }
 
   /**
-   * Checks which setting type the user is attempting to change.
+   * Either changes the deleteinvoke, embeddecay, embeddecaytime, or embedmedialinks setting.
    *
    * @param ce         object containing information about the command event
    * @param parameters user provided parameters
    */
-  private void changeSettings(CommandEvent ce, String[] parameters) {
+  private void interpretSettingsMenuChange(CommandEvent ce, String[] parameters) {
     String settingType = parameters[1].toLowerCase();
 
     switch (settingType) {
-      case "deleteinvoke" -> setDeleteInvokeSetting(ce, parameters[2]);
-      case "embeddecay" -> setEmbedDecaySetting(ce, parameters[2]);
+      case "deleteinvoke" -> setDeleteInvokeSetting(ce, parameters[2].toLowerCase());
+      case "embeddecay" -> setEmbedDecaySetting(ce, parameters[2].toLowerCase());
       case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, parameters[2]);
-      case "embedmedialinks" -> setEmbedMediaLinksSetting(ce, parameters[2]);
+      case "embedmedialinks" -> setEmbedMediaLinksSetting(ce, parameters[2].toLowerCase());
       default -> ce.getChannel().sendMessage("Setting not found.").queue();
     }
   }
 
   /**
-   * Changes the delete invoke's setting to true or false.
+   * Changes the deleteinvoke's setting to true or false.
    *
    * @param ce            object containing information about the command event
    * @param settingChange the boolean value to be changed to
    */
   private void setDeleteInvokeSetting(CommandEvent ce, String settingChange) {
-    settingChange = settingChange.toLowerCase();
     boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
     if (settingChangeIsBoolean) {
       setDeleteInvoke(Boolean.parseBoolean(settingChange));
@@ -106,13 +105,12 @@ public class Settings extends Command {
   }
 
   /**
-   * Changes the embed decay's setting to true or false.
+   * Changes the embeddecay's setting to true or false.
    *
    * @param ce            object containing information about the command event
    * @param settingChange the boolean value to be changed to
    */
   private void setEmbedDecaySetting(CommandEvent ce, String settingChange) {
-    settingChange = settingChange.toLowerCase();
     boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
     if (settingChangeIsBoolean) {
       setEmbedDecay(Boolean.parseBoolean(settingChange));
@@ -123,7 +121,7 @@ public class Settings extends Command {
   }
 
   /**
-   * Changes the embed decay time's setting to true or false.
+   * Changes the embeddecaytime's setting to an integer value.
    *
    * @param ce            object containing information about the command event
    * @param settingChange the boolean value to be changed to
@@ -145,7 +143,7 @@ public class Settings extends Command {
   }
 
   /**
-   * Changes the embed media links setting to true or false.
+   * Changes the embedmedia links setting to true or false.
    *
    * @param ce            object containing information about the command event
    * @param settingChange the boolean value to be changed to

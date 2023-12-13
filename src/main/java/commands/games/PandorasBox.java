@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Pandora's Box is a command invocation that returns a random scenario prompt. The prompt's
- * subject is substituted if it has a field to support the invoker's given parameters.
+ * Pandora's Box is a command invocation that sends a random scenario prompt. The prompt's
+ * subject is substituted if it has a field to support the user's given parameters.
  *
  * @author Danny Nguyen
  * @version 1.6.11
@@ -24,8 +24,8 @@ public class PandorasBox extends Command {
   public PandorasBox(ArrayList<String> pandorasBoxPrompts) {
     this.name = "pandorasbox";
     this.aliases = new String[]{"pandorasbox", "pb"};
-    this.arguments = "[0]Self [1]VC/DC/* [1 ++]*";
-    this.help = "Returns a random scenario prompt.";
+    this.arguments = "[0]Self [1]VC/DC/* [2 ++]*";
+    this.help = "Sends a random scenario prompt.";
     this.pandorasBoxPrompts = pandorasBoxPrompts;
   }
 

@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Remind is a command invocation that sets a timer and alerts the user when the time expires.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.2
  * @since 1.0
  */
 public class Remind extends Command {
@@ -22,10 +22,10 @@ public class Remind extends Command {
   }
 
   /**
-   * Processes user provided parameters to determine whether the remind command request was formatted correctly.
+   * Checks if user provided parameters to read the remind command request.
    * <p>
    * Users can provide time types that either come in the form of a String or a Char,
-   * so both variants are checked as to whether they exist and marked as to which
+   * so both variants are checked as to if they exist and marked as to which
    * parameter they are provided in. The location of where the time type is located
    * changes the parsing processing slightly, but the overall logic remains the same.
    * </p>
@@ -44,15 +44,26 @@ public class Remind extends Command {
     int numberOfParameters = parameters.length - 1;
 
     if (numberOfParameters != 0) {
-      boolean isValidTimeType = checkValidTimeTypeProvided(parameters);
-      if (isValidTimeType) {
-        boolean timeIsInFirstParameter = checkTimeTypeInFirstParameter(parameters);
-        processTimeTypeBasedOnLocation(ce, parameters, numberOfParameters, timeIsInFirstParameter);
-      } else { // No time type in first or second parameter
-        ce.getChannel().sendMessage("No time types provided.").queue();
-      }
+      readRemindRequest(ce, parameters, numberOfParameters);
     } else {
       ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+    }
+  }
+
+  /**
+   * Checks if user provided parameters contain a valid time type before processing the time type's location.
+   *
+   * @param ce                 object containing information about the command event
+   * @param parameters         user provided parameters
+   * @param numberOfParameters number of user provided parameters
+   */
+  private void readRemindRequest(CommandEvent ce, String[] parameters, int numberOfParameters) {
+    boolean isValidTimeType = checkValidTimeTypeProvided(parameters);
+    if (isValidTimeType) {
+      boolean timeIsInFirstParameter = checkTimeTypeInFirstParameter(parameters);
+      processTimeTypeBasedOnLocation(ce, parameters, numberOfParameters, timeIsInFirstParameter);
+    } else { // No time type in first or second parameter
+      ce.getChannel().sendMessage("No time types provided.").queue();
     }
   }
 
@@ -107,13 +118,14 @@ public class Remind extends Command {
    * this method handles the differences in one stream.
    * </p>
    *
-   * @param ce                  object containing information about the command event
+   * @param ce                   object containing information about the command event
    * @param parameters           user provided parameters
    * @param numberOfParameters   number of user provided parameters
    * @param timeInFirstParameter whether the time type exists in the first parameter
    * @throws NumberFormatException user provided non-integer values
    */
-  private void processTimeTypeBasedOnLocation(CommandEvent ce, String[] parameters, int numberOfParameters, boolean timeInFirstParameter) {
+  private void processTimeTypeBasedOnLocation(CommandEvent ce, String[] parameters,
+                                              int numberOfParameters, boolean timeInFirstParameter) {
     try {
       char timeType;
       int timeDuration;
@@ -184,7 +196,7 @@ public class Remind extends Command {
    * @param parameters           user provided parameters
    * @param numberOfParameters   number of user provided parameters
    * @param timeInFirstParameter whether the time type exists in the first parameter
-   * @param timerName           name of the reminder
+   * @param timerName            name of the reminder
    * @return name of the reminder
    */
   private String setTimerName(String[] parameters, int numberOfParameters, boolean timeInFirstParameter, String timerName) {
@@ -239,7 +251,7 @@ public class Remind extends Command {
    * @return the time type in a written form
    */
   private String getTimeTypeString(char timeType) {
-    switch (timeType){
+    switch (timeType) {
       case 'd' -> {
         return "days";
       }

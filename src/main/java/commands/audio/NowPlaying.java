@@ -12,7 +12,7 @@ import commands.owner.Settings;
  * NowPlaying is a command invocation that shows what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.2
  * @since 1.2.3
  */
 public class NowPlaying extends Command {
@@ -43,7 +43,7 @@ public class NowPlaying extends Command {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
 
-    StringBuilder nowPlayingConfirmation = new StringBuilder();
+    StringBuilder nowPlaying = new StringBuilder("**Now Playing:** ");
 
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
@@ -51,15 +51,13 @@ public class NowPlaying extends Command {
       String trackPosition = longTimeConversion(audioTrack.getPosition());
       String trackDuration = longTimeConversion(audioTrack.getDuration());
 
-      // nowPlaying Confirmation
-      nowPlayingConfirmation.append("**Now Playing:** ");
-      audioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, nowPlayingConfirmation);
-      nowPlayingConfirmation.append("`").append(audioTrack.getInfo().title).
+      audioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, nowPlaying);
+      nowPlaying.append("`").append(audioTrack.getInfo().title).
           append("` {*").append(trackPosition).append("*-*").append(trackDuration).append("*}");
     } else {
-      nowPlayingConfirmation.append("**Now Playing:** `Nothing`");
+      nowPlaying.append("`Nothing`");
     }
-    ce.getChannel().sendMessage(nowPlayingConfirmation).queue();
+    ce.getChannel().sendMessage(nowPlaying).queue();
   }
 
   /**

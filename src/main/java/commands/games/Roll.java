@@ -62,9 +62,10 @@ public class Roll extends Command {
   }
 
   /**
-   * Checks whether the user requested number of rolls is an integer and within a valid range of 1-10.
+   * Checks if the user requested number of rolls is an integer
+   * and within a valid range of 1-10 before rolling a die multiple times.
    *
-   * @param ce        object containing information about the command event
+   * @param ce         object containing information about the command event
    * @param parameters user provided parameters
    * @throws NumberFormatException user provided non-integer value
    */
@@ -104,11 +105,11 @@ public class Roll extends Command {
   }
 
   /**
-   * Checks whether the user requested number of rolls are an integer and
-   * that their minimum and maximum values are zero or positive, are not
-   * equal to each other, and the minimum is not larger than the maximum value.
+   * Checks if the user requested number of rolls are an integer and that their minimum
+   * and maximum values are zero or positive, are not equal to each other, and the minimum
+   * is not larger than the maximum value before rolling a die with custom values.
    *
-   * @param ce        object containing information about the command event
+   * @param ce         object containing information about the command event
    * @param parameters user provided parameters
    * @throws NumberFormatException user provided non-integer value
    */
@@ -127,25 +128,25 @@ public class Roll extends Command {
           && minAndMaxAreNotEqual && minIsNotLargerThanMax;
 
       if (validRNGConstraints) {
-        handleCustomRangeRolls(ce, numberOfRolls, min, max);
+        interpretCustomRangeRolls(ce, numberOfRolls, min, max);
       } else {
-        handleErrorMessages(ce, validNumberOfRolls, minAndMaxAreZeroOrPositive,
+        processErrorMessages(ce, validNumberOfRolls, minAndMaxAreZeroOrPositive,
             minAndMaxAreNotEqual, minIsNotLargerThanMax);
       }
-    } catch (NumberFormatException error) {
+    } catch (NumberFormatException e) {
       ce.getChannel().sendMessage("Specify integers between (1-10) for the number of rolls and range.").queue();
     }
   }
 
   /**
-   * Checks whether to generate one or multiple custom range results.
+   * Either generates one or multiple custom range results.
    *
    * @param ce            object that contains information about the command event
    * @param numberOfRolls number of times to generate integers
    * @param min           minimum value in custom range
    * @param max           maximum value in custom range
    */
-  private void handleCustomRangeRolls(CommandEvent ce, int numberOfRolls, int min, int max) {
+  private void interpretCustomRangeRolls(CommandEvent ce, int numberOfRolls, int min, int max) {
     StringBuilder rollResults = new StringBuilder();
 
     if (numberOfRolls == 1) {
@@ -197,8 +198,8 @@ public class Roll extends Command {
    * @param minAndMaxAreNotEqual       minimum and maximum values in custom range are not equal
    * @param minIsNotLargerThanMax      minimum value is not larger than maximum value
    */
-  private void handleErrorMessages(CommandEvent ce, boolean validNumberOfRolls, boolean minAndMaxAreZeroOrPositive,
-                                   boolean minAndMaxAreNotEqual, boolean minIsNotLargerThanMax) {
+  private void processErrorMessages(CommandEvent ce, boolean validNumberOfRolls, boolean minAndMaxAreZeroOrPositive,
+                                    boolean minAndMaxAreNotEqual, boolean minIsNotLargerThanMax) {
     if (!validNumberOfRolls) {
       ce.getChannel().sendMessage("Specify an integer between (1-10) times to generate numbers.").queue();
     }

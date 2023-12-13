@@ -96,7 +96,7 @@ public class Help extends Command {
               "Parameter describes more detailed command usage.",
           "help", "[0]MainMenu [1]CommandName", "help help");
       case "highorlow", "guess" -> sendDetailedCommandHelpEmbed(display, "Help: HighOrLow",
-          "Guess whether the next number will be higher or lower!",
+          "Guess if the next number will be higher or lower!",
           "highorlow, guess", "[0]HighOrLow", "highorlow");
       case "info", "about" -> sendDetailedCommandHelpEmbed(display, "Help: Info",
           "Details information about Astarya and its developer.",
@@ -110,12 +110,14 @@ public class Help extends Command {
       case "loop", "repeat" -> sendDetailedCommandHelpEmbed(display, "Help: Loops",
           "Loops the current track.",
           "loop, repeat", "[0]Loop", "loop");
+      case "lyrics" -> sendDetailedCommandHelpEmbed(display, "Help: Lyrics",
+          "Finds lyrics of a song using Genius.", "lyrics", "[1 ++]*", "lyrics duck song");
       case "nowplaying", "np" -> sendDetailedCommandHelpEmbed(display, "Help: NowPlaying",
           "Shows what track is currently playing.", "nowplaying, np",
           "[0]NowPlaying", "nowplaying");
       case "pandorasbox", "pb" -> sendDetailedCommandHelpEmbed(display, "Help: PandorasBox",
-          "Returns a random scenario prompt. Prompts' subjects are substituted if paramaters are provided.",
-          "pandorasbox, pb", "[0]Self [1]VC/DC/* [1 ++]*",
+          "Sends a random scenario prompt. Prompts' subjects are substituted if paramaters are provided.",
+          "pandorasbox, pb", "[0]Self [1]VC/DC/* [2 ++]*",
           "pandorasbox, pandorasbox vc, pandorasbox dc, pandorasbox John Constantine");
       case "pause", "stop" -> sendDetailedCommandHelpEmbed(display, "Help: Pause",
           "Pauses the audio player. Astarya's activity changes may be rate limited if done rapidly.",
@@ -124,20 +126,20 @@ public class Help extends Command {
           "Responds with the response time of Astarya in milliseconds.",
           "ping, ms", "[0]Ping", "ping");
       case "play", "p" -> sendDetailedCommandHelpEmbed(display, "Help: Play",
-          "Adds a track to the queue. Spotify playlists are limited to the most recent 100 songs added. " +
+          "Adds a track to the track queue. Spotify playlists are limited to the most recent 100 songs added. " +
               "Spotify albums are limited to 50 songs at a time. \n" +
               "**Sources** \n > - YouTube: links/playlists \n> - Discord: media links \n> - Spotify: songs/playlists/albums \n" +
               "**Supported File Types** \n > MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams",
           "play, p", "[1]URL [2++]YouTubeQuery",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ | play Cleverly Disguised Rickrolls");
       case "playnext", "after" -> sendDetailedCommandHelpEmbed(display, "Help: PlayNext",
-          "Sets the next track to be played in the queue.",
+          "Sets the next track to be played in the track queue.",
           "playnext, after", "[1]QueueNumber", "playnext 3");
       case "poll", "vote" -> sendDetailedCommandHelpEmbed(display, "Help: Poll",
           "Creates a reaction vote with up to 10 options. The options are parameters separated by commas.",
           "poll, vote", "[2, ++]PollOptions", "poll hot pizza, cold pizza");
       case "profile", "whois", "user" -> sendDetailedCommandHelpEmbed(display, "Help: Profile",
-          "Returns information about a user.", "profile, whois, user",
+          "Sends information about a user.", "profile, whois, user",
           "[0]Self [1]Mention/UserId/<@UserId> [1+]Name/Nickname", "profile | profile @Bam | " +
               "profile 204448598539239424 | profile <@204448598539239424> | profile Bam | profile Bam's Nickname");
       case "queue", "q" -> sendDetailedCommandHelpEmbed(display, "Help: Queue",
@@ -155,10 +157,10 @@ public class Help extends Command {
           "remind (0-7)d | remind (0-168)h | remind (0-10080)m | remind (0-604800)s | "
               + "remind TimeDurationTimeType EventName | remind TimeDuration TimeType EventName");
       case "remove", "r" -> sendDetailedCommandHelpEmbed(display, "Help: Remove",
-          "Removes track(s) from the queue.", "remove, r",
+          "Removes track(s) from the track queue.", "remove, r",
           "[1]QueueNumber [1, ++]QueueNumbers", "remove 1 | remove 2 4 5");
       case "return", "ret" -> sendDetailedCommandHelpEmbed(display, "Help: Return",
-          "Returns a recently skipped track to the queue.", "return, ret",
+          "Returns a recently skipped track to the track queue.", "return, ret",
           "[0]RecentlySkipped [1]SkippedStackNumber", "return | return 1");
       case "roll", "rng", "dice" -> sendDetailedCommandHelpEmbed(display, "Help: Roll",
           "Dice roll and random integer generator. No parameters to roll once. "
@@ -167,7 +169,7 @@ public class Help extends Command {
           "roll, rng, dice", "[0]Once [1]NumberOfRolls [2]Minimum [3]Maximum",
           "roll | roll 10 | roll 2 25 50");
       case "searchtrack", "search", "st" -> sendDetailedCommandHelpEmbed(display, "Help: SearchTrack",
-          "Searches for a track to add to the queue.", "searchtrack, search, st",
+          "Searches for a track to add to the track queue.", "searchtrack, search, st",
           "[1++]YouTubeQuery -> [1]SearchResultNumber", "search towa pallete");
       case "server" -> sendDetailedCommandHelpEmbed(display, "Help: Server",
           "Provides information on the Discord server.",
@@ -181,7 +183,7 @@ public class Help extends Command {
           "Provides information on Astarya settings.", "settings, config",
           "[0]MainMenu [1]Setting [2]True/False", "settings | settings deleteinvoke | settings deleteinvoke true");
       case "shuffle", "mix" -> sendDetailedCommandHelpEmbed(display, "Help: Shuffle",
-          "Shuffles the queue.", "shuffle, mix", "[0]Shuffle", "shuffle");
+          "Shuffles the track queue.", "shuffle, mix", "[0]Shuffle", "shuffle");
       case "shutdown" -> sendDetailedCommandHelpEmbed(display, "Help: Shutdown",
           "Shuts Astarya down.", "shutdown", "[0]Shutdown", "shutdown");
       case "skip", "s", "next" -> sendDetailedCommandHelpEmbed(display, "Help: Skip",

@@ -3,7 +3,6 @@ package commands.audio;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -12,7 +11,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * SetPosition is a command invocation that sets the position of the currently playing track.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.2
  * @since 1.2.11
  */
 public class SetPosition extends Command {
@@ -24,9 +23,10 @@ public class SetPosition extends Command {
   }
 
   /**
-   * Determines whether the user is in the same voice channel as the bot to process a setPosition command request.
+   * Checks if the user is in the same voice channel as the bot to read a setPosition command request.
    *
    * @param ce object containing information about the command event
+   * @throws NullPointerException user not in same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -38,7 +38,7 @@ public class SetPosition extends Command {
     try {
       boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
       if (userInSameVoiceChannel) {
-        parseSetPositionRequest(ce);
+        readSetPositionRequest(ce);
       } else {
         ce.getChannel().sendMessage("User not in the same voice channel.").queue();
       }
@@ -48,20 +48,21 @@ public class SetPosition extends Command {
   }
 
   /**
-   * Processes user provided parameters to determine whether the setPosition command request was formatted correctly.
+   * Checks if the setPosition command request was formatted correctly
+   * before setting the currently playing track's position.
    *
    * @param ce object containing information about the command event
    * @throws NumberFormatException user provided non-integer value
    */
-  private void parseSetPositionRequest(CommandEvent ce) {
+  private void readSetPositionRequest(CommandEvent ce) {
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
     int numberOfParameters = parameters.length - 1;
 
     boolean validNumberOfParameters = numberOfParameters == 1;
     if (validNumberOfParameters) {
       try {
-        setTrackPosition(ce, parameters[1]);
-      } catch (NumberFormatException error) {
+        setCurrentlyPlayingTrackPosition(ce, parameters[1]);
+      } catch (NumberFormatException e) {
         ce.getChannel().sendMessage("Invalid time frame. " +
             "Specify the section to be skipped to using hh:mm:ss.").queue();
       }
@@ -71,34 +72,39 @@ public class SetPosition extends Command {
   }
 
   /**
-   * Sets the position of the currently playing track.
+   * Checks if there is a track currently playing to set the position of.
    *
    * @param ce                  object containing information about the command event
    * @param trackPositionString user provided position of the track to be set to
    */
-  private void setTrackPosition(CommandEvent ce, String trackPositionString) {
-    AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-    AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
+  private void setCurrentlyPlayingTrackPosition(CommandEvent ce, String trackPositionString) {
+    AudioPlayer audioPlayer = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getAudioPlayer();
 
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
-      long trackPositionToSet = convertTimeToLong(ce, trackPositionString);
-
-      boolean requestedTrackPositionCanBeSet = audioPlayer.getPlayingTrack().getDuration() > trackPositionToSet;
-      if (requestedTrackPositionCanBeSet) {
-        audioPlayer.getPlayingTrack().setPosition(trackPositionToSet);
-
-        // setPosition confirmation
-        String positionSet = longTimeConversion(trackPositionToSet);
-        StringBuilder setPositionConfirmation = new StringBuilder();
-        setPositionConfirmation.append("**Set Position:** {*").append(positionSet).
-            append("*} [").append(ce.getAuthor().getAsTag()).append("]");
-        ce.getChannel().sendMessage(setPositionConfirmation).queue();
-      } else {
-        ce.getChannel().sendMessage("Requested position exceeds track length.").queue();
-      }
+      setTrackPosition(ce, trackPositionString, audioPlayer);
     } else {
       ce.getChannel().sendMessage("Nothing is currently playing.").queue();
+    }
+  }
+
+  /**
+   * Sets the currently playing track's position.
+   *
+   * @param ce                  object containing information about the command event
+   * @param trackPositionString user provided position of the track to be set to
+   * @param audioPlayer         bot's audio player
+   */
+  private void setTrackPosition(CommandEvent ce, String trackPositionString,
+                                AudioPlayer audioPlayer) {
+    long trackPositionToSet = convertTimeToLong(ce, trackPositionString);
+
+    boolean requestedTrackPositionCanBeSet = audioPlayer.getPlayingTrack().getDuration() > trackPositionToSet;
+    if (requestedTrackPositionCanBeSet) {
+      audioPlayer.getPlayingTrack().setPosition(trackPositionToSet);
+      sendSetPositionConfirmation(ce, trackPositionToSet);
+    } else {
+      ce.getChannel().sendMessage("Requested position exceeds track length.").queue();
     }
   }
 
@@ -134,6 +140,20 @@ public class SetPosition extends Command {
     minutes = minutes * 60000;
     seconds = seconds * 1000;
     return hours + minutes + seconds;
+  }
+
+  /**
+   * Sends confirmation the track was set to the position.
+   *
+   * @param ce                 object containing information about the command event
+   * @param trackPositionToSet user provided position of the track to be set to
+   */
+  private void sendSetPositionConfirmation(CommandEvent ce, Long trackPositionToSet) {
+    String positionSet = longTimeConversion(trackPositionToSet);
+    StringBuilder setPositionConfirmation = new StringBuilder();
+    setPositionConfirmation.append("**Set Position:** {*").append(positionSet).
+        append("*} [").append(ce.getAuthor().getAsTag()).append("]");
+    ce.getChannel().sendMessage(setPositionConfirmation).queue();
   }
 
   /**

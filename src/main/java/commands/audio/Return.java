@@ -14,10 +14,10 @@ import java.util.ArrayList;
 
 /**
  * Return is a command invocation that either displays a stack of skipped tracks
- * and provides an option to return a recently skipped track to the queue.
+ * and provides an option to return a recently skipped track to the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.1
+ * @version 1.7.2
  * @since 1.5.2
  */
 public class Return extends Command {
@@ -25,13 +25,14 @@ public class Return extends Command {
     this.name = "return";
     this.aliases = new String[]{"return", "ret"};
     this.arguments = "[0]RecentlySkipped [1]SkippedStackNumber";
-    this.help = "Returns a recently skipped track to the queue.";
+    this.help = "Returns a recently skipped track to the track queue.";
   }
 
   /**
-   * Determines whether the user is in the same voice channel as the bot to process a return command request.
+   * Checks if the user is in the same voice channel as the bot to read a return command request.
    *
    * @param ce object containing information about the command event
+   * @throws NullPointerException user not in same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -43,7 +44,7 @@ public class Return extends Command {
     try {
       boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
       if (userInSameVoiceChannel) {
-        parseReturnTrackRequest(ce);
+        interpretReturnTrackRequest(ce);
       } else {
         ce.getChannel().sendMessage("User not in the same voice channel.").queue();
       }
@@ -53,21 +54,21 @@ public class Return extends Command {
   }
 
   /**
-   * Either displays the stack of skipped tracks or returns a skipped track from the stack back to the queue.
+   * Either displays the stack of skipped tracks or returns a skipped track from the stack back to the track queue.
    *
    * @param ce object containing information about the command event
    * @throws NumberFormatException user provided non-integer value
    */
-  private void parseReturnTrackRequest(CommandEvent ce) {
+  private void interpretReturnTrackRequest(CommandEvent ce) {
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
     int numberOfParameters = parameters.length - 1;
 
     switch (numberOfParameters) {
-      case 0 -> displaySkippedTracksStack(ce);
+      case 0 -> sendSkippedTracksStack(ce);
       case 1 -> {
         try {
           int returnStackIndex = Integer.parseInt(parameters[1]);
-          returnTrackRequest(ce, returnStackIndex);
+          processReturnTrackRequest(ce, returnStackIndex);
         } catch (NumberFormatException e) {
           ce.getChannel().sendMessage("Specify what stack number to be returned with an integer.").queue();
         }
@@ -78,32 +79,17 @@ public class Return extends Command {
 
   /**
    * Sends an embed containing recently skipped tracks.
-   * <p>
-   * The skipped tracks stack can only contain up to 10 tracks. As another
-   * skipped track is added to the stack, all previously existing tracks indices
-   * are incremented by 1. After exceeding the amount, the least recent track is removed.
-   * </p>
    *
    * @param ce object containing information about the command event
    */
-  private void displaySkippedTracksStack(CommandEvent ce) {
-    AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-    ArrayList<TrackQueueIndex> skippedTracks = audioScheduler.getSkippedTracksStack();
+  private void sendSkippedTracksStack(CommandEvent ce) {
+    ArrayList<TrackQueueIndex> skippedTracks = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getSkippedTracksStack();
 
     boolean skippedTracksStackNotEmpty = !skippedTracks.isEmpty();
     if (skippedTracksStackNotEmpty) {
-      // Build skipped stack page
-      StringBuilder skippedTracksStackPage = new StringBuilder();
-      for (int i = 0; i < skippedTracks.size(); i++) {
-        String trackDuration = longTimeConversion(skippedTracks.get(i).getAudioTrack().getDuration());
-        skippedTracksStackPage.append("**[").append(i + 1).append("]** `").
-            append(skippedTracks.get(i).getAudioTrack().getInfo().title)
-            .append("` {*").append(trackDuration).append("*} ").append("\n");
-      }
-
       EmbedBuilder display = new EmbedBuilder();
       display.setAuthor("Recently Skipped");
-      display.addField("**Tracks:**", String.valueOf(skippedTracksStackPage), false);
+      display.addField("**Tracks:**", (buildSkippedTracksStackPage(skippedTracks)), false);
       Settings.sendEmbed(ce, display);
     } else {
       ce.getChannel().sendMessage("There are no recently skipped tracks.").queue();
@@ -111,13 +97,14 @@ public class Return extends Command {
   }
 
   /**
-   * Returns a track from recently skipped tracks stack.
+   * Checks if user provided integer within range of skipped tracks
+   * stack before returning a skipped track to the track queue.
    *
    * @param ce                      object containing information about the command event
    * @param skippedTracksStackIndex track index in the skipped tracks stack to be returned
    * @throws IndexOutOfBoundsException user provided index out of range of skipped tracks stack
    */
-  private void returnTrackRequest(CommandEvent ce, int skippedTracksStackIndex) {
+  private void processReturnTrackRequest(CommandEvent ce, int skippedTracksStackIndex) {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
       ArrayList<TrackQueueIndex> skippedTracksStack = audioScheduler.getSkippedTracksStack();
@@ -125,21 +112,65 @@ public class Return extends Command {
       // Displayed index to users are different from data index, so subtract 1
       AudioTrack skippedTrack = skippedTracksStack.get(skippedTracksStackIndex - 1).getAudioTrack();
 
-      // Return confirmation
-      StringBuilder returnTrackConfirmation = new StringBuilder();
-      String trackDuration = longTimeConversion(skippedTrack.getDuration());
-      returnTrackConfirmation.append("**Returned:** `")
-          .append(skippedTrack.getInfo().title)
-          .append("` {*").append(trackDuration).append("*} ")
-          .append("[").append(ce.getAuthor().getAsTag()).append("]");
-      ce.getChannel().sendMessage(returnTrackConfirmation).queue();
-
-      String requester = "[" + ce.getAuthor().getAsTag() + "]";
-      audioScheduler.queue(skippedTrack, requester);
-      skippedTracksStack.remove(skippedTracksStackIndex - 1);
+      returnSkippedTrack(ce, skippedTracksStackIndex, audioScheduler, skippedTracksStack, skippedTrack);
+      sendReturnConfirmation(ce, skippedTrack);
     } catch (IndexOutOfBoundsException e) {
       ce.getChannel().sendMessage("Queue number does not exist.").queue();
     }
+  }
+
+  /**
+   * Creates the display text to represent the skipped tracks stack.
+   * <p>
+   * The skipped tracks stack can only contain up to 10 tracks. As another
+   * skipped track is added to the stack, all previously existing tracks indices
+   * are incremented by 1. After exceeding the amount, the least recent track is removed.
+   * </p>
+   *
+   * @param skippedTracks stack of skipped tracks
+   * @return string representing the stack of skipped tracks
+   */
+  private String buildSkippedTracksStackPage(ArrayList<TrackQueueIndex> skippedTracks) {
+    StringBuilder skippedTracksStackPage = new StringBuilder();
+    for (int i = 0; i < skippedTracks.size(); i++) {
+      String trackDuration = longTimeConversion(skippedTracks.get(i).getAudioTrack().getDuration());
+      skippedTracksStackPage.append("**[").append(i + 1).append("]** `").
+          append(skippedTracks.get(i).getAudioTrack().getInfo().title)
+          .append("` {*").append(trackDuration).append("*} ").append("\n");
+    }
+    return skippedTracksStackPage.toString();
+  }
+
+  /**
+   * Returns a track from recently skipped tracks stack.
+   *
+   * @param ce                      object containing information about the command event
+   * @param skippedTracksStackIndex index of the skipped tracks stack to be returned
+   * @param audioScheduler          bot's audio scheduler
+   * @param skippedTracksStack      stack of skipped tracks
+   * @param skippedTrack            chosen skipped track to be returned
+   */
+  private void returnSkippedTrack(CommandEvent ce, int skippedTracksStackIndex, AudioScheduler audioScheduler,
+                                  ArrayList<TrackQueueIndex> skippedTracksStack, AudioTrack skippedTrack) {
+    String requester = "[" + ce.getAuthor().getAsTag() + "]";
+    audioScheduler.queue(skippedTrack, requester);
+    skippedTracksStack.remove(skippedTracksStackIndex - 1);
+  }
+
+  /**
+   * Sends confirmation the skipped track was returned to the track queue.
+   *
+   * @param ce           object containing information about the command event
+   * @param skippedTrack chosen skipped track to be returned to the track queue
+   */
+  private void sendReturnConfirmation(CommandEvent ce, AudioTrack skippedTrack) {
+    StringBuilder returnTrackConfirmation = new StringBuilder();
+    String trackDuration = longTimeConversion(skippedTrack.getDuration());
+    returnTrackConfirmation.append("**Returned:** `")
+        .append(skippedTrack.getInfo().title)
+        .append("` {*").append(trackDuration).append("*} ")
+        .append("[").append(ce.getAuthor().getAsTag()).append("]");
+    ce.getChannel().sendMessage(returnTrackConfirmation).queue();
   }
 
   /**

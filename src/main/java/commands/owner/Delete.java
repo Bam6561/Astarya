@@ -24,7 +24,7 @@ public class Delete extends Command {
   }
 
   /**
-   * Processes user provided parameters to determine whether delete command request was formatted correctly.
+   * Checks if the user provided a parameter before reading the delete command request.
    *
    * @param ce object containing information about the command event
    */
@@ -36,20 +36,21 @@ public class Delete extends Command {
     int numberOfParameters = parameters.length - 1;
 
     if (numberOfParameters == 1) {
-      parseDeleteMessagesRequest(ce, parameters);
+      readDeleteMessagesRequest(ce, parameters);
     } else {
       ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
 
   /**
-   * Checks whether the number of messages to delete is an integer and within valid range.
+   * Checks if the number of messages to delete is an
+   * integer and within the valid range before deleting messages.
    *
-   * @param ce        object containing information about the command event
+   * @param ce         object containing information about the command event
    * @param parameters user provided parameters
    * @throws NumberFormatException user provided non-integer value
    */
-  private void parseDeleteMessagesRequest(CommandEvent ce, String[] parameters) {
+  private void readDeleteMessagesRequest(CommandEvent ce, String[] parameters) {
     try {
       int numberOfMessagesToDelete = Integer.parseInt(parameters[1]);
       boolean validNumberOfMessagesToDelete = (numberOfMessagesToDelete >= 2) && (numberOfMessagesToDelete <= 100);
@@ -58,7 +59,7 @@ public class Delete extends Command {
       } else {
         ce.getChannel().sendMessage("Specify an integer between (2-100) messages to clear.").queue();
       }
-    } catch (NumberFormatException error) {
+    } catch (NumberFormatException e) {
       ce.getChannel().sendMessage("Specify an integer between (2-100) messages to clear.").queue();
     }
   }

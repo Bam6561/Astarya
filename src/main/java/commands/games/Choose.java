@@ -11,7 +11,7 @@ import java.util.Random;
  * Choose is a command invocation that chooses randomly between any number of options.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.2
  * @since 1.0
  */
 public class Choose extends Command {
@@ -25,7 +25,7 @@ public class Choose extends Command {
   }
 
   /**
-   * Processes whether user provided any parameters outside the command invocation.
+   * Checks if user provided any parameters to read a choose command request.
    * <p>
    * Users can provide any number of options separated by a comma.
    * </p>
@@ -40,31 +40,24 @@ public class Choose extends Command {
     int numberOfParameters = parameters.length - 1;
 
     if (numberOfParameters != 0) {
-      chooseOption(ce, parameters);
+      readChooseRequest(ce, parameters);
     } else {
       ce.getChannel().sendMessage("Options need to be separated by a comma.").queue();
     }
   }
 
   /**
-   * Sends an embed containing a random choice from user provided options.
+   * Checks if the choose command request was formatted correctly before
+   * sending an embed containing a random choice from user provided options.
    *
-   * @param ce        object containing information about the command event
+   * @param ce         object containing information about the command event
    * @param parameters user provided parameters
    */
-  private void chooseOption(CommandEvent ce, String[] parameters) {
-    String[] options = separateOptionsFromParameters(parameters);
+  private void readChooseRequest(CommandEvent ce, String[] parameters) {
+    String[] options = readOptions(parameters);
     boolean noEmptyOptionProvided = !checkIfEmptyOptionProvided(options);
     if (noEmptyOptionProvided) {
-      // Randomly choose an option from provided options
-      Random random = new Random();
-      int randomOption = random.nextInt(options.length);
-
-      EmbedBuilder display = new EmbedBuilder();
-      display.setAuthor("Choice");
-      display.setDescription("Based on the options you provided... \n\n" + getOptionsString()
-          + "\n\n**I have chosen:** \n||" + options[randomOption] + "||");
-      Settings.sendEmbed(ce, display);
+      processChooseRequest(ce, options);
     } else {
       ce.getChannel().sendMessage("None of the options provided can be empty.").queue();
     }
@@ -76,12 +69,12 @@ public class Choose extends Command {
    * @param parameters user provided parameters
    * @return array of options
    */
-  private String[] separateOptionsFromParameters(String[] parameters) {
-    StringBuilder optionsStringBuilder = new StringBuilder();
+  private String[] readOptions(String[] parameters) {
+    StringBuilder options = new StringBuilder();
     for (int i = 1; i < parameters.length; i++) {
-      optionsStringBuilder.append(parameters[i]).append(" ");
+      options.append(parameters[i]).append(" ");
     }
-    setOptionsString(optionsStringBuilder.toString()); // Store user input options
+    setOptionsString(options.toString()); // Store user input options
     return optionsString.split(","); // Split options provided
   }
 
@@ -96,6 +89,22 @@ public class Choose extends Command {
       if (option.equals(" ")) return true;
     }
     return false;
+  }
+
+  /**
+   * Randomly choose an option from user provided options.
+   *
+   * @param ce object containing information about the command event
+   */
+  private void processChooseRequest(CommandEvent ce, String[] options) {
+    Random random = new Random();
+    int randomOption = random.nextInt(options.length);
+
+    EmbedBuilder display = new EmbedBuilder();
+    display.setAuthor("Choice");
+    display.setDescription("Based on the options you provided... \n\n" + getOptionsString()
+        + "\n\n**I have chosen:** \n||" + options[randomOption] + "||");
+    Settings.sendEmbed(ce, display);
   }
 
   private String getOptionsString() {

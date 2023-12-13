@@ -80,11 +80,11 @@ public class Astarya {
     commands.setPrefix(prefix);
     commands.setAlternativePrefix(alternativePrefix);
     commands.addCommands(new Emote(), new Poll(waiter), new Profile(), new Remind(),
-        new Server(), new Delete(), new Settings(prefix, alternativePrefix), new Shutdown(),
-        new Ping(), new Choose(), new CoinFlip(), new HighOrLow(waiter),
+        new Server(), new Delete(), new Settings(prefix, alternativePrefix),
+        new Shutdown(), new Ping(), new Choose(), new CoinFlip(), new HighOrLow(waiter),
         new PandorasBox(loadPandorasBoxPrompts(".\\resources\\pandoras_box_prompts.txt")),
-        new Roll(), new ClearQueue(), new Join(), new Leave(), new Loop(), new NowPlaying(), new Pause(),
-        new Play(), new PlayNext(), new Queue(), new Remove(), new Return(), new SearchTrack(waiter),
+        new Roll(), new ClearQueue(), new Join(), new Leave(), new Loop(), new Lyrics(), new NowPlaying(),
+        new Pause(), new Play(), new PlayNext(), new Queue(), new Remove(), new Return(), new SearchTrack(waiter),
         new SetPosition(), new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
     CommandClient commandClient = commands.build();
 

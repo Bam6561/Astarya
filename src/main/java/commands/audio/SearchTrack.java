@@ -5,7 +5,6 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
-import commands.audio.managers.PlaybackManager;
 import commands.audio.managers.PlayerManager;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -16,10 +15,10 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * SearchTrack is a command invocation that searches for a track
- * to add to the queue using a query of user provided parameters.
+ * to add to the track queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.7.1
+ * @version 1.7.2
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
@@ -30,17 +29,17 @@ public class SearchTrack extends Command {
     this.name = "searchtrack";
     this.aliases = new String[]{"searchtrack", "search", "st"};
     this.arguments = "[1++]YouTubeQuery";
-    this.help = "Searches for a track to add to the queue.";
+    this.help = "Searches for a track to add to the track queue.";
     this.waiter = waiter;
     this.invokerUserId = 0;
   }
 
   /**
-   * Determines whether the user is in the same voice channel as the bot to process a searchTrack
-   * command request, locks the potential response to the requester, and awaits for their response.
+   * Checks if the user is in the same voice channel as the bot to read a searchTrack command request.
+   * If so, the command locks the potential response to the requester and awaits for their response.
    *
    * @param ce object containing information about the command event
-   * @throws InterruptedException thread sleep is interrupted
+   * @throws NullPointerException user not in the same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -52,8 +51,7 @@ public class SearchTrack extends Command {
     try {
       boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
       if (userInSameVoiceChannel) {
-        processSearchTrackRequest(ce);
-        setInvokerUserId(Long.parseLong(ce.getAuthor().getId())); // Lock searchTrack command request to requester
+        readSearchTrackRequest(ce);
         awaitUserResponse(ce);
       } else {
         ce.getChannel().sendMessage("User not in the same voice channel.").queue();
@@ -64,29 +62,24 @@ public class SearchTrack extends Command {
   }
 
   /**
-   * Returns a list of YouTube search results from the user provided search query.
+   * Checks if the searchTrack command request was formatted correctly before querying YouTube for match results.
    *
    * @param ce object containing information about the command event
    */
-  private void processSearchTrackRequest(CommandEvent ce) {
+  private void readSearchTrackRequest(CommandEvent ce) {
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
     int numberOfParameters = parameters.length - 1;
 
     if (numberOfParameters > 0) {
-      // Input search query into YouTube
-      StringBuilder searchQuery = new StringBuilder();
-      for (int i = 1; i < numberOfParameters; i++) {
-        searchQuery.append(parameters[i]);
-      }
-      String youtubeSearchQuery = "ytsearch:" + String.join(" ", searchQuery);
-      PlayerManager.getINSTANCE().searchAudioTrack(ce, youtubeSearchQuery);
+      setInvokerUserId(Long.parseLong(ce.getAuthor().getId())); // Lock searchTrack command request to requester
+      queryYouTube(ce, parameters, numberOfParameters);
     } else {
       ce.getChannel().sendMessage("Invalid number of parameters.").queue();
     }
   }
 
   /**
-   * Awaits for user response to searchTrack command request. After a response
+   * Awaits for user response to the searchTrack command request. After a response
    * or period of inactivity, the locked status is removed from the requester.
    *
    * @param ce object containing information about the command event
@@ -98,13 +91,7 @@ public class SearchTrack extends Command {
         w -> Long.parseLong(w.getMessage().getAuthor().getId()) == getInvokerUserId(),
         w -> {
           setInvokerUserId(0);
-          String[] parameters = w.getMessage().getContentRaw().split("\\s");
-          try {
-            handleUserResponse(ce, Integer.parseInt(parameters[0]));
-          } catch (NumberFormatException e) {
-            setInvokerUserId(0);
-            ce.getChannel().sendMessage("Responses must be an integer.").queue();
-          }
+          readUserResponse(ce, w);
         }, 15, TimeUnit.SECONDS, () -> { // Timeout
           setInvokerUserId(0);
           ce.getChannel().sendMessage("No response. Search timed out.").queue();
@@ -112,16 +99,47 @@ public class SearchTrack extends Command {
   }
 
   /**
-   * Queues the user's track choice from results sent by searchTrackRequest.
+   * Gets a list of YouTube search results from the search query.
+   *
+   * @param ce                 object containing information about the command event
+   * @param parameters         user provided parameters
+   * @param numberOfParameters number of user provided parameters
+   */
+  private void queryYouTube(CommandEvent ce, String[] parameters, int numberOfParameters) {
+    StringBuilder searchQuery = new StringBuilder();
+    for (int i = 1; i < numberOfParameters; i++) {
+      searchQuery.append(parameters[i]);
+    }
+    String youtubeSearchQuery = "ytsearch:" + String.join(" ", searchQuery);
+    PlayerManager.getINSTANCE().searchAudioTrack(ce, youtubeSearchQuery);
+  }
+
+  /**
+   * Checks if the user's response is an integer.
+   *
+   * @param ce object containing information about the command event
+   * @param w  Message recieved event
+   * @throws NumberFormatException user provided non-integer response
+   */
+  private void readUserResponse(CommandEvent ce, MessageReceivedEvent w) {
+    String[] parameters = w.getMessage().getContentRaw().split("\\s");
+    try {
+      processUserResponse(ce, Integer.parseInt(parameters[0]));
+    } catch (NumberFormatException e) {
+      ce.getChannel().sendMessage("Responses must be an integer.").queue();
+    }
+  }
+
+  /**
+   * Queues the user's track choice from YouTube results.
    *
    * @param ce                      object containing information about the command event
    * @param searchTrackResultsIndex track index in the searchTrackResults to be queued
    * @throws IndexOutOfBoundsException user provided an integer value out of range of 1-5
    */
-  private void handleUserResponse(CommandEvent ce, int searchTrackResultsIndex) {
+  private void processUserResponse(CommandEvent ce, int searchTrackResultsIndex) {
     try {
-      PlaybackManager playbackManager = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild());
-      AudioScheduler audioScheduler = playbackManager.audioScheduler;
+      AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
       ArrayList<AudioTrack> searchTrackResults = PlayerManager.getINSTANCE().getSearchTrackResults();
 
       // Displayed index to users are different from data index, so subtract 1
@@ -129,17 +147,26 @@ public class SearchTrack extends Command {
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
 
       audioScheduler.queue(track, requester);
-
-      // SearchTrack confirmation
-      String trackDuration = longTimeConversion(track.getDuration());
-      StringBuilder userResponseConfirmation = new StringBuilder();
-      userResponseConfirmation.append("**Added:** `").append(track.getInfo().title).
-          append("` {*").append(trackDuration).append("*} ").append(requester);
-      ce.getChannel().sendMessage(userResponseConfirmation).queue();
+      sendSearchTrackConfirmation(ce, track, requester);
     } catch (IndexOutOfBoundsException e) {
       setInvokerUserId(0);
       ce.getChannel().sendMessage("Responses must be in range of 1-5.").queue();
     }
+  }
+
+  /**
+   * Sends confirmation the chosen track result was added to the track queue.
+   *
+   * @param ce        object containing information about the command event
+   * @param track     chosen track from the YouTube results
+   * @param requester user who invoked the command
+   */
+  private void sendSearchTrackConfirmation(CommandEvent ce, AudioTrack track, String requester) {
+    String trackDuration = longTimeConversion(track.getDuration());
+    StringBuilder userResponseConfirmation = new StringBuilder();
+    userResponseConfirmation.append("**Added:** `").append(track.getInfo().title).
+        append("` {*").append(trackDuration).append("*} ").append(requester);
+    ce.getChannel().sendMessage(userResponseConfirmation).queue();
   }
 
   /**

@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * Skip is a command invocation that skips the currently playing track in the audio player.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.2
  * @since 1.2.4
  */
 public class Skip extends Command {
@@ -24,9 +24,10 @@ public class Skip extends Command {
   }
 
   /**
-   * Determines whether the user is in the same voice channel as the bot to process a skip command request.
+   * Checks if the user is in the same voice channel as the bot to read a skip command request.
    *
    * @param ce object containing information about the command event
+   * @throws NullPointerException user not in the same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -38,7 +39,7 @@ public class Skip extends Command {
     try {
       boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
       if (userInSameVoiceChannel) {
-        skipTrack(ce);
+        skipCurrentlyPlayingTrack(ce);
       } else {
         ce.getChannel().sendMessage("User not in the same voice channel.").queue();
       }
@@ -48,24 +49,44 @@ public class Skip extends Command {
   }
 
   /**
-   * Skips the currently playing track in the queue and adds it to the skipped song stack.
+   * Checks if there is a track currently playing to skip.
    *
    * @param ce object containing information about the command event
    */
-  private void skipTrack(CommandEvent ce) {
+  private void skipCurrentlyPlayingTrack(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
 
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
-      String requester = "[" + ce.getAuthor().getAsTag() + "]";
-      audioScheduler.addToSkippedTracksStack(new TrackQueueIndex(audioPlayer.getPlayingTrack().makeClone(), requester));
-      audioScheduler.nextTrack();
-      StringBuilder skipTrackConfirmation = new StringBuilder();
-      skipTrackConfirmation.append("**Skip:** [").append(ce.getAuthor().getAsTag()).append("]");
-      ce.getChannel().sendMessage(skipTrackConfirmation).queue();
+      addSkippedTrackToSkippedTracksStack(ce, audioScheduler, audioPlayer);
+      sendSkipConfirmation(ce);
     } else {
       ce.getChannel().sendMessage("Nothing to skip.").queue();
     }
+  }
+
+  /**
+   * Adds the currently playing track to the skipped track stack and skips it.
+   *
+   * @param ce             object containing information about the command event
+   * @param audioScheduler bot's audioscheduler
+   * @param audioPlayer    bot's audioplayer
+   */
+  private void addSkippedTrackToSkippedTracksStack(CommandEvent ce, AudioScheduler audioScheduler, AudioPlayer audioPlayer) {
+    String requester = "[" + ce.getAuthor().getAsTag() + "]";
+    audioScheduler.addToSkippedTracksStack(new TrackQueueIndex(audioPlayer.getPlayingTrack().makeClone(), requester));
+    audioScheduler.nextTrack();
+  }
+
+  /**
+   * Sends confirmation the track was skipped.
+   *
+   * @param ce object containing information about the command event
+   */
+  private void sendSkipConfirmation(CommandEvent ce) {
+    StringBuilder skipTrackConfirmation = new StringBuilder();
+    skipTrackConfirmation.append("**Skip:** [").append(ce.getAuthor().getAsTag()).append("]");
+    ce.getChannel().sendMessage(skipTrackConfirmation).queue();
   }
 }

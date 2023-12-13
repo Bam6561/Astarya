@@ -14,10 +14,10 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * HighOrLow is a command invocation that allows the user
- * to guess whether the next number will be higher or lower.
+ * to guess if the next number will be higher or lower.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.2
  * @since 1.0
  */
 public class HighOrLow extends Command {
@@ -52,9 +52,9 @@ public class HighOrLow extends Command {
 
     if (!ongoingGame()) {
       startGame(ce);
-      displayGameScreen(ce);
-      handleGameReactions(ce);
-      handleGameTimeout(ce);
+      sendGameScreen(ce);
+      processGameReactions(ce);
+      processGameTimeout(ce);
     } else {
       ce.getChannel()
           .sendMessage("A high or low game is currently being played. Please wait until it finishes or expires.")
@@ -92,7 +92,7 @@ public class HighOrLow extends Command {
    *
    * @param ce object containing information about the command event
    */
-  private void displayGameScreen(CommandEvent ce) {
+  private void sendGameScreen(CommandEvent ce) {
     EmbedBuilder display = new EmbedBuilder();
     display.setAuthor("High or Low");
     display.setDescription("My number is (" + getFirstNumber() + ") from a range of numbers from 1 - 100. "
@@ -105,12 +105,11 @@ public class HighOrLow extends Command {
    *
    * @param ce object containing information about the command event
    */
-  private void handleGameReactions(CommandEvent ce) {
+  private void processGameReactions(CommandEvent ce) {
     // Add reactions
     waiter.waitForEvent(MessageReceivedEvent.class,
         w -> !w.getMessage().getEmbeds().isEmpty()
-            && (w.getMessage().getEmbeds().get(0).getDescription()
-            .contains("Will the next number I think of be higher or lower?")),
+            && (w.getMessage().getEmbeds().get(0).getAuthor().getName().equals("High or Low")),
         w -> {
           w.getMessage().addReaction(Emoji.fromFormatted("🔼")).queue();
           w.getMessage().addReaction(Emoji.fromFormatted("🔽")).queue();
@@ -132,7 +131,7 @@ public class HighOrLow extends Command {
    *
    * @param ce object containing information about the command event
    */
-  private void handleGameTimeout(CommandEvent ce) {
+  private void processGameTimeout(CommandEvent ce) {
     new java.util.Timer().schedule(new java.util.TimerTask() { // Game Non-action Timeout (15s)
       public void run() {
         if (ongoingGame()) {

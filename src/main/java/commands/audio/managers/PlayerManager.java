@@ -49,24 +49,24 @@ public class PlayerManager {
    * </p>
    *
    * @param ce       object containing information about the command event
-   * @param trackURL either a direct url link to the track(s) requested or a YouTube search query
+   * @param trackUrl either a direct url link to the track(s) requested or a YouTube search query
    * @param isSilent whether to send a confirmation in the text channel
    */
-  public void createAudioTrack(CommandEvent ce, String trackURL, boolean isSilent) {
+  public void createAudioTrack(CommandEvent ce, String trackUrl, boolean isSilent) {
     final PlaybackManager playbackManager = this.getPlaybackManager(ce.getGuild());
     AudioScheduler audioScheduler = playbackManager.audioScheduler;
-    this.audioPlayerManager.loadItemOrdered(playbackManager, trackURL, new AudioLoadResultHandler() {
+    this.audioPlayerManager.loadItemOrdered(playbackManager, trackUrl, new AudioLoadResultHandler() {
       @Override
       public void trackLoaded(AudioTrack track) {
-        handleYouTubeVideoLinksAndMediaFiles(ce, audioScheduler, track, isSilent);
+        processYouTubeVideoLinksAndMediaFiles(ce, audioScheduler, track, isSilent);
       }
 
       @Override
       public void playlistLoaded(AudioPlaylist trackPlaylist) {
         if (trackPlaylist.isSearchResult()) {
-          handleYouTubeSearchQueries(ce, trackPlaylist, audioScheduler, isSilent);
+          processYouTubeSearchQueries(ce, trackPlaylist, audioScheduler, isSilent);
         } else {
-          handleYouTubePlaylistLinks(ce, trackPlaylist, audioScheduler, isSilent);
+          processYouTubePlaylistLinks(ce, trackPlaylist, audioScheduler, isSilent);
         }
       }
 
@@ -87,11 +87,11 @@ public class PlayerManager {
    *
    * @param ce             object containing information about the command event
    * @param audioScheduler bot's audio scheduler
-   * @param track          track to be added into the queue
+   * @param track          track to be added into the track queue
    * @param isSilent       whether to send a confirmation in the text channel
    */
-  private void handleYouTubeVideoLinksAndMediaFiles(CommandEvent ce, AudioScheduler audioScheduler,
-                                                    AudioTrack track, boolean isSilent) {
+  private void processYouTubeVideoLinksAndMediaFiles(CommandEvent ce, AudioScheduler audioScheduler,
+                                                     AudioTrack track, boolean isSilent) {
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
     addTrackToQueue(audioScheduler, track, requester);
     if (!isSilent) {
@@ -108,8 +108,8 @@ public class PlayerManager {
    * @param audioScheduler bot's audio scheduler
    * @param isSilent       whether to send a confirmation in the text channel
    */
-  private void handleYouTubeSearchQueries(CommandEvent ce, AudioPlaylist trackPlaylist,
-                                          AudioScheduler audioScheduler, boolean isSilent) {
+  private void processYouTubeSearchQueries(CommandEvent ce, AudioPlaylist trackPlaylist,
+                                           AudioScheduler audioScheduler, boolean isSilent) {
     List<AudioTrack> searchResults = trackPlaylist.getTracks();
     AudioTrack track = searchResults.get(0);
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
@@ -128,8 +128,8 @@ public class PlayerManager {
    * @param audioScheduler bot's audio scheduler
    * @param isSilent       whether to send a confirmation in the text channel
    */
-  private void handleYouTubePlaylistLinks(CommandEvent ce, AudioPlaylist trackPlaylist,
-                                          AudioScheduler audioScheduler, boolean isSilent) {
+  private void processYouTubePlaylistLinks(CommandEvent ce, AudioPlaylist trackPlaylist,
+                                           AudioScheduler audioScheduler, boolean isSilent) {
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
     for (int i = 0; i < trackPlaylist.getTracks().size(); i++) {
       addTrackToQueue(audioScheduler, trackPlaylist.getTracks().get(i), requester);
@@ -187,7 +187,7 @@ public class PlayerManager {
       @Override
       public void playlistLoaded(AudioPlaylist playlist) {
         clearSearchTrackResults(); // Clear results from the previous search
-        handleSearchTrackResults(ce, playlist);
+        processSearchTrackResults(ce, playlist);
       }
 
       @Override
@@ -209,7 +209,7 @@ public class PlayerManager {
    * @param ce       object containing information about the command event
    * @param playlist YouTube search results
    */
-  private void handleSearchTrackResults(CommandEvent ce, AudioPlaylist playlist) {
+  private void processSearchTrackResults(CommandEvent ce, AudioPlaylist playlist) {
     // Limit YouTube search results to 5 tracks
     List<AudioTrack> searchResults = playlist.getTracks();
     for (int i = 0; i < 5; i++) {
