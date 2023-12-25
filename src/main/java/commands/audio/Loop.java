@@ -24,7 +24,7 @@ public class Loop extends Command {
   /**
    * Checks if the user is in the same voice channel as the bot to read a loop command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NullPointerException user not in same voice channel
    */
   @Override
@@ -49,7 +49,7 @@ public class Loop extends Command {
   /**
    * Sets the loop status of the audio player.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void setAudioPlayerLoop(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;

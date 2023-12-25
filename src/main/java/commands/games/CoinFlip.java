@@ -25,7 +25,7 @@ public class CoinFlip extends Command {
   /**
    * Either flips a coin once or multiple times.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -44,7 +44,7 @@ public class CoinFlip extends Command {
   /**
    * Flips a coin once.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void oneCoinFlip(CommandEvent ce) {
     Random random = new Random();
@@ -65,7 +65,7 @@ public class CoinFlip extends Command {
   /**
    * Checks whether the user requested number of flips is an integer and is in range of 1-10.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    * @throws NumberFormatException user provided a non-integer value
    */
@@ -86,7 +86,7 @@ public class CoinFlip extends Command {
   /**
    * Sends the results of flipping a coin multiple times.
    *
-   * @param ce            object containing information about the command event
+   * @param ce            command event
    * @param numberOfFlips number of times to flip a coin
    */
   private void multipleFlipResults(CommandEvent ce, int numberOfFlips) {

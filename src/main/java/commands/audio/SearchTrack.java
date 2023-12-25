@@ -38,7 +38,7 @@ public class SearchTrack extends Command {
    * Checks if the user is in the same voice channel as the bot to read a searchTrack command request.
    * If so, the command locks the potential response to the requester and awaits for their response.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NullPointerException user not in the same voice channel
    */
   @Override
@@ -64,7 +64,7 @@ public class SearchTrack extends Command {
   /**
    * Checks if the searchTrack command request was formatted correctly before querying YouTube for match results.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void readSearchTrackRequest(CommandEvent ce) {
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
@@ -82,7 +82,7 @@ public class SearchTrack extends Command {
    * Awaits for user response to the searchTrack command request. After a response
    * or period of inactivity, the locked status is removed from the requester.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NumberFormatException user provided non-integer value
    */
   private void awaitUserResponse(CommandEvent ce) {
@@ -101,7 +101,7 @@ public class SearchTrack extends Command {
   /**
    * Gets a list of YouTube search results from the search query.
    *
-   * @param ce                 object containing information about the command event
+   * @param ce                 command event
    * @param parameters         user provided parameters
    * @param numberOfParameters number of user provided parameters
    */
@@ -117,7 +117,7 @@ public class SearchTrack extends Command {
   /**
    * Checks if the user's response is an integer.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @param w  Message recieved event
    * @throws NumberFormatException user provided non-integer response
    */
@@ -133,7 +133,7 @@ public class SearchTrack extends Command {
   /**
    * Queues the user's track choice from YouTube results.
    *
-   * @param ce                      object containing information about the command event
+   * @param ce                      command event
    * @param searchTrackResultsIndex track index in the searchTrackResults to be queued
    * @throws IndexOutOfBoundsException user provided an integer value out of range of 1-5
    */
@@ -157,7 +157,7 @@ public class SearchTrack extends Command {
   /**
    * Sends confirmation the chosen track result was added to the track queue.
    *
-   * @param ce        object containing information about the command event
+   * @param ce        command event
    * @param track     chosen track from the YouTube results
    * @param requester user who invoked the command
    */

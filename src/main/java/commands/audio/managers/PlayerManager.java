@@ -48,7 +48,7 @@ public class PlayerManager {
    * YouTube playlist links and search queries are handled by the playlistLoaded method.
    * </p>
    *
-   * @param ce       object containing information about the command event
+   * @param ce       command event
    * @param trackUrl either a direct url link to the track(s) requested or a YouTube search query
    * @param isSilent whether to send a confirmation in the text channel
    */
@@ -85,7 +85,7 @@ public class PlayerManager {
   /**
    * Adds a YouTube video or media file into the track queue.
    *
-   * @param ce             object containing information about the command event
+   * @param ce             command event
    * @param audioScheduler bot's audio scheduler
    * @param track          track to be added into the track queue
    * @param isSilent       whether to send a confirmation in the text channel
@@ -103,7 +103,7 @@ public class PlayerManager {
   /**
    * Adds the first match from a YouTube search query into the track queue.
    *
-   * @param ce             object containing information about the command event
+   * @param ce             command event
    * @param trackPlaylist  list of tracks generated from the search query
    * @param audioScheduler bot's audio scheduler
    * @param isSilent       whether to send a confirmation in the text channel
@@ -123,7 +123,7 @@ public class PlayerManager {
   /**
    * Adds each YouTube video from the playlist into the track queue.
    *
-   * @param ce             object containing information about the command event
+   * @param ce             command event
    * @param trackPlaylist  list of tracks retrieved from the playlist
    * @param audioScheduler bot's audio scheduler
    * @param isSilent       whether to send a confirmation in the text channel
@@ -173,7 +173,7 @@ public class PlayerManager {
    * Used in conjunction with the SearchTrack command request, this method displays tracks from a
    * YouTube search query and adds them into an ArrayList for the user to later choose from to queue.
    *
-   * @param ce                 object that contains information about the command event
+   * @param ce                 command event
    * @param youtubeSearchQuery youtube search query
    */
   public void searchAudioTrack(CommandEvent ce, String youtubeSearchQuery) {
@@ -206,7 +206,7 @@ public class PlayerManager {
    * Displays search results from a YouTube search query, limits the results to
    * the first 5, and sends an embed containing information about the search results.
    *
-   * @param ce       object containing information about the command event
+   * @param ce       command event
    * @param playlist YouTube search results
    */
   private void processSearchTrackResults(CommandEvent ce, AudioPlaylist playlist) {

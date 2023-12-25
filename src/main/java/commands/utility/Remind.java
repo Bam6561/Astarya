@@ -34,7 +34,7 @@ public class Remind extends Command {
    * provide a name for their reminder in additional parameters.
    * </p>
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -53,7 +53,7 @@ public class Remind extends Command {
   /**
    * Checks if user provided parameters contain a valid time type before processing the time type's location.
    *
-   * @param ce                 object containing information about the command event
+   * @param ce                 command event
    * @param parameters         user provided parameters
    * @param numberOfParameters number of user provided parameters
    */
@@ -118,7 +118,7 @@ public class Remind extends Command {
    * this method handles the differences in one stream.
    * </p>
    *
-   * @param ce                   object containing information about the command event
+   * @param ce                   command event
    * @param parameters           user provided parameters
    * @param numberOfParameters   number of user provided parameters
    * @param timeInFirstParameter whether the time type exists in the first parameter
@@ -229,7 +229,7 @@ public class Remind extends Command {
   /**
    * Sends an embed containing confirmation for the creation of a reminder.
    *
-   * @param ce           object containing information about a command event
+   * @param ce           command event
    * @param timeDuration duration of time
    * @param timeType     type of time
    * @param timerName    name of the reminder
@@ -271,7 +271,7 @@ public class Remind extends Command {
   /**
    * Creates a timer for the user provided time duration.
    *
-   * @param ce           object containing information about the command event
+   * @param ce           command event
    * @param timeDuration duration of time
    * @param timeType     type of time
    * @param timerName    name of the reminder

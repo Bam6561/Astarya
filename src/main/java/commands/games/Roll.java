@@ -31,7 +31,7 @@ public class Roll extends Command {
    * rolls, the user provides the number of times to roll, followed by a minimum and maximum range.
    * </p>
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -51,7 +51,7 @@ public class Roll extends Command {
   /**
    * Rolls a six sided die once.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void dieRoll(CommandEvent ce) {
     Random rand = new Random();
@@ -65,7 +65,7 @@ public class Roll extends Command {
    * Checks if the user requested number of rolls is an integer
    * and within a valid range of 1-10 before rolling a die multiple times.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    * @throws NumberFormatException user provided non-integer value
    */
@@ -86,7 +86,7 @@ public class Roll extends Command {
   /**
    * Sends the results of rolling a six sided die multiple times.
    *
-   * @param ce            object containing information about the command event
+   * @param ce            command event
    * @param numberOfRolls number of times to roll the die
    */
   private void multipleDieRollsResults(CommandEvent ce, int numberOfRolls) {
@@ -109,7 +109,7 @@ public class Roll extends Command {
    * and maximum values are zero or positive, are not equal to each other, and the minimum
    * is not larger than the maximum value before rolling a die with custom values.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    * @throws NumberFormatException user provided non-integer value
    */
@@ -141,7 +141,7 @@ public class Roll extends Command {
   /**
    * Either generates one or multiple custom range results.
    *
-   * @param ce            object that contains information about the command event
+   * @param ce            command event
    * @param numberOfRolls number of times to generate integers
    * @param min           minimum value in custom range
    * @param max           maximum value in custom range
@@ -192,7 +192,7 @@ public class Roll extends Command {
   /**
    * Sends error messages for invalid parameters provided by the user.
    *
-   * @param ce                         object containing information about the command event
+   * @param ce                         command event
    * @param validNumberOfRolls         number of rolls is between 1-10
    * @param minAndMaxAreZeroOrPositive minimum and maximum values in custom range are zero or positive
    * @param minAndMaxAreNotEqual       minimum and maximum values in custom range are not equal

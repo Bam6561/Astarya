@@ -23,7 +23,7 @@ public class Leave extends Command {
   /**
    * Forces the bot to leave the voice channel it's currently connected to.
    *
-   * @param ce object that contains information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {

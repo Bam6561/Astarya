@@ -24,7 +24,7 @@ public class ClearQueue extends Command {
   /**
    * Checks if the user is in the same voice channel as the bot to read a clearQueue command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -48,7 +48,7 @@ public class ClearQueue extends Command {
   /**
    * Clears the track queue and its associated requesters.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void clearTrackQueue(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
@@ -60,7 +60,7 @@ public class ClearQueue extends Command {
   /**
    * Sends a confirmation the track queue was cleared.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void sendClearQueueConfirmation(CommandEvent ce) {
     StringBuilder clearQueueConfirmation = new StringBuilder();

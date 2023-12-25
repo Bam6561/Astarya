@@ -22,7 +22,7 @@ public class Credits extends Command {
   /**
    * Sends an embed containing a list of acknowledgements for the bot.
    *
-   * @param ce object containing information about the command event
+   * @param ce ommand event
    */
   @Override
   protected void execute(CommandEvent ce) {

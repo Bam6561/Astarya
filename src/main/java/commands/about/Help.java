@@ -25,7 +25,7 @@ public class Help extends Command {
    * detailed documentation of a command if an additional parameter is provided.
    * Otherwise, an invalid number of parameters reference a link to the online wiki.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {

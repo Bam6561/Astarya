@@ -44,7 +44,7 @@ public class HighOrLow extends Command {
    * When the same user reacts to the embed, the results screen is sent.
    * After a period of inactivity, the locked embed will time out.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -65,7 +65,7 @@ public class HighOrLow extends Command {
   /**
    * Starts and locks the game to the user who invoked the command.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void startGame(CommandEvent ce) {
     setOngoingGame(true);
@@ -90,7 +90,7 @@ public class HighOrLow extends Command {
   /**
    * Sends an embed containing instructions on how to play.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void sendGameScreen(CommandEvent ce) {
     EmbedBuilder display = new EmbedBuilder();
@@ -103,7 +103,7 @@ public class HighOrLow extends Command {
   /**
    * Reacts to the game screen embed with reactions.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void processGameReactions(CommandEvent ce) {
     // Add reactions
@@ -129,7 +129,7 @@ public class HighOrLow extends Command {
    * Sends an embed that the user didn't react within 15s and removes
    * the locked game status from the user who invoked the command.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void processGameTimeout(CommandEvent ce) {
     new java.util.Timer().schedule(new java.util.TimerTask() { // Game Non-action Timeout (15s)
@@ -150,7 +150,7 @@ public class HighOrLow extends Command {
    * Sends an embed containing the results of the randomly generated numbers
    * and removes the locked game status from the user who invoked the command.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void displayGameResults(CommandEvent ce) {
     setOngoingGame(false);

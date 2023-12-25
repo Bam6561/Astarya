@@ -30,7 +30,7 @@ public class Choose extends Command {
    * Users can provide any number of options separated by a comma.
    * </p>
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -50,7 +50,7 @@ public class Choose extends Command {
    * Checks if the choose command request was formatted correctly before
    * sending an embed containing a random choice from user provided options.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    */
   private void readChooseRequest(CommandEvent ce, String[] parameters) {
@@ -94,7 +94,7 @@ public class Choose extends Command {
   /**
    * Randomly choose an option from user provided options.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void processChooseRequest(CommandEvent ce, String[] options) {
     Random random = new Random();

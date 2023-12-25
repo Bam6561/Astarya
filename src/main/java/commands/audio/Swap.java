@@ -29,7 +29,7 @@ public class Swap extends Command {
   /**
    * Checks if the user is in the same voice channel as the bot to read a swap command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NullPointerException user not in the same voice channel
    */
   @Override
@@ -54,7 +54,7 @@ public class Swap extends Command {
   /**
    * Checks if the swap command request was formatted correctly before swapping tracks.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void readSwapRequest(CommandEvent ce) {
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
@@ -71,7 +71,7 @@ public class Swap extends Command {
   /**
    * Processes user provided parameters to swap tracks in the track queue.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    * @throws NumberFormatException user provided non-integer values
    */
@@ -90,7 +90,7 @@ public class Swap extends Command {
   /**
    * Swaps two tracks' order in the track queue.
    *
-   * @param ce            object containing information about the command event
+   * @param ce            command event
    * @param originalIndex original track index
    * @param swapIndex     track index to be swapped
    * @throws IndexOutOfBoundsException user provided indices out of queue range
@@ -111,7 +111,7 @@ public class Swap extends Command {
   /**
    * Sends confirmation the two tracks were swapped.
    *
-   * @param ce            obkect containing information about the command event
+   * @param ce            command event
    * @param originalIndex original rack index
    * @param swapIndex     track index to be swapped
    * @param trackQueue    arraylist containing the tracks

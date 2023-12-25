@@ -26,7 +26,7 @@ public class Skip extends Command {
   /**
    * Checks if the user is in the same voice channel as the bot to read a skip command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NullPointerException user not in the same voice channel
    */
   @Override
@@ -51,7 +51,7 @@ public class Skip extends Command {
   /**
    * Checks if there is a track currently playing to skip.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void skipCurrentlyPlayingTrack(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
@@ -69,7 +69,7 @@ public class Skip extends Command {
   /**
    * Adds the currently playing track to the skipped track stack and skips it.
    *
-   * @param ce             object containing information about the command event
+   * @param ce             command event
    * @param audioScheduler bot's audioscheduler
    * @param audioPlayer    bot's audioplayer
    */
@@ -82,7 +82,7 @@ public class Skip extends Command {
   /**
    * Sends confirmation the track was skipped.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void sendSkipConfirmation(CommandEvent ce) {
     StringBuilder skipTrackConfirmation = new StringBuilder();

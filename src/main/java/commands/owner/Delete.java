@@ -26,7 +26,7 @@ public class Delete extends Command {
   /**
    * Checks if the user provided a parameter before reading the delete command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -46,7 +46,7 @@ public class Delete extends Command {
    * Checks if the number of messages to delete is an
    * integer and within the valid range before deleting messages.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    * @throws NumberFormatException user provided non-integer value
    */
@@ -67,7 +67,7 @@ public class Delete extends Command {
   /**
    * Deletes user defined amount of recent messages from the text channel.
    *
-   * @param ce                       object containing information about the command event
+   * @param ce                       command event
    * @param numberOfMessagesToDelete number of messages to delete
    */
   private void deleteRecentMessages(CommandEvent ce, int numberOfMessagesToDelete) {

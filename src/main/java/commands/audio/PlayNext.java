@@ -28,7 +28,7 @@ public class PlayNext extends Command {
   /**
    * Checks if the user is in the same voice channel as the bot to read a playNext command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NullPointerException user not in same voice channel
    */
   @Override
@@ -54,7 +54,7 @@ public class PlayNext extends Command {
    * Checks if the playNext command request was formatted
    * correctly before changing the position of the chosen track.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NumberFormatException user provided non-integer value
    */
   private void readPlayNextRequest(CommandEvent ce) {
@@ -77,7 +77,7 @@ public class PlayNext extends Command {
    * Checks if the playNext request is within queue range bounds before setting
    * a track to immediately play after the currently playing track.
    *
-   * @param ce          object containing information about the command event
+   * @param ce          command event
    * @param queueNumber track in the track queue to be played next
    * @throws IndexOutOfBoundsException user provided an index out of range of the track queue
    */
@@ -101,7 +101,7 @@ public class PlayNext extends Command {
   /**
    * Set the position of the chosen track to the top of the track queue.
    *
-   * @param ce          object containing information about the command event
+   * @param ce          command event
    * @param queueNumber track queue index
    * @param trackQueue  array list containing the tracks
    * @param audioTrack  chosen track
@@ -117,7 +117,7 @@ public class PlayNext extends Command {
   /**
    * Sends a confirmation that the chosen track's position was set to the top of the track queue.
    *
-   * @param ce            object containing information about the command event
+   * @param ce            command event
    * @param queueNumber   track queue index
    * @param trackQueue    array list containing the tracks
    * @param audioTrack    chosen track

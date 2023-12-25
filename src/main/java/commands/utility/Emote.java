@@ -23,7 +23,7 @@ public class Emote extends Command {
   /**
    * Sends an embed containing information about an emote.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {

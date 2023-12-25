@@ -28,7 +28,7 @@ public class Shuffle extends Command {
   /**
    * Checks if the user is in the same voice channel as the bot to read a shuffle command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NullPointerException user not in the same voice channel
    */
   @Override
@@ -54,7 +54,7 @@ public class Shuffle extends Command {
   /**
    * Shuffles the track queue.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void shuffleQueue(CommandEvent ce) {
     ArrayList<TrackQueueIndex> trackQueue = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();

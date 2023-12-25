@@ -36,7 +36,7 @@ public class Profile extends Command {
    * Targets can be set by providing a mention, user id, nickname or name.
    * </p>
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -64,7 +64,7 @@ public class Profile extends Command {
    * Online Status, Activity, Mention, Joined, Boosted, Timed Out, Avatar: Server, & Roles.
    * </p>
    *
-   * @param ce     the command event
+   * @param ce     command event
    * @param member the guild member
    * @param user   the Discord user
    */
@@ -82,7 +82,7 @@ public class Profile extends Command {
   /**
    * Sets the target for the command by either a user id, nickname, or name.
    *
-   * @param ce         the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    * @throws NumberFormatException  parameter not user id
    * @throws ErrorResponseException invalid user id

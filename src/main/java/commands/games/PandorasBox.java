@@ -32,7 +32,7 @@ public class PandorasBox extends Command {
   /**
    * Either substitutes the prompt's subject with self-user, a random vc or discord member, or the user's choice.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -68,7 +68,7 @@ public class PandorasBox extends Command {
   /**
    * Substitutes the <subject> from a random Pandora's Box prompt and then is sent.
    *
-   * @param ce      object containing information about the command event
+   * @param ce      command event
    * @param subject the person the prompt is about
    */
   private void sendPrompt(CommandEvent ce, String subject) {
@@ -83,7 +83,7 @@ public class PandorasBox extends Command {
   /**
    * Chooses a random voice channel member to be substituted as a prompt subject.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void randomVoiceChannelSubject(CommandEvent ce) {
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
@@ -104,7 +104,7 @@ public class PandorasBox extends Command {
   /**
    * Chooses a random Discord member to be substituted as a prompt subject.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void randomDiscordSubject(CommandEvent ce) {
     List<Member> dcMembers = ce.getGuild().getMembers();

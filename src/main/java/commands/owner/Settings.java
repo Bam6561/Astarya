@@ -37,7 +37,7 @@ public class Settings extends Command {
    * Either sends an embed containing all settings and their boolean values or
    * allows the user to change the settings based on the number of parameters provided.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -56,7 +56,7 @@ public class Settings extends Command {
   /**
    * Sends an embed containing the bot's settings' boolean values.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void sendSettingsMenu(CommandEvent ce) {
     EmbedBuilder display = new EmbedBuilder();
@@ -73,7 +73,7 @@ public class Settings extends Command {
   /**
    * Either changes the deleteinvoke, embeddecay, embeddecaytime, or embedmedialinks setting.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    */
   private void interpretSettingsMenuChange(CommandEvent ce, String[] parameters) {
@@ -91,7 +91,7 @@ public class Settings extends Command {
   /**
    * Changes the deleteinvoke's setting to true or false.
    *
-   * @param ce            object containing information about the command event
+   * @param ce            command event
    * @param settingChange the boolean value to be changed to
    */
   private void setDeleteInvokeSetting(CommandEvent ce, String settingChange) {
@@ -107,7 +107,7 @@ public class Settings extends Command {
   /**
    * Changes the embeddecay's setting to true or false.
    *
-   * @param ce            object containing information about the command event
+   * @param ce            command event
    * @param settingChange the boolean value to be changed to
    */
   private void setEmbedDecaySetting(CommandEvent ce, String settingChange) {
@@ -123,7 +123,7 @@ public class Settings extends Command {
   /**
    * Changes the embeddecaytime's setting to an integer value.
    *
-   * @param ce            object containing information about the command event
+   * @param ce            command event
    * @param settingChange the boolean value to be changed to
    * @throws NumberFormatException user provided non-integer value
    */
@@ -145,7 +145,7 @@ public class Settings extends Command {
   /**
    * Changes the embedmedia links setting to true or false.
    *
-   * @param ce            object containing information about the command event
+   * @param ce            command event
    * @param settingChange the boolean value to be changed to
    */
   private void setEmbedMediaLinksSetting(CommandEvent ce, String settingChange) {
@@ -163,7 +163,7 @@ public class Settings extends Command {
   /**
    * Deletes users' command invocations.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   public static void deleteInvoke(CommandEvent ce) {
     if (deleteInvoke) {
@@ -174,7 +174,7 @@ public class Settings extends Command {
   /**
    * Sends a pre-set embed configuration into the text channel.
    *
-   * @param ce      object containing information about the command event
+   * @param ce      command event
    * @param display object representing the embed
    */
   public static void sendEmbed(CommandEvent ce, EmbedBuilder display) {
@@ -188,7 +188,7 @@ public class Settings extends Command {
   /**
    * Automatically deletes embeds after an elapsed period of time.
    *
-   * @param ce      object containing information about the command event
+   * @param ce      command event
    * @param display object representing the embed
    */
   public static void embedDecay(CommandEvent ce, EmbedBuilder display) {

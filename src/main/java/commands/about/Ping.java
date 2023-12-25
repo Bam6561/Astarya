@@ -21,7 +21,7 @@ public class Ping extends Command {
   /**
    * Sends a message in chat and edits the message with the API response time.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);

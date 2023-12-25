@@ -29,7 +29,7 @@ public class Remove extends Command {
   /**
    * Checks if the user is in the same voice channel as the bot to read a remove command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NullPointerException user not in same voice channel
    */
   @Override
@@ -54,7 +54,7 @@ public class Remove extends Command {
   /**
    * Either removes a singular track from the track queue or multiple.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NumberFormatException user provided non-integer value
    */
   private void interpretRemoveTrackRequest(CommandEvent ce) {
@@ -77,7 +77,7 @@ public class Remove extends Command {
   /**
    * Removes a track from the track queue.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param queueIndex track to be removed from the track queue
    * @throws IndexOutOfBoundsException user provided number out of range of track queue
    */
@@ -101,7 +101,7 @@ public class Remove extends Command {
    * Checks if user provided parameters are integers and
    * adds the values into an ArrayList to be mass removed.
    *
-   * @param ce                 object containing information about the command event
+   * @param ce                 command event
    * @param parameters         user provided parameters
    * @param numberOfParameters number of user provided parameters
    * @throws NumberFormatException user provided non-integer value
@@ -124,7 +124,7 @@ public class Remove extends Command {
   /**
    * Removes multiple tracks from the track queue.
    *
-   * @param ce           object containing information about the command event
+   * @param ce           command event
    * @param queueIndices ArrayList containing queue indices to be removed
    * @throws IndexOutOfBoundsException user provided queue number out of range of track queue
    */
@@ -143,7 +143,7 @@ public class Remove extends Command {
   /**
    * Sends confirmation the track was removed from the track queue.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param queueIndex index in the track queue to be removed
    * @param trackQueue arraylist containing the tracks
    */

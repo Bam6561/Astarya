@@ -23,7 +23,7 @@ public class CommandTemplate extends Command {
   /**
    * This method also does something. Mysterious.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {

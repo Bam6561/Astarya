@@ -25,7 +25,7 @@ public class SetPosition extends Command {
   /**
    * Checks if the user is in the same voice channel as the bot to read a setPosition command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NullPointerException user not in same voice channel
    */
   @Override
@@ -51,7 +51,7 @@ public class SetPosition extends Command {
    * Checks if the setPosition command request was formatted correctly
    * before setting the currently playing track's position.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NumberFormatException user provided non-integer value
    */
   private void readSetPositionRequest(CommandEvent ce) {
@@ -74,7 +74,7 @@ public class SetPosition extends Command {
   /**
    * Checks if there is a track currently playing to set the position of.
    *
-   * @param ce                  object containing information about the command event
+   * @param ce                  command event
    * @param trackPositionString user provided position of the track to be set to
    */
   private void setCurrentlyPlayingTrackPosition(CommandEvent ce, String trackPositionString) {
@@ -91,7 +91,7 @@ public class SetPosition extends Command {
   /**
    * Sets the currently playing track's position.
    *
-   * @param ce                  object containing information about the command event
+   * @param ce                  command event
    * @param trackPositionString user provided position of the track to be set to
    * @param audioPlayer         bot's audio player
    */
@@ -111,7 +111,7 @@ public class SetPosition extends Command {
   /**
    * Converts user provided hh:mm:ss format to long data type.
    *
-   * @param ce                  object containing information about the command event
+   * @param ce                  command event
    * @param trackPositionString user provided position of the track to be set to
    * @return position of the track to be set to in long data type
    */
@@ -145,7 +145,7 @@ public class SetPosition extends Command {
   /**
    * Sends confirmation the track was set to the position.
    *
-   * @param ce                 object containing information about the command event
+   * @param ce                 command event
    * @param trackPositionToSet user provided position of the track to be set to
    */
   private void sendSetPositionConfirmation(CommandEvent ce, Long trackPositionToSet) {

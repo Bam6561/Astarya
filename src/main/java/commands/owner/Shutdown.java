@@ -22,7 +22,7 @@ public class Shutdown extends Command {
   /**
    * Kills the Java application.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {

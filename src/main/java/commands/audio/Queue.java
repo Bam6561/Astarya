@@ -39,7 +39,7 @@ public class Queue extends Command {
    * Users can optionally provide a queue page to be displayed with an additional parameter.
    * </p>
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NumberFormatException user provided non-integer value
    */
   @Override
@@ -65,7 +65,7 @@ public class Queue extends Command {
   /**
    * Either sends an embed containing a track queue page or what track is currently playing.
    *
-   * @param ce            object containing information about the command event
+   * @param ce            command event
    * @param pageRequested user provided page number to be displayed
    */
   public void interpretQueuePage(CommandEvent ce, int pageRequested) {
@@ -128,7 +128,7 @@ public class Queue extends Command {
   /**
    * Sends the track queue page and the audio player's currently playing track.
    *
-   * @param ce             object containing information about the command event
+   * @param ce             command event
    * @param audioScheduler bot's audio scheduler
    * @param audioPlayer    bot's audio player
    * @param trackQueue     arraylist containing the tracks
@@ -145,7 +145,7 @@ public class Queue extends Command {
   /**
    * Sends the currently playing track.
    *
-   * @param ce             object containing information about the command event
+   * @param ce             command event
    * @param audioScheduler the bot's audio scheduler
    * @param audioPlayer    the bot's audio player
    */

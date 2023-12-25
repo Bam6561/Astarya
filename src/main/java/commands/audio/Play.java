@@ -50,7 +50,7 @@ public class Play extends Command {
    * Checks if the user is in the same voice channel as the bot to read a play command request.
    * If the bot is not currently in any voice channel, then attempt to join the same one as the user.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -80,7 +80,7 @@ public class Play extends Command {
   /**
    * Attempts to connect the bot to the same voice channel as the user.
    *
-   * @param ce object that contains information about the command event
+   * @param ce command event
    */
   private void joinVoiceChannel(CommandEvent ce) {
     AudioChannel audioChannel = ce.getMember().getVoiceState().getChannel();
@@ -97,7 +97,7 @@ public class Play extends Command {
   /**
    * Checks if the play command request was formatted correctly before interpreting its usage.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void readPlayRequest(CommandEvent ce) {
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
@@ -114,7 +114,7 @@ public class Play extends Command {
    * Checks if a Spotify API Key was provided in order for the bot to look up the names
    * of tracks within Spotify track, playlist, and album links to play from YouTube.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    */
   private void readSpotifyApiKey(CommandEvent ce, String[] parameters) {
@@ -140,7 +140,7 @@ public class Play extends Command {
   /**
    * Builds a YouTube search query using user provided parameters and adds the first result to the track queue.
    *
-   * @param ce                 object containing information about the command event
+   * @param ce                 command event
    * @param parameters         user provided parameters
    * @param numberOfParameters number of user provided parameters
    */
@@ -180,7 +180,7 @@ public class Play extends Command {
    * Identifies user given Spotify link as either a track,
    * playlist, or album before adding it to the track queue.
    *
-   * @param ce         object that contains information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    * @param spotifyApi object representing Spotify API
    */
@@ -203,7 +203,7 @@ public class Play extends Command {
   /**
    * Checks if the Spotify track link was formatted correctly before adding it to the track queue.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    * @param spotifyApi object representing Spotify API
    */
@@ -219,7 +219,7 @@ public class Play extends Command {
   /**
    * Checks if the Spotify playlist link was formatted correctly before adding it to the track queue.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    * @param spotifyApi object representing Spotify API
    */
@@ -235,7 +235,7 @@ public class Play extends Command {
   /**
    * Checks if the Spotify album link was formatted correctly before adding it to the track queue.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    * @param spotifyApi object representing Spotify API
    */
@@ -253,7 +253,7 @@ public class Play extends Command {
    * adds the track's associated artists with the song name as a
    * search query on YouTube, and adds the first result to the track queue.
    *
-   * @param ce           object containing information about the command event
+   * @param ce           command event
    * @param spotifyTrack Spotify track identified by track Id
    * @param spotifyApi   object representing Spotify API
    */
@@ -282,7 +282,7 @@ public class Play extends Command {
    * Only the first 100 tracks in a Spotify playlist will be queued due to Spotify API limits.
    * </p>
    *
-   * @param ce              object containing information about the command event
+   * @param ce              command event
    * @param spotifyPlaylist Spotify playlist identified by track Id
    * @param spotifyApi      object representing Spotify API
    */
@@ -323,7 +323,7 @@ public class Play extends Command {
    * Only the first 50 tracks in a Spotify playlist will be queued due to Spotify API limits.
    * </p>
    *
-   * @param ce           object containing information about the command event
+   * @param ce           command event
    * @param spotifyAlbum Spotify playlist identified by track Id
    * @param spotifyApi   object representing Spotify API
    */

@@ -25,7 +25,7 @@ public class NowPlaying extends Command {
   /**
    * Ignores all parameters and displays the currently playing track.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -37,7 +37,7 @@ public class NowPlaying extends Command {
   /**
    * Displays the currently playing track.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void getNowPlaying(CommandEvent ce) { // NowPlaying
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;

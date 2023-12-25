@@ -25,7 +25,7 @@ public class Join extends Command {
    * Checks if the bot is available to join the same voice channel as the user by checking
    * that the user is in a voice channel and that the bot is not already in a voice channel.
    *
-   * @param ce object that contains information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -53,7 +53,7 @@ public class Join extends Command {
   /**
    * Attempts to connect the bot to the same voice channel as the user.
    *
-   * @param ce object that contains information about the command event
+   * @param ce command event
    */
   private void joinVoiceChannel(CommandEvent ce) {
     AudioChannel audioChannel = ce.getMember().getVoiceState().getChannel();

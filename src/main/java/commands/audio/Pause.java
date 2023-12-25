@@ -29,7 +29,7 @@ public class Pause extends Command {
   /**
    * Checks if the user is in the same voice channel as the bot to read a pause command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NullPointerException user not in same voice channel
    */
   @Override
@@ -55,7 +55,7 @@ public class Pause extends Command {
    * Pauses the audio player, and sets the bot's presence according
    * to if it's paused, playing music, or not playing anything.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void setAudioPlayerPause(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
@@ -81,7 +81,7 @@ public class Pause extends Command {
   /**
    * Sets the bot's activity to paused and status to Idle.
    *
-   * @param ce          object containing information about the command event
+   * @param ce          command event
    * @param audioPlayer bot's audio player
    * @param presence    bot's presence
    */

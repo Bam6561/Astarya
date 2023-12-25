@@ -31,7 +31,7 @@ public class Return extends Command {
   /**
    * Checks if the user is in the same voice channel as the bot to read a return command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NullPointerException user not in same voice channel
    */
   @Override
@@ -56,7 +56,7 @@ public class Return extends Command {
   /**
    * Either displays the stack of skipped tracks or returns a skipped track from the stack back to the track queue.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    * @throws NumberFormatException user provided non-integer value
    */
   private void interpretReturnTrackRequest(CommandEvent ce) {
@@ -80,7 +80,7 @@ public class Return extends Command {
   /**
    * Sends an embed containing recently skipped tracks.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   private void sendSkippedTracksStack(CommandEvent ce) {
     ArrayList<TrackQueueIndex> skippedTracks = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getSkippedTracksStack();
@@ -100,7 +100,7 @@ public class Return extends Command {
    * Checks if user provided integer within range of skipped tracks
    * stack before returning a skipped track to the track queue.
    *
-   * @param ce                      object containing information about the command event
+   * @param ce                      command event
    * @param skippedTracksStackIndex track index in the skipped tracks stack to be returned
    * @throws IndexOutOfBoundsException user provided index out of range of skipped tracks stack
    */
@@ -144,7 +144,7 @@ public class Return extends Command {
   /**
    * Returns a track from recently skipped tracks stack.
    *
-   * @param ce                      object containing information about the command event
+   * @param ce                      command event
    * @param skippedTracksStackIndex index of the skipped tracks stack to be returned
    * @param audioScheduler          bot's audio scheduler
    * @param skippedTracksStack      stack of skipped tracks
@@ -160,7 +160,7 @@ public class Return extends Command {
   /**
    * Sends confirmation the skipped track was returned to the track queue.
    *
-   * @param ce           object containing information about the command event
+   * @param ce           command event
    * @param skippedTrack chosen skipped track to be returned to the track queue
    */
   private void sendReturnConfirmation(CommandEvent ce, AudioTrack skippedTrack) {

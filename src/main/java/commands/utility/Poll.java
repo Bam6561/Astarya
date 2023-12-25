@@ -34,7 +34,7 @@ public class Poll extends Command {
    * Users can provide up to 10 options in the poll, separated by commas, but no more than one.
    * </p>
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -54,7 +54,7 @@ public class Poll extends Command {
   /**
    * Checks if user provided no empty parameters before creating a poll.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    */
   private void readPollRequest(CommandEvent ce, String[] parameters) {
@@ -98,7 +98,7 @@ public class Poll extends Command {
   /**
    * Creates a poll embed with emojis to react to.
    *
-   * @param ce      object containing information about the command event
+   * @param ce      command event
    * @param options user provided options
    */
   private void processPollRequest(CommandEvent ce, String[] options) {
@@ -123,7 +123,7 @@ public class Poll extends Command {
   /**
    * Sends an embed containing poll information.
    *
-   * @param ce      object containing information about the command event
+   * @param ce      command event
    * @param options user provided options
    */
   private void createPoll(CommandEvent ce, String[] options) {

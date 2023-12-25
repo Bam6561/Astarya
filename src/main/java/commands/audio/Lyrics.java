@@ -39,7 +39,7 @@ public class Lyrics extends Command {
   /**
    * Checks if user provided parameters to process the lyrics command request.
    *
-   * @param ce object containing information about the command event
+   * @param ce command event
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -58,7 +58,7 @@ public class Lyrics extends Command {
   /**
    * Combines an endpoint URL with its search query to query Genius API with.
    *
-   * @param ce         object containing information about the command event
+   * @param ce         command event
    * @param parameters user provided parameters
    * @throws MalformedURLException invalid URL
    */
@@ -91,7 +91,7 @@ public class Lyrics extends Command {
   /**
    * Reads the query response from Genius API.
    *
-   * @param ce               object containing information about the command event
+   * @param ce               command event
    * @param endpointUrlQuery endpoint and its search query
    * @throws IOException interrupted input stream
    */
@@ -111,7 +111,7 @@ public class Lyrics extends Command {
   /**
    * Reads the Https response as a JSON and checks if any results were found.
    *
-   * @param ce           object containing information about the command event
+   * @param ce           command event
    * @param httpResponse the response from the http connection
    * @throws JSONException no results found
    */
@@ -129,7 +129,7 @@ public class Lyrics extends Command {
   /**
    * Extracts data from JSON fields to respond to user's lyrics request.
    *
-   * @param ce      object containing information about the command event
+   * @param ce      command event
    * @param section main JSON body
    */
   private void extractDataFromJSON(CommandEvent ce, JSONObject section) {
@@ -145,7 +145,7 @@ public class Lyrics extends Command {
   /**
    * Builds the lyrics results embed.
    *
-   * @param ce      object containing information about the command event
+   * @param ce      command event
    * @param section main JSON body
    * @param matches array list of query matches
    */
@@ -167,7 +167,7 @@ public class Lyrics extends Command {
   /**
    * Sends the lyric results embed.
    *
-   * @param ce                     object containing information about the command event
+   * @param ce                     command event
    * @param lyricsEmbedDescription list of title and lyrics links
    * @param firstMatchImageLink    first match's image link
    */
