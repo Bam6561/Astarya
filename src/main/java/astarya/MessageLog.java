@@ -1,6 +1,7 @@
 package astarya;
 
 import commands.owner.Settings;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -17,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.11
+ * @version 1.7.3
  * @since 1.0.0
  */
 public class MessageLog extends ListenerAdapter {
@@ -98,33 +99,40 @@ public class MessageLog extends ListenerAdapter {
         System.out.println("Insufficient permissions to delete message.");
       }
 
-      messageE.getChannel().sendMessage(message).queue();
+      Message messageRepliedTo = messageE.getMessage().getReferencedMessage();
+      if (messageRepliedTo == null) {
+        messageE.getChannel().sendMessage(message).queue();
+      } else {
+        messageE.getChannel().sendMessage(message).
+            setMessageReference(messageRepliedTo).
+            mentionRepliedUser(false).queue();
+      }
     }
   }
 
-  private static String getTime() {
+  private String getTime() {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd(HH:mm)");
     LocalDateTime currentDateTime = LocalDateTime.now();
     return currentDateTime.format(dtf);
   }
 
-  private static String getGuildName(MessageReceivedEvent messageE) {
+  private String getGuildName(MessageReceivedEvent messageE) {
     return "<" + messageE.getGuild().getName() + ">";
   }
 
-  private static String getChannelName(MessageReceivedEvent messageE) {
+  private String getChannelName(MessageReceivedEvent messageE) {
     return "#" + messageE.getChannel().getName() + "";
   }
 
-  private static String getAuthorTag(MessageReceivedEvent messageE) {
+  private String getAuthorTag(MessageReceivedEvent messageE) {
     return "[" + messageE.getAuthor().getAsTag() + "]:";
   }
 
-  private static String getMessageContent(MessageReceivedEvent messageE) {
+  private String getMessageContent(MessageReceivedEvent messageE) {
     return (!messageE.getMessage().getContentDisplay().isEmpty() ? messageE.getMessage().getContentDisplay() + " " : "");
   }
 
-  private static String getMessageAttachment(MessageReceivedEvent messageE) {
+  private String getMessageAttachment(MessageReceivedEvent messageE) {
     return "(" + messageE.getMessage().getAttachments().get(0).getUrl() + ")";
   }
 }

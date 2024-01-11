@@ -204,6 +204,10 @@ public class Settings extends Command {
     return Settings.prefix;
   }
 
+  public static boolean getEmbedMediaLinks() {
+    return Settings.embedMediaLinks;
+  }
+
   private boolean getDeleteInvoke() {
     return Settings.deleteInvoke;
   }
@@ -214,10 +218,6 @@ public class Settings extends Command {
 
   private int getEmbedDecayTime() {
     return Settings.embedDecayTime;
-  }
-
-  public static boolean getEmbedMediaLinks() {
-    return Settings.embedMediaLinks;
   }
 
   private void setDeleteInvoke(boolean deleteInvoke) {
