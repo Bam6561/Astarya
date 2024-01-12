@@ -14,7 +14,7 @@ import java.util.HashSet;
  * ColorRole is a command invocation that assigns or removes color roles from the user.
  *
  * @author Danny Nguyen
- * @version 1.7.4
+ * @version 1.7.5
  * @since 1.7.4
  */
 public class ColorRole extends Command {
@@ -76,13 +76,11 @@ public class ColorRole extends Command {
     removeColorRoles(ce);
 
     Guild guild = ce.getGuild();
-    if (colorRoles.contains(colorCode)) {
-      guild.addRoleToMember(ce.getMember(), guild.getRolesByName(colorCode, true).get(0)).queue();
-    } else {
+    if (!colorRoles.contains(colorCode)) {
       colorRoles.add(colorCode);
       guild.createRole().setName(colorCode).setColor(Color.decode(colorCode)).complete();
-      guild.addRoleToMember(ce.getMember(), guild.getRolesByName(colorCode, true).get(0)).queue();
     }
+    guild.addRoleToMember(ce.getMember(), guild.getRolesByName(colorCode, true).get(0)).queue();
     ce.getChannel().sendMessage("Assigned color: `" + colorCode + "`.").queue();
   }
 
@@ -101,10 +99,6 @@ public class ColorRole extends Command {
 
       if (isHexColorCode(roleName)) {
         guild.removeRoleFromMember(member, role).queue();
-        if (guild.getMembersWithRoles(role).isEmpty()) {
-          colorRoles.remove(roleName);
-          role.delete().queue();
-        }
       }
     }
   }

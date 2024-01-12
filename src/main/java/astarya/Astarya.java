@@ -35,7 +35,7 @@ import java.util.Scanner;
  * various Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.7.4
+ * @version 1.7.5
  * @since 1.0
  */
 public class Astarya {
@@ -133,7 +133,11 @@ public class Astarya {
 
       // Hex Color Code Format: #ffffff
       if (isHexColorCode(roleName.toUpperCase())) {
-        colorRoles.add(roleName);
+        if (!api.getMutualGuilds().get(0).getMembersWithRoles(role).isEmpty()) {
+          colorRoles.add(roleName);
+        } else {
+          role.delete().queue();
+        }
       }
     }
     return colorRoles;
