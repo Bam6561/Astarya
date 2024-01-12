@@ -133,7 +133,6 @@ public class Astarya {
 
       // Hex Color Code Format: #ffffff
       if (isHexColorCode(roleName.toUpperCase())) {
-        System.out.println("Load: " + roleName);
         colorRoles.add(roleName);
       }
     }
