@@ -64,8 +64,9 @@ Formerly known as LucyferBot.
 6. In your .env file, write a line containing `BOT_TOKEN =` followed by your bot's login token enclosed by double
    quotes. It should look like this: `BOT_TOKEN = "12345"`.
 7. Navigate to OAUTH2, then go to the URL Generator section in the dropdown.
-8. Under scopes, checkmark `Bot`, and optionally add the `Manage Messages` permission if you plan to use the bot to
-   delete messages for you.
+8. Under scopes, checkmark `Bot`, and optionally add the following permissions:
+- `Manage Messages` to delete messages
+- `Manage Roles` to manage color roles
 9. Finally, invite the bot to your Discord server by copying the generated URL and pasting it into your browser.
 
 <p align="right"><a href="#top">Back to Top</a></p>
