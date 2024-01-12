@@ -16,7 +16,7 @@ import net.dv8tion.jda.api.managers.Presence;
  * Pause is a command invocation that pauses the audio player.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.4
  * @since 1.2.5
  */
 public class Pause extends Command {
@@ -61,7 +61,6 @@ public class Pause extends Command {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
 
-    Astarya Astarya = new Astarya();
     Presence presence = Astarya.getApi().getPresence();
 
     boolean audioPlayerNotPaused = !audioPlayer.isPaused();

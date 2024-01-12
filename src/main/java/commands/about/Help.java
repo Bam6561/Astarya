@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Help is a command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.6.11
+ * @version 1.7.4
  * @since 1.0
  */
 public class Help extends Command {
@@ -83,6 +83,9 @@ public class Help extends Command {
       case "coinflip", "flip" -> sendDetailedCommandHelpEmbed(display, "Help: Coin Flip",
           "Flips a coin any number of times. Parameter dictates how many times (1-10) to flip the coin.",
           "coinflip, flip", "[0]Once [1]NumberOfFlips", "flip | flip 5");
+      case "color" -> sendDetailedCommandHelpEmbed(display, "Help: Color",
+          "Assigns or removes color roles from the user.", "color",
+          "[1]<#HexColor>/clear", "color #7EC2FE | color clear");
       case "credits" -> sendDetailedCommandHelpEmbed(display, "Help: Credits",
           "Shows a list of credits for Astarya.", "credits", "[0]Credits", "credits");
       case "delete", "purge" -> sendDetailedCommandHelpEmbed(display, "Help: Delete",

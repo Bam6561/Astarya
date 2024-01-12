@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -25,6 +26,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 /**
@@ -33,7 +35,7 @@ import java.util.Scanner;
  * various Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.6.11
+ * @version 1.7.4
  * @since 1.0
  */
 public class Astarya {
@@ -79,13 +81,14 @@ public class Astarya {
     commands.setHelpWord("commands");
     commands.setPrefix(prefix);
     commands.setAlternativePrefix(alternativePrefix);
-    commands.addCommands(new Emote(), new Poll(waiter), new Profile(), new Remind(),
-        new Server(), new Delete(), new Settings(prefix, alternativePrefix),
+    commands.addCommands(new ColorRole(loadColorRoles()), new Emote(), new Poll(waiter), new Profile(),
+        new Remind(), new Server(), new Delete(), new Settings(prefix, alternativePrefix),
         new Shutdown(), new Ping(), new Choose(), new CoinFlip(), new HighOrLow(waiter),
         new PandorasBox(loadPandorasBoxPrompts(".\\resources\\pandoras_box_prompts.txt")),
-        new Roll(), new ClearQueue(), new Join(), new Leave(), new Loop(), new Lyrics(), new NowPlaying(),
-        new Pause(), new Play(), new PlayNext(), new Queue(), new Remove(), new Return(), new SearchTrack(waiter),
-        new SetPosition(), new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
+        new Roll(), new ClearQueue(), new Join(), new Leave(), new Loop(), new Lyrics(),
+        new NowPlaying(), new Pause(), new Play(), new PlayNext(), new Queue(),
+        new Remove(), new Return(), new SearchTrack(waiter), new SetPosition(),
+        new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
     CommandClient commandClient = commands.build();
 
     // Initialize Astarya
@@ -118,11 +121,54 @@ public class Astarya {
   }
 
   /**
+   * Loads the server's color roles into memory.
+   *
+   * @return color roles
+   */
+  public static HashSet<String> loadColorRoles() {
+    HashSet<String> colorRoles = new HashSet<>();
+
+    for (Role role : Astarya.api.getRoles()) {
+      String roleName = role.getName();
+
+      // Hex Color Code Format: #ffffff
+      if (isHexColorCode(roleName.toUpperCase())) {
+        System.out.println("Load: " + roleName);
+        colorRoles.add(roleName);
+      }
+    }
+    return colorRoles;
+  }
+
+  /**
+   * Determines if a role name is a hex color code.
+   *
+   * @param roleName role name
+   * @return is a hex color code
+   */
+  private static boolean isHexColorCode(String roleName) {
+    if (!roleName.startsWith("#") || roleName.length() != 7) {
+      return false;
+    }
+
+    for (char c : roleName.substring(1).toCharArray()) {
+      switch (c) {
+        case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' -> {
+        }
+        default -> {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
    * Returns a JDA object that can be used to access the Discord API.
    *
    * @return Discord API
    */
-  public JDA getApi() {
+  public static JDA getApi() {
     return api;
   }
 }

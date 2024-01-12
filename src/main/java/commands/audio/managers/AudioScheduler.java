@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * player's functionality related to playing tracks and track order.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.4
  * @since 1.1.0
  */
 
@@ -57,7 +57,6 @@ public class AudioScheduler extends AudioEventAdapter {
     } else if (this.audioPlayerLooped) {
     } else { // Update presence when not playing audio
       this.audioPlayer.stopTrack();
-      Astarya Astarya = new Astarya();
       Astarya.getApi().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
       Astarya.getApi().getPresence().setActivity(Activity.listening("Nothing"));
     }
@@ -72,7 +71,6 @@ public class AudioScheduler extends AudioEventAdapter {
   @Override
   public void onTrackStart(AudioPlayer audioPlayer, AudioTrack currentlyPlayingTrack) {
     if (!this.audioPlayerLooped) {
-      Astarya Astarya = new Astarya();
       Astarya.getApi().getPresence().setActivity(Activity.listening(currentlyPlayingTrack.getInfo().title));
       Astarya.getApi().getPresence().setStatus(OnlineStatus.ONLINE);
     }
