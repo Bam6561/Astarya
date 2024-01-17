@@ -8,7 +8,7 @@ package astarya;
  * @since 1.7.6
  */
 public enum Text {
-  VERSION("V1.7.10"),
+  VERSION("V1.7.11"),
   MISSING_MANAGE_MESSAGES_PERMISSION("Insufficient permissions to manage messages."),
   MISSING_MANAGE_ROLES_PERMISSION("Insufficient permissions to manage roles."),
   NOT_IN_VC("User not in a voice channel."),

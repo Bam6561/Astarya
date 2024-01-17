@@ -17,7 +17,7 @@ import java.util.HashSet;
  * ColorRole is a command invocation that assigns or removes color roles from the user.
  *
  * @author Danny Nguyen
- * @version 1.7.10
+ * @version 1.7.11
  * @since 1.7.4
  */
 public class ColorRole extends Command {
@@ -66,6 +66,8 @@ public class ColorRole extends Command {
         case "clean" -> {
           if (ce.getMember().isOwner()) {
             reloadColorRoles(ce);
+          } else {
+            ce.getChannel().sendMessage("Server owner only command.").queue();
           }
         }
         case "clear" -> {
