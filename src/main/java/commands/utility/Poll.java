@@ -23,7 +23,7 @@ public class Poll extends Command {
   public Poll(EventWaiter waiter) {
     this.name = "poll";
     this.aliases = new String[]{"poll", "vote"};
-    this.arguments = "[2, ++]PollOptions";
+    this.arguments = "[2, ++]Options";
     this.help = "Creates a reaction vote with up to 10 options.";
     this.waiter = waiter;
   }

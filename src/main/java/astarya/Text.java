@@ -8,7 +8,7 @@ package astarya;
  * @since 1.7.6
  */
 public enum Text {
-  VERSION("V1.7.6"),
+  VERSION("V1.7.7"),
   MISSING_DELETE_PERMISSION("Insufficient permissions to delete message.");
 
   private final String value;

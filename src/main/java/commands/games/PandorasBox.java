@@ -24,7 +24,7 @@ public class PandorasBox extends Command {
   public PandorasBox(ArrayList<String> pandorasBoxPrompts) {
     this.name = "pandorasbox";
     this.aliases = new String[]{"pandorasbox", "pb"};
-    this.arguments = "[0]Self [1]VC/DC/* [2 ++]*";
+    this.arguments = "[0]Self [1]VC/DC/Name [2 ++]Phrase";
     this.help = "Sends a random scenario prompt.";
     this.pandorasBoxPrompts = pandorasBoxPrompts;
   }

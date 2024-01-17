@@ -42,7 +42,7 @@ public class Info extends Command {
         "**Developer Id:** 204448598539239424 \n" +
         "**Bot:** " + jda.getSelfUser().getAsMention() + "\n" +
         "**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` \n" +
-        "**Version:** `" + Text.VERSION + "` \n" +
+        "**Version:** `" + Text.VERSION.value() + "` \n" +
         "**Language:** `Java` \n" +
         "**Source Code:** [GitHub](https://github.com/Bam6561/Astarya) \n" +
         "**Uptime:** " + getUptime());

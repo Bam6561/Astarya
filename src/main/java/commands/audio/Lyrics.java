@@ -32,7 +32,7 @@ public class Lyrics extends Command {
   public Lyrics() {
     this.name = "lyrics";
     this.aliases = new String[]{"lyrics"};
-    this.arguments = "[1 ++]*";
+    this.arguments = "[1 ++]SongName";
     this.help = "Finds lyrics of a song using Genius.";
   }
 

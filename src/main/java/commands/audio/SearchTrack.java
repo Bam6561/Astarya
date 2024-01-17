@@ -28,7 +28,7 @@ public class SearchTrack extends Command {
   public SearchTrack(EventWaiter waiter) {
     this.name = "searchtrack";
     this.aliases = new String[]{"searchtrack", "search", "st"};
-    this.arguments = "[1++]YouTubeQuery";
+    this.arguments = "[1 ++]YouTubeQuery";
     this.help = "Searches for a track to add to the track queue.";
     this.waiter = waiter;
     this.invokerUserId = 0;

@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Help is a command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.7.4
+ * @version 1.7.7
  * @since 1.0
  */
 public class Help extends Command {
@@ -36,8 +36,8 @@ public class Help extends Command {
 
     EmbedBuilder display = new EmbedBuilder();
     switch (numberOfParameters) {
-      case 0 -> sendHelpMainMenu(display);
-      case 1 -> buildDetailedCommandHelpEmbed(display, parameters[1].toLowerCase());
+      case 0 -> sendHelpMenu(display);
+      case 1 -> sendCommandDetails(display, parameters[1].toLowerCase());
       default -> display.setDescription("Type `" + Settings.getPrefix() +
           "commands` to get a list of commands available. You can also refer to " +
           "[Astarya's Wiki](https://github.com/Bam6561/Astarya/wiki).");
@@ -48,9 +48,9 @@ public class Help extends Command {
   /**
    * Sends an embed containing all bot commands available to the user.
    *
-   * @param display object representing the embed
+   * @param display embed
    */
-  private void sendHelpMainMenu(EmbedBuilder display) {
+  private void sendHelpMenu(EmbedBuilder display) {
     display.setAuthor("Help");
     display.setDescription("Type `" + Settings.getPrefix() + "help <CommandName>` " +
         "for more details on each command. Alternatively, see " +
@@ -61,16 +61,16 @@ public class Help extends Command {
         "searchTrack | setPosition | shuffle | skip | swap", true);
     display.addField("Games", "> choose | coinflip | highorlow | pandorasbox | roll", true);
     display.addField("Owner", "> delete | settings | shutdown", true);
-    display.addField("Utility", "> emote | poll | profile | remind | server", true);
+    display.addField("Utility", "> color | emote | poll | profile | remind | server", true);
   }
 
   /**
    * Fills out parameters for an embed containing detailed documentation of a command.
    *
-   * @param display     object representing the embed
-   * @param commandName name of the command to be referenced for documentation
+   * @param display     embed
+   * @param commandName command name
    */
-  private void buildDetailedCommandHelpEmbed(EmbedBuilder display, String commandName) {
+  private void sendCommandDetails(EmbedBuilder display, String commandName) {
     switch (commandName) {
       case "choose", "pick" -> sendDetailedCommandHelpEmbed(display, "Help: Choose",
           "Chooses randomly between any number of options. " +
@@ -85,7 +85,7 @@ public class Help extends Command {
           "coinflip, flip", "[0]Once [1]NumberOfFlips", "flip | flip 5");
       case "color" -> sendDetailedCommandHelpEmbed(display, "Help: Color",
           "Assigns or removes color roles from the user.", "color",
-          "[1]<#HexColor>/clear", "color #7EC2FE | color clear");
+          "[1]#HexColor/clear", "color #7EC2FE | color clear");
       case "credits" -> sendDetailedCommandHelpEmbed(display, "Help: Credits",
           "Shows a list of credits for Astarya.", "credits", "[0]Credits", "credits");
       case "delete", "purge" -> sendDetailedCommandHelpEmbed(display, "Help: Delete",
@@ -114,13 +114,13 @@ public class Help extends Command {
           "Loops the current track.",
           "loop, repeat", "[0]Loop", "loop");
       case "lyrics" -> sendDetailedCommandHelpEmbed(display, "Help: Lyrics",
-          "Finds lyrics of a song using Genius.", "lyrics", "[1 ++]*", "lyrics duck song");
+          "Finds lyrics of a song using Genius.", "lyrics", "[1 ++]SongName", "lyrics duck song");
       case "nowplaying", "np" -> sendDetailedCommandHelpEmbed(display, "Help: NowPlaying",
           "Shows what track is currently playing.", "nowplaying, np",
           "[0]NowPlaying", "nowplaying");
       case "pandorasbox", "pb" -> sendDetailedCommandHelpEmbed(display, "Help: PandorasBox",
           "Sends a random scenario prompt. Prompts' subjects are substituted if paramaters are provided.",
-          "pandorasbox, pb", "[0]Self [1]VC/DC/* [2 ++]*",
+          "pandorasbox, pb", "[0]Self [1]VC/DC/Name [2 ++]Phrase",
           "pandorasbox, pandorasbox vc, pandorasbox dc, pandorasbox John Constantine");
       case "pause", "stop" -> sendDetailedCommandHelpEmbed(display, "Help: Pause",
           "Pauses the audio player. Astarya's activity changes may be rate limited if done rapidly.",
@@ -133,14 +133,14 @@ public class Help extends Command {
               "Spotify albums are limited to 50 songs at a time. \n" +
               "**Sources** \n > - YouTube: links/playlists \n> - Discord: media links \n> - Spotify: songs/playlists/albums \n" +
               "**Supported File Types** \n > MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams",
-          "play, p", "[1]URL [2++]YouTubeQuery",
+          "play, p", "[1]URL [2 ++]YouTubeQuery",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ | play Cleverly Disguised Rickrolls");
       case "playnext", "after" -> sendDetailedCommandHelpEmbed(display, "Help: PlayNext",
           "Sets the next track to be played in the track queue.",
           "playnext, after", "[1]QueueNumber", "playnext 3");
       case "poll", "vote" -> sendDetailedCommandHelpEmbed(display, "Help: Poll",
           "Creates a reaction vote with up to 10 options. The options are parameters separated by commas.",
-          "poll, vote", "[2, ++]PollOptions", "poll hot pizza, cold pizza");
+          "poll, vote", "[2, ++]Options", "poll hot pizza, cold pizza");
       case "profile", "whois", "user" -> sendDetailedCommandHelpEmbed(display, "Help: Profile",
           "Sends information about a user.", "profile, whois, user",
           "[0]Self [1]Mention/UserId/<@UserId> [1+]Name/Nickname", "profile | profile @Bam | " +
@@ -161,7 +161,7 @@ public class Help extends Command {
               + "remind TimeDurationTimeType EventName | remind TimeDuration TimeType EventName");
       case "remove", "r" -> sendDetailedCommandHelpEmbed(display, "Help: Remove",
           "Removes track(s) from the track queue.", "remove, r",
-          "[1]QueueNumber [1, ++]QueueNumbers", "remove 1 | remove 2 4 5");
+          "[1]QueueNumber [1 ++]QueueNumbers", "remove 1 | remove 2 4 5");
       case "return", "ret" -> sendDetailedCommandHelpEmbed(display, "Help: Return",
           "Returns a recently skipped track to the track queue.", "return, ret",
           "[0]RecentlySkipped [1]SkippedStackNumber", "return | return 1");
@@ -173,7 +173,7 @@ public class Help extends Command {
           "roll | roll 10 | roll 2 25 50");
       case "searchtrack", "search", "st" -> sendDetailedCommandHelpEmbed(display, "Help: SearchTrack",
           "Searches for a track to add to the track queue.", "searchtrack, search, st",
-          "[1++]YouTubeQuery -> [1]SearchResultNumber", "search towa pallete");
+          "[1 ++]YouTubeQuery -> [1]SearchResultNumber", "search towa pallete");
       case "server" -> sendDetailedCommandHelpEmbed(display, "Help: Server",
           "Provides information on the Discord server.",
           "server", "[0]Server", "server");
@@ -206,12 +206,12 @@ public class Help extends Command {
   /**
    * Sends an embed containing detailed documentation of a command.
    *
-   * @param display     object representing the embed
-   * @param title       name of the command
-   * @param description description of the command
-   * @param aliases     aliases of the command
-   * @param parameters  parameters the command will accept for different variations of usage
-   * @param examples    examples of how to use the command
+   * @param display     embed
+   * @param title       command name
+   * @param description command description
+   * @param aliases     command aliases
+   * @param parameters  command parameters
+   * @param examples    command examples
    */
   private void sendDetailedCommandHelpEmbed(EmbedBuilder display, String title,
                                             String description, String aliases, String parameters, String examples) {
