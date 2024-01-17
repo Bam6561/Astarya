@@ -1,5 +1,6 @@
 package commands.audio;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
  * of tracks queued and what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.9
  * @since 1.2.0
  */
 public class Queue extends Command {
@@ -59,7 +60,7 @@ public class Queue extends Command {
           ce.getChannel().sendMessage("Specify an integer for queue page number.").queue();
         }
       }
-      default -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      default -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
     }
   }
 

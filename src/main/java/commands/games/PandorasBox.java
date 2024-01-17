@@ -16,11 +16,11 @@ import java.util.List;
  * subject is substituted if it has a field to support the user's given parameters.
  *
  * @author Danny Nguyen
- * @version 1.6.11
+ * @version 1.7.9
  * @since 1.6.11
  */
 public class PandorasBox extends Command {
-  private ArrayList<String> pandorasBoxPrompts;
+  private final ArrayList<String> pandorasBoxPrompts;
 
   public PandorasBox(ArrayList<String> pandorasBoxPrompts) {
     this.name = "pandorasbox";

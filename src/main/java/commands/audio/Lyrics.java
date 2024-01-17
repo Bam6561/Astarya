@@ -1,5 +1,6 @@
 package commands.audio;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.audio.objects.GeniusMatchResult;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.9
  * @since 1.7.2
  */
 public class Lyrics extends Command {
@@ -51,7 +52,7 @@ public class Lyrics extends Command {
     if (numberOfParameters >= 1) {
       processLyricsRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
     }
   }
 

@@ -8,13 +8,13 @@ package astarya;
  * @since 1.7.6
  */
 public enum Text {
-  VERSION("V1.7.8"),
+  VERSION("V1.7.9"),
   MISSING_DELETE_PERMISSION("Insufficient permissions to delete message."),
   NOT_IN_VC("User not in a voice channel."),
   NOT_IN_SAME_VC("User not in same voice channel."),
+  INVALID_NUMBER_OF_PARAMS("Invalid number of parameters"),
   INVALID_QUEUE_NUMBER("Queue number does not exist."),
   SPOTIFY_API_ERROR("Something went wrong while trying to access SpotifyAPI.");
-
 
   private final String value;
 

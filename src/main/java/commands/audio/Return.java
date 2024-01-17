@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * and provides an option to return a recently skipped track to the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.9
  * @since 1.5.2
  */
 public class Return extends Command {
@@ -75,7 +75,7 @@ public class Return extends Command {
           ce.getChannel().sendMessage("Specify what stack number to be returned with an integer.").queue();
         }
       }
-      default -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      default -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
     }
   }
 

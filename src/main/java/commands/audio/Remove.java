@@ -16,7 +16,7 @@ import java.util.Collections;
  * Remove is a command invocation that removes track(s) from the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.9
  * @since 1.2.2
  */
 public class Remove extends Command {
@@ -63,7 +63,7 @@ public class Remove extends Command {
     int numberOfParameters = parameters.length - 1;
 
     switch (numberOfParameters) {
-      case 0 -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      case 0 -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
       case 1 -> {
         try {
           removeTrack(ce, Integer.parseInt(parameters[1]));

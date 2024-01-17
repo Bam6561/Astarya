@@ -17,7 +17,7 @@ import java.util.Collections;
  * Swap is a command invocation that swaps the position of a track in queue with another.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.9
  * @since 1.2.14
  */
 public class Swap extends Command {
@@ -66,7 +66,7 @@ public class Swap extends Command {
     if (validNumberOfParameters) {
       processSwapRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
     }
   }
 

@@ -35,7 +35,7 @@ import java.io.IOException;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.9
  * @since 1.1.0
  */
 public class Play extends Command {
@@ -105,7 +105,7 @@ public class Play extends Command {
     int numberOfParameters = parameters.length - 1;
 
     switch (numberOfParameters) {
-      case 0 -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      case 0 -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
       case 1 -> readSpotifyApiKey(ce, parameters);
       default -> processYouTubeSearchQuery(ce, parameters, numberOfParameters);
     }
@@ -172,7 +172,7 @@ public class Play extends Command {
       spotifyApi.setAccessToken(clientCredentials.getAccessToken());
       return spotifyApi;
     } catch (IOException | ParseException | SpotifyWebApiException e) {
-      System.out.println("Something went wrong while trying to access Spotify API.");
+      System.out.println(Text.SPOTIFY_API_ERROR.value());
       return null;
     }
   }

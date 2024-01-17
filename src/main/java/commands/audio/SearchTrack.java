@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * to add to the track queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.9
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
@@ -76,7 +76,7 @@ public class SearchTrack extends Command {
       setInvokerUserId(Long.parseLong(ce.getAuthor().getId())); // Lock searchTrack command request to requester
       queryYouTube(ce, parameters, numberOfParameters);
     } else {
-      ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
     }
   }
 

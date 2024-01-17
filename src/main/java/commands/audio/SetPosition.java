@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * SetPosition is a command invocation that sets the position of the currently playing track.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.9
  * @since 1.2.11
  */
 public class SetPosition extends Command {
@@ -69,7 +69,7 @@ public class SetPosition extends Command {
             "Specify the section to be skipped to using hh:mm:ss.").queue();
       }
     } else {
-      ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
     }
   }
 
@@ -134,7 +134,7 @@ public class SetPosition extends Command {
         minutes = Integer.parseInt(trackPositionTimeTypes[1]);
         seconds = Integer.parseInt(trackPositionTimeTypes[2]);
       }
-      default -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      default -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
     }
 
     // Conversion to milliseconds

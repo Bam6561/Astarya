@@ -1,5 +1,6 @@
 package commands.owner;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.entities.Message;
@@ -11,7 +12,7 @@ import java.util.List;
  * Delete is a command invocation that clears a number of 2-100 recent messages.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.9
  * @since 1.0
  */
 public class Delete extends Command {
@@ -38,7 +39,7 @@ public class Delete extends Command {
     if (numberOfParameters == 1) {
       readDeleteMessagesRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
     }
   }
 

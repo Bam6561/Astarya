@@ -17,11 +17,11 @@ import java.util.concurrent.TimeUnit;
  * to guess if the next number will be higher or lower.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.9
  * @since 1.0
  */
 public class HighOrLow extends Command {
-  private EventWaiter waiter;
+  private final EventWaiter waiter;
   private int firstNumber;
   private int secondNumber;
   private long playerId;

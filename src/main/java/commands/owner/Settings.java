@@ -1,5 +1,6 @@
 package commands.owner;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -12,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.9
  * @since 1.0
  */
 public class Settings extends Command {
@@ -49,7 +50,7 @@ public class Settings extends Command {
     switch (numberOfParameters) {
       case 0 -> sendSettingsMenu(ce);
       case 2 -> interpretSettingsMenuChange(ce, parameters);
-      default -> ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      default -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
     }
   }
 

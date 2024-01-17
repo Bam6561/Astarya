@@ -1,5 +1,6 @@
 package commands.utility;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -9,7 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Remind is a command invocation that sets a timer and alerts the user when the time expires.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.9
  * @since 1.0
  */
 public class Remind extends Command {
@@ -46,7 +47,7 @@ public class Remind extends Command {
     if (numberOfParameters != 0) {
       readRemindRequest(ce, parameters, numberOfParameters);
     } else {
-      ce.getChannel().sendMessage("Invalid number of parameters.").queue();
+      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
     }
   }
 
