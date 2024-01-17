@@ -30,12 +30,12 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 /**
- * Astarya represents the Discord bot application as an object. Through event listeners and the
- * command client (an object representing the bot's various command modules), the bot can process
- * various Discord API requests given to it by users in Discord chat through the usage of its bot token.
+ * Astarya represents the Discord bot application. Through event listeners and the command client
+ * (an object representing the bot's various command modules), the bot can process various
+ * Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.7.5
+ * @version 1.7.6
  * @since 1.0
  */
 public class Astarya {
@@ -44,11 +44,10 @@ public class Astarya {
   /**
    * Initializes Astarya and associates all of its necessary components together as a singular application.
    *
-   * @param args Command line parameters
+   * @param args command line parameters
    * @throws Exception unknown error
    */
   public static void main(String[] args) {
-    // Login
     Dotenv dotenv = Dotenv.load();
     try {
       api = JDABuilder.createDefault(dotenv.get("BOT_TOKEN")).
@@ -59,24 +58,29 @@ public class Astarya {
           enableCache(CacheFlag.ACTIVITY, CacheFlag.ONLINE_STATUS).
           build().awaitReady();
       System.out.println("[" + api.getSelfUser().getName() + "#" +
-          api.getSelfUser().getDiscriminator() + "] is online.");
+          api.getSelfUser().getDiscriminator() + " " + Text.VERSION.value() + "] Online");
     } catch (Exception e) {
       e.printStackTrace();
     }
-
-    // Bot Presence
     api.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
     api.getPresence().setActivity(Activity.listening("Nothing"));
 
-    // Command Manager
-    CommandClientBuilder commands = new CommandClientBuilder();
     EventWaiter waiter = new EventWaiter();
+    api.addEventListener(createCommandClient(waiter), waiter, new MessageLog());
+  }
 
-    // Prefixes
+  /**
+   * Creates a command listener.
+   *
+   * @param waiter event waiter
+   * @return command listener
+   */
+  private static CommandClient createCommandClient(EventWaiter waiter) {
+    CommandClientBuilder commands = new CommandClientBuilder();
+
     String prefix = "<";
     String alternativePrefix = "A:";
 
-    // Command Client settings
     commands.setOwnerId("204448598539239424"); // Bam#6561
     commands.setHelpWord("commands");
     commands.setPrefix(prefix);
@@ -89,10 +93,7 @@ public class Astarya {
         new NowPlaying(), new Pause(), new Play(), new PlayNext(), new Queue(),
         new Remove(), new Return(), new SearchTrack(waiter), new SetPosition(),
         new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
-    CommandClient commandClient = commands.build();
-
-    // Initialize Astarya
-    api.addEventListener(commandClient, waiter, new MessageLog());
+    return commands.build();
   }
 
   /**
@@ -121,9 +122,9 @@ public class Astarya {
   }
 
   /**
-   * Loads the server's color roles into memory.
+   * Loads the server's color role names into memory.
    *
-   * @return color roles
+   * @return color role names
    */
   public static HashSet<String> loadColorRoles() {
     HashSet<String> colorRoles = new HashSet<>();

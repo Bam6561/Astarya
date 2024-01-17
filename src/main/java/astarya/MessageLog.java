@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.3
+ * @version 1.7.6
  * @since 1.0.0
  */
 public class MessageLog extends ListenerAdapter {
@@ -26,16 +26,14 @@ public class MessageLog extends ListenerAdapter {
    * Logs messages if they were sent by a human user and embeds Twitter, Reddit,
    * Instagram, and Pixiv media links if the setting for embedMediaLinks is true.
    *
-   * @param messageE object containing information about the message event
+   * @param e message received event
    */
-  public void onMessageReceived(MessageReceivedEvent messageE) {
-    boolean isHuman = !messageE.getMessage().isWebhookMessage() && !messageE.getMessage().getAuthor().isBot();
-    boolean embedMediaLinks = Settings.getEmbedMediaLinks();
-
+  public void onMessageReceived(MessageReceivedEvent e) {
+    boolean isHuman = !e.getMessage().isWebhookMessage() && !e.getMessage().getAuthor().isBot();
     if (isHuman) {
-      logMessage(messageE);
-      if (embedMediaLinks) {
-        scanForMediaLinks(messageE);
+      logMessage(e);
+      if (Settings.getEmbedMediaLinks()) {
+        checkForMediaLinks(e);
       }
     }
   }
@@ -45,94 +43,110 @@ public class MessageLog extends ListenerAdapter {
    * terminal window and is formatted as follows:
    * MM/dd(HH:mm)<Server>#channel[UserTag]:Text(MessageAttachment)
    *
-   * @param messageE object containing information about the message event
+   * @param e message received event
    */
-  private void logMessage(MessageReceivedEvent messageE) {
-    System.out.println(getTime() + getGuildName(messageE)
-        + getChannelName(messageE) + getAuthorTag(messageE) + getMessageContent(messageE)
-        + (!messageE.getMessage().getAttachments().isEmpty() ? getMessageAttachment(messageE) : ""));
+  private void logMessage(MessageReceivedEvent e) {
+    System.out.println(getTime() + getGuildName(e)
+        + getChannelName(e) + getAuthorTag(e) + getMessageContent(e)
+        + (!e.getMessage().getAttachments().isEmpty() ? getMessageAttachments(e) : ""));
   }
 
   /**
    * Checks if message contains a Twitter, Reddit, Instagram, or Pixiv media link.
-   * <p>
-   * If a link is found, replace
+   *
+   * @param e message received event
+   */
+  private void checkForMediaLinks(MessageReceivedEvent e) {
+    String originalMessage = e.getMessage().getContentRaw();
+    String scannedMessage = originalMessage.toLowerCase();
+
+    boolean isTwitterLink = (scannedMessage.contains("https://twitter.com/") ||
+        scannedMessage.contains("https://x.com/"));
+    boolean isTwitterMedia = scannedMessage.contains("/status/");
+    boolean isRedditMedia = scannedMessage.contains("https://www.reddit.com/");
+    boolean isInstagramMedia = scannedMessage.contains("https://www.instagram.com/");
+    boolean isPixiv = scannedMessage.contains("https://www.pixiv.net/");
+
+    // Replace domain and delete original message if permissions allow
+    if ((isTwitterLink && isTwitterMedia) || isRedditMedia || isInstagramMedia || isPixiv) {
+      originalMessage = "[" + e.getAuthor().getAsTag() + "]\n" + originalMessage;
+      replaceMediaLinks(e, originalMessage, isTwitterMedia, isRedditMedia, isInstagramMedia, isPixiv);
+    }
+  }
+
+  /**
+   * Replace
    * - Twitter's domain with vxtwitter
    * - Reddit's domain with rxddit
    * - Instagram's domain with ddinstagram
    * - Pixiv's domain with phixiv
    * to embed its content.
    *
-   * @param messageE object containing information about the message event
+   * @param e                message received event
+   * @param originalMessage  original message
+   * @param isTwitterMedia   is Twitter media
+   * @param isRedditMedia    is Reddit media
+   * @param isInstagramMedia is Instagram media
+   * @param isPixiv          is Pixiv
    */
-  private void scanForMediaLinks(MessageReceivedEvent messageE) {
-    String message = messageE.getMessage().getContentRaw();
-    String checkMessage = message.toLowerCase();
+  private void replaceMediaLinks(MessageReceivedEvent e, String originalMessage,
+                                 boolean isTwitterMedia, boolean isRedditMedia,
+                                 boolean isInstagramMedia, boolean isPixiv) {
+    if (isTwitterMedia) {
+      originalMessage = originalMessage.replace("/twitter.com/", "/vxtwitter.com/");
+      originalMessage = originalMessage.replace("/x.com/", "/vxtwitter.com/");
+    }
+    if (isRedditMedia) {
+      originalMessage = originalMessage.replace("www.reddit", "www.rxddit");
+    }
+    if (isInstagramMedia) {
+      originalMessage = originalMessage.replace("www.instagram", "www.ddinstagram");
+    }
+    if (isPixiv) {
+      originalMessage = originalMessage.replace("www.pixiv.net", "www.phixiv.net");
+    }
 
-    boolean isTwitterLink = (checkMessage.contains("https://twitter.com/") || checkMessage.contains("https://x.com/"));
-    boolean isTwitterMedia = checkMessage.contains("/status/");
-    boolean isRedditMedia = checkMessage.contains("https://www.reddit.com/");
-    boolean isInstagramMedia = checkMessage.contains("https://www.instagram.com/");
-    boolean isPixiv = checkMessage.contains("https://www.pixiv.net/");
+    try {
+      e.getMessage().delete().queue();
+    } catch (ErrorResponseException ex) {
+      System.out.println(Text.MISSING_DELETE_PERMISSION.value());
+    }
 
-    // Replace domain and delete original message if permissions allow
-    if ((isTwitterLink && isTwitterMedia) || isRedditMedia || isInstagramMedia || isPixiv) {
-      message = "[" + messageE.getAuthor().getAsTag() + "]\n" + message;
-
-      if (isTwitterMedia) {
-        message = message.replace("/twitter.com/", "/vxtwitter.com/");
-        message = message.replace("/x.com/", "/vxtwitter.com/");
-      }
-      if (isRedditMedia) {
-        message = message.replace("www.reddit", "www.rxddit");
-      }
-      if (isInstagramMedia) {
-        message = message.replace("www.instagram", "www.ddinstagram");
-      }
-      if (isPixiv) {
-        message = message.replace("www.pixiv.net", "www.phixiv.net");
-      }
-
-      try {
-        messageE.getMessage().delete().queue();
-      } catch (ErrorResponseException e) {
-        System.out.println("Insufficient permissions to delete message.");
-      }
-
-      Message messageRepliedTo = messageE.getMessage().getReferencedMessage();
-      if (messageRepliedTo == null) {
-        messageE.getChannel().sendMessage(message).queue();
-      } else {
-        messageE.getChannel().sendMessage(message).
-            setMessageReference(messageRepliedTo).
-            mentionRepliedUser(false).queue();
-      }
+    Message repliedTo = e.getMessage().getReferencedMessage();
+    if (repliedTo == null) {
+      e.getChannel().sendMessage(originalMessage).queue();
+    } else {
+      e.getChannel().sendMessage(originalMessage).
+          setMessageReference(repliedTo).
+          mentionRepliedUser(false).queue();
     }
   }
 
   private String getTime() {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd(HH:mm)");
-    LocalDateTime currentDateTime = LocalDateTime.now();
-    return currentDateTime.format(dtf);
+    return LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd(HH:mm)"));
   }
 
-  private String getGuildName(MessageReceivedEvent messageE) {
-    return "<" + messageE.getGuild().getName() + ">";
+  private String getGuildName(MessageReceivedEvent e) {
+    return "<" + e.getGuild().getName() + ">";
   }
 
-  private String getChannelName(MessageReceivedEvent messageE) {
-    return "#" + messageE.getChannel().getName() + "";
+  private String getChannelName(MessageReceivedEvent e) {
+    return "#" + e.getChannel().getName();
   }
 
-  private String getAuthorTag(MessageReceivedEvent messageE) {
-    return "[" + messageE.getAuthor().getAsTag() + "]:";
+  private String getAuthorTag(MessageReceivedEvent e) {
+    return "[" + e.getAuthor().getAsTag() + "]:";
   }
 
-  private String getMessageContent(MessageReceivedEvent messageE) {
-    return (!messageE.getMessage().getContentDisplay().isEmpty() ? messageE.getMessage().getContentDisplay() + " " : "");
+  private String getMessageContent(MessageReceivedEvent e) {
+    return (!e.getMessage().getContentDisplay().isEmpty() ? e.getMessage().getContentDisplay() + " " : "");
   }
 
-  private String getMessageAttachment(MessageReceivedEvent messageE) {
-    return "(" + messageE.getMessage().getAttachments().get(0).getUrl() + ")";
+  private String getMessageAttachments(MessageReceivedEvent e) {
+    StringBuilder links = new StringBuilder();
+    for (Message.Attachment attachment : e.getMessage().getAttachments()) {
+      links.append(attachment.getUrl() + " ");
+    }
+    return "(" + links.toString().trim() + ")";
   }
 }
