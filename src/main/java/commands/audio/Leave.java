@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
  * Leave is a command invocation that makes the bot leave the voice channel it's currently in.
  *
  * @author Danny Nguyen
- * @version 1.6
+ * @version 1.7.8
  * @since 1.1.0
  */
 public class Leave extends Command {

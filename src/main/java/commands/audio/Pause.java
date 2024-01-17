@@ -1,6 +1,7 @@
 package commands.audio;
 
 import astarya.Astarya;
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -16,7 +17,7 @@ import net.dv8tion.jda.api.managers.Presence;
  * Pause is a command invocation that pauses the audio player.
  *
  * @author Danny Nguyen
- * @version 1.7.4
+ * @version 1.7.8
  * @since 1.2.5
  */
 public class Pause extends Command {
@@ -44,10 +45,10 @@ public class Pause extends Command {
       if (userInSameVoiceChannel) {
         setAudioPlayerPause(ce);
       } else {
-        ce.getChannel().sendMessage("User not in the same voice channel.").queue();
+        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage("User not in a voice channel.").queue();
+      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
     }
   }
 

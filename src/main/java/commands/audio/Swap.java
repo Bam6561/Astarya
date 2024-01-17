@@ -1,10 +1,12 @@
 package commands.audio;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.PlayerManager;
 import commands.audio.objects.TrackQueueIndex;
+import commands.audio.utility.TimeConversion;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
@@ -15,7 +17,7 @@ import java.util.Collections;
  * Swap is a command invocation that swaps the position of a track in queue with another.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.2.14
  */
 public class Swap extends Command {
@@ -44,10 +46,10 @@ public class Swap extends Command {
       if (userInSameVoiceChannel) {
         readSwapRequest(ce);
       } else {
-        ce.getChannel().sendMessage("User not in the same voice channel.").queue();
+        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage("User not in a voice channel.").queue();
+      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
     }
   }
 
@@ -104,7 +106,7 @@ public class Swap extends Command {
       Collections.swap(trackQueue, originalIndex, swapIndex);
       sendSwapConfirmation(ce, originalIndex, swapIndex, trackQueue, originalTrack, swapTrack);
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage("Queue number does not exist.").queue();
+      ce.getChannel().sendMessage(Text.INVALID_QUEUE_NUMBER.value()).queue();
     }
   }
 
@@ -121,8 +123,8 @@ public class Swap extends Command {
   private void sendSwapConfirmation(CommandEvent ce, int originalIndex, int swapIndex,
                                     ArrayList<TrackQueueIndex> trackQueue,
                                     AudioTrack originalTrack, AudioTrack swapTrack) {
-    String originalTrackDuration = longTimeConversion(originalTrack.getDuration());
-    String swapTrackDuration = longTimeConversion(swapTrack.getDuration());
+    String originalTrackDuration = TimeConversion.convert(originalTrack.getDuration());
+    String swapTrackDuration = TimeConversion.convert(swapTrack.getDuration());
 
     StringBuilder swapConfirmation = new StringBuilder();
     swapConfirmation.append("**Swap:** ").append(" [").
@@ -134,22 +136,5 @@ public class Swap extends Command {
         append("` {*").append(swapTrackDuration).append("*} ").
         append(trackQueue.get(swapIndex).getRequester());
     ce.getChannel().sendMessage(swapConfirmation).queue();
-  }
-
-  /**
-   * Converts long duration to conventional readable time.
-   *
-   * @param longTime duration of the track in long
-   * @return readable time format
-   */
-  private String longTimeConversion(long longTime) {
-    long days = longTime / 86400000 % 30;
-    long hours = longTime / 3600000 % 24;
-    long minutes = longTime / 60000 % 60;
-    long seconds = longTime / 1000 % 60;
-    return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
-        (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
-        (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
-        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
   }
 }

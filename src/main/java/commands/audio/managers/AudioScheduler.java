@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import commands.audio.objects.TrackQueueIndex;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.managers.Presence;
 
 import java.util.ArrayList;
 
@@ -16,20 +17,20 @@ import java.util.ArrayList;
  * player's functionality related to playing tracks and track order.
  *
  * @author Danny Nguyen
- * @version 1.7.4
+ * @version 1.7.8
  * @since 1.1.0
  */
 
 public class AudioScheduler extends AudioEventAdapter {
   private final AudioPlayer audioPlayer;
-  private ArrayList<TrackQueueIndex> trackQueue;
-  private ArrayList<TrackQueueIndex> skippedTracksStack;
+  private final ArrayList<TrackQueueIndex> trackQueue;
+  private final ArrayList<TrackQueueIndex> skippedTracks;
   private Boolean audioPlayerLooped = false;
 
   public AudioScheduler(AudioPlayer audioPlayer) {
     this.audioPlayer = audioPlayer;
     this.trackQueue = new ArrayList<>();
-    this.skippedTracksStack = new ArrayList<>();
+    this.skippedTracks = new ArrayList<>();
   }
 
   /**
@@ -57,29 +58,33 @@ public class AudioScheduler extends AudioEventAdapter {
     } else if (this.audioPlayerLooped) {
     } else { // Update presence when not playing audio
       this.audioPlayer.stopTrack();
-      Astarya.getApi().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
-      Astarya.getApi().getPresence().setActivity(Activity.listening("Nothing"));
+
+      Presence presence = Astarya.getApi().getPresence();
+      presence.setStatus(OnlineStatus.DO_NOT_DISTURB);
+      presence.setActivity(Activity.listening("Nothing"));
     }
   }
 
   /**
    * Updates the bot's presence when playing a new track if the audio player isn't looped.
    *
-   * @param audioPlayer           bot's audio player
+   * @param audioPlayer           audio player
    * @param currentlyPlayingTrack track that is currently playing
    */
   @Override
   public void onTrackStart(AudioPlayer audioPlayer, AudioTrack currentlyPlayingTrack) {
     if (!this.audioPlayerLooped) {
-      Astarya.getApi().getPresence().setActivity(Activity.listening(currentlyPlayingTrack.getInfo().title));
-      Astarya.getApi().getPresence().setStatus(OnlineStatus.ONLINE);
+      Presence presence = Astarya.getApi().getPresence();
+
+      presence.setActivity(Activity.listening(currentlyPlayingTrack.getInfo().title));
+      presence.setStatus(OnlineStatus.ONLINE);
     }
   }
 
   /**
    * Queues a copy of the currently playing track if the audio player is looped.
    *
-   * @param audioPlayer bot's audio player
+   * @param audioPlayer audio player
    * @param loopedTrack track that is currently looped
    * @param endReason   whether the audio player can continue playing the next track
    */
@@ -104,10 +109,10 @@ public class AudioScheduler extends AudioEventAdapter {
    * @param skippedTrack track that was recently skipped
    */
   public void addToSkippedTracksStack(TrackQueueIndex skippedTrack) {
-    this.skippedTracksStack.add(skippedTrack);
-    boolean skippedTracksStackOverLimit = skippedTracksStack.size() > 10;
+    this.skippedTracks.add(skippedTrack);
+    boolean skippedTracksStackOverLimit = skippedTracks.size() > 10;
     if (skippedTracksStackOverLimit) {
-      skippedTracksStack.remove(9);
+      skippedTracks.remove(9);
     }
   }
 
@@ -119,8 +124,8 @@ public class AudioScheduler extends AudioEventAdapter {
     return this.trackQueue;
   }
 
-  public ArrayList<TrackQueueIndex> getSkippedTracksStack() {
-    return this.skippedTracksStack;
+  public ArrayList<TrackQueueIndex> getSkippedTracks() {
+    return this.skippedTracks;
   }
 
   public boolean getAudioPlayerLooped() {

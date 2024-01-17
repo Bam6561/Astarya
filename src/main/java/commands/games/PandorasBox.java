@@ -1,5 +1,6 @@
 package commands.games;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -97,7 +98,7 @@ public class PandorasBox extends Command {
       String subject = vcMembers.get(randomVCMember).getNickname();
       sendPrompt(ce, subject);
     } else {
-      ce.getChannel().sendMessage("User not in a voice channel.").queue();
+      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
     }
   }
 

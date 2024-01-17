@@ -1,5 +1,6 @@
 package commands.audio;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.audio.managers.PlayerManager;
@@ -34,7 +35,7 @@ import java.io.IOException;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.1.0
  */
 public class Play extends Command {
@@ -69,11 +70,11 @@ public class Play extends Command {
         if (userInSameVoiceChannel) {
           readPlayRequest(ce);
         } else {
-          ce.getChannel().sendMessage("User not in the same voice channel.").queue();
+          ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
         }
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage("User not in a voice channel.").queue();
+      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
     }
   }
 
@@ -270,7 +271,7 @@ public class Play extends Command {
       PlayerManager.getINSTANCE().createAudioTrack(ce,
           buildYouTubeSearchQuery(jsonTrack, jsonTrackArtists), false);
     } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println("Something went wrong while trying to access SpotifyAPI.");
+      System.out.println(Text.SPOTIFY_API_ERROR.value());
     }
   }
 
@@ -311,7 +312,7 @@ public class Play extends Command {
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
       ce.getChannel().sendMessage("**Added:** `" + numberOfTracksAdded + "` tracks " + requester).queue();
     } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println("Something went wrong while trying to access SpotifyAPI.");
+      System.out.println(Text.SPOTIFY_API_ERROR.value());
     }
   }
 
@@ -350,7 +351,7 @@ public class Play extends Command {
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
       ce.getChannel().sendMessage("**Added:** `" + numberOfTracksAdded + "` tracks " + requester).queue();
     } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println("Something went wrong while trying to access SpotifyAPI.");
+      System.out.println(Text.SPOTIFY_API_ERROR.value());
     }
   }
 

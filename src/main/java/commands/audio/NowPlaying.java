@@ -6,13 +6,14 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
+import commands.audio.utility.TimeConversion;
 import commands.owner.Settings;
 
 /**
  * NowPlaying is a command invocation that shows what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.2.3
  */
 public class NowPlaying extends Command {
@@ -48,8 +49,8 @@ public class NowPlaying extends Command {
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
       AudioTrack audioTrack = audioPlayer.getPlayingTrack();
-      String trackPosition = longTimeConversion(audioTrack.getPosition());
-      String trackDuration = longTimeConversion(audioTrack.getDuration());
+      String trackPosition = TimeConversion.convert(audioTrack.getPosition());
+      String trackDuration = TimeConversion.convert(audioTrack.getDuration());
 
       audioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, nowPlaying);
       nowPlaying.append("`").append(audioTrack.getInfo().title).
@@ -78,22 +79,5 @@ public class NowPlaying extends Command {
     if (audioPlayerIsLooped) {
       nowPlaying.append("(Loop) ");
     }
-  }
-
-  /**
-   * Converts long duration to conventional readable time.
-   *
-   * @param longTime duration of the track in long
-   * @return readable time format
-   */
-  private String longTimeConversion(long longTime) {
-    long days = longTime / 86400000 % 30;
-    long hours = longTime / 3600000 % 24;
-    long minutes = longTime / 60000 % 60;
-    long seconds = longTime / 1000 % 60;
-    return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
-        (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
-        (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
-        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
   }
 }

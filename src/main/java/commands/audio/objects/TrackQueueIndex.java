@@ -6,17 +6,11 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
  * TrackQueueIndex is an object relating an AudioTrack to its requester.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.8
  * @since 1.7.0
  */
-public class TrackQueueIndex {
-  private AudioTrack audioTrack;
-  private String requester;
-
-  public TrackQueueIndex(AudioTrack audioTrack, String requester) {
-    this.audioTrack = audioTrack;
-    this.requester = requester;
-  }
+public record TrackQueueIndex(AudioTrack audioTrack,
+                              String requester) {
 
   public AudioTrack getAudioTrack() {
     return this.audioTrack;
@@ -24,13 +18,5 @@ public class TrackQueueIndex {
 
   public String getRequester() {
     return this.requester;
-  }
-
-  private void setAudioTrack(AudioTrack audioTrack) {
-    this.audioTrack = audioTrack;
-  }
-
-  private void setRequester(String requester) {
-    this.requester = requester;
   }
 }

@@ -7,6 +7,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
 import commands.audio.objects.TrackQueueIndex;
+import commands.audio.utility.TimeConversion;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
  * of tracks queued and what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.2.0
  */
 public class Queue extends Command {
@@ -155,8 +156,8 @@ public class Queue extends Command {
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
       AudioTrack audioTrack = audioPlayer.getPlayingTrack();
-      String trackPosition = longTimeConversion(audioTrack.getPosition());
-      String trackDuration = longTimeConversion(audioTrack.getDuration());
+      String trackPosition = TimeConversion.convert(audioTrack.getPosition());
+      String trackDuration = TimeConversion.convert(audioTrack.getDuration());
 
       nowPlaying.append("**Now Playing:** ");
       audioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, nowPlaying);
@@ -183,8 +184,8 @@ public class Queue extends Command {
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
       AudioTrack audioTrack = audioPlayer.getPlayingTrack();
-      String trackPosition = longTimeConversion(audioTrack.getPosition());
-      String trackDuration = longTimeConversion(audioTrack.getDuration());
+      String trackPosition = TimeConversion.convert(audioTrack.getPosition());
+      String trackDuration = TimeConversion.convert(audioTrack.getDuration());
 
       nowPlaying.append("`").append(audioTrack.getInfo().title).
           append("` {*").append(trackPosition).append("*-*").
@@ -217,7 +218,7 @@ public class Queue extends Command {
 
     // Build contents of queue page embed
     for (int i = firstTrackQueueIndexOnPage; i < lastQueueIndexOnPage; i++) {
-      String trackDuration = longTimeConversion(trackQueue.get(i).getAudioTrack().getDuration());
+      String trackDuration = TimeConversion.convert(trackQueue.get(i).getAudioTrack().getDuration());
       queuePage.append("**[").append(i + 1).append("]** `").
           append(trackQueue.get(i).getAudioTrack().getInfo().title)
           .append("` {*").append(trackDuration).append("*} ").
@@ -243,23 +244,6 @@ public class Queue extends Command {
     if (audioPlayerIsLooped) {
       nowPlaying.append("(Loop) ");
     }
-  }
-
-  /**
-   * Converts long duration to conventional readable time.
-   *
-   * @param longTime duration of the track in long
-   * @return readable time format
-   */
-  private String longTimeConversion(long longTime) {
-    long days = longTime / 86400000 % 30;
-    long hours = longTime / 3600000 % 24;
-    long minutes = longTime / 60000 % 60;
-    long seconds = longTime / 1000 % 60;
-    return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
-        (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
-        (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
-        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
   }
 
   private int getPageRequested() {

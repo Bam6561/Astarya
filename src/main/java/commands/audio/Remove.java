@@ -1,5 +1,6 @@
 package commands.audio;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.audio.managers.AudioScheduler;
@@ -15,7 +16,7 @@ import java.util.Collections;
  * Remove is a command invocation that removes track(s) from the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.2.2
  */
 public class Remove extends Command {
@@ -44,10 +45,10 @@ public class Remove extends Command {
       if (userInSameVoiceChannel) {
         interpretRemoveTrackRequest(ce);
       } else {
-        ce.getChannel().sendMessage("User not in the same voice channel.").queue();
+        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage("User not in a voice channel.").queue();
+      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
     }
   }
 
@@ -93,7 +94,7 @@ public class Remove extends Command {
       sendRemoveConfirmation(ce, queueIndex, trackQueue);
       trackQueue.remove(queueIndex);
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage("Queue number does not exist.").queue();
+      ce.getChannel().sendMessage(Text.INVALID_QUEUE_NUMBER.value()).queue();
     }
   }
 
@@ -136,7 +137,7 @@ public class Remove extends Command {
         removeTrack(ce, queueIndices.get(i));
       }
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage("Queue number does not exist.").queue();
+      ce.getChannel().sendMessage(Text.INVALID_QUEUE_NUMBER.value()).queue();
     }
   }
 

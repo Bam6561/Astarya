@@ -1,11 +1,13 @@
 package commands.audio;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
+import commands.audio.utility.TimeConversion;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -18,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * to add to the track queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
@@ -54,10 +56,10 @@ public class SearchTrack extends Command {
         readSearchTrackRequest(ce);
         awaitUserResponse(ce);
       } else {
-        ce.getChannel().sendMessage("User not in the same voice channel.").queue();
+        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage("User not in a voice channel.").queue();
+      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
     }
   }
 
@@ -162,28 +164,11 @@ public class SearchTrack extends Command {
    * @param requester user who invoked the command
    */
   private void sendSearchTrackConfirmation(CommandEvent ce, AudioTrack track, String requester) {
-    String trackDuration = longTimeConversion(track.getDuration());
+    String trackDuration = TimeConversion.convert(track.getDuration());
     StringBuilder userResponseConfirmation = new StringBuilder();
     userResponseConfirmation.append("**Added:** `").append(track.getInfo().title).
         append("` {*").append(trackDuration).append("*} ").append(requester);
     ce.getChannel().sendMessage(userResponseConfirmation).queue();
-  }
-
-  /**
-   * Converts long duration to conventional readable time.
-   *
-   * @param longTime duration of the track in long
-   * @return readable time format
-   */
-  private String longTimeConversion(long longTime) {
-    long days = longTime / 86400000 % 30;
-    long hours = longTime / 3600000 % 24;
-    long minutes = longTime / 60000 % 60;
-    long seconds = longTime / 1000 % 60;
-    return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
-        (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
-        (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
-        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
   }
 
   private long getInvokerUserId() {

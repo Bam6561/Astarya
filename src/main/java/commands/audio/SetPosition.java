@@ -1,9 +1,11 @@
 package commands.audio;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import commands.audio.managers.PlayerManager;
+import commands.audio.utility.TimeConversion;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
@@ -11,7 +13,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * SetPosition is a command invocation that sets the position of the currently playing track.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.2.11
  */
 public class SetPosition extends Command {
@@ -40,10 +42,10 @@ public class SetPosition extends Command {
       if (userInSameVoiceChannel) {
         readSetPositionRequest(ce);
       } else {
-        ce.getChannel().sendMessage("User not in the same voice channel.").queue();
+        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage("User not in a voice channel.").queue();
+      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
     }
   }
 
@@ -149,27 +151,10 @@ public class SetPosition extends Command {
    * @param trackPositionToSet user provided position of the track to be set to
    */
   private void sendSetPositionConfirmation(CommandEvent ce, Long trackPositionToSet) {
-    String positionSet = longTimeConversion(trackPositionToSet);
+    String positionSet = TimeConversion.convert(trackPositionToSet);
     StringBuilder setPositionConfirmation = new StringBuilder();
     setPositionConfirmation.append("**Set Position:** {*").append(positionSet).
         append("*} [").append(ce.getAuthor().getAsTag()).append("]");
     ce.getChannel().sendMessage(setPositionConfirmation).queue();
-  }
-
-  /**
-   * Converts long duration to conventional readable time.
-   *
-   * @param longTime duration of the track in long
-   * @return readable time format
-   */
-  private String longTimeConversion(long longTime) {
-    long days = longTime / 86400000 % 30;
-    long hours = longTime / 3600000 % 24;
-    long minutes = longTime / 60000 % 60;
-    long seconds = longTime / 1000 % 60;
-    return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
-        (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
-        (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
-        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
   }
 }

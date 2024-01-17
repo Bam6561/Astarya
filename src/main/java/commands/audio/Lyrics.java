@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.7.2
  */
 public class Lyrics extends Command {
@@ -118,7 +118,8 @@ public class Lyrics extends Command {
   private void processHttpResponse(CommandEvent ce, String httpResponse) {
     // Main JSON body
     JSONObject httpResponseJSON = new JSONObject(httpResponse);
-    JSONObject section = (JSONObject) httpResponseJSON.getJSONObject("response").getJSONArray("sections").get(0);
+    JSONObject section = (JSONObject) httpResponseJSON.
+        getJSONObject("response").getJSONArray("sections").get(0);
     try {
       extractDataFromJSON(ce, section);
     } catch (JSONException e) {

@@ -1,11 +1,13 @@
 package commands.audio;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
 import commands.audio.objects.TrackQueueIndex;
+import commands.audio.utility.TimeConversion;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -17,7 +19,7 @@ import java.util.ArrayList;
  * and provides an option to return a recently skipped track to the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.5.2
  */
 public class Return extends Command {
@@ -46,10 +48,10 @@ public class Return extends Command {
       if (userInSameVoiceChannel) {
         interpretReturnTrackRequest(ce);
       } else {
-        ce.getChannel().sendMessage("User not in the same voice channel.").queue();
+        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage("User not in a voice channel.").queue();
+      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
     }
   }
 
@@ -83,7 +85,7 @@ public class Return extends Command {
    * @param ce command event
    */
   private void sendSkippedTracksStack(CommandEvent ce) {
-    ArrayList<TrackQueueIndex> skippedTracks = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getSkippedTracksStack();
+    ArrayList<TrackQueueIndex> skippedTracks = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getSkippedTracks();
 
     boolean skippedTracksStackNotEmpty = !skippedTracks.isEmpty();
     if (skippedTracksStackNotEmpty) {
@@ -107,7 +109,7 @@ public class Return extends Command {
   private void processReturnTrackRequest(CommandEvent ce, int skippedTracksStackIndex) {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-      ArrayList<TrackQueueIndex> skippedTracksStack = audioScheduler.getSkippedTracksStack();
+      ArrayList<TrackQueueIndex> skippedTracksStack = audioScheduler.getSkippedTracks();
 
       // Displayed index to users are different from data index, so subtract 1
       AudioTrack skippedTrack = skippedTracksStack.get(skippedTracksStackIndex - 1).getAudioTrack();
@@ -115,7 +117,7 @@ public class Return extends Command {
       returnSkippedTrack(ce, skippedTracksStackIndex, audioScheduler, skippedTracksStack, skippedTrack);
       sendReturnConfirmation(ce, skippedTrack);
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage("Queue number does not exist.").queue();
+      ce.getChannel().sendMessage(Text.INVALID_QUEUE_NUMBER.value()).queue();
     }
   }
 
@@ -133,7 +135,7 @@ public class Return extends Command {
   private String buildSkippedTracksStackPage(ArrayList<TrackQueueIndex> skippedTracks) {
     StringBuilder skippedTracksStackPage = new StringBuilder();
     for (int i = 0; i < skippedTracks.size(); i++) {
-      String trackDuration = longTimeConversion(skippedTracks.get(i).getAudioTrack().getDuration());
+      String trackDuration = TimeConversion.convert(skippedTracks.get(i).getAudioTrack().getDuration());
       skippedTracksStackPage.append("**[").append(i + 1).append("]** `").
           append(skippedTracks.get(i).getAudioTrack().getInfo().title)
           .append("` {*").append(trackDuration).append("*} ").append("\n");
@@ -165,28 +167,11 @@ public class Return extends Command {
    */
   private void sendReturnConfirmation(CommandEvent ce, AudioTrack skippedTrack) {
     StringBuilder returnTrackConfirmation = new StringBuilder();
-    String trackDuration = longTimeConversion(skippedTrack.getDuration());
+    String trackDuration = TimeConversion.convert(skippedTrack.getDuration());
     returnTrackConfirmation.append("**Returned:** `")
         .append(skippedTrack.getInfo().title)
         .append("` {*").append(trackDuration).append("*} ")
         .append("[").append(ce.getAuthor().getAsTag()).append("]");
     ce.getChannel().sendMessage(returnTrackConfirmation).queue();
-  }
-
-  /**
-   * Converts long duration to conventional readable time.
-   *
-   * @param longTime duration of the track in long
-   * @return readable time format
-   */
-  private String longTimeConversion(long longTime) {
-    long days = longTime / 86400000 % 30;
-    long hours = longTime / 3600000 % 24;
-    long minutes = longTime / 60000 % 60;
-    long seconds = longTime / 1000 % 60;
-    return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
-        (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
-        (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
-        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
   }
 }

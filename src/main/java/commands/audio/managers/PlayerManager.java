@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import commands.audio.utility.TimeConversion;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -22,14 +23,14 @@ import java.util.Map;
  * search queries into playable tracks for the AudioScheduler.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.8
  * @since 1.1.0
  */
 public class PlayerManager {
   private static PlayerManager INSTANCE;
   private final Map<Long, PlaybackManager> musicManagers;
   private final AudioPlayerManager audioPlayerManager;
-  private ArrayList<AudioTrack> searchTrackResults;
+  private final ArrayList<AudioTrack> searchTrackResults;
 
   // Registers audio player with bot application
   public PlayerManager() {
@@ -58,7 +59,7 @@ public class PlayerManager {
     this.audioPlayerManager.loadItemOrdered(playbackManager, trackUrl, new AudioLoadResultHandler() {
       @Override
       public void trackLoaded(AudioTrack track) {
-        processYouTubeVideoLinksAndMediaFiles(ce, audioScheduler, track, isSilent);
+        processYouTubeLinksAndMediaFiles(ce, audioScheduler, track, isSilent);
       }
 
       @Override
@@ -86,17 +87,17 @@ public class PlayerManager {
    * Adds a YouTube video or media file into the track queue.
    *
    * @param ce             command event
-   * @param audioScheduler bot's audio scheduler
+   * @param audioScheduler audio scheduler
    * @param track          track to be added into the track queue
    * @param isSilent       whether to send a confirmation in the text channel
    */
-  private void processYouTubeVideoLinksAndMediaFiles(CommandEvent ce, AudioScheduler audioScheduler,
-                                                     AudioTrack track, boolean isSilent) {
+  private void processYouTubeLinksAndMediaFiles(CommandEvent ce, AudioScheduler audioScheduler,
+                                                AudioTrack track, boolean isSilent) {
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
-    addTrackToQueue(audioScheduler, track, requester);
+    audioScheduler.queue(track, requester);
     if (!isSilent) {
       ce.getChannel().sendMessage("**Added:** `" + track.getInfo().title + "` {*"
-          + longTimeConversion(track.getDuration()) + "*} " + requester).queue();
+          + TimeConversion.convert(track.getDuration()) + "*} " + requester).queue();
     }
   }
 
@@ -105,7 +106,7 @@ public class PlayerManager {
    *
    * @param ce             command event
    * @param trackPlaylist  list of tracks generated from the search query
-   * @param audioScheduler bot's audio scheduler
+   * @param audioScheduler audio scheduler
    * @param isSilent       whether to send a confirmation in the text channel
    */
   private void processYouTubeSearchQueries(CommandEvent ce, AudioPlaylist trackPlaylist,
@@ -113,10 +114,10 @@ public class PlayerManager {
     List<AudioTrack> searchResults = trackPlaylist.getTracks();
     AudioTrack track = searchResults.get(0);
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
-    addTrackToQueue(audioScheduler, track, requester);
+    audioScheduler.queue(track, requester);
     if (!isSilent) {
       ce.getChannel().sendMessage("**Added:** `" + searchResults.get(0).getInfo().title + "` {*"
-          + longTimeConversion(track.getDuration()) + "*} " + requester).queue();
+          + TimeConversion.convert(track.getDuration()) + "*} " + requester).queue();
     }
   }
 
@@ -125,48 +126,19 @@ public class PlayerManager {
    *
    * @param ce             command event
    * @param trackPlaylist  list of tracks retrieved from the playlist
-   * @param audioScheduler bot's audio scheduler
+   * @param audioScheduler audio scheduler
    * @param isSilent       whether to send a confirmation in the text channel
    */
   private void processYouTubePlaylistLinks(CommandEvent ce, AudioPlaylist trackPlaylist,
                                            AudioScheduler audioScheduler, boolean isSilent) {
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
     for (int i = 0; i < trackPlaylist.getTracks().size(); i++) {
-      addTrackToQueue(audioScheduler, trackPlaylist.getTracks().get(i), requester);
+      audioScheduler.queue(trackPlaylist.getTracks().get(i), requester);
     }
     if (!isSilent) {
       ce.getChannel().sendMessage("**Added:** `" + trackPlaylist.getTracks().size()
           + "` tracks " + requester).queue();
     }
-  }
-
-  /**
-   * Adds the track and the requester to their respective lists.
-   *
-   * @param audioScheduler bot's audio scheduler
-   * @param track          track to be queued
-   * @param requester      user who queued the track
-   */
-  private void addTrackToQueue(AudioScheduler audioScheduler,
-                               AudioTrack track, String requester) {
-    audioScheduler.queue(track, requester);
-  }
-
-  /**
-   * Converts long duration to conventional readable time.
-   *
-   * @param longTime duration of the track in long
-   * @return readable time format
-   */
-  private String longTimeConversion(long longTime) {
-    long days = longTime / 86400000 % 30;
-    long hours = longTime / 3600000 % 24;
-    long minutes = longTime / 60000 % 60;
-    long seconds = longTime / 1000 % 60;
-    return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
-        (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
-        (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
-        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
   }
 
   /**
@@ -219,10 +191,10 @@ public class PlayerManager {
     // Build search result's embed contents
     StringBuilder searchResultsDisplay = new StringBuilder();
     for (int i = 0; i < 5; i++) {
-      long trackDurationLong = getTrackFromSearchResults(i).getDuration();
-      String trackDuration = longTimeConversion(trackDurationLong);
+      long trackDurationLong = searchTrackResults.get(i).getDuration();
+      String trackDuration = TimeConversion.convert(trackDurationLong);
       searchResultsDisplay.append("**[").append(i + 1).append("]** `").
-          append(getTrackFromSearchResults(i).getInfo().title)
+          append(searchTrackResults.get(i).getInfo().title)
           .append("` {*").append(trackDuration).append("*}\n");
     }
 
@@ -238,10 +210,6 @@ public class PlayerManager {
 
   private void addSearchTrackResults(AudioTrack audioTrack) {
     this.searchTrackResults.add(audioTrack);
-  }
-
-  private AudioTrack getTrackFromSearchResults(int index) {
-    return this.searchTrackResults.get(index);
   }
 
   public ArrayList<AudioTrack> getSearchTrackResults() {

@@ -1,5 +1,6 @@
 package commands.audio;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.audio.managers.AudioScheduler;
@@ -11,7 +12,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * Loop is a command invocation that sets a boolean value of whether to loop the currently playing track.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.8
  * @since 1.2.6
  */
 public class Loop extends Command {
@@ -39,10 +40,10 @@ public class Loop extends Command {
       if (userInSameVoiceChannel) {
         setAudioPlayerLoop(ce);
       } else {
-        ce.getChannel().sendMessage("User not in the same voice channel.").queue();
+        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage("User not in a voice channel.").queue();
+      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
     }
   }
 

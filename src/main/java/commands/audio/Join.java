@@ -1,5 +1,6 @@
 package commands.audio;
 
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -11,7 +12,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
  * Join is a command invocation that makes the bot join the same voice channel as the user.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.1.0
  */
 public class Join extends Command {
@@ -42,7 +43,7 @@ public class Join extends Command {
       joinVoiceChannel(ce);
     } else {
       if (!userInVoiceChannel) {
-        ce.getChannel().sendMessage("User not in a voice channel.").queue();
+        ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
       } else if (botAlreadyInVoiceChannel) {
         String alreadyConnected = "Already connected to <#" + botVoiceState.getChannel().getId() + ">";
         ce.getChannel().sendMessage(alreadyConnected).queue();
