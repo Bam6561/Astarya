@@ -8,8 +8,9 @@ package astarya;
  * @since 1.7.6
  */
 public enum Text {
-  VERSION("V1.7.9"),
-  MISSING_DELETE_PERMISSION("Insufficient permissions to delete message."),
+  VERSION("V1.7.10"),
+  MISSING_MANAGE_MESSAGES_PERMISSION("Insufficient permissions to manage messages."),
+  MISSING_MANAGE_ROLES_PERMISSION("Insufficient permissions to manage roles."),
   NOT_IN_VC("User not in a voice channel."),
   NOT_IN_SAME_VC("User not in same voice channel."),
   INVALID_NUMBER_OF_PARAMS("Invalid number of parameters"),

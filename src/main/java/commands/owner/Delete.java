@@ -5,6 +5,7 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * Delete is a command invocation that clears a number of 2-100 recent messages.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.10
  * @since 1.0
  */
 public class Delete extends Command {
@@ -70,11 +71,16 @@ public class Delete extends Command {
    *
    * @param ce                       command event
    * @param numberOfMessagesToDelete number of messages to delete
+   * @throws InsufficientPermissionException unable to manage messages
    */
   private void deleteRecentMessages(CommandEvent ce, int numberOfMessagesToDelete) {
     MessageChannel textChannel = ce.getChannel();
     List<Message> recentMessages = textChannel.getHistory().retrievePast(numberOfMessagesToDelete).complete();
-    textChannel.purgeMessages(recentMessages);
-    textChannel.sendMessage("Previous (" + numberOfMessagesToDelete + ") messages cleared.").queue();
+    try {
+      textChannel.purgeMessages(recentMessages);
+      textChannel.sendMessage("Previous (" + numberOfMessagesToDelete + ") messages cleared.").queue();
+    } catch (InsufficientPermissionException ex) {
+      ce.getChannel().sendMessage(Text.MISSING_MANAGE_MESSAGES_PERMISSION.value()).queue();
+    }
   }
 }

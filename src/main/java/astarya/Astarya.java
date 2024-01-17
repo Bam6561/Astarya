@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -35,7 +36,7 @@ import java.util.Scanner;
  * Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.10
  * @since 1.0
  */
 public class Astarya {
@@ -122,11 +123,12 @@ public class Astarya {
   }
 
   /**
-   * Loads the server's color role names into memory.
+   * Loads the server's color role names into memory and deletes empty color roles if they exist.
    *
    * @return color role names
+   * @throws InsufficientPermissionException unable to manage roles
    */
-  public static HashSet<String> loadColorRoles() {
+  private static HashSet<String> loadColorRoles() {
     HashSet<String> colorRoles = new HashSet<>();
 
     for (Role role : Astarya.api.getRoles()) {
@@ -137,7 +139,10 @@ public class Astarya {
         if (!api.getMutualGuilds().get(0).getMembersWithRoles(role).isEmpty()) {
           colorRoles.add(roleName);
         } else {
-          role.delete().queue();
+          try {
+            role.delete().queue();
+          } catch (InsufficientPermissionException ignored) {
+          }
         }
       }
     }

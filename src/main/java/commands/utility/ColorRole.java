@@ -1,11 +1,14 @@
 package commands.utility;
 
+import astarya.Astarya;
+import astarya.Text;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.*;
 import java.util.HashSet;
@@ -14,11 +17,11 @@ import java.util.HashSet;
  * ColorRole is a command invocation that assigns or removes color roles from the user.
  *
  * @author Danny Nguyen
- * @version 1.7.5
+ * @version 1.7.10
  * @since 1.7.4
  */
 public class ColorRole extends Command {
-  HashSet<String> colorRoles;
+  private final HashSet<String> colorRoles;
 
   public ColorRole(HashSet<String> colorRoles) {
     this.name = "color";
@@ -41,28 +44,45 @@ public class ColorRole extends Command {
     int numberOfParameters = parameters.length - 1;
 
     if (numberOfParameters == 1) {
-      interpretColorRoleRequest(ce, parameters[1].toUpperCase());
+      interpretColorRoleRequest(ce, parameters[1].toLowerCase());
     } else {
       ce.getChannel().sendMessage("Provide a hex color code `#ffffff` or `clear`.").queue();
     }
   }
 
   /**
-   * Either assigns a color role or clears existing color roles from the user.
+   * Either:
+   * - cleans up empty color roles
+   * - assigns a color role
+   * - clears existing color roles
    *
    * @param ce        command event
    * @param parameter user provided parameter
+   * @throws InsufficientPermissionException unable to manage roles
    */
   private void interpretColorRoleRequest(CommandEvent ce, String parameter) {
-    if (parameter.equalsIgnoreCase("clear")) {
-      removeColorRoles(ce);
-      ce.getChannel().sendMessage("Cleared all color roles.").queue();
-    } else {
-      if (isHexColorCode(parameter)) {
-        assignColorRole(ce, parameter);
-      } else {
-        ce.getChannel().sendMessage("Invalid color code.").queue();
+    try {
+      switch (parameter) {
+        case "clean" -> {
+          if (ce.getMember().isOwner()) {
+            reloadColorRoles(ce);
+          }
+        }
+        case "clear" -> {
+          removeColorRoles(ce);
+          ce.getChannel().sendMessage("Cleared all color roles.").queue();
+        }
+        default -> {
+          parameter = parameter.toUpperCase();
+          if (isHexColorCode(parameter)) {
+            assignColorRole(ce, parameter);
+          } else {
+            ce.getChannel().sendMessage("Invalid color code.").queue();
+          }
+        }
       }
+    } catch (InsufficientPermissionException ex) {
+      ce.getChannel().sendMessage(Text.MISSING_MANAGE_ROLES_PERMISSION.value()).queue();
     }
   }
 
@@ -85,8 +105,32 @@ public class ColorRole extends Command {
   }
 
   /**
-   * Removes all color roles from the user and deletes
-   * the associated role if it has no more members.
+   * Reloads the server's color role names into memory and deletes empty color roles if they exist.
+   *
+   * @param ce command event
+   * @return color role names
+   */
+  private HashSet<String> reloadColorRoles(CommandEvent ce) {
+    HashSet<String> colorRoles = this.colorRoles;
+
+    for (Role role : Astarya.getApi().getRoles()) {
+      String roleName = role.getName();
+
+      // Hex Color Code Format: #ffffff
+      if (isHexColorCode(roleName.toUpperCase())) {
+        if (!Astarya.getApi().getMutualGuilds().get(0).getMembersWithRoles(role).isEmpty()) {
+          colorRoles.add(roleName);
+        } else {
+          role.delete().queue();
+        }
+      }
+    }
+    ce.getChannel().sendMessage("Cleaned up all empty color roles.").queue();
+    return colorRoles;
+  }
+
+  /**
+   * Removes all color roles from the user.
    *
    * @param ce command event
    */

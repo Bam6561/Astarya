@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.10
  * @since 1.0.0
  */
 public class MessageLog extends ListenerAdapter {
@@ -108,8 +108,7 @@ public class MessageLog extends ListenerAdapter {
 
     try {
       e.getMessage().delete().queue();
-    } catch (ErrorResponseException ex) {
-      System.out.println(Text.MISSING_DELETE_PERMISSION.value());
+    } catch (ErrorResponseException ignored) {
     }
 
     Message repliedTo = e.getMessage().getReferencedMessage();
