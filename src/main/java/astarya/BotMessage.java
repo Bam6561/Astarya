@@ -12,14 +12,29 @@ public class BotMessage {
    * Sent on success.
    */
   public enum Success {
-    VERSION("V1.7.14"),
+    VERSION("V1.7.15"),
 
     COLORROLE_CLEAR_ROLES("Cleared color roles."),
     COLORROLE_CLEANED_UP_ROLES("Cleaned up empty color roles."),
+    CREDITS_THANK_YOU("Thank you to the following resources used in " +
+        "Astarya's development, as well as all my friends who use the bot " +
+        "regularly and leave feedback so the experience is as bug-free as possible."),
+    CREDITS_APIS("> [Discord](https://discord.com) | " +
+        "[Genius](https://genius.com) | " +
+        "[Spotify](https://open.spotify.com)"),
+    CREDITS_LIBRARIES_WRAPPERS("> [JDA](https://github.com/DV8FromTheWorld/JDA) | " +
+        "[JDA-Chewtils](https://github.com/Chew/JDA-Chewtils) | " +
+        "[LavaPlayer](https://github.com/sedmelluq/lavaplayer) | " +
+        "[Spotify Web API Java](https://github.com/spotify-web-api-java/spotify-web-api-java)"),
+    CREDITS_REFERENCES("> [Kody Simpson](https://www.youtube.com/@KodySimpson) | " +
+        "[MenuDocs](https://www.youtube.com/@MenuDocs) | " +
+        "[TechToolBox](https://www.youtube.com/@TechToolboxOfficial)"),
     PAUSE_PLAYER_PAUSE("Audio player paused."),
     PAUSE_PLAYER_RESUME("Audio player resumed."),
     LYRICS_NO_MATCHES("No matches found."),
-    RETURN_NO_SKIPPED_TRACKS("No recently skipped tracks.");
+    RETURN_NO_SKIPPED_TRACKS("No recently skipped tracks."),
+    SHUTDOWN("Well, it was fun while it lasted. Change the world... " +
+        "my final message. Goodbye. **Astarya is shutting down.**");
 
     public final String text;
 

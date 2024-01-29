@@ -86,7 +86,8 @@ public class PlayNext extends Command {
    */
   private void processPlayNextRequest(CommandEvent ce, int queueNumber) {
     try {
-      List<TrackQueueIndex> trackQueue = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
+      List<TrackQueueIndex> trackQueue =
+          PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
 
       // Displayed index to users are different from data index so subtract 1
       queueNumber = queueNumber - 1;

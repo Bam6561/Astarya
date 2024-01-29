@@ -39,14 +39,14 @@ public class Server extends Command {
     EmbedBuilder display = new EmbedBuilder();
     display.setAuthor("Server");
     display.setTitle(server.getName());
-    display.setDescription("**Owner:** " + server.getOwner().getAsMention()
-        + "\n**Server Id:** `" + server.getId()
-        + "`\n**Time Created:** `" + server.getTimeCreated().format(dtf) + " GMT`"
-        + "\n**Channels:** `" + (textChannelCount + voiceChannelCount)
-        + "` (`" + textChannelCount + "` Text | `" + voiceChannelCount + "` Voice)"
-        + "\n**Roles:** `" + server.getRoles().size()
-        + "` **Emotes:** `" + server.getEmojis().size()
-        + "` **Boosts:** `" + server.getBoostCount() + "`");
+    display.setDescription("**Owner:** " + server.getOwner().getAsMention() + "\n" +
+        "**Server Id:** `" + server.getId() + "`\n" +
+        "**Time Created:** `" + server.getTimeCreated().format(dtf) + " GMT`\n" +
+        "**Channels:** `" + (textChannelCount + voiceChannelCount) +
+        "` (`" + textChannelCount + "` Text | `" + voiceChannelCount + "` Voice)\n" +
+        "**Roles:** `" + server.getRoles().size() +
+        "` **Emotes:** `" + server.getEmojis().size() +
+        "` **Boosts:** `" + server.getBoostCount() + "`");
     display.setThumbnail(server.getIconUrl());
     display.setImage(server.getBannerUrl());
     Settings.sendEmbed(ce, display);
