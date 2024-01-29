@@ -13,13 +13,14 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Return is a command invocation that either displays a stack of skipped tracks
  * and provides an option to return a recently skipped track to the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.13
  * @since 1.5.2
  */
 public class Return extends Command {
@@ -85,7 +86,7 @@ public class Return extends Command {
    * @param ce command event
    */
   private void sendSkippedTracksStack(CommandEvent ce) {
-    ArrayList<TrackQueueIndex> skippedTracks = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getSkippedTracks();
+    List<TrackQueueIndex> skippedTracks = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getSkippedTracks();
 
     boolean skippedTracksStackNotEmpty = !skippedTracks.isEmpty();
     if (skippedTracksStackNotEmpty) {
@@ -109,7 +110,7 @@ public class Return extends Command {
   private void processReturnTrackRequest(CommandEvent ce, int skippedTracksStackIndex) {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-      ArrayList<TrackQueueIndex> skippedTracksStack = audioScheduler.getSkippedTracks();
+      List<TrackQueueIndex> skippedTracksStack = audioScheduler.getSkippedTracks();
 
       // Displayed index to users are different from data index, so subtract 1
       AudioTrack skippedTrack = skippedTracksStack.get(skippedTracksStackIndex - 1).getAudioTrack();
@@ -132,7 +133,7 @@ public class Return extends Command {
    * @param skippedTracks stack of skipped tracks
    * @return string representing the stack of skipped tracks
    */
-  private String buildSkippedTracksStackPage(ArrayList<TrackQueueIndex> skippedTracks) {
+  private String buildSkippedTracksStackPage(List<TrackQueueIndex> skippedTracks) {
     StringBuilder skippedTracksStackPage = new StringBuilder();
     for (int i = 0; i < skippedTracks.size(); i++) {
       String trackDuration = TimeConversion.convert(skippedTracks.get(i).getAudioTrack().getDuration());
@@ -153,7 +154,7 @@ public class Return extends Command {
    * @param skippedTrack            chosen skipped track to be returned
    */
   private void returnSkippedTrack(CommandEvent ce, int skippedTracksStackIndex, AudioScheduler audioScheduler,
-                                  ArrayList<TrackQueueIndex> skippedTracksStack, AudioTrack skippedTrack) {
+                                  List<TrackQueueIndex> skippedTracksStack, AudioTrack skippedTrack) {
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
     audioScheduler.queue(skippedTrack, requester);
     skippedTracksStack.remove(skippedTracksStackIndex - 1);

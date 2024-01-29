@@ -13,13 +13,14 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Queue is a command invocation that provides a list
  * of tracks queued and what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.13
  * @since 1.2.0
  */
 public class Queue extends Command {
@@ -74,7 +75,7 @@ public class Queue extends Command {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
 
-    ArrayList<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
+    List<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
 
     if (!trackQueue.isEmpty()) {
       calculatePageToDisplay(trackQueue.size(), pageRequested);
@@ -136,7 +137,7 @@ public class Queue extends Command {
    * @param trackQueue     arraylist containing the tracks
    */
   private void sendQueuePage(CommandEvent ce, AudioScheduler audioScheduler,
-                             AudioPlayer audioPlayer, ArrayList<TrackQueueIndex> trackQueue) {
+                             AudioPlayer audioPlayer, List<TrackQueueIndex> trackQueue) {
     EmbedBuilder display = new EmbedBuilder();
     display.setAuthor("Queue");
     display.setDescription(createNowPlayingQueuePage(audioScheduler, audioPlayer));
@@ -210,7 +211,7 @@ public class Queue extends Command {
    * @param trackQueue tracks in the queue
    * @return formatted text representing the tracks queue
    */
-  private String createQueuePage(ArrayList<TrackQueueIndex> trackQueue) {
+  private String createQueuePage(List<TrackQueueIndex> trackQueue) {
     StringBuilder queuePage = new StringBuilder();
 
     // Calculate last track entry to be displayed

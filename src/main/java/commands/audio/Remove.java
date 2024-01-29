@@ -11,12 +11,13 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Remove is a command invocation that removes track(s) from the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.13
  * @since 1.2.2
  */
 public class Remove extends Command {
@@ -85,7 +86,7 @@ public class Remove extends Command {
   private void removeTrack(CommandEvent ce, int queueIndex) {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-      ArrayList<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
+      List<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
 
       // Displayed index to users are different from data index, so subtract 1
       queueIndex = queueIndex - 1;
@@ -110,7 +111,7 @@ public class Remove extends Command {
   private void readRemoveMultipleTrackRequest(CommandEvent ce, String[] parameters, int numberOfParameters) {
     try {
       // Validate and convert values to integers
-      ArrayList<Integer> queueIndicesToBeRemoved = new ArrayList<>();
+      List<Integer> queueIndicesToBeRemoved = new ArrayList<>();
       for (int i = 1; i < numberOfParameters + 1; i++) {
         parameters[i] = parameters[i].replace(",", "");
         queueIndicesToBeRemoved.add(Integer.valueOf(parameters[i]));
@@ -128,7 +129,7 @@ public class Remove extends Command {
    * @param queueIndices ArrayList containing queue indices to be removed
    * @throws IndexOutOfBoundsException user provided queue number out of range of track queue
    */
-  private void removeMultipleTracks(CommandEvent ce, ArrayList<Integer> queueIndices) {
+  private void removeMultipleTracks(CommandEvent ce, List<Integer> queueIndices) {
     try {
       // Removes the largest queue numbers first as to avoid disrupting the track queue order
       Collections.sort(queueIndices);
@@ -147,7 +148,7 @@ public class Remove extends Command {
    * @param queueIndex index in the track queue to be removed
    * @param trackQueue arraylist containing the tracks
    */
-  private void sendRemoveConfirmation(CommandEvent ce, int queueIndex, ArrayList<TrackQueueIndex> trackQueue) {
+  private void sendRemoveConfirmation(CommandEvent ce, int queueIndex, List<TrackQueueIndex> trackQueue) {
     StringBuilder removeTrackConfirmation = new StringBuilder();
     removeTrackConfirmation.append("**Removed:** **[").append(queueIndex + 1).append("]** `")
         .append(trackQueue.get(queueIndex).getAudioTrack().getInfo().title).append("`")

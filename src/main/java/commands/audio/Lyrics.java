@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.13
  * @since 1.7.2
  */
 public class Lyrics extends Command {
@@ -135,7 +136,7 @@ public class Lyrics extends Command {
    */
   private void extractDataFromJSON(CommandEvent ce, JSONObject section) {
     // Title & URL from top 5 matches
-    ArrayList<GeniusMatchResult> matches = new ArrayList<>();
+    List<GeniusMatchResult> matches = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
       JSONObject match = section.getJSONArray("hits").getJSONObject(i).getJSONObject("result");
       matches.add(new GeniusMatchResult(match.getString("title_with_featured"), match.getString("url")));
@@ -150,7 +151,7 @@ public class Lyrics extends Command {
    * @param section main JSON body
    * @param matches array list of query matches
    */
-  private void buildLyricsEmbed(CommandEvent ce, JSONObject section, ArrayList<GeniusMatchResult> matches) {
+  private void buildLyricsEmbed(CommandEvent ce, JSONObject section, List<GeniusMatchResult> matches) {
     // - Title [Link](URL)
     StringBuilder lyricsEmbedDescription = new StringBuilder();
     for (GeniusMatchResult geniusMatchResult : matches) {

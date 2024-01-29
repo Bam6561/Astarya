@@ -11,20 +11,21 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.managers.Presence;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AudioScheduler is a component of LavaPlayer that handles the audio
  * player's functionality related to playing tracks and track order.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.13
  * @since 1.1.0
  */
 
 public class AudioScheduler extends AudioEventAdapter {
   private final AudioPlayer audioPlayer;
-  private final ArrayList<TrackQueueIndex> trackQueue;
-  private final ArrayList<TrackQueueIndex> skippedTracks;
+  private final List<TrackQueueIndex> trackQueue;
+  private final List<TrackQueueIndex> skippedTracks;
   private Boolean audioPlayerLooped = false;
 
   public AudioScheduler(AudioPlayer audioPlayer) {
@@ -120,11 +121,11 @@ public class AudioScheduler extends AudioEventAdapter {
     return this.audioPlayer;
   }
 
-  public ArrayList<TrackQueueIndex> getTrackQueue() {
+  public List<TrackQueueIndex> getTrackQueue() {
     return this.trackQueue;
   }
 
-  public ArrayList<TrackQueueIndex> getSkippedTracks() {
+  public List<TrackQueueIndex> getSkippedTracks() {
     return this.skippedTracks;
   }
 

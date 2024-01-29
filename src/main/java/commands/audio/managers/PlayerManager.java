@@ -24,14 +24,14 @@ import java.util.Map;
  * search queries into playable tracks for the AudioScheduler.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.13
  * @since 1.1.0
  */
 public class PlayerManager {
   private static PlayerManager INSTANCE;
   private final Map<Long, PlaybackManager> musicManagers;
   private final AudioPlayerManager audioPlayerManager;
-  private final ArrayList<AudioTrack> searchTrackResults;
+  private final List<AudioTrack> searchTrackResults;
 
   // Registers audio player with bot application
   public PlayerManager() {
@@ -213,7 +213,7 @@ public class PlayerManager {
     this.searchTrackResults.add(audioTrack);
   }
 
-  public ArrayList<AudioTrack> getSearchTrackResults() {
+  public List<AudioTrack> getSearchTrackResults() {
     return this.searchTrackResults;
   }
 

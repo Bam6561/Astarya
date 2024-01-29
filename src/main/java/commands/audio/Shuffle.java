@@ -10,13 +10,14 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 /**
  * Shuffle is a command invocation that shuffles the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.13
  * @since 1.2.6
  */
 public class Shuffle extends Command {
@@ -58,7 +59,7 @@ public class Shuffle extends Command {
    * @param ce command event
    */
   private void shuffleQueue(CommandEvent ce) {
-    ArrayList<TrackQueueIndex> trackQueue = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
+    List<TrackQueueIndex> trackQueue = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
 
     Random rand = new Random();
     for (int i = 0; i < trackQueue.size(); i++) {

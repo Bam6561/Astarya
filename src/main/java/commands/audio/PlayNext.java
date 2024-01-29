@@ -11,12 +11,13 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * PlayNext is a command invocation that sets the next track to be played in the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.13
  * @since 1.2.13
  */
 public class PlayNext extends Command {
@@ -85,7 +86,7 @@ public class PlayNext extends Command {
    */
   private void processPlayNextRequest(CommandEvent ce, int queueNumber) {
     try {
-      ArrayList<TrackQueueIndex> trackQueue = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
+      List<TrackQueueIndex> trackQueue = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
 
       // Displayed index to users are different from data index so subtract 1
       queueNumber = queueNumber - 1;
@@ -109,7 +110,7 @@ public class PlayNext extends Command {
    * @param audioTrack  chosen track
    */
   private void playNext(CommandEvent ce, int queueNumber,
-                        ArrayList<TrackQueueIndex> trackQueue, AudioTrack audioTrack) {
+                        List<TrackQueueIndex> trackQueue, AudioTrack audioTrack) {
     trackQueue.remove(queueNumber);
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
     trackQueue.add(0, new TrackQueueIndex(audioTrack, requester));
@@ -125,7 +126,7 @@ public class PlayNext extends Command {
    * @param audioTrack    chosen track
    * @param trackDuration chosen track's duration
    */
-  private void sendPlayNextConfirmation(CommandEvent ce, int queueNumber, ArrayList<TrackQueueIndex> trackQueue,
+  private void sendPlayNextConfirmation(CommandEvent ce, int queueNumber, List<TrackQueueIndex> trackQueue,
                                         AudioTrack audioTrack, String trackDuration) {
     StringBuilder playNextConfirmation = new StringBuilder();
     playNextConfirmation.append("**Play Next:** **[").append(queueNumber + 1).

@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,13 +15,13 @@ import java.util.List;
  * subject is substituted if it has a field to support the user's given parameters.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.13
  * @since 1.6.11
  */
 public class PandorasBox extends Command {
-  private final ArrayList<String> pandorasBoxPrompts;
+  private final List<String> pandorasBoxPrompts;
 
-  public PandorasBox(ArrayList<String> pandorasBoxPrompts) {
+  public PandorasBox(List<String> pandorasBoxPrompts) {
     this.name = "pandorasbox";
     this.aliases = new String[]{"pandorasbox", "pb"};
     this.arguments = "[0]Self [1]VC/DC/Name [2 ++]Phrase";

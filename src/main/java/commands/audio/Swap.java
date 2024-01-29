@@ -10,14 +10,14 @@ import commands.audio.utility.TimeConversion;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Swap is a command invocation that swaps the position of a track in queue with another.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.13
  * @since 1.2.14
  */
 public class Swap extends Command {
@@ -99,7 +99,7 @@ public class Swap extends Command {
    */
   private void swapTracks(CommandEvent ce, int originalIndex, int swapIndex) {
     try {
-      ArrayList<TrackQueueIndex> trackQueue = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
+      List<TrackQueueIndex> trackQueue = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
       AudioTrack originalTrack = trackQueue.get(originalIndex).getAudioTrack();
       AudioTrack swapTrack = trackQueue.get(swapIndex).getAudioTrack();
 
@@ -121,7 +121,7 @@ public class Swap extends Command {
    * @param swapTrack     track at the index to be swapped
    */
   private void sendSwapConfirmation(CommandEvent ce, int originalIndex, int swapIndex,
-                                    ArrayList<TrackQueueIndex> trackQueue,
+                                    List<TrackQueueIndex> trackQueue,
                                     AudioTrack originalTrack, AudioTrack swapTrack) {
     String originalTrackDuration = TimeConversion.convert(originalTrack.getDuration());
     String swapTrackDuration = TimeConversion.convert(swapTrack.getDuration());

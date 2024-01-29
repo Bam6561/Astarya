@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -36,7 +37,7 @@ import java.util.Scanner;
  * Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.13
  * @since 1.0
  */
 public class Astarya {
@@ -103,11 +104,11 @@ public class Astarya {
    *
    * @return Pandora's Box prompts
    */
-  private static ArrayList<String> loadPandorasBoxPrompts() {
+  private static List<String> loadPandorasBoxPrompts() {
     try {
       File file = new File(".\\resources\\pandoras_box_prompts.txt");
       Scanner scanner = new Scanner(file);
-      ArrayList<String> prompts = new ArrayList<>();
+      List<String> prompts = new ArrayList<>();
 
       while (scanner.hasNextLine()) {
         prompts.add(scanner.nextLine());
