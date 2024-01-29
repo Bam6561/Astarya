@@ -1,6 +1,6 @@
 package commands.audio;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * and provides an option to return a recently skipped track to the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.5.2
  */
 public class Return extends Command {
@@ -48,10 +48,10 @@ public class Return extends Command {
       if (userInSameVoiceChannel) {
         interpretReturnTrackRequest(ce);
       } else {
-        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
     }
   }
 
@@ -72,10 +72,10 @@ public class Return extends Command {
           int returnStackIndex = Integer.parseInt(parameters[1]);
           processReturnTrackRequest(ce, returnStackIndex);
         } catch (NumberFormatException e) {
-          ce.getChannel().sendMessage("Specify what stack number to be returned with an integer.").queue();
+          ce.getChannel().sendMessage(BotMessage.Failure.RETURN_SPECIFY.text).queue();
         }
       }
-      default -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      default -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
     }
   }
 
@@ -94,7 +94,7 @@ public class Return extends Command {
       display.addField("**Tracks:**", (buildSkippedTracksStackPage(skippedTracks)), false);
       Settings.sendEmbed(ce, display);
     } else {
-      ce.getChannel().sendMessage("There are no recently skipped tracks.").queue();
+      ce.getChannel().sendMessage(BotMessage.Success.RETURN_NO_SKIPPED_TRACKS.text).queue();
     }
   }
 
@@ -117,7 +117,7 @@ public class Return extends Command {
       returnSkippedTrack(ce, skippedTracksStackIndex, audioScheduler, skippedTracksStack, skippedTrack);
       sendReturnConfirmation(ce, skippedTrack);
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage(Text.INVALID_QUEUE_NUMBER.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_QUEUE_NUMBER.text).queue();
     }
   }
 

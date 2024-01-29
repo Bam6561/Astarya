@@ -1,6 +1,6 @@
 package commands.audio;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.audio.objects.GeniusMatchResult;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.7.2
  */
 public class Lyrics extends Command {
@@ -52,7 +52,7 @@ public class Lyrics extends Command {
     if (numberOfParameters >= 1) {
       processLyricsRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
     }
   }
 
@@ -67,8 +67,7 @@ public class Lyrics extends Command {
     try {
       URL endpointUrlQuery = new URL("https://genius.com/api/search/song?q=" + buildSearchQuery(parameters));
       readHttpResponse(ce, endpointUrlQuery);
-    } catch (MalformedURLException e) {
-      System.out.println("Invalid URL.");
+    } catch (MalformedURLException ignored) {
     }
   }
 
@@ -105,7 +104,7 @@ public class Lyrics extends Command {
           connection.getInputStream(), StandardCharsets.UTF_8)).lines().collect(Collectors.joining());
       processHttpResponse(ce, httpResponse);
     } catch (IOException e) {
-      System.out.println("Connection interrupted.");
+      System.out.println(BotMessage.Failure.ERROR_CONNECTION_INTERRUPTED.text);
     }
   }
 
@@ -124,7 +123,7 @@ public class Lyrics extends Command {
     try {
       extractDataFromJSON(ce, section);
     } catch (JSONException e) {
-      ce.getChannel().sendMessage("No matches found on Genius.").queue();
+      ce.getChannel().sendMessage(BotMessage.Success.LYRICS_NO_MATCHES.text).queue();
     }
   }
 
@@ -155,8 +154,8 @@ public class Lyrics extends Command {
     // - Title [Link](URL)
     StringBuilder lyricsEmbedDescription = new StringBuilder();
     for (GeniusMatchResult geniusMatchResult : matches) {
-      lyricsEmbedDescription.append("- " + geniusMatchResult.getTitle());
-      lyricsEmbedDescription.append(" [Link](" + geniusMatchResult.getUrl() + ") \n");
+      lyricsEmbedDescription.append("- ").append(geniusMatchResult.getTitle());
+      lyricsEmbedDescription.append(" [Link](").append(geniusMatchResult.getUrl()).append(") \n");
     }
 
     // Embed Thumbnail

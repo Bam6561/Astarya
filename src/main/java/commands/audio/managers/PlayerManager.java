@@ -1,5 +1,6 @@
 package commands.audio.managers;
 
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -23,7 +24,7 @@ import java.util.Map;
  * search queries into playable tracks for the AudioScheduler.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.12
  * @since 1.1.0
  */
 public class PlayerManager {
@@ -73,12 +74,12 @@ public class PlayerManager {
 
       @Override
       public void noMatches() {
-        if (!isSilent) ce.getChannel().sendMessage("Unable to find track.").queue();
+        if (!isSilent) ce.getChannel().sendMessage(BotMessage.Failure.ERROR_UNABLE_TO_FIND_TRACK.text).queue();
       }
 
       @Override
       public void loadFailed(FriendlyException throwable) {
-        if (!isSilent) ce.getChannel().sendMessage("Unable to load track.").queue();
+        if (!isSilent) ce.getChannel().sendMessage(BotMessage.Failure.ERROR_UNABLE_TO_LOAD_TRACK.text).queue();
       }
     });
   }
@@ -153,7 +154,7 @@ public class PlayerManager {
     this.audioPlayerManager.loadItemOrdered(playbackManager, youtubeSearchQuery, new AudioLoadResultHandler() {
       @Override
       public void trackLoaded(AudioTrack track) {
-        ce.getChannel().sendMessage("Use the play command to queue tracks.").queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.PLAYERMANAGER.text).queue();
       }
 
       @Override
@@ -164,12 +165,12 @@ public class PlayerManager {
 
       @Override
       public void noMatches() {
-        ce.getChannel().sendMessage("Unable to find track.").queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.ERROR_UNABLE_TO_FIND_TRACK.text).queue();
       }
 
       @Override
       public void loadFailed(FriendlyException throwable) {
-        ce.getChannel().sendMessage("Unable to load track.").queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.ERROR_UNABLE_TO_LOAD_TRACK.text).queue();
       }
     });
   }

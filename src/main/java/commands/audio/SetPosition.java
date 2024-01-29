@@ -1,6 +1,6 @@
 package commands.audio;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * SetPosition is a command invocation that sets the position of the currently playing track.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.2.11
  */
 public class SetPosition extends Command {
@@ -42,10 +42,10 @@ public class SetPosition extends Command {
       if (userInSameVoiceChannel) {
         readSetPositionRequest(ce);
       } else {
-        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
     }
   }
 
@@ -65,11 +65,10 @@ public class SetPosition extends Command {
       try {
         setCurrentlyPlayingTrackPosition(ce, parameters[1]);
       } catch (NumberFormatException e) {
-        ce.getChannel().sendMessage("Invalid time frame. " +
-            "Specify the section to be skipped to using hh:mm:ss.").queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.SETPOSITION_INVALID_TIME.text).queue();
       }
     } else {
-      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
     }
   }
 
@@ -86,7 +85,7 @@ public class SetPosition extends Command {
     if (currentlyPlayingTrack) {
       setTrackPosition(ce, trackPositionString, audioPlayer);
     } else {
-      ce.getChannel().sendMessage("Nothing is currently playing.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.SETPOSITION_NOTHING_PLAYING.text).queue();
     }
   }
 
@@ -106,7 +105,7 @@ public class SetPosition extends Command {
       audioPlayer.getPlayingTrack().setPosition(trackPositionToSet);
       sendSetPositionConfirmation(ce, trackPositionToSet);
     } else {
-      ce.getChannel().sendMessage("Requested position exceeds track length.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.SETPOSITION_EXCEED_TRACK_LENGTH.text).queue();
     }
   }
 
@@ -134,7 +133,7 @@ public class SetPosition extends Command {
         minutes = Integer.parseInt(trackPositionTimeTypes[1]);
         seconds = Integer.parseInt(trackPositionTimeTypes[2]);
       }
-      default -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      default -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
     }
 
     // Conversion to milliseconds

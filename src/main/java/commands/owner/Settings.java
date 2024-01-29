@@ -1,6 +1,6 @@
 package commands.owner;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.0
  */
 public class Settings extends Command {
@@ -29,8 +29,8 @@ public class Settings extends Command {
     this.aliases = new String[]{"settings", "config"};
     this.arguments = "[0]MainMenu [1]Setting [2]True/False";
     this.help = "Provides information on the bot's settings.";
-    this.prefix = prefix;
-    this.alternativePrefix = alternativePrefix;
+    Settings.prefix = prefix;
+    Settings.alternativePrefix = alternativePrefix;
     this.ownerCommand = true;
   }
 
@@ -50,7 +50,7 @@ public class Settings extends Command {
     switch (numberOfParameters) {
       case 0 -> sendSettingsMenu(ce);
       case 2 -> interpretSettingsMenuChange(ce, parameters);
-      default -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      default -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
     }
   }
 
@@ -72,7 +72,7 @@ public class Settings extends Command {
   }
 
   /**
-   * Either changes the deleteinvoke, embeddecay, embeddecaytime, or embedmedialinks setting.
+   * Either changes the delete invoke, embed decay, embed decay time, or embed media links setting.
    *
    * @param ce         command event
    * @param parameters user provided parameters
@@ -85,7 +85,7 @@ public class Settings extends Command {
       case "embeddecay" -> setEmbedDecaySetting(ce, parameters[2].toLowerCase());
       case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, parameters[2]);
       case "embedmedialinks" -> setEmbedMediaLinksSetting(ce, parameters[2].toLowerCase());
-      default -> ce.getChannel().sendMessage("Setting not found.").queue();
+      default -> ce.getChannel().sendMessage(BotMessage.Failure.SETTINGS_NOT_FOUND.text).queue();
     }
   }
 
@@ -101,7 +101,7 @@ public class Settings extends Command {
       setDeleteInvoke(Boolean.parseBoolean(settingChange));
       ce.getChannel().sendMessage("DeleteInvoke has been set to `" + getDeleteInvoke() + "`.").queue();
     } else {
-      ce.getChannel().sendMessage("Specify true or false.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.SETTINGS_TRUE_FALSE.text).queue();
     }
   }
 
@@ -117,7 +117,7 @@ public class Settings extends Command {
       setEmbedDecay(Boolean.parseBoolean(settingChange));
       ce.getChannel().sendMessage("EmbedDecay has been set to `" + getEmbedDecay() + "`.").queue();
     } else {
-      ce.getChannel().sendMessage("Specify true or false.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.SETTINGS_TRUE_FALSE.text).queue();
     }
   }
 
@@ -136,10 +136,10 @@ public class Settings extends Command {
         setEmbedDecayTime(timeValue);
         ce.getChannel().sendMessage("EmbedDecayTime has been set to `" + getEmbedDecayTime() + "`s.").queue();
       } else {
-        ce.getChannel().sendMessage("Specify an integer between 15 - 120.").queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.SETTINGS_EMBED_DECAY_RANGE.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage("Specify an integer between 15 - 120.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.SETTINGS_EMBED_DECAY_RANGE.text).queue();
     }
   }
 
@@ -154,10 +154,9 @@ public class Settings extends Command {
     boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
     if (settingChangeIsBoolean) {
       setEmbedMediaLinks(Boolean.parseBoolean(settingChange));
-      ce.getChannel().sendMessage("EmbedMediaLinks has been set " +
-          "to `" + getEmbedMediaLinks() + "`.").queue();
+      ce.getChannel().sendMessage("EmbedMediaLinks has been set to `" + getEmbedMediaLinks() + "`.").queue();
     } else {
-      ce.getChannel().sendMessage("Specify true or false.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.SETTINGS_TRUE_FALSE.text).queue();
     }
   }
 
@@ -222,18 +221,18 @@ public class Settings extends Command {
   }
 
   private void setDeleteInvoke(boolean deleteInvoke) {
-    this.deleteInvoke = deleteInvoke;
+    Settings.deleteInvoke = deleteInvoke;
   }
 
   private void setEmbedDecay(boolean embedDecay) {
-    this.embedDecay = embedDecay;
+    Settings.embedDecay = embedDecay;
   }
 
   private void setEmbedDecayTime(int embedDecayTime) {
-    this.embedDecayTime = embedDecayTime;
+    Settings.embedDecayTime = embedDecayTime;
   }
 
   private void setEmbedMediaLinks(boolean embedMediaLinks) {
-    this.embedMediaLinks = embedMediaLinks;
+    Settings.embedMediaLinks = embedMediaLinks;
   }
 }

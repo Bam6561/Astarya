@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.10
+ * @version 1.7.12
  * @since 1.0.0
  */
 public class MessageLog extends ListenerAdapter {
@@ -144,7 +144,7 @@ public class MessageLog extends ListenerAdapter {
   private String getMessageAttachments(MessageReceivedEvent e) {
     StringBuilder links = new StringBuilder();
     for (Message.Attachment attachment : e.getMessage().getAttachments()) {
-      links.append(attachment.getUrl() + " ");
+      links.append(attachment.getUrl()).append(" ");
     }
     return "(" + links.toString().trim() + ")";
   }

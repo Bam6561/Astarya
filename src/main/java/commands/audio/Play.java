@@ -1,6 +1,6 @@
 package commands.audio;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.audio.managers.PlayerManager;
@@ -35,7 +35,7 @@ import java.io.IOException;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.1.0
  */
 public class Play extends Command {
@@ -70,11 +70,11 @@ public class Play extends Command {
         if (userInSameVoiceChannel) {
           readPlayRequest(ce);
         } else {
-          ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
+          ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
         }
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
     }
   }
 
@@ -105,7 +105,7 @@ public class Play extends Command {
     int numberOfParameters = parameters.length - 1;
 
     switch (numberOfParameters) {
-      case 0 -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      case 0 -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
       case 1 -> readSpotifyApiKey(ce, parameters);
       default -> processYouTubeSearchQuery(ce, parameters, numberOfParameters);
     }
@@ -130,8 +130,7 @@ public class Play extends Command {
       if (!missingSpotifyApiKey) {
         interpretPlayRequest(ce, parameters, accessSpotifyApi(spotifyClientId, spotifyClientSecret));
       } else {
-        ce.getChannel().sendMessage("Unable to play Spotify links. No Spotify API key provided " +
-            "in the bot's .env file.").queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.MISSING_SPOTIFY_API_KEY.text).queue();
       }
     } else {
       PlayerManager.getINSTANCE().createAudioTrack(ce, parameters[1], false);
@@ -172,13 +171,13 @@ public class Play extends Command {
       spotifyApi.setAccessToken(clientCredentials.getAccessToken());
       return spotifyApi;
     } catch (IOException | ParseException | SpotifyWebApiException e) {
-      System.out.println(Text.SPOTIFY_API_ERROR.value());
+      System.out.println(BotMessage.Failure.ERROR_SPOTIFY_API.text);
       return null;
     }
   }
 
   /**
-   * Identifies user given Spotify link as either a track,
+   * Identifies user given Spotify links as either a track,
    * playlist, or album before adding it to the track queue.
    *
    * @param ce         command event
@@ -197,7 +196,7 @@ public class Play extends Command {
     } else if (isSpotifyAlbum) {
       readSpotifyAlbumId(ce, parameters, spotifyApi);
     } else {
-      ce.getChannel().sendMessage("Spotify feature not supported.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.PLAY_UNSUPPORTED_SPOTIFY_FEATURE.text).queue();
     }
   }
 
@@ -213,7 +212,7 @@ public class Play extends Command {
     if (spotifyTrack.length() >= 22) {
       addSpotifyTrackToQueue(ce, spotifyTrack, spotifyApi);
     } else {
-      ce.getChannel().sendMessage("Invalid Spotify track Id.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.PLAY_INVALID_SPOTIFY_ID.text).queue();
     }
   }
 
@@ -229,7 +228,7 @@ public class Play extends Command {
     if (spotifyPlaylist.length() >= 22) {
       addSpotifyPlaylistToQueue(ce, spotifyPlaylist, spotifyApi);
     } else {
-      ce.getChannel().sendMessage("Invalid Spotify playlist Id").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.PLAY_INVALID_SPOTIFY_PLAYLIST_ID.text).queue();
     }
   }
 
@@ -245,24 +244,24 @@ public class Play extends Command {
     if (spotifyAlbum.length() >= 22) {
       addSpotifyAlbumToQueue(ce, spotifyAlbum, spotifyApi);
     } else {
-      ce.getChannel().sendMessage("Invalid Spotify album Id").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.PLAY_INVALID_SPOTIFY_ALBUM_ID.text).queue();
     }
   }
 
   /**
-   * Deciphers Spotify song names through their Spotify track Id,
+   * Deciphers Spotify song names through their Spotify track id,
    * adds the track's associated artists with the song name as a
    * search query on YouTube, and adds the first result to the track queue.
    *
    * @param ce           command event
-   * @param spotifyTrack Spotify track identified by track Id
+   * @param spotifyTrack Spotify track identified by id
    * @param spotifyApi   object representing Spotify API
    */
   private void addSpotifyTrackToQueue(CommandEvent ce, String spotifyTrack, SpotifyApi spotifyApi) {
     // Id & Query -> Id only
     spotifyTrack = spotifyTrack.substring(0, 22);
     try {
-      // Match track with Id and get track's artists
+      // Match track with id and get track's artists
       GetTrackRequest getTrackRequest = spotifyApi.getTrack(spotifyTrack).build();
       JSONObject jsonTrack = new JSONObject(getTrackRequest.getJson());
       JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONObject("album").
@@ -271,12 +270,12 @@ public class Play extends Command {
       PlayerManager.getINSTANCE().createAudioTrack(ce,
           buildYouTubeSearchQuery(jsonTrack, jsonTrackArtists), false);
     } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println(Text.SPOTIFY_API_ERROR.value());
+      System.out.println(BotMessage.Failure.ERROR_SPOTIFY_API.text);
     }
   }
 
   /**
-   * Deciphers Spotify song names through their Spotify playlist Id,
+   * Deciphers Spotify song names through their Spotify playlist id,
    * adds the track's associated artists with the song name as a
    * search query on YouTube, and adds the first result to the track queue.
    * <p>
@@ -284,7 +283,7 @@ public class Play extends Command {
    * </p>
    *
    * @param ce              command event
-   * @param spotifyPlaylist Spotify playlist identified by track Id
+   * @param spotifyPlaylist Spotify playlist identified by id
    * @param spotifyApi      object representing Spotify API
    */
   private void addSpotifyPlaylistToQueue(CommandEvent ce, String spotifyPlaylist,
@@ -292,14 +291,14 @@ public class Play extends Command {
     // Id & Query -> Id only
     spotifyPlaylist = spotifyPlaylist.substring(0, 22);
     try {
-      // Match playlist with Id and get playlist's tracks
+      // Match playlist with id and get playlist's tracks
       GetPlaylistRequest getPlaylistRequest = spotifyApi.getPlaylist(spotifyPlaylist).build();
       JSONObject jsonPlaylist = new JSONObject(getPlaylistRequest.getJson());
       JSONArray jsonTracks = new JSONArray(jsonPlaylist.getJSONObject("tracks").
           getJSONArray("items").toString());
 
       int numberOfTracksAdded = 0;
-      for (int i = 0; i < jsonTracks.length(); i++) { // Queues tracks from playlist's tracks
+      for (int i = 0; i < jsonTracks.length(); i++) { // Queue tracks from playlist's tracks
         JSONObject jsonTrack = new JSONObject(jsonTracks.getJSONObject(i).getJSONObject("track").toString());
         JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONObject("album").
             getJSONArray("artists").toString());
@@ -312,12 +311,12 @@ public class Play extends Command {
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
       ce.getChannel().sendMessage("**Added:** `" + numberOfTracksAdded + "` tracks " + requester).queue();
     } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println(Text.SPOTIFY_API_ERROR.value());
+      System.out.println(BotMessage.Failure.ERROR_SPOTIFY_API.text);
     }
   }
 
   /**
-   * Deciphers Spotify song names through their Spotify playlist Id,
+   * Deciphers Spotify song names through their Spotify playlist id,
    * adds the track's associated artists with the song name as a
    * search query on YouTube, and adds the first result to the track queue.
    * <p>
@@ -325,7 +324,7 @@ public class Play extends Command {
    * </p>
    *
    * @param ce           command event
-   * @param spotifyAlbum Spotify playlist identified by track Id
+   * @param spotifyAlbum Spotify playlist identified by id
    * @param spotifyApi   object representing Spotify API
    */
   private void addSpotifyAlbumToQueue(CommandEvent ce, String spotifyAlbum,
@@ -333,13 +332,13 @@ public class Play extends Command {
     // Id & Query -> Id only
     spotifyAlbum = spotifyAlbum.substring(0, 22);
     try {
-      // Match playlist with Id and get album's tracks
+      // Match playlist with id and get album's tracks
       GetAlbumsTracksRequest getAlbumsTracksRequest = spotifyApi.getAlbumsTracks(spotifyAlbum).limit(50).build();
       JSONObject jsonAlbum = new JSONObject(getAlbumsTracksRequest.getJson());
       JSONArray jsonTracks = new JSONArray(jsonAlbum.getJSONArray("items").toString());
 
       int numberOfTracksAdded = 0;
-      for (int i = 0; i < jsonTracks.length(); i++) { // Queues tracks from album's tracks
+      for (int i = 0; i < jsonTracks.length(); i++) { // Queue tracks from album's tracks
         JSONObject jsonTrack = new JSONObject(jsonTracks.getJSONObject(i).toString());
         JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONArray("artists").toString());
 
@@ -351,7 +350,7 @@ public class Play extends Command {
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
       ce.getChannel().sendMessage("**Added:** `" + numberOfTracksAdded + "` tracks " + requester).queue();
     } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println(Text.SPOTIFY_API_ERROR.value());
+      System.out.println(BotMessage.Failure.ERROR_SPOTIFY_API.text);
     }
   }
 

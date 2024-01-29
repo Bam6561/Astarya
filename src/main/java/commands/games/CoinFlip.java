@@ -1,6 +1,6 @@
 package commands.games;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -12,7 +12,7 @@ import java.util.Random;
  * CoinFlip is a command invocation that simulates coin flips.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.0
  */
 public class CoinFlip extends Command {
@@ -38,7 +38,7 @@ public class CoinFlip extends Command {
     switch (numberOfParameters) {
       case 0 -> oneCoinFlip(ce);
       case 1 -> multipleCoinFlips(ce, parameters);
-      default -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      default -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
     }
   }
 
@@ -77,10 +77,10 @@ public class CoinFlip extends Command {
       if (validNumberOfFlips) {
         multipleFlipResults(ce, numberOfFlips);
       } else {
-        ce.getChannel().sendMessage("Specify an integer between (1-10) times to flip the coin.").queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.COINFLIP_RANGE.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage("Specify an integer between (1-10) times to flip the coin.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.COINFLIP_RANGE.text).queue();
     }
   }
 

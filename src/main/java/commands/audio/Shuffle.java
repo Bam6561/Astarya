@@ -1,6 +1,6 @@
 package commands.audio;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.audio.managers.PlayerManager;
@@ -16,7 +16,7 @@ import java.util.Random;
  * Shuffle is a command invocation that shuffles the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.12
  * @since 1.2.6
  */
 public class Shuffle extends Command {
@@ -45,10 +45,10 @@ public class Shuffle extends Command {
         shuffleQueue(ce);
         sendShuffleConfirmation(ce);
       } else {
-        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
     }
   }
 
@@ -70,7 +70,7 @@ public class Shuffle extends Command {
   /**
    * Sends confirmation the track queue was shuffled.
    *
-   * @param ce object containing information about the command evnet
+   * @param ce object containing information about the command event
    */
   private void sendShuffleConfirmation(CommandEvent ce) {
     StringBuilder shuffleConfirmation = new StringBuilder();

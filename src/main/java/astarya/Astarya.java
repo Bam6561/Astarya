@@ -36,7 +36,7 @@ import java.util.Scanner;
  * Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.7.10
+ * @version 1.7.12
  * @since 1.0
  */
 public class Astarya {
@@ -59,7 +59,7 @@ public class Astarya {
           enableCache(CacheFlag.ACTIVITY, CacheFlag.ONLINE_STATUS).
           build().awaitReady();
       System.out.println("[" + api.getSelfUser().getName() + "#" +
-          api.getSelfUser().getDiscriminator() + " " + Text.VERSION.value() + "] Online");
+          api.getSelfUser().getDiscriminator() + " " + BotMessage.Success.VERSION.text + "] Online");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -89,7 +89,7 @@ public class Astarya {
     commands.addCommands(new ColorRole(loadColorRoles()), new Emote(), new Poll(waiter), new Profile(),
         new Remind(), new Server(), new Delete(), new Settings(prefix, alternativePrefix),
         new Shutdown(), new Ping(), new Choose(), new CoinFlip(), new HighOrLow(waiter),
-        new PandorasBox(loadPandorasBoxPrompts(".\\resources\\pandoras_box_prompts.txt")),
+        new PandorasBox(loadPandorasBoxPrompts()),
         new Roll(), new ClearQueue(), new Join(), new Leave(), new Loop(), new Lyrics(),
         new NowPlaying(), new Pause(), new Play(), new PlayNext(), new Queue(),
         new Remove(), new Return(), new SearchTrack(waiter), new SetPosition(),
@@ -103,9 +103,9 @@ public class Astarya {
    *
    * @return Pandora's Box prompts
    */
-  private static ArrayList<String> loadPandorasBoxPrompts(String filePath) {
+  private static ArrayList<String> loadPandorasBoxPrompts() {
     try {
-      File file = new File(filePath);
+      File file = new File(".\\resources\\pandoras_box_prompts.txt");
       Scanner scanner = new Scanner(file);
       ArrayList<String> prompts = new ArrayList<>();
 

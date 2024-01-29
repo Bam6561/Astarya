@@ -1,6 +1,6 @@
 package commands.utility;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Remind is a command invocation that sets a timer and alerts the user when the time expires.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.0
  */
 public class Remind extends Command {
@@ -47,7 +47,7 @@ public class Remind extends Command {
     if (numberOfParameters != 0) {
       readRemindRequest(ce, parameters, numberOfParameters);
     } else {
-      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
     }
   }
 
@@ -64,7 +64,7 @@ public class Remind extends Command {
       boolean timeIsInFirstParameter = checkTimeTypeInFirstParameter(parameters);
       processTimeTypeBasedOnLocation(ce, parameters, numberOfParameters, timeIsInFirstParameter);
     } else { // No time type in first or second parameter
-      ce.getChannel().sendMessage("No time types provided.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.REMIND_NO_TIME_TYPES.text).queue();
     }
   }
 
@@ -145,10 +145,10 @@ public class Remind extends Command {
         setReminder(ce, timeDuration, timeType, timerName);
         setTimer(ce, timeDuration, timeType, timerName);
       } else {
-        ce.getChannel().sendMessage("Can only set timer for the maximum length of a week.").queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.REMIND_RANGE_EXCEEDED.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage("Specify a valid numerical value, followed by an accepted time type.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.REMIND_INVALID_INPUT.text).queue();
     }
   }
 

@@ -1,5 +1,6 @@
 package commands.utility;
 
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -18,7 +19,7 @@ import java.util.List;
  * user and adds additional details if they're in the guild.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.12
  * @since 1.6.3
  */
 public class Profile extends Command {
@@ -110,7 +111,7 @@ public class Profile extends Command {
         User user = ce.getJDA().retrieveUserById(parameters.substring(2, parameters.length() - 1)).complete();
         sendProfileEmbed(ce, null, user);
       } catch (NumberFormatException | ErrorResponseException invalidUserId2) {
-        ce.getTextChannel().sendMessage("User not found.").queue();
+        ce.getTextChannel().sendMessage(BotMessage.Failure.PROFILE_USER_NOT_FOUND.text).queue();
       }
     }
   }
@@ -208,8 +209,8 @@ public class Profile extends Command {
   private String getRolesAsMentions(Member member) {
     List<Role> roles = member.getRoles();
     StringBuilder rolesAsMentions = new StringBuilder();
-    for (int i = 0; i < roles.size(); i++) {
-      rolesAsMentions.append(roles.get(i).getAsMention()).append(" ");
+    for (Role role : roles) {
+      rolesAsMentions.append(role.getAsMention()).append(" ");
     }
     return rolesAsMentions.toString().trim();
   }

@@ -1,6 +1,6 @@
 package commands.audio;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * Skip is a command invocation that skips the currently playing track in the audio player.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.12
  * @since 1.2.4
  */
 public class Skip extends Command {
@@ -42,10 +42,10 @@ public class Skip extends Command {
       if (userInSameVoiceChannel) {
         skipCurrentlyPlayingTrack(ce);
       } else {
-        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
     }
   }
 
@@ -63,7 +63,7 @@ public class Skip extends Command {
       addSkippedTrackToSkippedTracksStack(ce, audioScheduler, audioPlayer);
       sendSkipConfirmation(ce);
     } else {
-      ce.getChannel().sendMessage("Nothing to skip.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.SKIP_NOTHING_TO_SKIP.text).queue();
     }
   }
 
@@ -71,8 +71,8 @@ public class Skip extends Command {
    * Adds the currently playing track to the skipped track stack and skips it.
    *
    * @param ce             command event
-   * @param audioScheduler bot's audioscheduler
-   * @param audioPlayer    bot's audioplayer
+   * @param audioScheduler bot's audio scheduler
+   * @param audioPlayer    bot's audio player
    */
   private void addSkippedTrackToSkippedTracksStack(CommandEvent ce, AudioScheduler audioScheduler, AudioPlayer audioPlayer) {
     String requester = "[" + ce.getAuthor().getAsTag() + "]";

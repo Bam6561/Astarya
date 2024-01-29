@@ -1,6 +1,6 @@
 package commands.games;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -16,7 +16,7 @@ import java.util.List;
  * subject is substituted if it has a field to support the user's given parameters.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.6.11
  */
 public class PandorasBox extends Command {
@@ -57,7 +57,7 @@ public class PandorasBox extends Command {
       default -> { // Target: *
         StringBuilder subject = new StringBuilder();
         for (int i = 1; i < parameters.length; i++) {
-          subject.append(parameters[i] + " ");
+          subject.append(parameters[i]).append(" ");
         }
         subject.deleteCharAt(subject.length() - 1);
 
@@ -98,7 +98,7 @@ public class PandorasBox extends Command {
       String subject = vcMembers.get(randomVCMember).getNickname();
       sendPrompt(ce, subject);
     } else {
-      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
     }
   }
 

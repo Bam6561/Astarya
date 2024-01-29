@@ -1,7 +1,7 @@
 package commands.utility;
 
 import astarya.Astarya;
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -17,7 +17,7 @@ import java.util.HashSet;
  * ColorRole is a command invocation that assigns or removes color roles from the user.
  *
  * @author Danny Nguyen
- * @version 1.7.11
+ * @version 1.7.12
  * @since 1.7.4
  */
 public class ColorRole extends Command {
@@ -46,7 +46,7 @@ public class ColorRole extends Command {
     if (numberOfParameters == 1) {
       interpretColorRoleRequest(ce, parameters[1].toLowerCase());
     } else {
-      ce.getChannel().sendMessage("Provide a hex color code `#ffffff` or `clear`.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.COLORROLE_PARAMETERS.text).queue();
     }
   }
 
@@ -67,24 +67,24 @@ public class ColorRole extends Command {
           if (ce.getMember().isOwner()) {
             reloadColorRoles(ce);
           } else {
-            ce.getChannel().sendMessage("Server owner only command.").queue();
+            ce.getChannel().sendMessage(BotMessage.Failure.SERVER_OWNER_ONLY.text).queue();
           }
         }
         case "clear" -> {
           removeColorRoles(ce);
-          ce.getChannel().sendMessage("Cleared all color roles.").queue();
+          ce.getChannel().sendMessage(BotMessage.Success.COLORROLE_CLEAR_ROLES.text).queue();
         }
         default -> {
           parameter = parameter.toUpperCase();
           if (isHexColorCode(parameter)) {
             assignColorRole(ce, parameter);
           } else {
-            ce.getChannel().sendMessage("Invalid color code.").queue();
+            ce.getChannel().sendMessage(BotMessage.Failure.COLORROLE_NOT_HEX.text).queue();
           }
         }
       }
     } catch (InsufficientPermissionException ex) {
-      ce.getChannel().sendMessage(Text.MISSING_MANAGE_ROLES_PERMISSION.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.MISSING_PERMISSION_MANAGE_ROLES.text).queue();
     }
   }
 
@@ -110,9 +110,8 @@ public class ColorRole extends Command {
    * Reloads the server's color role names into memory and deletes empty color roles if they exist.
    *
    * @param ce command event
-   * @return color role names
    */
-  private HashSet<String> reloadColorRoles(CommandEvent ce) {
+  private void reloadColorRoles(CommandEvent ce) {
     HashSet<String> colorRoles = this.colorRoles;
 
     for (Role role : Astarya.getApi().getRoles()) {
@@ -127,8 +126,7 @@ public class ColorRole extends Command {
         }
       }
     }
-    ce.getChannel().sendMessage("Cleaned up all empty color roles.").queue();
-    return colorRoles;
+    ce.getChannel().sendMessage(BotMessage.Success.COLORROLE_CLEANED_UP_ROLES.text).queue();
   }
 
   /**

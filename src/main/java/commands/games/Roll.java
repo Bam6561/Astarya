@@ -1,5 +1,6 @@
 package commands.games;
 
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -12,7 +13,7 @@ import java.util.Random;
  * randomly generates integers based on a user provided range.
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.12
  * @since 1.0
  */
 public class Roll extends Command {
@@ -44,7 +45,7 @@ public class Roll extends Command {
       case 0 -> dieRoll(ce);
       case 1 -> multipleDieRolls(ce, parameters);
       case 3 -> customRangeRolls(ce, parameters);
-      default -> ce.getChannel().sendMessage("Invalid parameter format.").queue();
+      default -> ce.getChannel().sendMessage(BotMessage.Failure.ROLL_INVALID_INPUT.text).queue();
     }
   }
 
@@ -76,10 +77,10 @@ public class Roll extends Command {
       if (validNumberOfRolls) {
         multipleDieRollsResults(ce, numberOfRolls);
       } else {
-        ce.getChannel().sendMessage("Specify an integer between (1-10) times to roll the dice.").queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.ROLL_RANGE.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage("Specify an integer between (1-10) times to roll the dice.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_RANGE.text).queue();
     }
   }
 
@@ -134,7 +135,7 @@ public class Roll extends Command {
             minAndMaxAreNotEqual, minIsNotLargerThanMax);
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage("Specify integers between (1-10) for the number of rolls and range.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_RANGES.text).queue();
     }
   }
 
@@ -201,16 +202,16 @@ public class Roll extends Command {
   private void processErrorMessages(CommandEvent ce, boolean validNumberOfRolls, boolean minAndMaxAreZeroOrPositive,
                                     boolean minAndMaxAreNotEqual, boolean minIsNotLargerThanMax) {
     if (!validNumberOfRolls) {
-      ce.getChannel().sendMessage("Specify an integer between (1-10) times to generate numbers.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_RANGE_RNG.text).queue();
     }
     if (!minAndMaxAreZeroOrPositive) {
-      ce.getChannel().sendMessage("Minimum and maximum values cannot be negative.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_NEGATIVE.text).queue();
     }
     if (!minAndMaxAreNotEqual) {
-      ce.getChannel().sendMessage("Minimum value cannot be larger than the maximum value.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_EQUAL.text).queue();
     }
     if (minIsNotLargerThanMax) {
-      ce.getChannel().sendMessage("The lower bound cannot be larger than the upper bound.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_LARGER.text).queue();
     }
   }
 }

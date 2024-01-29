@@ -1,7 +1,7 @@
 package commands.audio;
 
 import astarya.Astarya;
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.managers.Presence;
  * Pause is a command invocation that pauses the audio player.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.12
  * @since 1.2.5
  */
 public class Pause extends Command {
@@ -45,10 +45,10 @@ public class Pause extends Command {
       if (userInSameVoiceChannel) {
         setAudioPlayerPause(ce);
       } else {
-        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
     }
   }
 
@@ -74,7 +74,7 @@ public class Pause extends Command {
       } catch (NullPointerException e) { // No track currently playing
         setActivityToNothing(presence);
       }
-      ce.getChannel().sendMessage("Audio player resumed.").queue();
+      ce.getChannel().sendMessage(BotMessage.Success.PAUSE_PLAYER_RESUME.text).queue();
     }
   }
 
@@ -89,7 +89,7 @@ public class Pause extends Command {
     audioPlayer.setPaused(true);
     presence.setActivity(Activity.listening("Paused"));
     presence.setStatus(OnlineStatus.IDLE);
-    ce.getChannel().sendMessage("Audio player paused.").queue();
+    ce.getChannel().sendMessage(BotMessage.Success.PAUSE_PLAYER_PAUSE.text).queue();
   }
 
   /**

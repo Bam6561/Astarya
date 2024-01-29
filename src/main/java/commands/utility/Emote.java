@@ -1,5 +1,6 @@
 package commands.utility;
 
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -9,7 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Emote is a command invocation that provides a mentioned emote as an embed.
  *
  * @author Danny Nguyen
- * @version 1.6.5
+ * @version 1.7.12
  * @since 1.0
  */
 public class Emote extends Command {
@@ -36,7 +37,7 @@ public class Emote extends Command {
       display.setImage(ce.getMessage().getMentions().getCustomEmojis().get(0).getImageUrl());
       Settings.sendEmbed(ce, display);
     } else {
-      ce.getChannel().sendMessage("Specify an emote.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.EMOTE_SPECIFY_EMOTE.text).queue();
     }
   }
 }

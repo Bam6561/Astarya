@@ -1,6 +1,6 @@
 package commands.audio;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * PlayNext is a command invocation that sets the next track to be played in the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.2.13
  */
 public class PlayNext extends Command {
@@ -45,10 +45,10 @@ public class PlayNext extends Command {
       if (userInSameVoiceChannel) {
         readPlayNextRequest(ce);
       } else {
-        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
     }
   }
 
@@ -68,10 +68,10 @@ public class PlayNext extends Command {
       try {
         processPlayNextRequest(ce, Integer.parseInt(parameters[1]));
       } catch (NumberFormatException e) {
-        ce.getChannel().sendMessage("Specify an integer to play the next track number.").queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.PLAYNEXT_SPECIFY.text).queue();
       }
     } else {
-      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
     }
   }
 
@@ -96,7 +96,7 @@ public class PlayNext extends Command {
       playNext(ce, queueNumber, trackQueue, audioTrack);
       sendPlayNextConfirmation(ce, queueNumber, trackQueue, audioTrack, trackDuration);
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage(Text.INVALID_QUEUE_NUMBER.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_QUEUE_NUMBER.text).queue();
     }
   }
 

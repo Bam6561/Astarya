@@ -1,5 +1,6 @@
 package commands.games;
 
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * to guess if the next number will be higher or lower.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.0
  */
 public class HighOrLow extends Command {
@@ -56,9 +57,7 @@ public class HighOrLow extends Command {
       processGameReactions(ce);
       processGameTimeout(ce);
     } else {
-      ce.getChannel()
-          .sendMessage("A high or low game is currently being played. Please wait until it finishes or expires.")
-          .queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.HIGHORLOW_ONGOING.text).queue();
     }
   }
 

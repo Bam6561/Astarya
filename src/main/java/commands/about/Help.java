@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Help is a command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.7.7
+ * @version 1.7.12
  * @since 1.0
  */
 public class Help extends Command {
@@ -88,7 +88,8 @@ public class Help extends Command {
               "as the server owner will remove all empty color roles.", "color",
           "[1]#HexColor/clear/clean", "color #7EC2FE | color clear");
       case "credits" -> sendDetailedCommandHelpEmbed(display, "Help: Credits",
-          "Shows a list of credits for Astarya.", "credits", "[0]Credits", "credits");
+          "Shows a list of credits for Astarya.",
+          "credits", "[0]Credits", "credits");
       case "delete", "purge" -> sendDetailedCommandHelpEmbed(display, "Help: Delete",
           "Deletes a number of recent messages. Parameter provides amount to delete (2-100).",
           "delete, purge", "[1]NumberOfMessages", "delete 15");
@@ -115,12 +116,13 @@ public class Help extends Command {
           "Loops the current track.",
           "loop, repeat", "[0]Loop", "loop");
       case "lyrics" -> sendDetailedCommandHelpEmbed(display, "Help: Lyrics",
-          "Finds lyrics of a song using Genius.", "lyrics", "[1 ++]SongName", "lyrics duck song");
+          "Finds lyrics of a song using Genius.",
+          "lyrics", "[1 ++]SongName", "lyrics duck song");
       case "nowplaying", "np" -> sendDetailedCommandHelpEmbed(display, "Help: NowPlaying",
           "Shows what track is currently playing.", "nowplaying, np",
           "[0]NowPlaying", "nowplaying");
       case "pandorasbox", "pb" -> sendDetailedCommandHelpEmbed(display, "Help: PandorasBox",
-          "Sends a random scenario prompt. Prompts' subjects are substituted if paramaters are provided.",
+          "Sends a random scenario prompt. Prompts' subjects are substituted if parameters are provided.",
           "pandorasbox, pb", "[0]Self [1]VC/DC/Name [2 ++]Phrase",
           "pandorasbox, pandorasbox vc, pandorasbox dc, pandorasbox John Constantine");
       case "pause", "stop" -> sendDetailedCommandHelpEmbed(display, "Help: Pause",
@@ -130,10 +132,15 @@ public class Help extends Command {
           "Responds with the response time of Astarya in milliseconds.",
           "ping, ms", "[0]Ping", "ping");
       case "play", "p" -> sendDetailedCommandHelpEmbed(display, "Help: Play",
-          "Adds a track to the track queue. Spotify playlists are limited to the most recent 100 songs added. " +
-              "Spotify albums are limited to 50 songs at a time. \n" +
-              "**Sources** \n > - YouTube: links/playlists \n> - Discord: media links \n> - Spotify: songs/playlists/albums \n" +
-              "**Supported File Types** \n > MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams",
+          """
+              Adds a track to the track queue. Spotify playlists are limited to the\040
+              most recent 100 songs added. Spotify albums are limited to 50 songs at a time.\s
+              **Sources**\s
+               > - YouTube: links/playlists\s
+              > - Discord: media links\s
+              > - Spotify: songs/playlists/albums\s
+              **Supported File Types**\s
+               > MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams""",
           "play, p", "[1]URL [2 ++]YouTubeQuery",
           "play https://www.youtube.com/watch?v=dQw4w9WgXcQ | play Cleverly Disguised Rickrolls");
       case "playnext", "after" -> sendDetailedCommandHelpEmbed(display, "Help: PlayNext",
@@ -150,12 +157,13 @@ public class Help extends Command {
           "Provides a list of tracks queued.", "queue, q",
           "[0]Queue [1]PageNumber", "queue | queue 1");
       case "remind", "timer" -> sendDetailedCommandHelpEmbed(display, "Help: Remind",
-          "Sets a timer and alerts the user when the time expires for up to " +
-              "a day's maximum length. Parameters provide the time duration, type, " +
-              "and event name. Astarya recognizes the following time types: \n" +
-              "> - 1 parameter: (0-7)d, (0-168)h, (0-10080)m, (0-604800)s \n" +
-              "> - 2+ parameters: days, day, d, hours, hour, hrs, hr, h, " +
-              "minutes, minute, mins, min, m, seconds, second, secs, sec, s.",
+          """
+              Sets a timer and alerts the user when the time expires for up to a day's maximum length.\040
+              Parameters provide the time duration, type, and event name.
+              Astarya recognizes the following time types:\s
+              > - 1 parameter: (0-7)d, (0-168)h, (0-10080)m, (0-604800)s\s
+              > - 2+ parameters: days, day, d, hours, hour, hrs, hr, h,
+              minutes, minute, mins, min, m, seconds, second, secs, sec, s.""",
           "remind, timer",
           "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName",
           "remind (0-7)d | remind (0-168)h | remind (0-10080)m | remind (0-604800)s | "
@@ -185,13 +193,15 @@ public class Help extends Command {
           "setposition 150 | setposition 2:30");
       case "settings", "config" -> sendDetailedCommandHelpEmbed(display, "Help: Settings",
           "Provides information on Astarya settings.", "settings, config",
-          "[0]MainMenu [1]Setting [2]True/False", "settings | settings deleteinvoke | settings deleteinvoke true");
+          "[0]MainMenu [1]Setting [2]True/False",
+          "settings | settings deleteinvoke | settings deleteinvoke true");
       case "shuffle", "mix" -> sendDetailedCommandHelpEmbed(display, "Help: Shuffle",
           "Shuffles the track queue.", "shuffle, mix", "[0]Shuffle", "shuffle");
       case "shutdown" -> sendDetailedCommandHelpEmbed(display, "Help: Shutdown",
           "Shuts Astarya down.", "shutdown", "[0]Shutdown", "shutdown");
       case "skip", "s", "next" -> sendDetailedCommandHelpEmbed(display, "Help: Skip",
-          "Skips the currently playing track. Astarya's activity changes may be rate limited if done rapidly.",
+          "Skips the currently playing track. " +
+              "Astarya's activity changes may be rate limited if done rapidly.",
           "skip, s, next", "[0]Skip", "skip");
       case "swap", "switch" -> sendDetailedCommandHelpEmbed(display, "Help: Swap",
           "Swaps the position of a track in queue with another.", "swap, switch",

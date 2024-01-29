@@ -1,6 +1,6 @@
 package commands.audio;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -20,11 +20,11 @@ import java.util.concurrent.TimeUnit;
  * to add to the track queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
-  private EventWaiter waiter;
+  private final EventWaiter waiter;
   private long invokerUserId;
 
   public SearchTrack(EventWaiter waiter) {
@@ -56,10 +56,10 @@ public class SearchTrack extends Command {
         readSearchTrackRequest(ce);
         awaitUserResponse(ce);
       } else {
-        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
     }
   }
 
@@ -76,7 +76,7 @@ public class SearchTrack extends Command {
       setInvokerUserId(Long.parseLong(ce.getAuthor().getId())); // Lock searchTrack command request to requester
       queryYouTube(ce, parameters, numberOfParameters);
     } else {
-      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
     }
   }
 
@@ -96,7 +96,7 @@ public class SearchTrack extends Command {
           readUserResponse(ce, w);
         }, 15, TimeUnit.SECONDS, () -> { // Timeout
           setInvokerUserId(0);
-          ce.getChannel().sendMessage("No response. Search timed out.").queue();
+          ce.getChannel().sendMessage(BotMessage.Failure.SEARCHTRACK_TIMED_OUT.text).queue();
         }));
   }
 
@@ -120,7 +120,7 @@ public class SearchTrack extends Command {
    * Checks if the user's response is an integer.
    *
    * @param ce command event
-   * @param w  Message recieved event
+   * @param w  message received event
    * @throws NumberFormatException user provided non-integer response
    */
   private void readUserResponse(CommandEvent ce, MessageReceivedEvent w) {
@@ -128,7 +128,7 @@ public class SearchTrack extends Command {
     try {
       processUserResponse(ce, Integer.parseInt(parameters[0]));
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage("Responses must be an integer.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.SEARCHTRACK_SPECIFY.text).queue();
     }
   }
 
@@ -152,7 +152,7 @@ public class SearchTrack extends Command {
       sendSearchTrackConfirmation(ce, track, requester);
     } catch (IndexOutOfBoundsException e) {
       setInvokerUserId(0);
-      ce.getChannel().sendMessage("Responses must be in range of 1-5.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.SEARCHTRACK_RANGE.text).queue();
     }
   }
 

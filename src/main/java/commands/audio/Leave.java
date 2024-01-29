@@ -1,5 +1,6 @@
 package commands.audio;
 
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -10,7 +11,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
  * Leave is a command invocation that makes the bot leave the voice channel it's currently in.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.12
  * @since 1.1.0
  */
 public class Leave extends Command {
@@ -39,7 +40,7 @@ public class Leave extends Command {
       String leaveChannel = "Leaving <#" + botVoiceState.getChannel().getId() + ">";
       ce.getChannel().sendMessage(leaveChannel).queue();
     } else {
-      ce.getChannel().sendMessage("Not in a voice channel.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.BOT_NOT_IN_VC.text).queue();
     }
   }
 }

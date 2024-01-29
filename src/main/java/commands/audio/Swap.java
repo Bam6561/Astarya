@@ -1,6 +1,6 @@
 package commands.audio;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -17,7 +17,7 @@ import java.util.Collections;
  * Swap is a command invocation that swaps the position of a track in queue with another.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.2.14
  */
 public class Swap extends Command {
@@ -46,10 +46,10 @@ public class Swap extends Command {
       if (userInSameVoiceChannel) {
         readSwapRequest(ce);
       } else {
-        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
     }
   }
 
@@ -66,7 +66,7 @@ public class Swap extends Command {
     if (validNumberOfParameters) {
       processSwapRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
     }
   }
 
@@ -85,7 +85,7 @@ public class Swap extends Command {
 
       swapTracks(ce, originalIndex, swapIndex);
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage("Specify integers to swap tracks in the track queue.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.SWAP_SPECIFY.text).queue();
     }
   }
 
@@ -106,7 +106,7 @@ public class Swap extends Command {
       Collections.swap(trackQueue, originalIndex, swapIndex);
       sendSwapConfirmation(ce, originalIndex, swapIndex, trackQueue, originalTrack, swapTrack);
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage(Text.INVALID_QUEUE_NUMBER.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_QUEUE_NUMBER.text).queue();
     }
   }
 

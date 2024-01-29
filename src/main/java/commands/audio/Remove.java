@@ -1,6 +1,6 @@
 package commands.audio;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.audio.managers.AudioScheduler;
@@ -16,7 +16,7 @@ import java.util.Collections;
  * Remove is a command invocation that removes track(s) from the track queue.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.12
  * @since 1.2.2
  */
 public class Remove extends Command {
@@ -45,10 +45,10 @@ public class Remove extends Command {
       if (userInSameVoiceChannel) {
         interpretRemoveTrackRequest(ce);
       } else {
-        ce.getChannel().sendMessage(Text.NOT_IN_SAME_VC.value()).queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(Text.NOT_IN_VC.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
     }
   }
 
@@ -63,12 +63,12 @@ public class Remove extends Command {
     int numberOfParameters = parameters.length - 1;
 
     switch (numberOfParameters) {
-      case 0 -> ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      case 0 -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
       case 1 -> {
         try {
           removeTrack(ce, Integer.parseInt(parameters[1]));
         } catch (NumberFormatException e) {
-          ce.getChannel().sendMessage("Specify what queue number to be removed with an integer.").queue();
+          ce.getChannel().sendMessage(BotMessage.Failure.REMOVE_SPECIFY.text).queue();
         }
       }
       default -> readRemoveMultipleTrackRequest(ce, parameters, numberOfParameters);
@@ -94,7 +94,7 @@ public class Remove extends Command {
       sendRemoveConfirmation(ce, queueIndex, trackQueue);
       trackQueue.remove(queueIndex);
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage(Text.INVALID_QUEUE_NUMBER.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_QUEUE_NUMBER.text).queue();
     }
   }
 
@@ -117,8 +117,7 @@ public class Remove extends Command {
       }
       removeMultipleTracks(ce, queueIndicesToBeRemoved);
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage("Specify what queue numbers to be removed with an integer " +
-          "and add a space between each.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.REMOVE_SPECIFY_GROUP.text).queue();
     }
   }
 
@@ -137,7 +136,7 @@ public class Remove extends Command {
         removeTrack(ce, queueIndices.get(i));
       }
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage(Text.INVALID_QUEUE_NUMBER.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_QUEUE_NUMBER.text).queue();
     }
   }
 

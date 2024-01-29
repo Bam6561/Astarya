@@ -1,6 +1,6 @@
 package commands.owner;
 
-import astarya.Text;
+import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.entities.Message;
@@ -13,7 +13,7 @@ import java.util.List;
  * Delete is a command invocation that clears a number of 2-100 recent messages.
  *
  * @author Danny Nguyen
- * @version 1.7.10
+ * @version 1.7.12
  * @since 1.0
  */
 public class Delete extends Command {
@@ -40,7 +40,7 @@ public class Delete extends Command {
     if (numberOfParameters == 1) {
       readDeleteMessagesRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage(Text.INVALID_NUMBER_OF_PARAMS.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
     }
   }
 
@@ -59,10 +59,10 @@ public class Delete extends Command {
       if (validNumberOfMessagesToDelete) {
         deleteRecentMessages(ce, numberOfMessagesToDelete);
       } else {
-        ce.getChannel().sendMessage("Specify an integer between (2-100) messages to clear.").queue();
+        ce.getChannel().sendMessage(BotMessage.Failure.DELETE_RANGE.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage("Specify an integer between (2-100) messages to clear.").queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.DELETE_RANGE.text).queue();
     }
   }
 
@@ -80,7 +80,7 @@ public class Delete extends Command {
       textChannel.purgeMessages(recentMessages);
       textChannel.sendMessage("Previous (" + numberOfMessagesToDelete + ") messages cleared.").queue();
     } catch (InsufficientPermissionException ex) {
-      ce.getChannel().sendMessage(Text.MISSING_MANAGE_MESSAGES_PERMISSION.value()).queue();
+      ce.getChannel().sendMessage(BotMessage.Failure.MISSING_PERMISSION_MANAGE_MESSAGES.text).queue();
     }
   }
 }
