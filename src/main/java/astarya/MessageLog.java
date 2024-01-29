@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.14
  * @since 1.0.0
  */
 public class MessageLog extends ListenerAdapter {
@@ -57,20 +57,21 @@ public class MessageLog extends ListenerAdapter {
    * @param e message received event
    */
   private void checkForMediaLinks(MessageReceivedEvent e) {
-    String originalMessage = e.getMessage().getContentRaw();
-    String scannedMessage = originalMessage.toLowerCase();
+    String scannedMessage = e.getMessage().getContentRaw().toLowerCase();
 
-    boolean isTwitterLink = (scannedMessage.contains("https://twitter.com/") ||
-        scannedMessage.contains("https://x.com/"));
-    boolean isTwitterMedia = scannedMessage.contains("/status/");
-    boolean isRedditMedia = scannedMessage.contains("https://www.reddit.com/");
-    boolean isInstagramMedia = scannedMessage.contains("https://www.instagram.com/");
-    boolean isPixiv = scannedMessage.contains("https://www.pixiv.net/");
+    if (scannedMessage.contains("https://")) {
+      boolean isTwitterLink = scannedMessage.contains("twitter.com/") ||
+          scannedMessage.contains("x.com/");
+      boolean isTwitterMedia = scannedMessage.contains("/status/");
+      boolean isRedditMedia = scannedMessage.contains("www.reddit.com/");
+      boolean isInstagramMedia = scannedMessage.contains("www.instagram.com/");
+      boolean isPixiv = scannedMessage.contains("www.pixiv.net/");
 
-    // Replace domain and delete original message if permissions allow
-    if ((isTwitterLink && isTwitterMedia) || isRedditMedia || isInstagramMedia || isPixiv) {
-      originalMessage = "[" + e.getAuthor().getAsTag() + "]\n" + originalMessage;
-      replaceMediaLinks(e, originalMessage, isTwitterMedia, isRedditMedia, isInstagramMedia, isPixiv);
+      // Replace domain and delete original message if permissions allow
+      if ((isTwitterLink && isTwitterMedia) || isRedditMedia || isInstagramMedia || isPixiv) {
+        String formattedMessage = "[" + e.getAuthor().getAsTag() + "]\n" + e.getMessage().getContentRaw();
+        replaceMediaLinks(e, formattedMessage, isTwitterMedia, isRedditMedia, isInstagramMedia, isPixiv);
+      }
     }
   }
 
@@ -103,7 +104,7 @@ public class MessageLog extends ListenerAdapter {
       originalMessage = originalMessage.replace("www.instagram", "www.ddinstagram");
     }
     if (isPixiv) {
-      originalMessage = originalMessage.replace("www.pixiv.net", "www.phixiv.net");
+      originalMessage = originalMessage.replace("www.pixiv", "www.phixiv");
     }
 
     try {

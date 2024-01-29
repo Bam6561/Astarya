@@ -12,7 +12,7 @@ public class BotMessage {
    * Sent on success.
    */
   public enum Success {
-    VERSION("V1.7.13"),
+    VERSION("V1.7.14"),
 
     COLORROLE_CLEAR_ROLES("Cleared color roles."),
     COLORROLE_CLEANED_UP_ROLES("Cleaned up empty color roles."),

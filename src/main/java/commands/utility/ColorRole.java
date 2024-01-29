@@ -11,19 +11,19 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.*;
-import java.util.HashSet;
+import java.util.Set;
 
 /**
  * ColorRole is a command invocation that assigns or removes color roles from the user.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.14
  * @since 1.7.4
  */
 public class ColorRole extends Command {
-  private final HashSet<String> colorRoles;
+  private final Set<String> colorRoles;
 
-  public ColorRole(HashSet<String> colorRoles) {
+  public ColorRole(Set<String> colorRoles) {
     this.name = "color";
     this.aliases = new String[]{"color"};
     this.arguments = "[1]<#HexColor>";
@@ -112,7 +112,7 @@ public class ColorRole extends Command {
    * @param ce command event
    */
   private void reloadColorRoles(CommandEvent ce) {
-    HashSet<String> colorRoles = this.colorRoles;
+    Set<String> colorRoles = this.colorRoles;
 
     for (Role role : Astarya.getApi().getRoles()) {
       String roleName = role.getName();

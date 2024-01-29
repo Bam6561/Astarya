@@ -7,6 +7,7 @@ import commands.about.Credits;
 import commands.about.Help;
 import commands.about.Info;
 import commands.about.Ping;
+import commands.audio.Queue;
 import commands.audio.*;
 import commands.games.*;
 import commands.owner.Delete;
@@ -26,18 +27,15 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
- * Astarya represents the Discord bot application. Through event listeners and the command client
- * (an object representing the bot's various command modules), the bot can process various
+ * Astarya represents the Discord bot application. Through event listeners and the command
+ * client (an object representing the bot's various command modules), the bot can process various
  * Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.7.14
  * @since 1.0
  */
 public class Astarya {
@@ -90,10 +88,9 @@ public class Astarya {
     commands.addCommands(new ColorRole(loadColorRoles()), new Emote(), new Poll(waiter), new Profile(),
         new Remind(), new Server(), new Delete(), new Settings(prefix, alternativePrefix),
         new Shutdown(), new Ping(), new Choose(), new CoinFlip(), new HighOrLow(waiter),
-        new PandorasBox(loadPandorasBoxPrompts()),
-        new Roll(), new ClearQueue(), new Join(), new Leave(), new Loop(), new Lyrics(),
-        new NowPlaying(), new Pause(), new Play(), new PlayNext(), new Queue(),
-        new Remove(), new Return(), new SearchTrack(waiter), new SetPosition(),
+        new PandorasBox(loadPandorasBoxPrompts()), new Roll(), new ClearQueue(), new Join(),
+        new Leave(), new Loop(), new Lyrics(), new NowPlaying(), new Pause(), new Play(), new PlayNext(),
+        new Queue(), new Remove(), new Return(), new SearchTrack(waiter), new SetPosition(),
         new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
     return commands.build();
   }
@@ -129,13 +126,11 @@ public class Astarya {
    * @return color role names
    * @throws InsufficientPermissionException unable to manage roles
    */
-  private static HashSet<String> loadColorRoles() {
-    HashSet<String> colorRoles = new HashSet<>();
+  private static Set<String> loadColorRoles() {
+    Set<String> colorRoles = new HashSet<>();
 
     for (Role role : Astarya.api.getRoles()) {
       String roleName = role.getName();
-
-      // Hex Color Code Format: #ffffff
       if (isHexColorCode(roleName.toUpperCase())) {
         if (!api.getMutualGuilds().get(0).getMembersWithRoles(role).isEmpty()) {
           colorRoles.add(roleName);

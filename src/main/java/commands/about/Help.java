@@ -1,5 +1,6 @@
 package commands.about;
 
+import astarya.BotHelp;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -9,7 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Help is a command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.14
  * @since 1.0
  */
 public class Help extends Command {
@@ -73,139 +74,110 @@ public class Help extends Command {
   private void sendCommandDetails(EmbedBuilder display, String commandName) {
     switch (commandName) {
       case "choose", "pick" -> sendDetailedCommandHelpEmbed(display, "Help: Choose",
-          "Chooses randomly between any number of options. " +
-              "The options are parameters separated by commas.",
-          "choose, pick", "[1, ++]Options",
-          "choose Take out the trash, Do the laundry, Walk the dog");
+          BotHelp.Description.CHOOSE.text, BotHelp.Alias.CHOOSE.text,
+          BotHelp.Parameter.CHOOSE.text, BotHelp.Example.CHOOSE.text);
       case "clearqueue", "clear" -> sendDetailedCommandHelpEmbed(display, "Help: ClearQueue",
-          "Clears the track queue.", "clearqueue, clear", "[0]ClearQueue",
-          "clearqueue");
+          BotHelp.Description.CLEARQUEUE.text, BotHelp.Alias.CLEARQUEUE.text,
+          BotHelp.Parameter.CLEARQUEUE.text, BotHelp.Example.CLEARQUEUE.text);
       case "coinflip", "flip" -> sendDetailedCommandHelpEmbed(display, "Help: Coin Flip",
-          "Flips a coin any number of times. Parameter dictates how many times (1-10) to flip the coin.",
-          "coinflip, flip", "[0]Once [1]NumberOfFlips", "flip | flip 5");
+          BotHelp.Description.COINFLIP.text, BotHelp.Alias.COINFLIP.text,
+          BotHelp.Parameter.COINFLIP.text, BotHelp.Example.COINFLIP.text);
       case "color" -> sendDetailedCommandHelpEmbed(display, "Help: Color",
-          "Assigns or removes color roles from the user. Using \"clean\"" +
-              "as the server owner will remove all empty color roles.", "color",
-          "[1]#HexColor/clear/clean", "color #7EC2FE | color clear");
+          BotHelp.Description.COLOR.text, BotHelp.Alias.COLOR.text,
+          BotHelp.Parameter.COLOR.text, BotHelp.Example.COLOR.text);
       case "credits" -> sendDetailedCommandHelpEmbed(display, "Help: Credits",
-          "Shows a list of credits for Astarya.",
-          "credits", "[0]Credits", "credits");
+          BotHelp.Description.CREDITS.text, BotHelp.Alias.CREDITS.text,
+          BotHelp.Parameter.CREDITS.text, BotHelp.Example.CREDITS.text);
       case "delete", "purge" -> sendDetailedCommandHelpEmbed(display, "Help: Delete",
-          "Deletes a number of recent messages. Parameter provides amount to delete (2-100).",
-          "delete, purge", "[1]NumberOfMessages", "delete 15");
+          BotHelp.Description.DELETE.text, BotHelp.Alias.DELETE.text,
+          BotHelp.Parameter.DELETE.text, BotHelp.Example.DELETE.text);
       case "emote", "emoji" -> sendDetailedCommandHelpEmbed(display, "Help: Emote",
-          "Provides the mentioned custom emote as a file. Parameter is the requested emote.",
-          "emote, emoji", "[1]Emote", "emote :watameSnacks:");
+          BotHelp.Description.EMOTE.text, BotHelp.Alias.EMOTE.text,
+          BotHelp.Parameter.EMOTE.text, BotHelp.Example.EMOTE.text);
       case "help" -> sendDetailedCommandHelpEmbed(display, "Help: Help",
-          "Provides documentation on Astarya's commands. " +
-              "Parameter describes more detailed command usage.",
-          "help", "[0]MainMenu [1]CommandName", "help help");
+          BotHelp.Description.HELP.text, BotHelp.Alias.HELP.text,
+          BotHelp.Parameter.HELP.text, BotHelp.Example.HELP.text);
       case "highorlow", "guess" -> sendDetailedCommandHelpEmbed(display, "Help: HighOrLow",
-          "Guess if the next number will be higher or lower!",
-          "highorlow, guess", "[0]HighOrLow", "highorlow");
+          BotHelp.Description.HIGHORLOW.text, BotHelp.Alias.HIGHORLOW.text,
+          BotHelp.Parameter.HIGHORLOW.text, BotHelp.Example.HIGHORLOW.text);
       case "info", "about" -> sendDetailedCommandHelpEmbed(display, "Help: Info",
-          "Details information about Astarya and its developer.",
-          "info, about", "[0]Info", "info");
+          BotHelp.Description.INFO.text, BotHelp.Alias.INFO.text,
+          BotHelp.Parameter.INFO.text, BotHelp.Example.INFO.text);
       case "join", "j" -> sendDetailedCommandHelpEmbed(display, "Help: Join",
-          "Joins the same voice channel as the user.", "join, j",
-          "[0]Join", "join");
+          BotHelp.Description.JOIN.text, BotHelp.Alias.JOIN.text,
+          BotHelp.Parameter.JOIN.text, BotHelp.Example.JOIN.text);
       case "leave", "l", "disconnect", "dc" -> sendDetailedCommandHelpEmbed(display, "Help: Leave",
-          "Leaves the voice channel it's in.", "leave, l, disconnect, dc",
-          "[0]Leave", "leave");
-      case "loop", "repeat" -> sendDetailedCommandHelpEmbed(display, "Help: Loops",
-          "Loops the current track.",
-          "loop, repeat", "[0]Loop", "loop");
+          BotHelp.Description.LEAVE.text, BotHelp.Alias.LEAVE.text,
+          BotHelp.Parameter.LEAVE.text, BotHelp.Example.LEAVE.text);
+      case "loop", "repeat" -> sendDetailedCommandHelpEmbed(display, "Help: Loop",
+          BotHelp.Description.LOOP.text, BotHelp.Alias.LOOP.text,
+          BotHelp.Parameter.LOOP.text, BotHelp.Example.LOOP.text);
       case "lyrics" -> sendDetailedCommandHelpEmbed(display, "Help: Lyrics",
-          "Finds lyrics of a song using Genius.",
-          "lyrics", "[1 ++]SongName", "lyrics duck song");
+          BotHelp.Description.LYRICS.text, BotHelp.Alias.LYRICS.text,
+          BotHelp.Parameter.LYRICS.text, BotHelp.Example.LYRICS.text);
       case "nowplaying", "np" -> sendDetailedCommandHelpEmbed(display, "Help: NowPlaying",
-          "Shows what track is currently playing.", "nowplaying, np",
-          "[0]NowPlaying", "nowplaying");
+          BotHelp.Description.NOWPLAYING.text, BotHelp.Alias.NOWPLAYING.text,
+          BotHelp.Parameter.NOWPLAYING.text, BotHelp.Example.NOWPLAYING.text);
       case "pandorasbox", "pb" -> sendDetailedCommandHelpEmbed(display, "Help: PandorasBox",
-          "Sends a random scenario prompt. Prompts' subjects are substituted if parameters are provided.",
-          "pandorasbox, pb", "[0]Self [1]VC/DC/Name [2 ++]Phrase",
-          "pandorasbox, pandorasbox vc, pandorasbox dc, pandorasbox John Constantine");
+          BotHelp.Description.PANDORASBOX.text, BotHelp.Alias.PANDORASBOX.text,
+          BotHelp.Parameter.PANDORASBOX.text, BotHelp.Example.PANDORASBOX.text);
       case "pause", "stop" -> sendDetailedCommandHelpEmbed(display, "Help: Pause",
-          "Pauses the audio player. Astarya's activity changes may be rate limited if done rapidly.",
-          "pause, stop", "[0]Pause", "pause");
+          BotHelp.Description.PAUSE.text, BotHelp.Alias.PAUSE.text,
+          BotHelp.Parameter.PAUSE.text, BotHelp.Example.PAUSE.text);
       case "ping", "ms" -> sendDetailedCommandHelpEmbed(display, "Help: Ping",
-          "Responds with the response time of Astarya in milliseconds.",
-          "ping, ms", "[0]Ping", "ping");
+          BotHelp.Description.PING.text, BotHelp.Alias.PING.text,
+          BotHelp.Parameter.PING.text, BotHelp.Example.PING.text);
       case "play", "p" -> sendDetailedCommandHelpEmbed(display, "Help: Play",
-          """
-              Adds a track to the track queue. Spotify playlists are limited to the\040
-              most recent 100 songs added. Spotify albums are limited to 50 songs at a time.\s
-              **Sources**\s
-               > - YouTube: links/playlists\s
-              > - Discord: media links\s
-              > - Spotify: songs/playlists/albums\s
-              **Supported File Types**\s
-               > MP3, FLAC, WAV, Matroska/WebM, MP4/M4A, OGG streams, AAC streams""",
-          "play, p", "[1]URL [2 ++]YouTubeQuery",
-          "play https://www.youtube.com/watch?v=dQw4w9WgXcQ | play Cleverly Disguised Rickrolls");
+          BotHelp.Description.PLAY.text, BotHelp.Alias.PLAY.text,
+          BotHelp.Parameter.PLAY.text, BotHelp.Example.PLAY.text);
       case "playnext", "after" -> sendDetailedCommandHelpEmbed(display, "Help: PlayNext",
-          "Sets the next track to be played in the track queue.",
-          "playnext, after", "[1]QueueNumber", "playnext 3");
+          BotHelp.Description.PLAYNEXT.text, BotHelp.Alias.PLAYNEXT.text,
+          BotHelp.Parameter.PLAYNEXT.text, BotHelp.Example.PLAYNEXT.text);
       case "poll", "vote" -> sendDetailedCommandHelpEmbed(display, "Help: Poll",
-          "Creates a reaction vote with up to 10 options. The options are parameters separated by commas.",
-          "poll, vote", "[2, ++]Options", "poll hot pizza, cold pizza");
+          BotHelp.Description.POLL.text, BotHelp.Alias.POLL.text,
+          BotHelp.Parameter.POLL.text, BotHelp.Example.POLL.text);
       case "profile", "whois", "user" -> sendDetailedCommandHelpEmbed(display, "Help: Profile",
-          "Sends information about a user.", "profile, whois, user",
-          "[0]Self [1]Mention/UserId/<@UserId> [1+]Name/Nickname", "profile | profile @Bam | " +
-              "profile 204448598539239424 | profile <@204448598539239424> | profile Bam | profile Bam's Nickname");
+          BotHelp.Description.PROFILE.text, BotHelp.Alias.PROFILE.text,
+          BotHelp.Parameter.PROFILE.text, BotHelp.Example.PROFILE.text);
       case "queue", "q" -> sendDetailedCommandHelpEmbed(display, "Help: Queue",
-          "Provides a list of tracks queued.", "queue, q",
-          "[0]Queue [1]PageNumber", "queue | queue 1");
+          BotHelp.Description.QUEUE.text, BotHelp.Alias.QUEUE.text,
+          BotHelp.Parameter.QUEUE.text, BotHelp.Example.QUEUE.text);
       case "remind", "timer" -> sendDetailedCommandHelpEmbed(display, "Help: Remind",
-          """
-              Sets a timer and alerts the user when the time expires for up to a day's maximum length.\040
-              Parameters provide the time duration, type, and event name.
-              Astarya recognizes the following time types:\s
-              > - 1 parameter: (0-7)d, (0-168)h, (0-10080)m, (0-604800)s\s
-              > - 2+ parameters: days, day, d, hours, hour, hrs, hr, h,
-              minutes, minute, mins, min, m, seconds, second, secs, sec, s.""",
-          "remind, timer",
-          "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName",
-          "remind (0-7)d | remind (0-168)h | remind (0-10080)m | remind (0-604800)s | "
-              + "remind TimeDurationTimeType EventName | remind TimeDuration TimeType EventName");
+          BotHelp.Description.REMIND.text, BotHelp.Alias.REMIND.text,
+          BotHelp.Parameter.REMIND.text, BotHelp.Example.REMIND.text);
       case "remove", "r" -> sendDetailedCommandHelpEmbed(display, "Help: Remove",
-          "Removes track(s) from the track queue.", "remove, r",
-          "[1]QueueNumber [1 ++]QueueNumbers", "remove 1 | remove 2 4 5");
+          BotHelp.Description.REMOVE.text, BotHelp.Alias.REMOVE.text,
+          BotHelp.Parameter.REMOVE.text, BotHelp.Example.REMOVE.text);
       case "return", "ret" -> sendDetailedCommandHelpEmbed(display, "Help: Return",
-          "Returns a recently skipped track to the track queue.", "return, ret",
-          "[0]RecentlySkipped [1]SkippedStackNumber", "return | return 1");
+          BotHelp.Description.RETURN.text, BotHelp.Alias.RETURN.text,
+          BotHelp.Parameter.RETURN.text, BotHelp.Example.RETURN.text);
       case "roll", "rng", "dice" -> sendDetailedCommandHelpEmbed(display, "Help: Roll",
-          "Dice roll and random integer generator. No parameters to roll once. "
-              + "One parameter to roll 1-10 times. Three parameters to set how many times to roll" +
-              " a custom range of minimum and maximum values.",
-          "roll, rng, dice", "[0]Once [1]NumberOfRolls [2]Minimum [3]Maximum",
-          "roll | roll 10 | roll 2 25 50");
+          BotHelp.Description.ROLL.text, BotHelp.Alias.ROLL.text,
+          BotHelp.Parameter.ROLL.text, BotHelp.Example.ROLL.text);
       case "searchtrack", "search", "st" -> sendDetailedCommandHelpEmbed(display, "Help: SearchTrack",
-          "Searches for a track to add to the track queue.", "searchtrack, search, st",
-          "[1 ++]YouTubeQuery -> [1]SearchResultNumber", "search towa pallete");
+          BotHelp.Description.SEARCHTRACK.text, BotHelp.Alias.SEARCHTRACK.text,
+          BotHelp.Parameter.SEARCHTRACK.text, BotHelp.Example.SEARCHTRACK.text);
       case "server" -> sendDetailedCommandHelpEmbed(display, "Help: Server",
-          "Provides information on the Discord server.",
-          "server", "[0]Server", "server");
+          BotHelp.Description.SERVER.text, BotHelp.Alias.SERVER.text,
+          BotHelp.Parameter.SERVER.text, BotHelp.Example.SERVER.text);
       case "setposition", "setpos" -> sendDetailedCommandHelpEmbed(display, "Help: SetPosition",
-          "Sets the position of the currently playing track. " +
-              "\":\" separates the time types from hours:minutes:seconds.",
-          "setposition, setpos", "[1]TimeString",
-          "setposition 150 | setposition 2:30");
+          BotHelp.Description.SETPOSITION.text, BotHelp.Alias.SETPOSITION.text,
+          BotHelp.Parameter.SETPOSITION.text, BotHelp.Example.SETPOSITION.text);
       case "settings", "config" -> sendDetailedCommandHelpEmbed(display, "Help: Settings",
-          "Provides information on Astarya settings.", "settings, config",
-          "[0]MainMenu [1]Setting [2]True/False",
-          "settings | settings deleteinvoke | settings deleteinvoke true");
+          BotHelp.Description.SETTINGS.text, BotHelp.Alias.SETTINGS.text,
+          BotHelp.Parameter.SETTINGS.text, BotHelp.Example.SETTINGS.text);
       case "shuffle", "mix" -> sendDetailedCommandHelpEmbed(display, "Help: Shuffle",
-          "Shuffles the track queue.", "shuffle, mix", "[0]Shuffle", "shuffle");
+          BotHelp.Description.SHUFFLE.text, BotHelp.Alias.SHUFFLE.text,
+          BotHelp.Parameter.SHUFFLE.text, BotHelp.Example.SHUFFLE.text);
       case "shutdown" -> sendDetailedCommandHelpEmbed(display, "Help: Shutdown",
-          "Shuts Astarya down.", "shutdown", "[0]Shutdown", "shutdown");
+          BotHelp.Description.SHUTDOWN.text, BotHelp.Alias.SHUTDOWN.text,
+          BotHelp.Parameter.SHUTDOWN.text, BotHelp.Example.SHUTDOWN.text);
       case "skip", "s", "next" -> sendDetailedCommandHelpEmbed(display, "Help: Skip",
-          "Skips the currently playing track. " +
-              "Astarya's activity changes may be rate limited if done rapidly.",
-          "skip, s, next", "[0]Skip", "skip");
+          BotHelp.Description.SKIP.text, BotHelp.Alias.SKIP.text,
+          BotHelp.Parameter.SKIP.text, BotHelp.Example.SKIP.text);
       case "swap", "switch" -> sendDetailedCommandHelpEmbed(display, "Help: Swap",
-          "Swaps the position of a track in queue with another.", "swap, switch",
-          "[1]QueueNumber [2]QueueNumber", "swap 2 4");
+          BotHelp.Description.SWAP.text, BotHelp.Alias.SWAP.text,
+          BotHelp.Parameter.SWAP.text, BotHelp.Example.SWAP.text);
       default -> {
         display.setAuthor("Help: Command Not Found");
         display.setDescription("Type `" + Settings.getPrefix() + "commands` to get a list of commands available. " +
