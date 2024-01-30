@@ -19,7 +19,7 @@ import java.util.List;
  * player's functionality related to playing tracks and track order.
  *
  * @author Danny Nguyen
- * @version 1.7.16
+ * @version 1.7.17
  * @since 1.1.0
  */
 
@@ -89,8 +89,8 @@ public class AudioScheduler extends AudioEventAdapter {
     if (!trackQueue.isEmpty()) {
       audioPlayer.startTrack(trackQueue.get(0).getAudioTrack(), false);
       trackQueue.remove(0);
-    } else if (audioPlayerLooped) {
-    } else { // Update presence when not playing audio
+    } else if (!audioPlayerLooped) {
+      // Update presence when not playing audio
       audioPlayer.stopTrack();
 
       Presence presence = Astarya.getApi().getPresence();

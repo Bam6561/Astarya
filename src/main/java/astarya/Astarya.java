@@ -78,7 +78,7 @@ public class Astarya {
   private static CommandClient createCommandClient(EventWaiter waiter) {
     CommandClientBuilder commands = new CommandClientBuilder();
 
-    String prefix = "-";
+    String prefix = "<";
     String alternativePrefix = "A:";
 
     commands.setOwnerId("204448598539239424"); // Bam#6561

@@ -12,7 +12,7 @@ import java.util.Random;
  * CoinFlip is a command invocation that simulates coin flips.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.17
  * @since 1.0
  */
 public class CoinFlip extends Command {
@@ -48,13 +48,11 @@ public class CoinFlip extends Command {
    * @param ce command event
    */
   private void oneCoinFlip(CommandEvent ce) {
-    Random random = new Random();
-    String flipResult = "";
-
-    if (random.nextInt(2) == 0) {
-      flipResult += "The coin landed on **Heads**.";
+    String flipResult;
+    if (new Random().nextInt(2) == 0) {
+      flipResult = "The coin landed on **Heads**.";
     } else {
-      flipResult += "The coin landed on **Tails**.";
+      flipResult = "The coin landed on **Tails**.";
     }
 
     EmbedBuilder display = new EmbedBuilder();

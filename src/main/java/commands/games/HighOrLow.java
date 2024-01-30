@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * to guess if the next number will be higher or lower.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.17
  * @since 1.0
  */
 public class HighOrLow extends Command {
@@ -67,8 +67,8 @@ public class HighOrLow extends Command {
    * @param ce command event
    */
   private void startGame(CommandEvent ce) {
-    setOngoingGame(true);
-    setPlayerId(Long.parseLong(ce.getMember().getUser().getId()));
+    ongoingGame = true;
+    playerId = Long.parseLong(ce.getMember().getUser().getId());
     generateRandomPairOfNumbers();
   }
 
@@ -77,12 +77,12 @@ public class HighOrLow extends Command {
    */
   private void generateRandomPairOfNumbers() {
     Random rand = new Random();
-    setFirstNumber(rand.nextInt(101) + 1);
-    setSecondNumber(rand.nextInt(101) + 1);
+    firstNumber = (rand.nextInt(101) + 1);
+    secondNumber = (rand.nextInt(101) + 1);
 
     // Ensure the numbers are not equal
-    while (getFirstNumber() == getSecondNumber()) {
-      setSecondNumber(rand.nextInt(101) + 1);
+    while (firstNumber == secondNumber) {
+      secondNumber = (rand.nextInt(101) + 1);
     }
   }
 
@@ -134,7 +134,7 @@ public class HighOrLow extends Command {
     new java.util.Timer().schedule(new java.util.TimerTask() { // Game Non-action Timeout (15s)
       public void run() {
         if (ongoingGame()) {
-          setOngoingGame(false);
+          ongoingGame = false;
           EmbedBuilder display = new EmbedBuilder();
           display.setAuthor("High or Low");
           display
@@ -152,8 +152,8 @@ public class HighOrLow extends Command {
    * @param ce command event
    */
   private void displayGameResults(CommandEvent ce) {
-    setOngoingGame(false);
-    setPlayerId(0);
+    ongoingGame = false;
+    playerId = 0;
 
     EmbedBuilder display = new EmbedBuilder();
     if (getFirstNumber() > getSecondNumber()) {
@@ -181,21 +181,4 @@ public class HighOrLow extends Command {
   private boolean ongoingGame() {
     return this.ongoingGame;
   }
-
-  private void setFirstNumber(int firstNumber) {
-    this.firstNumber = firstNumber;
-  }
-
-  private void setSecondNumber(int secondNumber) {
-    this.secondNumber = secondNumber;
-  }
-
-  private void setPlayerId(long playerId) {
-    this.playerId = playerId;
-  }
-
-  private void setOngoingGame(boolean status) {
-    this.ongoingGame = status;
-  }
-
 }

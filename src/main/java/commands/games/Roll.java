@@ -13,7 +13,7 @@ import java.util.Random;
  * randomly generates integers based on a user provided range.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.17
  * @since 1.0
  */
 public class Roll extends Command {
@@ -170,8 +170,7 @@ public class Roll extends Command {
    * @param rollResults results of the roll
    */
   private void oneCustomRangeRoll(int min, int max, StringBuilder rollResults) {
-    Random random = new Random();
-    rollResults.append("You rolled a **(").append(random.nextInt(max - min + 1) + min).append(")**.");
+    rollResults.append("You rolled a **(").append(new Random().nextInt(max - min + 1) + min).append(")**.");
   }
 
   /**
