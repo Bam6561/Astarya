@@ -7,7 +7,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
-import commands.audio.utility.TimeConversion;
+import commands.audio.utility.TrackTime;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * SearchTrack is a command invocation that searches for a track
- * to add to the track queue using a query of user provided parameters.
+ * to add to the queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
  * @version 1.7.13
@@ -101,7 +101,7 @@ public class SearchTrack extends Command {
   }
 
   /**
-   * Gets a list of YouTube search results from the search query.
+   * Gets YouTube search results from the search query.
    *
    * @param ce                 command event
    * @param parameters         user provided parameters
@@ -144,7 +144,7 @@ public class SearchTrack extends Command {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
       List<AudioTrack> searchTrackResults = PlayerManager.getINSTANCE().getSearchTrackResults();
 
-      // Displayed index to users are different from data index, so subtract 1
+      // Displayed indices to users are different from data index, so subtract 1
       AudioTrack track = searchTrackResults.get(searchTrackResultsIndex - 1);
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
 
@@ -157,14 +157,14 @@ public class SearchTrack extends Command {
   }
 
   /**
-   * Sends confirmation the chosen track result was added to the track queue.
+   * Sends confirmation the chosen track result was added to the queue.
    *
    * @param ce        command event
    * @param track     chosen track from the YouTube results
    * @param requester user who invoked the command
    */
   private void sendSearchTrackConfirmation(CommandEvent ce, AudioTrack track, String requester) {
-    String trackDuration = TimeConversion.convert(track.getDuration());
+    String trackDuration = TrackTime.convertLong(track.getDuration());
     StringBuilder userResponseConfirmation = new StringBuilder();
     userResponseConfirmation.append("**Added:** `").append(track.getInfo().title).
         append("` {*").append(trackDuration).append("*} ").append(requester);

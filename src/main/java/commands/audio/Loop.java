@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * Loop is a command invocation that sets a boolean value of whether to loop the currently playing track.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.16
  * @since 1.2.6
  */
 public class Loop extends Command {
@@ -54,10 +54,9 @@ public class Loop extends Command {
    */
   private void setAudioPlayerLoop(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-    boolean audioPlayerNotLooped = !audioScheduler.getAudioPlayerLooped();
 
     StringBuilder loopConfirmation = new StringBuilder();
-    if (audioPlayerNotLooped) {
+    if (!audioScheduler.getAudioPlayerLooped()) {
       audioScheduler.setAudioPlayerLooped(true);
       loopConfirmation.append("**Loop:** `ON` [").append(ce.getAuthor().getAsTag()).append("]");
     } else {

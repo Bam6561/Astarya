@@ -60,7 +60,7 @@ public class Skip extends Command {
 
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
-      addSkippedTrackToSkippedTracksStack(ce, audioScheduler, audioPlayer);
+      addTrackToSkippedTracks(ce, audioScheduler, audioPlayer);
       sendSkipConfirmation(ce);
     } else {
       ce.getChannel().sendMessage(BotMessage.Failure.SKIP_NOTHING_TO_SKIP.text).queue();
@@ -68,15 +68,15 @@ public class Skip extends Command {
   }
 
   /**
-   * Adds the currently playing track to the skipped track stack and skips it.
+   * Skips the currently playing track and adds it to skipped tracks.
    *
    * @param ce             command event
-   * @param audioScheduler bot's audio scheduler
-   * @param audioPlayer    bot's audio player
+   * @param audioScheduler audio scheduler
+   * @param audioPlayer    audio player
    */
-  private void addSkippedTrackToSkippedTracksStack(CommandEvent ce, AudioScheduler audioScheduler, AudioPlayer audioPlayer) {
+  private void addTrackToSkippedTracks(CommandEvent ce, AudioScheduler audioScheduler, AudioPlayer audioPlayer) {
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
-    audioScheduler.addToSkippedTracksStack(new TrackQueueIndex(audioPlayer.getPlayingTrack().makeClone(), requester));
+    audioScheduler.addToSkippedTracks(new TrackQueueIndex(audioPlayer.getPlayingTrack().makeClone(), requester));
     audioScheduler.nextTrack();
   }
 

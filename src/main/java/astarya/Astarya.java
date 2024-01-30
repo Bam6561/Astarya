@@ -35,7 +35,7 @@ import java.util.*;
  * Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.7.14
+ * @version 1.7.16
  * @since 1.0
  */
 public class Astarya {
@@ -78,7 +78,7 @@ public class Astarya {
   private static CommandClient createCommandClient(EventWaiter waiter) {
     CommandClientBuilder commands = new CommandClientBuilder();
 
-    String prefix = "<";
+    String prefix = "-";
     String alternativePrefix = "A:";
 
     commands.setOwnerId("204448598539239424"); // Bam#6561
@@ -112,10 +112,10 @@ public class Astarya {
       }
       scanner.close();
 
-      System.out.println("Pandora's Box prompts loaded.");
+      System.out.println(BotMessage.Success.BOT_LOAD_PANDORAS_BOX.text);
       return prompts;
     } catch (FileNotFoundException e) {
-      System.out.println("Pandora's Box prompts not found.");
+      System.out.println(BotMessage.Failure.BOT_NOT_FOUND_PANDORAS_BOX.text);
       return null;
     }
   }

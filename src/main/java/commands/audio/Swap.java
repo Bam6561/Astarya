@@ -6,7 +6,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.PlayerManager;
 import commands.audio.objects.TrackQueueIndex;
-import commands.audio.utility.TimeConversion;
+import commands.audio.utility.TrackTime;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
@@ -71,7 +71,7 @@ public class Swap extends Command {
   }
 
   /**
-   * Processes user provided parameters to swap tracks in the track queue.
+   * Processes user provided parameters to swap tracks in the queue.
    *
    * @param ce         command event
    * @param parameters user provided parameters
@@ -79,7 +79,7 @@ public class Swap extends Command {
    */
   private void processSwapRequest(CommandEvent ce, String[] parameters) {
     try {
-      // Displayed index to users are different from data index, so subtract 1
+      // Displayed indices to users are different from data index, so subtract 1
       int originalIndex = Integer.parseInt(parameters[1]) - 1;
       int swapIndex = Integer.parseInt(parameters[2]) - 1;
 
@@ -90,7 +90,7 @@ public class Swap extends Command {
   }
 
   /**
-   * Swaps two tracks' order in the track queue.
+   * Swaps two tracks' order in the queue.
    *
    * @param ce            command event
    * @param originalIndex original track index
@@ -116,15 +116,15 @@ public class Swap extends Command {
    * @param ce            command event
    * @param originalIndex original rack index
    * @param swapIndex     track index to be swapped
-   * @param trackQueue    arraylist containing the tracks
+   * @param trackQueue    list containing the tracks
    * @param originalTrack track at the original index
    * @param swapTrack     track at the index to be swapped
    */
   private void sendSwapConfirmation(CommandEvent ce, int originalIndex, int swapIndex,
                                     List<TrackQueueIndex> trackQueue,
                                     AudioTrack originalTrack, AudioTrack swapTrack) {
-    String originalTrackDuration = TimeConversion.convert(originalTrack.getDuration());
-    String swapTrackDuration = TimeConversion.convert(swapTrack.getDuration());
+    String originalTrackDuration = TrackTime.convertLong(originalTrack.getDuration());
+    String swapTrackDuration = TrackTime.convertLong(swapTrack.getDuration());
 
     StringBuilder swapConfirmation = new StringBuilder();
     swapConfirmation.append("**Swap:** ").append(" [").

@@ -23,7 +23,7 @@ import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 import java.io.IOException;
 
 /**
- * Play is a command invocation that adds a track to the track queue.
+ * Play is a command invocation that adds a track to the queue.
  * <p>
  * By default, the play command supports YouTube videos, playlists, and most media files
  * posted in Discord chat. By adding a Spotify API key, the command will also be able
@@ -138,7 +138,7 @@ public class Play extends Command {
   }
 
   /**
-   * Builds a YouTube search query using user provided parameters and adds the first result to the track queue.
+   * Builds a YouTube search query using user provided parameters and adds the first result to the queue.
    *
    * @param ce                 command event
    * @param parameters         user provided parameters
@@ -178,7 +178,7 @@ public class Play extends Command {
 
   /**
    * Identifies user given Spotify links as either a track,
-   * playlist, or album before adding it to the track queue.
+   * playlist, or album before adding it to the queue.
    *
    * @param ce         command event
    * @param parameters user provided parameters
@@ -201,7 +201,7 @@ public class Play extends Command {
   }
 
   /**
-   * Checks if the Spotify track link was formatted correctly before adding it to the track queue.
+   * Checks if the Spotify track link was formatted correctly before adding it to the queue.
    *
    * @param ce         command event
    * @param parameters user provided parameters
@@ -217,7 +217,7 @@ public class Play extends Command {
   }
 
   /**
-   * Checks if the Spotify playlist link was formatted correctly before adding it to the track queue.
+   * Checks if the Spotify playlist link was formatted correctly before adding it to the queue.
    *
    * @param ce         command event
    * @param parameters user provided parameters
@@ -233,7 +233,7 @@ public class Play extends Command {
   }
 
   /**
-   * Checks if the Spotify album link was formatted correctly before adding it to the track queue.
+   * Checks if the Spotify album link was formatted correctly before adding it to the queue.
    *
    * @param ce         command event
    * @param parameters user provided parameters
@@ -251,7 +251,7 @@ public class Play extends Command {
   /**
    * Deciphers Spotify song names through their Spotify track id,
    * adds the track's associated artists with the song name as a
-   * search query on YouTube, and adds the first result to the track queue.
+   * search query on YouTube, and adds the first result to the queue.
    *
    * @param ce           command event
    * @param spotifyTrack Spotify track identified by id
@@ -277,7 +277,7 @@ public class Play extends Command {
   /**
    * Deciphers Spotify song names through their Spotify playlist id,
    * adds the track's associated artists with the song name as a
-   * search query on YouTube, and adds the first result to the track queue.
+   * search query on YouTube, and adds the first result to the queue.
    * <p>
    * Only the first 100 tracks in a Spotify playlist will be queued due to Spotify API limits.
    * </p>
@@ -318,7 +318,7 @@ public class Play extends Command {
   /**
    * Deciphers Spotify song names through their Spotify playlist id,
    * adds the track's associated artists with the song name as a
-   * search query on YouTube, and adds the first result to the track queue.
+   * search query on YouTube, and adds the first result to the queue.
    * <p>
    * Only the first 50 tracks in a Spotify playlist will be queued due to Spotify API limits.
    * </p>

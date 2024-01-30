@@ -4,7 +4,7 @@ package astarya;
  * Text is an enum collection containing Astarya's commonly sent messages.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.16
  * @since 1.7.6
  */
 public class BotMessage {
@@ -12,7 +12,9 @@ public class BotMessage {
    * Sent on success.
    */
   public enum Success {
-    VERSION("V1.7.15"),
+    VERSION("V1.7.16"),
+
+    BOT_LOAD_PANDORAS_BOX("Pandora's Box prompts loaded."),
 
     COLORROLE_CLEAR_ROLES("Cleared color roles."),
     COLORROLE_CLEANED_UP_ROLES("Cleaned up empty color roles."),
@@ -47,6 +49,8 @@ public class BotMessage {
    * Sent on failure.
    */
   public enum Failure {
+    BOT_NOT_FOUND_PANDORAS_BOX("Pandora's Box prompts not found."),
+
     MISSING_PERMISSION_MANAGE_MESSAGES("Unable to manage messages."),
     MISSING_PERMISSION_MANAGE_ROLES("Unable to manage roles."),
     MISSING_SPOTIFY_API_KEY("Unable to play Spotify links. No Spotify API key provided in .env file."),
@@ -88,7 +92,7 @@ public class BotMessage {
     ROLL_NEGATIVE("Minimum and maximum cannot be negative."),
     ROLL_EQUAL("Minimum cannot be equal to maximum."),
     ROLL_LARGER("Minimum cannot be larger than maximum."),
-    RETURN_SPECIFY("Provide stack number to be returned."),
+    RETURN_SPECIFY("Provide number to be returned."),
     SEARCHTRACK_RANGE("Responses must be in range of 1-5."),
     SEARCHTRACK_TIMED_OUT("No response. Search timed out."),
     SEARCHTRACK_SPECIFY("Provide result number."),

@@ -94,7 +94,7 @@ public class CoinFlip extends Command {
     Random rand = new Random();
     StringBuilder flipResults = new StringBuilder();
 
-    // Generate a list of flip results
+    // Generate list of flip results
     for (int i = 0; i < numberOfFlips; i++) {
       if (rand.nextInt(2) == 0) {
         flipResults.append("\n").append(i + 1).append(": **(Heads)** ");

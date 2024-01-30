@@ -5,7 +5,7 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import commands.audio.managers.PlayerManager;
-import commands.audio.utility.TimeConversion;
+import commands.audio.utility.TrackTime;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
@@ -79,7 +79,8 @@ public class SetPosition extends Command {
    * @param trackPositionString user provided position of the track to be set to
    */
   private void setCurrentlyPlayingTrackPosition(CommandEvent ce, String trackPositionString) {
-    AudioPlayer audioPlayer = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getAudioPlayer();
+    AudioPlayer audioPlayer =
+        PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getAudioPlayer();
 
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
@@ -94,7 +95,7 @@ public class SetPosition extends Command {
    *
    * @param ce                  command event
    * @param trackPositionString user provided position of the track to be set to
-   * @param audioPlayer         bot's audio player
+   * @param audioPlayer         audio player
    */
   private void setTrackPosition(CommandEvent ce, String trackPositionString,
                                 AudioPlayer audioPlayer) {
@@ -150,7 +151,7 @@ public class SetPosition extends Command {
    * @param trackPositionToSet user provided position of the track to be set to
    */
   private void sendSetPositionConfirmation(CommandEvent ce, Long trackPositionToSet) {
-    String positionSet = TimeConversion.convert(trackPositionToSet);
+    String positionSet = TrackTime.convertLong(trackPositionToSet);
     StringBuilder setPositionConfirmation = new StringBuilder();
     setPositionConfirmation.append("**Set Position:** {*").append(positionSet).
         append("*} [").append(ce.getAuthor().getAsTag()).append("]");

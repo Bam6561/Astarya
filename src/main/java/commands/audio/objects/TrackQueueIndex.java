@@ -9,8 +9,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
  * @version 1.7.8
  * @since 1.7.0
  */
-public record TrackQueueIndex(AudioTrack audioTrack,
-                              String requester) {
+public record TrackQueueIndex(AudioTrack audioTrack, String requester) {
 
   public AudioTrack getAudioTrack() {
     return this.audioTrack;

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.7.16
  * @since 1.7.2
  */
 public class Lyrics extends Command {
@@ -67,8 +67,10 @@ public class Lyrics extends Command {
   private void processLyricsRequest(CommandEvent ce, String[] parameters) {
     try {
       URL endpointUrlQuery = new URL("https://genius.com/api/search/song?q=" + buildSearchQuery(parameters));
-      readHttpResponse(ce, endpointUrlQuery);
+      String httpResponse = readHttpResponse(endpointUrlQuery);
+      processHttpResponse(ce, httpResponse);
     } catch (MalformedURLException ignored) {
+      // Url is pre-set to be non-null
     }
   }
 
@@ -92,20 +94,20 @@ public class Lyrics extends Command {
   /**
    * Reads the query response from Genius API.
    *
-   * @param ce               command event
    * @param endpointUrlQuery endpoint and its search query
+   * @return http response
    * @throws IOException interrupted input stream
    */
-  private void readHttpResponse(CommandEvent ce, URL endpointUrlQuery) {
+  private String readHttpResponse(URL endpointUrlQuery) {
     try {
       HttpURLConnection connection = (HttpURLConnection) endpointUrlQuery.openConnection();
       connection.setRequestMethod("GET");
       connection.connect();
-      String httpResponse = new BufferedReader(new InputStreamReader(
+      return new BufferedReader(new InputStreamReader(
           connection.getInputStream(), StandardCharsets.UTF_8)).lines().collect(Collectors.joining());
-      processHttpResponse(ce, httpResponse);
     } catch (IOException e) {
       System.out.println(BotMessage.Failure.ERROR_CONNECTION_INTERRUPTED.text);
+      return null;
     }
   }
 
@@ -149,7 +151,7 @@ public class Lyrics extends Command {
    *
    * @param ce      command event
    * @param section main JSON body
-   * @param matches array list of query matches
+   * @param matches query matches
    */
   private void buildLyricsEmbed(CommandEvent ce, JSONObject section, List<GeniusMatchResult> matches) {
     // - Title [Link](URL)

@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Remove is a command invocation that removes track(s) from the track queue.
+ * Remove is a command invocation that removes track(s) from the queue.
  *
  * @author Danny Nguyen
  * @version 1.7.13
@@ -54,7 +54,7 @@ public class Remove extends Command {
   }
 
   /**
-   * Either removes a singular track from the track queue or multiple.
+   * Either removes a singular track from the queue or multiple.
    *
    * @param ce command event
    * @throws NumberFormatException user provided non-integer value
@@ -77,18 +77,18 @@ public class Remove extends Command {
   }
 
   /**
-   * Removes a track from the track queue.
+   * Removes a track from the queue.
    *
    * @param ce         command event
-   * @param queueIndex track to be removed from the track queue
-   * @throws IndexOutOfBoundsException user provided number out of range of track queue
+   * @param queueIndex track to be removed from the queue
+   * @throws IndexOutOfBoundsException user provided number out of range of queue
    */
   private void removeTrack(CommandEvent ce, int queueIndex) {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
       List<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
 
-      // Displayed index to users are different from data index, so subtract 1
+      // Displayed indices to users are different from data index, so subtract 1
       queueIndex = queueIndex - 1;
 
       // Confirmation is sent first before removal to show the correct track being removed
@@ -101,7 +101,7 @@ public class Remove extends Command {
 
   /**
    * Checks if user provided parameters are integers and
-   * adds the values into an ArrayList to be mass removed.
+   * adds the values into a list to be mass removed.
    *
    * @param ce                 command event
    * @param parameters         user provided parameters
@@ -123,15 +123,15 @@ public class Remove extends Command {
   }
 
   /**
-   * Removes multiple tracks from the track queue.
+   * Removes multiple tracks from the queue.
    *
    * @param ce           command event
-   * @param queueIndices ArrayList containing queue indices to be removed
-   * @throws IndexOutOfBoundsException user provided queue number out of range of track queue
+   * @param queueIndices list containing queue indices to be removed
+   * @throws IndexOutOfBoundsException user provided queue number out of range of queue
    */
   private void removeMultipleTracks(CommandEvent ce, List<Integer> queueIndices) {
     try {
-      // Removes the largest queue numbers first as to avoid disrupting the track queue order
+      // Removes the largest queue numbers first as to avoid disrupting the queue order
       Collections.sort(queueIndices);
       for (int i = queueIndices.size() - 1; i >= 0; i--) {
         removeTrack(ce, queueIndices.get(i));
@@ -142,11 +142,11 @@ public class Remove extends Command {
   }
 
   /**
-   * Sends confirmation the track was removed from the track queue.
+   * Sends confirmation the track was removed from the queue.
    *
    * @param ce         command event
-   * @param queueIndex index in the track queue to be removed
-   * @param trackQueue arraylist containing the tracks
+   * @param queueIndex index in the queue to be removed
+   * @param trackQueue list containing the tracks
    */
   private void sendRemoveConfirmation(CommandEvent ce, int queueIndex, List<TrackQueueIndex> trackQueue) {
     StringBuilder removeTrackConfirmation = new StringBuilder();

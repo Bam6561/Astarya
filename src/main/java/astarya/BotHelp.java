@@ -4,7 +4,7 @@ package astarya;
  * BotHelp is an enum collection containing the bot's help messages.
  *
  * @author Danny Nguyen
- * @version 1.7.14
+ * @version 1.7.16
  * @since 1.7.14
  */
 public class BotHelp {
@@ -139,7 +139,7 @@ public class BotHelp {
     QUEUE("[0]Queue [1]PageNumber"),
     REMIND("[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName"),
     REMOVE("[1]QueueNumber [1 ++]QueueNumbers"),
-    RETURN("[0]RecentlySkipped [1]SkippedStackNumber"),
+    RETURN("[0]RecentlySkipped [1]SkippedNumber"),
     ROLL("[0]Once [1]NumberOfRolls [2]Minimum [3]Maximum"),
     SEARCHTRACK("[1 ++]YouTubeQuery -> [1]SearchResultNumber"),
     SERVER("[0]Server"),

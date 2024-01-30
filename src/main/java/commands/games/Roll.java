@@ -184,7 +184,7 @@ public class Roll extends Command {
    */
   private void multipleCustomRangeRolls(int numberOfRolls, int min, int max, StringBuilder rollResults) {
     Random random = new Random();
-    for (int i = 0; i < numberOfRolls; i++) { // Generate a list of roll results
+    for (int i = 0; i < numberOfRolls; i++) { // Generate list of roll results
       String rollResult = Integer.toString(random.nextInt(max - min + 1) + min);
       rollResults.append("\n").append(i + 1).append(": **(").append(rollResult).append(")** ");
     }

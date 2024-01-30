@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.managers.Presence;
  * Pause is a command invocation that pauses the audio player.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.16
  * @since 1.2.5
  */
 public class Pause extends Command {
@@ -64,8 +64,7 @@ public class Pause extends Command {
 
     Presence presence = Astarya.getApi().getPresence();
 
-    boolean audioPlayerNotPaused = !audioPlayer.isPaused();
-    if (audioPlayerNotPaused) { // Paused - Idle Yellow
+    if (!audioPlayer.isPaused()) { // Paused - Idle Yellow
       setActivityToPaused(ce, audioPlayer, presence);
     } else { // Playing Music - Online Green || Not playing audio - Do Not Disturb Red
       audioPlayer.setPaused(false);
@@ -82,8 +81,8 @@ public class Pause extends Command {
    * Sets the bot's activity to paused and status to Idle.
    *
    * @param ce          command event
-   * @param audioPlayer bot's audio player
-   * @param presence    bot's presence
+   * @param audioPlayer audio player
+   * @param presence    presence
    */
   private void setActivityToPaused(CommandEvent ce, AudioPlayer audioPlayer, Presence presence) {
     audioPlayer.setPaused(true);
@@ -95,8 +94,8 @@ public class Pause extends Command {
   /**
    * Sets the bot's activity to listening <track name> and status to Online.
    *
-   * @param audioPlayer bot's audio player
-   * @param presence    bot's presence
+   * @param audioPlayer audio player
+   * @param presence    presence
    */
   private void setActivityToPlayingMusic(AudioPlayer audioPlayer, Presence presence) {
     presence.setActivity(Activity.listening(audioPlayer.getPlayingTrack().getInfo().title));
@@ -104,9 +103,9 @@ public class Pause extends Command {
   }
 
   /**
-   * Sets the bot's activity to listening to nothing and status to Do Not Disturb.
+   * Sets the activity to listening to nothing and status to Do Not Disturb.
    *
-   * @param presence bot's presence
+   * @param presence presence
    */
   private void setActivityToNothing(Presence presence) {
     presence.setActivity(Activity.listening("Nothing"));

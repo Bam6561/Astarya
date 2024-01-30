@@ -1,20 +1,20 @@
 package commands.audio.utility;
 
 /**
- * TimeConversion is a utility class that converts durations to conventional readable time.
+ * TrackTime is a utility class that converts tracks' durations to conventional readable time.
  *
  * @author Danny Nguyen
  * @version 1.7.8
  * @since 1.7.8
  */
-public class TimeConversion {
+public class TrackTime {
   /**
    * Converts long duration to conventional readable time.
    *
    * @param longTime duration of the track in long
    * @return readable time format
    */
-  public static String convert(long longTime) {
+  public static String convertLong(long longTime) {
     long days = longTime / 86400000 % 30;
     long hours = longTime / 3600000 % 24;
     long minutes = longTime / 60000 % 60;

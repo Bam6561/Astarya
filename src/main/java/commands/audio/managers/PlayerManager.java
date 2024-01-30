@@ -9,7 +9,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import commands.audio.utility.TimeConversion;
+import commands.audio.utility.TrackTime;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -24,7 +24,7 @@ import java.util.Map;
  * search queries into playable tracks for the AudioScheduler.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.7.16
  * @since 1.1.0
  */
 public class PlayerManager {
@@ -43,8 +43,8 @@ public class PlayerManager {
   }
 
   /**
-   * Creates an AudioTrack object based on user provided parameters
-   * after the play command request to put in the track queue.
+   * Creates an AudioTrack based on user provided parameters
+   * after the play command request to put in the queue.
    * <p>
    * YouTube video links and media files are handled by the trackLoaded method.
    * YouTube playlist links and search queries are handled by the playlistLoaded method.
@@ -85,11 +85,11 @@ public class PlayerManager {
   }
 
   /**
-   * Adds a YouTube video or media file into the track queue.
+   * Adds a YouTube video or media file into the queue.
    *
    * @param ce             command event
    * @param audioScheduler audio scheduler
-   * @param track          track to be added into the track queue
+   * @param track          track to be added into the queue
    * @param isSilent       whether to send a confirmation in the text channel
    */
   private void processYouTubeLinksAndMediaFiles(CommandEvent ce, AudioScheduler audioScheduler,
@@ -98,15 +98,15 @@ public class PlayerManager {
     audioScheduler.queue(track, requester);
     if (!isSilent) {
       ce.getChannel().sendMessage("**Added:** `" + track.getInfo().title + "` {*"
-          + TimeConversion.convert(track.getDuration()) + "*} " + requester).queue();
+          + TrackTime.convertLong(track.getDuration()) + "*} " + requester).queue();
     }
   }
 
   /**
-   * Adds the first match from a YouTube search query into the track queue.
+   * Adds the first match from a YouTube search query into the queue.
    *
    * @param ce             command event
-   * @param trackPlaylist  list of tracks generated from the search query
+   * @param trackPlaylist  tracks from the search query
    * @param audioScheduler audio scheduler
    * @param isSilent       whether to send a confirmation in the text channel
    */
@@ -118,15 +118,15 @@ public class PlayerManager {
     audioScheduler.queue(track, requester);
     if (!isSilent) {
       ce.getChannel().sendMessage("**Added:** `" + searchResults.get(0).getInfo().title + "` {*"
-          + TimeConversion.convert(track.getDuration()) + "*} " + requester).queue();
+          + TrackTime.convertLong(track.getDuration()) + "*} " + requester).queue();
     }
   }
 
   /**
-   * Adds each YouTube video from the playlist into the track queue.
+   * Adds each YouTube video from the playlist into the queue.
    *
    * @param ce             command event
-   * @param trackPlaylist  list of tracks retrieved from the playlist
+   * @param trackPlaylist  tracks retrieved from playlist
    * @param audioScheduler audio scheduler
    * @param isSilent       whether to send a confirmation in the text channel
    */
@@ -144,7 +144,7 @@ public class PlayerManager {
 
   /**
    * Used in conjunction with the SearchTrack command request, this method displays tracks from a
-   * YouTube search query and adds them into an ArrayList for the user to later choose from to queue.
+   * YouTube search query and adds them into a list for the user to later choose from to queue.
    *
    * @param ce                 command event
    * @param youtubeSearchQuery youtube search query
@@ -159,7 +159,7 @@ public class PlayerManager {
 
       @Override
       public void playlistLoaded(AudioPlaylist playlist) {
-        clearSearchTrackResults(); // Clear results from the previous search
+        searchTrackResults.clear(); // Clear results from the previous search
         processSearchTrackResults(ce, playlist);
       }
 
@@ -186,14 +186,14 @@ public class PlayerManager {
     // Limit YouTube search results to 5 tracks
     List<AudioTrack> searchResults = playlist.getTracks();
     for (int i = 0; i < 5; i++) {
-      addSearchTrackResults(searchResults.get(i));
+      searchTrackResults.add(searchResults.get(i));
     }
 
     // Build search result's embed contents
     StringBuilder searchResultsDisplay = new StringBuilder();
     for (int i = 0; i < 5; i++) {
       long trackDurationLong = searchTrackResults.get(i).getDuration();
-      String trackDuration = TimeConversion.convert(trackDurationLong);
+      String trackDuration = TrackTime.convertLong(trackDurationLong);
       searchResultsDisplay.append("**[").append(i + 1).append("]** `").
           append(searchTrackResults.get(i).getInfo().title)
           .append("` {*").append(trackDuration).append("*}\n");
@@ -203,14 +203,6 @@ public class PlayerManager {
     display.setTitle("**__Search Results__**");
     display.setDescription(searchResultsDisplay);
     Settings.sendEmbed(ce, display);
-  }
-
-  private void clearSearchTrackResults() {
-    this.searchTrackResults.clear();
-  }
-
-  private void addSearchTrackResults(AudioTrack audioTrack) {
-    this.searchTrackResults.add(audioTrack);
   }
 
   public List<AudioTrack> getSearchTrackResults() {

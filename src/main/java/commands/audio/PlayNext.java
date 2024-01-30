@@ -6,18 +6,17 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.PlayerManager;
 import commands.audio.objects.TrackQueueIndex;
-import commands.audio.utility.TimeConversion;
+import commands.audio.utility.TrackTime;
 import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * PlayNext is a command invocation that sets the next track to be played in the track queue.
+ * PlayNext is a command invocation that sets the next track to be played in the queue.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.7.16
  * @since 1.2.13
  */
 public class PlayNext extends Command {
@@ -81,19 +80,18 @@ public class PlayNext extends Command {
    * a track to immediately play after the currently playing track.
    *
    * @param ce          command event
-   * @param queueNumber track in the track queue to be played next
-   * @throws IndexOutOfBoundsException user provided an index out of range of the track queue
+   * @param queueNumber track in queue to be played next
+   * @throws IndexOutOfBoundsException user provided an index out of range of the queue
    */
   private void processPlayNextRequest(CommandEvent ce, int queueNumber) {
     try {
       List<TrackQueueIndex> trackQueue =
           PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
-
-      // Displayed index to users are different from data index so subtract 1
-      queueNumber = queueNumber - 1;
-
       AudioTrack audioTrack = trackQueue.get(queueNumber).getAudioTrack();
-      String trackDuration = TimeConversion.convert(audioTrack.getDuration());
+      String trackDuration = TrackTime.convertLong(audioTrack.getDuration());
+
+      // Displayed indices to users are different from data index so subtract 1
+      queueNumber = queueNumber - 1;
 
       playNext(ce, queueNumber, trackQueue, audioTrack);
       sendPlayNextConfirmation(ce, queueNumber, trackQueue, audioTrack, trackDuration);
@@ -103,11 +101,11 @@ public class PlayNext extends Command {
   }
 
   /**
-   * Set the position of the chosen track to the top of the track queue.
+   * Set the position of the chosen track to the top of the queue.
    *
    * @param ce          command event
-   * @param queueNumber track queue index
-   * @param trackQueue  array list containing the tracks
+   * @param queueNumber queue index
+   * @param trackQueue  queue
    * @param audioTrack  chosen track
    */
   private void playNext(CommandEvent ce, int queueNumber,
@@ -119,11 +117,11 @@ public class PlayNext extends Command {
 
 
   /**
-   * Sends a confirmation that the chosen track's position was set to the top of the track queue.
+   * Sends a confirmation that the chosen track's position was set to the top of the queue.
    *
    * @param ce            command event
-   * @param queueNumber   track queue index
-   * @param trackQueue    array list containing the tracks
+   * @param queueNumber   queue index
+   * @param trackQueue    queue
    * @param audioTrack    chosen track
    * @param trackDuration chosen track's duration
    */

@@ -6,14 +6,14 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.audio.managers.AudioScheduler;
 import commands.audio.managers.PlayerManager;
-import commands.audio.utility.TimeConversion;
+import commands.audio.utility.TrackTime;
 import commands.owner.Settings;
 
 /**
  * NowPlaying is a command invocation that shows what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.16
  * @since 1.2.3
  */
 public class NowPlaying extends Command {
@@ -49,8 +49,8 @@ public class NowPlaying extends Command {
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
       AudioTrack audioTrack = audioPlayer.getPlayingTrack();
-      String trackPosition = TimeConversion.convert(audioTrack.getPosition());
-      String trackDuration = TimeConversion.convert(audioTrack.getDuration());
+      String trackPosition = TrackTime.convertLong(audioTrack.getPosition());
+      String trackDuration = TrackTime.convertLong(audioTrack.getDuration());
 
       audioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, nowPlaying);
       nowPlaying.append("`").append(audioTrack.getInfo().title).
@@ -64,19 +64,16 @@ public class NowPlaying extends Command {
   /**
    * Adds conditional setting notes for the nowPlaying section.
    *
-   * @param audioScheduler the bot's audio scheduler
-   * @param audioPlayer    the bot's audio player
-   * @param nowPlaying     String containing information about what track is currently playing
+   * @param audioScheduler audio scheduler
+   * @param audioPlayer    audio player
+   * @param nowPlaying     information about what track is currently playing
    */
   private void audioPlayerIsPausedOrLoopedNotice(AudioScheduler audioScheduler, AudioPlayer audioPlayer,
                                                  StringBuilder nowPlaying) {
-    boolean audioPlayerIsPaused = audioPlayer.isPaused();
-    boolean audioPlayerIsLooped = audioScheduler.getAudioPlayerLooped();
-
-    if (audioPlayerIsPaused) {
+    if (audioPlayer.isPaused()) {
       nowPlaying.append("(Paused) ");
     }
-    if (audioPlayerIsLooped) {
+    if (audioScheduler.getAudioPlayerLooped()) {
       nowPlaying.append("(Loop) ");
     }
   }

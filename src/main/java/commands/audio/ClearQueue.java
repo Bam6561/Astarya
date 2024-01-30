@@ -9,7 +9,7 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 /**
- * ClearQueue is a command invocation that clears the track queue.
+ * ClearQueue is a command invocation that clears the queue.
  *
  * @author Danny Nguyen
  * @version 1.7.12
@@ -47,7 +47,7 @@ public class ClearQueue extends Command {
   }
 
   /**
-   * Clears the track queue and its associated requesters.
+   * Clears the queue and its associated requesters.
    *
    * @param ce command event
    */
@@ -59,7 +59,7 @@ public class ClearQueue extends Command {
   }
 
   /**
-   * Sends a confirmation the track queue was cleared.
+   * Sends a confirmation the queue was cleared.
    *
    * @param ce command event
    */
