@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Poll is a command invocation that creates a reaction vote with up to 10 options.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.0
  */
 public class Poll extends Command {
@@ -29,9 +29,9 @@ public class Poll extends Command {
   }
 
   private enum Failure {
-    POLL_SEPARATE_OPTIONS("Provide options separated by a comma."),
-    POLL_EMPTY_OPTION("Empty option."),
-    POLL_RANGE("Provide between than 1-10 options.");
+    SEPARATE_OPTIONS("Provide options separated by a comma."),
+    EMPTY_OPTION("Empty option."),
+    EXCEED_RANGE("Provide between than 1-10 options.");
 
     public final String text;
 
@@ -59,7 +59,7 @@ public class Poll extends Command {
     if (optionsProvided) {
       readPollRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage(Failure.POLL_SEPARATE_OPTIONS.text).queue();
+      ce.getChannel().sendMessage(Failure.SEPARATE_OPTIONS.text).queue();
     }
   }
 
@@ -76,7 +76,7 @@ public class Poll extends Command {
     if (noEmptyOptions) { // Prepare poll
       processPollRequest(ce, options);
     } else {
-      ce.getChannel().sendMessage(Failure.POLL_EMPTY_OPTION.text).queue();
+      ce.getChannel().sendMessage(Failure.EMPTY_OPTION.text).queue();
     }
   }
 
@@ -123,7 +123,7 @@ public class Poll extends Command {
       createPoll(ce, options);
       setPollOptions(options);
     } else {
-      ce.getChannel().sendMessage(Failure.POLL_RANGE.text).queue();
+      ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
     }
   }
 

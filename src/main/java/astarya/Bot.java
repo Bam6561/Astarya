@@ -36,14 +36,14 @@ import java.util.*;
  * Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.0
  */
 public class Bot {
   private static JDA api;
 
   private enum Success {
-    BOT_LOAD_PANDORAS_BOX("Pandora's Box prompts loaded.");
+    PANDORAS_BOX_LOAD("Pandora's Box prompts loaded.");
 
     public final String text;
 
@@ -53,7 +53,7 @@ public class Bot {
   }
 
   private enum Failure {
-    BOT_NOT_FOUND_PANDORAS_BOX("Pandora's Box prompts not found.");
+    PANDORAS_BOX_NOT_FOUND("Pandora's Box prompts not found.");
 
     public final String text;
 
@@ -133,10 +133,10 @@ public class Bot {
       }
       scanner.close();
 
-      System.out.println(Success.BOT_LOAD_PANDORAS_BOX.text);
+      System.out.println(Success.PANDORAS_BOX_LOAD.text);
       return prompts;
     } catch (FileNotFoundException e) {
-      System.out.println(Failure.BOT_NOT_FOUND_PANDORAS_BOX.text);
+      System.out.println(Failure.PANDORAS_BOX_NOT_FOUND.text);
       return null;
     }
   }

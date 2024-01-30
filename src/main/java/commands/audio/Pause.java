@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.managers.Presence;
  * Pause is a command invocation that pauses the audio player.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.2.5
  */
 public class Pause extends Command {
@@ -28,8 +28,8 @@ public class Pause extends Command {
   }
 
   private enum Success {
-    PAUSE_PLAYER_PAUSE("Audio player paused."),
-    PAUSE_PLAYER_RESUME("Audio player resumed.");
+    AUDIO_PLAYER_PAUSE("Audio player paused."),
+    AUDIO_PLAYER_RESUME("Audio player resumed.");
 
     public final String text;
 
@@ -84,7 +84,7 @@ public class Pause extends Command {
       } catch (NullPointerException e) { // No track currently playing
         setActivityToNothing(presence);
       }
-      ce.getChannel().sendMessage(Success.PAUSE_PLAYER_RESUME.text).queue();
+      ce.getChannel().sendMessage(Success.AUDIO_PLAYER_RESUME.text).queue();
     }
   }
 
@@ -99,7 +99,7 @@ public class Pause extends Command {
     audioPlayer.setPaused(true);
     presence.setActivity(Activity.listening("Paused"));
     presence.setStatus(OnlineStatus.IDLE);
-    ce.getChannel().sendMessage(Success.PAUSE_PLAYER_PAUSE.text).queue();
+    ce.getChannel().sendMessage(Success.AUDIO_PLAYER_PAUSE.text).queue();
   }
 
   /**

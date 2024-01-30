@@ -18,7 +18,7 @@ import java.util.List;
  * user and adds additional details if they're in the guild.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.6.3
  */
 public class Profile extends Command {
@@ -30,7 +30,7 @@ public class Profile extends Command {
   }
 
   private enum Failure {
-    PROFILE_USER_NOT_FOUND("User not found.");
+    USER_NOT_FOUND("User not found.");
 
     public final String text;
 
@@ -120,7 +120,7 @@ public class Profile extends Command {
         User user = ce.getJDA().retrieveUserById(parameters.substring(2, parameters.length() - 1)).complete();
         sendProfileEmbed(ce, null, user);
       } catch (NumberFormatException | ErrorResponseException invalidUserId2) {
-        ce.getTextChannel().sendMessage(Failure.PROFILE_USER_NOT_FOUND.text).queue();
+        ce.getTextChannel().sendMessage(Failure.USER_NOT_FOUND.text).queue();
       }
     }
   }

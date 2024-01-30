@@ -11,7 +11,7 @@ import java.util.Random;
  * Choose is a command invocation that chooses randomly between any number of options.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.0
  */
 public class Choose extends Command {
@@ -25,8 +25,8 @@ public class Choose extends Command {
   }
 
   private enum Failure {
-    CHOOSE_EMPTY_OPTION("Empty option."),
-    CHOOSE_SEPARATE_OPTIONS("Separate options with a comma.");
+    EMPTY_OPTION("Empty option."),
+    SEPARATE_COMMA("Separate options with a comma.");
 
     public final String text;
 
@@ -53,7 +53,7 @@ public class Choose extends Command {
     if (numberOfParameters != 0) {
       readChooseRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage(Failure.CHOOSE_SEPARATE_OPTIONS.text).queue();
+      ce.getChannel().sendMessage(Failure.SEPARATE_COMMA.text).queue();
     }
   }
 
@@ -70,7 +70,7 @@ public class Choose extends Command {
     if (noEmptyOptionProvided) {
       processChooseRequest(ce, options);
     } else {
-      ce.getChannel().sendMessage(Failure.CHOOSE_EMPTY_OPTION.text).queue();
+      ce.getChannel().sendMessage(Failure.EMPTY_OPTION.text).queue();
     }
   }
 

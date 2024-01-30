@@ -13,7 +13,7 @@ import java.util.List;
  * Delete is a command invocation that clears a number of 2-100 recent messages.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.0
  */
 public class Delete extends Command {
@@ -26,7 +26,7 @@ public class Delete extends Command {
   }
 
   private enum Failure {
-    DELETE_RANGE("Provide between 2-100 messages to clear.");
+    EXCEED_RANGE("Provide between 2-100 messages to clear.");
 
     public final String text;
 
@@ -69,10 +69,10 @@ public class Delete extends Command {
       if (validNumberOfMessagesToDelete) {
         deleteRecentMessages(ce, numberOfMessagesToDelete);
       } else {
-        ce.getChannel().sendMessage(Failure.DELETE_RANGE.text).queue();
+        ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.DELETE_RANGE.text).queue();
+      ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
     }
   }
 

@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * Skip is a command invocation that skips the currently playing track in the audio player.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.2.4
  */
 public class Skip extends Command {
@@ -25,7 +25,7 @@ public class Skip extends Command {
   }
 
   private enum Failure {
-    SKIP_NOTHING_TO_SKIP("Nothing to skip.");
+    NOTHING_TO_SKIP("Nothing to skip.");
 
     public final String text;
 
@@ -73,7 +73,7 @@ public class Skip extends Command {
       addTrackToSkippedTracks(ce, audioScheduler, audioPlayer);
       sendSkipConfirmation(ce);
     } else {
-      ce.getChannel().sendMessage(Failure.SKIP_NOTHING_TO_SKIP.text).queue();
+      ce.getChannel().sendMessage(Failure.NOTHING_TO_SKIP.text).queue();
     }
   }
 

@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * to guess if the next number will be higher or lower.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.0
  */
 public class HighOrLow extends Command {
@@ -39,7 +39,7 @@ public class HighOrLow extends Command {
   }
 
   private enum Failure {
-    HIGHORLOW_ONGOING("Please wait until current high or low game finishes or expires.");
+    ONGOING_GAME("Please wait until current high or low game finishes or expires.");
 
     public final String text;
 
@@ -65,7 +65,7 @@ public class HighOrLow extends Command {
       processGameReactions(ce);
       processGameTimeout(ce);
     } else {
-      ce.getChannel().sendMessage(Failure.HIGHORLOW_ONGOING.text).queue();
+      ce.getChannel().sendMessage(Failure.ONGOING_GAME.text).queue();
     }
   }
 

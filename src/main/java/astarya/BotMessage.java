@@ -9,8 +9,8 @@ package astarya;
  */
 public class BotMessage {
   public enum Success {
-    VERSION("V1.8.0");
-    
+    VERSION("V1.8.1");
+
     public final String text;
 
     Success(String text) {

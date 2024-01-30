@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.0
  */
 public class Settings extends Command {
@@ -35,8 +35,8 @@ public class Settings extends Command {
   }
 
   private enum Failure {
-    SETTINGS_NOT_FOUND("Setting not found."),
-    SETTINGS_TRUE_FALSE("Provide true or false."),
+    SETTING_NOT_FOUND("Setting not found."),
+    SPECIFY_TRUE_FALSE("Provide true or false."),
     SETTINGS_EMBED_DECAY_RANGE("Provide between 15 - 120 seconds.");
 
     public final String text;
@@ -97,7 +97,7 @@ public class Settings extends Command {
       case "embeddecay" -> setEmbedDecaySetting(ce, parameters[2].toLowerCase());
       case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, parameters[2]);
       case "embedmedialinks" -> setEmbedMediaLinksSetting(ce, parameters[2].toLowerCase());
-      default -> ce.getChannel().sendMessage(Failure.SETTINGS_NOT_FOUND.text).queue();
+      default -> ce.getChannel().sendMessage(Failure.SETTING_NOT_FOUND.text).queue();
     }
   }
 
@@ -113,7 +113,7 @@ public class Settings extends Command {
       setDeleteInvoke(Boolean.parseBoolean(settingChange));
       ce.getChannel().sendMessage("DeleteInvoke has been set to `" + getDeleteInvoke() + "`.").queue();
     } else {
-      ce.getChannel().sendMessage(Failure.SETTINGS_TRUE_FALSE.text).queue();
+      ce.getChannel().sendMessage(Failure.SPECIFY_TRUE_FALSE.text).queue();
     }
   }
 
@@ -129,7 +129,7 @@ public class Settings extends Command {
       setEmbedDecay(Boolean.parseBoolean(settingChange));
       ce.getChannel().sendMessage("EmbedDecay has been set to `" + getEmbedDecay() + "`.").queue();
     } else {
-      ce.getChannel().sendMessage(Failure.SETTINGS_TRUE_FALSE.text).queue();
+      ce.getChannel().sendMessage(Failure.SPECIFY_TRUE_FALSE.text).queue();
     }
   }
 
@@ -168,7 +168,7 @@ public class Settings extends Command {
       setEmbedMediaLinks(Boolean.parseBoolean(settingChange));
       ce.getChannel().sendMessage("EmbedMediaLinks has been set to `" + getEmbedMediaLinks() + "`.").queue();
     } else {
-      ce.getChannel().sendMessage(Failure.SETTINGS_TRUE_FALSE.text).queue();
+      ce.getChannel().sendMessage(Failure.SPECIFY_TRUE_FALSE.text).queue();
     }
   }
 

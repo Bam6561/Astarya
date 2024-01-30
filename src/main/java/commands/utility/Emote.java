@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Emote is a command invocation that provides a mentioned emote as an embed.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.0
  */
 public class Emote extends Command {
@@ -21,7 +21,7 @@ public class Emote extends Command {
   }
 
   private enum Failure {
-    EMOTE_SPECIFY_EMOTE("Provide an emote.");
+    ESPECIFY_EMOTE("Provide an emote.");
 
     public final String text;
 
@@ -46,7 +46,7 @@ public class Emote extends Command {
       display.setImage(ce.getMessage().getMentions().getCustomEmojis().get(0).getImageUrl());
       Settings.sendEmbed(ce, display);
     } else {
-      ce.getChannel().sendMessage(Failure.EMOTE_SPECIFY_EMOTE.text).queue();
+      ce.getChannel().sendMessage(Failure.ESPECIFY_EMOTE.text).queue();
     }
   }
 }

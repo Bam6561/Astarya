@@ -22,7 +22,7 @@ import java.util.Map;
  * search queries into playable tracks for the AudioScheduler.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.1.0
  */
 public class PlayerManager {
@@ -41,9 +41,9 @@ public class PlayerManager {
   }
 
   private enum Failure {
-    PLAYERMANAGER("Use play command to queue tracks."),
-    ERROR_UNABLE_TO_FIND_TRACK("Unable to find track."),
-    ERROR_UNABLE_TO_LOAD_TRACK("Unable to load track.");
+    USE_PLAY_COMMAND("Use play command to queue tracks."),
+    UNABLE_TO_FIND_TRACK("Unable to find track."),
+    UNABLE_TO_LOAD_TRACK("Unable to load track.");
 
     public final String text;
 
@@ -85,12 +85,12 @@ public class PlayerManager {
 
       @Override
       public void noMatches() {
-        if (!isSilent) ce.getChannel().sendMessage(Failure.ERROR_UNABLE_TO_FIND_TRACK.text).queue();
+        if (!isSilent) ce.getChannel().sendMessage(Failure.UNABLE_TO_FIND_TRACK.text).queue();
       }
 
       @Override
       public void loadFailed(FriendlyException throwable) {
-        if (!isSilent) ce.getChannel().sendMessage(Failure.ERROR_UNABLE_TO_LOAD_TRACK.text).queue();
+        if (!isSilent) ce.getChannel().sendMessage(Failure.UNABLE_TO_LOAD_TRACK.text).queue();
       }
     });
   }
@@ -165,7 +165,7 @@ public class PlayerManager {
     this.audioPlayerManager.loadItemOrdered(playbackManager, youtubeSearchQuery, new AudioLoadResultHandler() {
       @Override
       public void trackLoaded(AudioTrack track) {
-        ce.getChannel().sendMessage(Failure.PLAYERMANAGER.text).queue();
+        ce.getChannel().sendMessage(Failure.USE_PLAY_COMMAND.text).queue();
       }
 
       @Override
@@ -175,12 +175,12 @@ public class PlayerManager {
 
       @Override
       public void noMatches() {
-        ce.getChannel().sendMessage(Failure.ERROR_UNABLE_TO_FIND_TRACK.text).queue();
+        ce.getChannel().sendMessage(Failure.UNABLE_TO_FIND_TRACK.text).queue();
       }
 
       @Override
       public void loadFailed(FriendlyException throwable) {
-        ce.getChannel().sendMessage(Failure.ERROR_UNABLE_TO_LOAD_TRACK.text).queue();
+        ce.getChannel().sendMessage(Failure.UNABLE_TO_LOAD_TRACK.text).queue();
       }
     });
   }

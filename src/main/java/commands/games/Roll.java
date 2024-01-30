@@ -12,7 +12,7 @@ import java.util.Random;
  * randomly generates integers based on a user provided range.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.0
  */
 public class Roll extends Command {
@@ -24,13 +24,13 @@ public class Roll extends Command {
   }
 
   private enum Failure {
-    ROLL_INVALID_INPUT("Invalid parameter format."),
-    ROLL_RANGE("Provide between 1-10 times to roll dice."),
-    ROLL_RANGES("Provide between 1-10 for number of rolls and range."),
-    ROLL_RANGE_RNG("Provide between 1-10 times to generate numbers."),
-    ROLL_NEGATIVE("Minimum and maximum cannot be negative."),
-    ROLL_EQUAL("Minimum cannot be equal to maximum."),
-    ROLL_LARGER("Minimum cannot be larger than maximum.");
+    INVALID_INPUT("Invalid parameter format."),
+    INVALID_NUMBER("Provide between 1-10 times to generate numbers."),
+    EXCEED_RANGE("Provide between 1-10 times to roll dice."),
+    EXCEED_CUSTOM_RANGES("Provide between 1-10 for number of rolls and range."),
+    MIN_OR_MAX_NEGATIVE("Minimum and maximum cannot be negative."),
+    MIN_AND_MAX_EQUAL("Minimum cannot be equal to maximum."),
+    MIN_LARGER_THAN_MAX("Minimum cannot be larger than maximum.");
 
     public final String text;
 
@@ -60,7 +60,7 @@ public class Roll extends Command {
       case 0 -> dieRoll(ce);
       case 1 -> multipleDieRolls(ce, parameters);
       case 3 -> customRangeRolls(ce, parameters);
-      default -> ce.getChannel().sendMessage(Failure.ROLL_INVALID_INPUT.text).queue();
+      default -> ce.getChannel().sendMessage(Failure.INVALID_INPUT.text).queue();
     }
   }
 
@@ -92,10 +92,10 @@ public class Roll extends Command {
       if (validNumberOfRolls) {
         multipleDieRollsResults(ce, numberOfRolls);
       } else {
-        ce.getChannel().sendMessage(Failure.ROLL_RANGE.text).queue();
+        ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.ROLL_RANGE.text).queue();
+      ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
     }
   }
 
@@ -150,7 +150,7 @@ public class Roll extends Command {
             minAndMaxAreNotEqual, minIsNotLargerThanMax);
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.ROLL_RANGES.text).queue();
+      ce.getChannel().sendMessage(Failure.EXCEED_CUSTOM_RANGES.text).queue();
     }
   }
 
@@ -216,16 +216,16 @@ public class Roll extends Command {
   private void processErrorMessages(CommandEvent ce, boolean validNumberOfRolls, boolean minAndMaxAreZeroOrPositive,
                                     boolean minAndMaxAreNotEqual, boolean minIsNotLargerThanMax) {
     if (!validNumberOfRolls) {
-      ce.getChannel().sendMessage(Failure.ROLL_RANGE_RNG.text).queue();
+      ce.getChannel().sendMessage(Failure.INVALID_NUMBER.text).queue();
     }
     if (!minAndMaxAreZeroOrPositive) {
-      ce.getChannel().sendMessage(Failure.ROLL_NEGATIVE.text).queue();
+      ce.getChannel().sendMessage(Failure.MIN_OR_MAX_NEGATIVE.text).queue();
     }
     if (!minAndMaxAreNotEqual) {
-      ce.getChannel().sendMessage(Failure.ROLL_EQUAL.text).queue();
+      ce.getChannel().sendMessage(Failure.MIN_AND_MAX_EQUAL.text).queue();
     }
     if (minIsNotLargerThanMax) {
-      ce.getChannel().sendMessage(Failure.ROLL_LARGER.text).queue();
+      ce.getChannel().sendMessage(Failure.MIN_LARGER_THAN_MAX.text).queue();
     }
   }
 }

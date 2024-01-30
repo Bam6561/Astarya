@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * to add to the queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
@@ -36,9 +36,9 @@ public class SearchTrack extends Command {
   }
 
   private enum Failure {
-    SEARCHTRACK_RANGE("Responses must be in range of 1-5."),
-    SEARCHTRACK_TIMED_OUT("No response. Search timed out."),
-    SEARCHTRACK_SPECIFY("Provide result number.");
+    SPECIFY_RESULT_NUMBER("Provide result number."),
+    RESPONSE_EXCEED_RANGE("Responses must be in range of 1-5."),
+    RESPONSE_TIMED_OUT("No response. Search timed out.");
 
     public final String text;
 
@@ -107,7 +107,7 @@ public class SearchTrack extends Command {
           readUserResponse(ce, w);
         }, 15, TimeUnit.SECONDS, () -> { // Timeout
           setInvokerUserId(0);
-          ce.getChannel().sendMessage(Failure.SEARCHTRACK_TIMED_OUT.text).queue();
+          ce.getChannel().sendMessage(Failure.RESPONSE_TIMED_OUT.text).queue();
         }));
   }
 
@@ -139,7 +139,7 @@ public class SearchTrack extends Command {
     try {
       processUserResponse(ce, Integer.parseInt(parameters[0]));
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.SEARCHTRACK_SPECIFY.text).queue();
+      ce.getChannel().sendMessage(Failure.SPECIFY_RESULT_NUMBER.text).queue();
     }
   }
 
@@ -163,7 +163,7 @@ public class SearchTrack extends Command {
       sendSearchTrackConfirmation(ce, track, requester);
     } catch (IndexOutOfBoundsException e) {
       setInvokerUserId(0);
-      ce.getChannel().sendMessage(Failure.SEARCHTRACK_RANGE.text).queue();
+      ce.getChannel().sendMessage(Failure.RESPONSE_EXCEED_RANGE.text).queue();
     }
   }
 

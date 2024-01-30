@@ -35,7 +35,7 @@ import java.io.IOException;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.1.0
  */
 public class Play extends Command {
@@ -49,10 +49,10 @@ public class Play extends Command {
   private enum Failure {
     ERROR_SPOTIFY_API("Something went wrong while trying to access SpotifyAPI."),
     MISSING_SPOTIFY_API_KEY("Unable to play Spotify links. No Spotify API key provided in .env file."),
-    PLAY_INVALID_SPOTIFY_ID("Invalid Spotify track id."),
-    PLAY_INVALID_SPOTIFY_PLAYLIST_ID("Invalid Spotify playlist id."),
-    PLAY_INVALID_SPOTIFY_ALBUM_ID("Invalid Spotify album id."),
-    PLAY_UNSUPPORTED_SPOTIFY_FEATURE("Spotify feature not supported.");
+    INVALID_SPOTIFY_ID("Invalid Spotify track id."),
+    INVALID_SPOTIFY_PLAYLIST_ID("Invalid Spotify playlist id."),
+    INVALID_SPOTIFY_ALBUM_ID("Invalid Spotify album id."),
+    UNSUPPORTED_SPOTIFY_FEATURE("Spotify feature not supported.");
 
     public final String text;
 
@@ -210,7 +210,7 @@ public class Play extends Command {
     } else if (isSpotifyAlbum) {
       readSpotifyAlbumId(ce, parameters, spotifyApi);
     } else {
-      ce.getChannel().sendMessage(Failure.PLAY_UNSUPPORTED_SPOTIFY_FEATURE.text).queue();
+      ce.getChannel().sendMessage(Failure.UNSUPPORTED_SPOTIFY_FEATURE.text).queue();
     }
   }
 
@@ -226,7 +226,7 @@ public class Play extends Command {
     if (spotifyTrack.length() >= 22) {
       addSpotifyTrackToQueue(ce, spotifyTrack, spotifyApi);
     } else {
-      ce.getChannel().sendMessage(Failure.PLAY_INVALID_SPOTIFY_ID.text).queue();
+      ce.getChannel().sendMessage(Failure.INVALID_SPOTIFY_ID.text).queue();
     }
   }
 
@@ -242,7 +242,7 @@ public class Play extends Command {
     if (spotifyPlaylist.length() >= 22) {
       addSpotifyPlaylistToQueue(ce, spotifyPlaylist, spotifyApi);
     } else {
-      ce.getChannel().sendMessage(Failure.PLAY_INVALID_SPOTIFY_PLAYLIST_ID.text).queue();
+      ce.getChannel().sendMessage(Failure.INVALID_SPOTIFY_PLAYLIST_ID.text).queue();
     }
   }
 
@@ -258,7 +258,7 @@ public class Play extends Command {
     if (spotifyAlbum.length() >= 22) {
       addSpotifyAlbumToQueue(ce, spotifyAlbum, spotifyApi);
     } else {
-      ce.getChannel().sendMessage(Failure.PLAY_INVALID_SPOTIFY_ALBUM_ID.text).queue();
+      ce.getChannel().sendMessage(Failure.INVALID_SPOTIFY_ALBUM_ID.text).queue();
     }
   }
 

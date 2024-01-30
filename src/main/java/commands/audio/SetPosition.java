@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
  * SetPosition is a command invocation that sets the position of the currently playing track.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.2.11
  */
 public class SetPosition extends Command {
@@ -25,9 +25,9 @@ public class SetPosition extends Command {
   }
 
   private enum Failure {
-    SETPOSITION_NOTHING_PLAYING("Nothing is currently playing."),
-    SETPOSITION_INVALID_TIME("Invalid time frame. Provide hh:mm:ss."),
-    SETPOSITION_EXCEED_TRACK_LENGTH("Requested position exceeds track length.");
+    NOTHING_PLAYING("Nothing is currently playing."),
+    INVALID_TIME("Invalid time frame. Provide hh:mm:ss."),
+    EXCEED_TRACK_LENGTH("Requested position exceeds track length.");
 
     public final String text;
 
@@ -77,7 +77,7 @@ public class SetPosition extends Command {
       try {
         setCurrentlyPlayingTrackPosition(ce, parameters[1]);
       } catch (NumberFormatException e) {
-        ce.getChannel().sendMessage(Failure.SETPOSITION_INVALID_TIME.text).queue();
+        ce.getChannel().sendMessage(Failure.INVALID_TIME.text).queue();
       }
     } else {
       ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
@@ -98,7 +98,7 @@ public class SetPosition extends Command {
     if (currentlyPlayingTrack) {
       setTrackPosition(ce, trackPositionString, audioPlayer);
     } else {
-      ce.getChannel().sendMessage(Failure.SETPOSITION_NOTHING_PLAYING.text).queue();
+      ce.getChannel().sendMessage(Failure.NOTHING_PLAYING.text).queue();
     }
   }
 
@@ -118,7 +118,7 @@ public class SetPosition extends Command {
       audioPlayer.getPlayingTrack().setPosition(trackPositionToSet);
       sendSetPositionConfirmation(ce, trackPositionToSet);
     } else {
-      ce.getChannel().sendMessage(Failure.SETPOSITION_EXCEED_TRACK_LENGTH.text).queue();
+      ce.getChannel().sendMessage(Failure.EXCEED_TRACK_LENGTH.text).queue();
     }
   }
 

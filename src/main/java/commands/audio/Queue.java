@@ -19,7 +19,7 @@ import java.util.List;
  * of tracks queued and what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.2.0
  */
 public class Queue extends Command {
@@ -35,7 +35,7 @@ public class Queue extends Command {
   }
 
   private enum Failure {
-    QUEUE_SPECIFY("Provide queue page number.");
+    SPECIFY_PAGE_NUMBER("Provide queue page number.");
 
     public final String text;
 
@@ -67,7 +67,7 @@ public class Queue extends Command {
         try {
           interpretQueuePage(ce, Integer.parseInt(parameters[1]) - 1);
         } catch (NumberFormatException e) {
-          ce.getChannel().sendMessage(Failure.QUEUE_SPECIFY.text).queue();
+          ce.getChannel().sendMessage(Failure.SPECIFY_PAGE_NUMBER.text).queue();
         }
       }
       default -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();

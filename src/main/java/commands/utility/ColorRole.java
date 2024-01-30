@@ -18,7 +18,7 @@ import java.util.Set;
  * ColorRole is a command invocation that assigns or removes color roles from the user.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.7.4
  */
 public class ColorRole extends Command {
@@ -33,8 +33,8 @@ public class ColorRole extends Command {
   }
 
   private enum Success {
-    COLORROLE_CLEAR_ROLES("Cleared color roles."),
-    COLORROLE_CLEANED_UP_ROLES("Cleaned up empty color roles.");
+    CLEAR_ROLES("Cleared color roles."),
+    CLEANED_UP_ROLES("Cleaned up empty color roles.");
 
     public final String text;
 
@@ -44,8 +44,8 @@ public class ColorRole extends Command {
   }
 
   private enum Failure {
-    COLORROLE_PARAMETERS("Provide a hex color code `#ffffff` or `clear`."),
-    COLORROLE_NOT_HEX("Invalid color code."),
+    PROVIDE_HEX_CODE("Provide a hex color code `#ffffff` or `clear`."),
+    INVALID_HEX_CODE("Invalid color code."),
     SERVER_OWNER_ONLY("Server owner only command.");
 
     public final String text;
@@ -70,7 +70,7 @@ public class ColorRole extends Command {
     if (numberOfParameters == 1) {
       interpretColorRoleRequest(ce, parameters[1].toLowerCase());
     } else {
-      ce.getChannel().sendMessage(Failure.COLORROLE_PARAMETERS.text).queue();
+      ce.getChannel().sendMessage(Failure.PROVIDE_HEX_CODE.text).queue();
     }
   }
 
@@ -96,14 +96,14 @@ public class ColorRole extends Command {
         }
         case "clear" -> {
           removeColorRoles(ce);
-          ce.getChannel().sendMessage(Success.COLORROLE_CLEAR_ROLES.text).queue();
+          ce.getChannel().sendMessage(Success.CLEAR_ROLES.text).queue();
         }
         default -> {
           parameter = parameter.toUpperCase();
           if (TextReader.isHexColorCode(parameter)) {
             assignColorRole(ce, parameter);
           } else {
-            ce.getChannel().sendMessage(Failure.COLORROLE_NOT_HEX.text).queue();
+            ce.getChannel().sendMessage(Failure.INVALID_HEX_CODE.text).queue();
           }
         }
       }
@@ -148,7 +148,7 @@ public class ColorRole extends Command {
         }
       }
     }
-    ce.getChannel().sendMessage(Success.COLORROLE_CLEANED_UP_ROLES.text).queue();
+    ce.getChannel().sendMessage(Success.CLEANED_UP_ROLES.text).queue();
   }
 
   /**

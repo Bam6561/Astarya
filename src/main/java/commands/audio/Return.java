@@ -20,7 +20,7 @@ import java.util.List;
  * provides an option to return a recently skipped track to the queue.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.5.2
  */
 public class Return extends Command {
@@ -32,7 +32,7 @@ public class Return extends Command {
   }
 
   private enum Success {
-    RETURN_NO_SKIPPED_TRACKS("No recently skipped tracks.");
+    NO_SKIPPED_TRACKS("No recently skipped tracks.");
 
     public final String text;
 
@@ -42,7 +42,7 @@ public class Return extends Command {
   }
 
   private enum Failure {
-    RETURN_SPECIFY("Provide number to be returned.");
+    SPECIFY_SKIPPED_NUMBER("Provide number to be returned.");
 
     public final String text;
 
@@ -93,7 +93,7 @@ public class Return extends Command {
           int returnIndex = Integer.parseInt(parameters[1]);
           processReturnTrackRequest(ce, returnIndex);
         } catch (NumberFormatException e) {
-          ce.getChannel().sendMessage(Failure.RETURN_SPECIFY.text).queue();
+          ce.getChannel().sendMessage(Failure.SPECIFY_SKIPPED_NUMBER.text).queue();
         }
       }
       default -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
@@ -115,7 +115,7 @@ public class Return extends Command {
       display.addField("**Tracks:**", (buildSkippedTracksPage(skippedTracks)), false);
       Settings.sendEmbed(ce, display);
     } else {
-      ce.getChannel().sendMessage(Success.RETURN_NO_SKIPPED_TRACKS.text).queue();
+      ce.getChannel().sendMessage(Success.NO_SKIPPED_TRACKS.text).queue();
     }
   }
 

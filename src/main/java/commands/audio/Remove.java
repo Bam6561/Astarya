@@ -17,7 +17,7 @@ import java.util.List;
  * Remove is a command invocation that removes track(s) from the queue.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.2.2
  */
 public class Remove extends Command {
@@ -29,8 +29,8 @@ public class Remove extends Command {
   }
 
   private enum Failure {
-    REMOVE_SPECIFY("Provide queue number to be removed."),
-    REMOVE_SPECIFY_GROUP("Provide queue numbers to be removed with a space between each.");
+    SPECIFY_QUEUE_NUMBER("Provide queue number to be removed."),
+    SPECIFY_QUEUE_GROUP("Provide queue numbers to be removed with a space between each.");
 
     public final String text;
 
@@ -80,7 +80,7 @@ public class Remove extends Command {
         try {
           removeTrack(ce, Integer.parseInt(parameters[1]));
         } catch (NumberFormatException e) {
-          ce.getChannel().sendMessage(Failure.REMOVE_SPECIFY.text).queue();
+          ce.getChannel().sendMessage(Failure.SPECIFY_QUEUE_NUMBER.text).queue();
         }
       }
       default -> readRemoveMultipleTrackRequest(ce, parameters, numberOfParameters);
@@ -129,7 +129,7 @@ public class Remove extends Command {
       }
       removeMultipleTracks(ce, queueIndicesToBeRemoved);
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.REMOVE_SPECIFY_GROUP.text).queue();
+      ce.getChannel().sendMessage(Failure.SPECIFY_QUEUE_GROUP.text).queue();
     }
   }
 

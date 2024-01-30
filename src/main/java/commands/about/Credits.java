@@ -1,6 +1,5 @@
 package commands.about;
 
-import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -10,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Credits is a command invocation that shows a list of credits for the bot.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.0
  */
 public class Credits extends Command {
@@ -21,17 +20,17 @@ public class Credits extends Command {
   }
 
   private enum Success {
-    CREDITS_THANK_YOU("Thank you to the following resources used in " +
+    THANK_YOU("Thank you to the following resources used in " +
         "Astarya's development, as well as all my friends who use the bot " +
         "regularly and leave feedback so the experience is as bug-free as possible."),
-    CREDITS_APIS("> [Discord](https://discord.com) | " +
+    APIS("> [Discord](https://discord.com) | " +
         "[Genius](https://genius.com) | " +
         "[Spotify](https://open.spotify.com)"),
-    CREDITS_LIBRARIES_WRAPPERS("> [JDA](https://github.com/DV8FromTheWorld/JDA) | " +
+    LIBRARIES_WRAPPERS("> [JDA](https://github.com/DV8FromTheWorld/JDA) | " +
         "[JDA-Chewtils](https://github.com/Chew/JDA-Chewtils) | " +
         "[LavaPlayer](https://github.com/sedmelluq/lavaplayer) | " +
         "[Spotify Web API Java](https://github.com/spotify-web-api-java/spotify-web-api-java)"),
-    CREDITS_REFERENCES("> [Kody Simpson](https://www.youtube.com/@KodySimpson) | " +
+    REFERENCES("> [Kody Simpson](https://www.youtube.com/@KodySimpson) | " +
         "[MenuDocs](https://www.youtube.com/@MenuDocs) | " +
         "[TechToolBox](https://www.youtube.com/@TechToolboxOfficial)");
     
@@ -54,10 +53,10 @@ public class Credits extends Command {
     EmbedBuilder display = new EmbedBuilder();
     display.setAuthor("Credits");
     display.setThumbnail(ce.getSelfUser().getAvatarUrl());
-    display.setDescription(Success.CREDITS_THANK_YOU.text);
-    display.addField("APIs", Success.CREDITS_APIS.text, false);
-    display.addField("Libraries & Wrappers", Success.CREDITS_LIBRARIES_WRAPPERS.text, false);
-    display.addField("References", Success.CREDITS_REFERENCES.text, false);
+    display.setDescription(Success.THANK_YOU.text);
+    display.addField("APIs", Success.APIS.text, false);
+    display.addField("Libraries & Wrappers", Success.LIBRARIES_WRAPPERS.text, false);
+    display.addField("References", Success.REFERENCES.text, false);
     Settings.sendEmbed(ce, display);
   }
 }

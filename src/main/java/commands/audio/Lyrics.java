@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.7.2
  */
 public class Lyrics extends Command {
@@ -37,7 +37,7 @@ public class Lyrics extends Command {
   }
 
   private enum Success {
-    LYRICS_NO_MATCHES("No matches found.");
+    NO_MATCHES("No matches found.");
 
     public final String text;
 
@@ -47,7 +47,7 @@ public class Lyrics extends Command {
   }
 
   private enum Failure {
-    ERROR_CONNECTION_INTERRUPTED("Connection interrupted.");
+    CONNECTION_INTERRUPTED("Connection interrupted.");
 
     public final String text;
 
@@ -124,7 +124,7 @@ public class Lyrics extends Command {
       return new BufferedReader(new InputStreamReader(
           connection.getInputStream(), StandardCharsets.UTF_8)).lines().collect(Collectors.joining());
     } catch (IOException e) {
-      System.out.println(Failure.ERROR_CONNECTION_INTERRUPTED.text);
+      System.out.println(Failure.CONNECTION_INTERRUPTED.text);
       return null;
     }
   }
@@ -144,7 +144,7 @@ public class Lyrics extends Command {
     try {
       extractDataFromJSON(ce, section);
     } catch (JSONException e) {
-      ce.getChannel().sendMessage(Success.LYRICS_NO_MATCHES.text).queue();
+      ce.getChannel().sendMessage(Success.NO_MATCHES.text).queue();
     }
   }
 

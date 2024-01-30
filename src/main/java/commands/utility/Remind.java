@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Remind is a command invocation that sets a timer and alerts the user when the time expires.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.0
  */
 public class Remind extends Command {
@@ -23,9 +23,9 @@ public class Remind extends Command {
   }
 
   private enum Failure {
-    REMIND_NO_TIME_TYPES("No time types provided."),
-    REMIND_INVALID_INPUT("Provide a valid numerical value followed by an accepted time type."),
-    REMIND_RANGE_EXCEEDED("Can only set timer for maximum length of a week.");
+    NO_TIME_TYPES("No time types provided."),
+    INVALID_INPUT("Provide a valid numerical value followed by an accepted time type."),
+    EXCEED_RANGE("Can only set timer for maximum length of a week.");
 
     public final String text;
 
@@ -76,7 +76,7 @@ public class Remind extends Command {
       boolean timeIsInFirstParameter = checkTimeTypeInFirstParameter(parameters);
       processTimeTypeBasedOnLocation(ce, parameters, numberOfParameters, timeIsInFirstParameter);
     } else { // No time type in first or second parameter
-      ce.getChannel().sendMessage(Failure.REMIND_NO_TIME_TYPES.text).queue();
+      ce.getChannel().sendMessage(Failure.NO_TIME_TYPES.text).queue();
     }
   }
 
@@ -157,10 +157,10 @@ public class Remind extends Command {
         setReminder(ce, timeDuration, timeType, timerName);
         setTimer(ce, timeDuration, timeType, timerName);
       } else {
-        ce.getChannel().sendMessage(Failure.REMIND_RANGE_EXCEEDED.text).queue();
+        ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.REMIND_INVALID_INPUT.text).queue();
+      ce.getChannel().sendMessage(Failure.INVALID_INPUT.text).queue();
     }
   }
 
