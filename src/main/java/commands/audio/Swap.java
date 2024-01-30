@@ -17,7 +17,7 @@ import java.util.List;
  * Swap is a command invocation that swaps the position of a track in queue with another.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.2.14
  */
 public class Swap extends Command {
@@ -26,6 +26,16 @@ public class Swap extends Command {
     this.aliases = new String[]{"swap", "switch", "sw"};
     this.arguments = "[1]QueueNumber [2]QueueNumber";
     this.help = "Swaps the position of a track in queue with another.";
+  }
+
+  private enum Failure {
+    SWAP_SPECIFY("Provide numbers to swap tracks in track queue.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -85,7 +95,7 @@ public class Swap extends Command {
 
       swapTracks(ce, originalIndex, swapIndex);
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.SWAP_SPECIFY.text).queue();
+      ce.getChannel().sendMessage(Failure.SWAP_SPECIFY.text).queue();
     }
   }
 

@@ -35,16 +35,30 @@ import java.io.IOException;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.8.0
  * @since 1.1.0
  */
 public class Play extends Command {
-
   public Play() {
     this.name = "play";
     this.aliases = new String[]{"play", "p"};
     this.help = "Adds a track to the track queue.";
     this.arguments = ("[1]URL [2 ++]YouTubeQuery");
+  }
+
+  private enum Failure {
+    ERROR_SPOTIFY_API("Something went wrong while trying to access SpotifyAPI."),
+    MISSING_SPOTIFY_API_KEY("Unable to play Spotify links. No Spotify API key provided in .env file."),
+    PLAY_INVALID_SPOTIFY_ID("Invalid Spotify track id."),
+    PLAY_INVALID_SPOTIFY_PLAYLIST_ID("Invalid Spotify playlist id."),
+    PLAY_INVALID_SPOTIFY_ALBUM_ID("Invalid Spotify album id."),
+    PLAY_UNSUPPORTED_SPOTIFY_FEATURE("Spotify feature not supported.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -130,7 +144,7 @@ public class Play extends Command {
       if (!missingSpotifyApiKey) {
         interpretPlayRequest(ce, parameters, accessSpotifyApi(spotifyClientId, spotifyClientSecret));
       } else {
-        ce.getChannel().sendMessage(BotMessage.Failure.MISSING_SPOTIFY_API_KEY.text).queue();
+        ce.getChannel().sendMessage(Failure.MISSING_SPOTIFY_API_KEY.text).queue();
       }
     } else {
       PlayerManager.getINSTANCE().createAudioTrack(ce, parameters[1], false);
@@ -171,7 +185,7 @@ public class Play extends Command {
       spotifyApi.setAccessToken(clientCredentials.getAccessToken());
       return spotifyApi;
     } catch (IOException | ParseException | SpotifyWebApiException e) {
-      System.out.println(BotMessage.Failure.ERROR_SPOTIFY_API.text);
+      System.out.println(Failure.ERROR_SPOTIFY_API.text);
       return null;
     }
   }
@@ -196,7 +210,7 @@ public class Play extends Command {
     } else if (isSpotifyAlbum) {
       readSpotifyAlbumId(ce, parameters, spotifyApi);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.PLAY_UNSUPPORTED_SPOTIFY_FEATURE.text).queue();
+      ce.getChannel().sendMessage(Failure.PLAY_UNSUPPORTED_SPOTIFY_FEATURE.text).queue();
     }
   }
 
@@ -212,7 +226,7 @@ public class Play extends Command {
     if (spotifyTrack.length() >= 22) {
       addSpotifyTrackToQueue(ce, spotifyTrack, spotifyApi);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.PLAY_INVALID_SPOTIFY_ID.text).queue();
+      ce.getChannel().sendMessage(Failure.PLAY_INVALID_SPOTIFY_ID.text).queue();
     }
   }
 
@@ -228,7 +242,7 @@ public class Play extends Command {
     if (spotifyPlaylist.length() >= 22) {
       addSpotifyPlaylistToQueue(ce, spotifyPlaylist, spotifyApi);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.PLAY_INVALID_SPOTIFY_PLAYLIST_ID.text).queue();
+      ce.getChannel().sendMessage(Failure.PLAY_INVALID_SPOTIFY_PLAYLIST_ID.text).queue();
     }
   }
 
@@ -244,7 +258,7 @@ public class Play extends Command {
     if (spotifyAlbum.length() >= 22) {
       addSpotifyAlbumToQueue(ce, spotifyAlbum, spotifyApi);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.PLAY_INVALID_SPOTIFY_ALBUM_ID.text).queue();
+      ce.getChannel().sendMessage(Failure.PLAY_INVALID_SPOTIFY_ALBUM_ID.text).queue();
     }
   }
 
@@ -270,7 +284,7 @@ public class Play extends Command {
       PlayerManager.getINSTANCE().createAudioTrack(ce,
           buildYouTubeSearchQuery(jsonTrack, jsonTrackArtists), false);
     } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println(BotMessage.Failure.ERROR_SPOTIFY_API.text);
+      System.out.println(Failure.ERROR_SPOTIFY_API.text);
     }
   }
 
@@ -311,7 +325,7 @@ public class Play extends Command {
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
       ce.getChannel().sendMessage("**Added:** `" + numberOfTracksAdded + "` tracks " + requester).queue();
     } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println(BotMessage.Failure.ERROR_SPOTIFY_API.text);
+      System.out.println(Failure.ERROR_SPOTIFY_API.text);
     }
   }
 
@@ -350,7 +364,7 @@ public class Play extends Command {
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
       ce.getChannel().sendMessage("**Added:** `" + numberOfTracksAdded + "` tracks " + requester).queue();
     } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println(BotMessage.Failure.ERROR_SPOTIFY_API.text);
+      System.out.println(Failure.ERROR_SPOTIFY_API.text);
     }
   }
 

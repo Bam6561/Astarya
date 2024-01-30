@@ -1,6 +1,6 @@
 package commands.audio;
 
-import astarya.Astarya;
+import astarya.Bot;
 import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.managers.Presence;
  * Pause is a command invocation that pauses the audio player.
  *
  * @author Danny Nguyen
- * @version 1.7.16
+ * @version 1.8.0
  * @since 1.2.5
  */
 public class Pause extends Command {
@@ -25,6 +25,17 @@ public class Pause extends Command {
     this.name = "pause";
     this.aliases = new String[]{"pause", "stop"};
     this.help = "Pauses the audio player.";
+  }
+
+  private enum Success {
+    PAUSE_PLAYER_PAUSE("Audio player paused."),
+    PAUSE_PLAYER_RESUME("Audio player resumed.");
+
+    public final String text;
+
+    Success(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -62,7 +73,7 @@ public class Pause extends Command {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
     AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
 
-    Presence presence = Astarya.getApi().getPresence();
+    Presence presence = Bot.getApi().getPresence();
 
     if (!audioPlayer.isPaused()) { // Paused - Idle Yellow
       setActivityToPaused(ce, audioPlayer, presence);
@@ -73,7 +84,7 @@ public class Pause extends Command {
       } catch (NullPointerException e) { // No track currently playing
         setActivityToNothing(presence);
       }
-      ce.getChannel().sendMessage(BotMessage.Success.PAUSE_PLAYER_RESUME.text).queue();
+      ce.getChannel().sendMessage(Success.PAUSE_PLAYER_RESUME.text).queue();
     }
   }
 
@@ -88,7 +99,7 @@ public class Pause extends Command {
     audioPlayer.setPaused(true);
     presence.setActivity(Activity.listening("Paused"));
     presence.setStatus(OnlineStatus.IDLE);
-    ce.getChannel().sendMessage(BotMessage.Success.PAUSE_PLAYER_PAUSE.text).queue();
+    ce.getChannel().sendMessage(Success.PAUSE_PLAYER_PAUSE.text).queue();
   }
 
   /**

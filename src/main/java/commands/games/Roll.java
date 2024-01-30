@@ -1,6 +1,5 @@
 package commands.games;
 
-import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -13,7 +12,7 @@ import java.util.Random;
  * randomly generates integers based on a user provided range.
  *
  * @author Danny Nguyen
- * @version 1.7.17
+ * @version 1.8.0
  * @since 1.0
  */
 public class Roll extends Command {
@@ -22,6 +21,22 @@ public class Roll extends Command {
     this.aliases = new String[]{"roll", "rng", "dice"};
     this.arguments = "[0]Once [1]NumberOfRolls [2]Min [3]Max";
     this.help = "Dice roll and random integer generator.";
+  }
+
+  private enum Failure {
+    ROLL_INVALID_INPUT("Invalid parameter format."),
+    ROLL_RANGE("Provide between 1-10 times to roll dice."),
+    ROLL_RANGES("Provide between 1-10 for number of rolls and range."),
+    ROLL_RANGE_RNG("Provide between 1-10 times to generate numbers."),
+    ROLL_NEGATIVE("Minimum and maximum cannot be negative."),
+    ROLL_EQUAL("Minimum cannot be equal to maximum."),
+    ROLL_LARGER("Minimum cannot be larger than maximum.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -45,7 +60,7 @@ public class Roll extends Command {
       case 0 -> dieRoll(ce);
       case 1 -> multipleDieRolls(ce, parameters);
       case 3 -> customRangeRolls(ce, parameters);
-      default -> ce.getChannel().sendMessage(BotMessage.Failure.ROLL_INVALID_INPUT.text).queue();
+      default -> ce.getChannel().sendMessage(Failure.ROLL_INVALID_INPUT.text).queue();
     }
   }
 
@@ -77,10 +92,10 @@ public class Roll extends Command {
       if (validNumberOfRolls) {
         multipleDieRollsResults(ce, numberOfRolls);
       } else {
-        ce.getChannel().sendMessage(BotMessage.Failure.ROLL_RANGE.text).queue();
+        ce.getChannel().sendMessage(Failure.ROLL_RANGE.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_RANGE.text).queue();
+      ce.getChannel().sendMessage(Failure.ROLL_RANGE.text).queue();
     }
   }
 
@@ -135,7 +150,7 @@ public class Roll extends Command {
             minAndMaxAreNotEqual, minIsNotLargerThanMax);
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_RANGES.text).queue();
+      ce.getChannel().sendMessage(Failure.ROLL_RANGES.text).queue();
     }
   }
 
@@ -201,16 +216,16 @@ public class Roll extends Command {
   private void processErrorMessages(CommandEvent ce, boolean validNumberOfRolls, boolean minAndMaxAreZeroOrPositive,
                                     boolean minAndMaxAreNotEqual, boolean minIsNotLargerThanMax) {
     if (!validNumberOfRolls) {
-      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_RANGE_RNG.text).queue();
+      ce.getChannel().sendMessage(Failure.ROLL_RANGE_RNG.text).queue();
     }
     if (!minAndMaxAreZeroOrPositive) {
-      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_NEGATIVE.text).queue();
+      ce.getChannel().sendMessage(Failure.ROLL_NEGATIVE.text).queue();
     }
     if (!minAndMaxAreNotEqual) {
-      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_EQUAL.text).queue();
+      ce.getChannel().sendMessage(Failure.ROLL_EQUAL.text).queue();
     }
     if (minIsNotLargerThanMax) {
-      ce.getChannel().sendMessage(BotMessage.Failure.ROLL_LARGER.text).queue();
+      ce.getChannel().sendMessage(Failure.ROLL_LARGER.text).queue();
     }
   }
 }

@@ -1,6 +1,5 @@
 package commands.audio.managers;
 
-import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -23,7 +22,7 @@ import java.util.Map;
  * search queries into playable tracks for the AudioScheduler.
  *
  * @author Danny Nguyen
- * @version 1.7.18
+ * @version 1.8.0
  * @since 1.1.0
  */
 public class PlayerManager {
@@ -40,6 +39,19 @@ public class PlayerManager {
     AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
     this.searchTrackResults = new AudioTrack[5];
   }
+
+  private enum Failure {
+    PLAYERMANAGER("Use play command to queue tracks."),
+    ERROR_UNABLE_TO_FIND_TRACK("Unable to find track."),
+    ERROR_UNABLE_TO_LOAD_TRACK("Unable to load track.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
+  }
+
 
   /**
    * Creates an AudioTrack based on user provided parameters
@@ -73,12 +85,12 @@ public class PlayerManager {
 
       @Override
       public void noMatches() {
-        if (!isSilent) ce.getChannel().sendMessage(BotMessage.Failure.ERROR_UNABLE_TO_FIND_TRACK.text).queue();
+        if (!isSilent) ce.getChannel().sendMessage(Failure.ERROR_UNABLE_TO_FIND_TRACK.text).queue();
       }
 
       @Override
       public void loadFailed(FriendlyException throwable) {
-        if (!isSilent) ce.getChannel().sendMessage(BotMessage.Failure.ERROR_UNABLE_TO_LOAD_TRACK.text).queue();
+        if (!isSilent) ce.getChannel().sendMessage(Failure.ERROR_UNABLE_TO_LOAD_TRACK.text).queue();
       }
     });
   }
@@ -153,7 +165,7 @@ public class PlayerManager {
     this.audioPlayerManager.loadItemOrdered(playbackManager, youtubeSearchQuery, new AudioLoadResultHandler() {
       @Override
       public void trackLoaded(AudioTrack track) {
-        ce.getChannel().sendMessage(BotMessage.Failure.PLAYERMANAGER.text).queue();
+        ce.getChannel().sendMessage(Failure.PLAYERMANAGER.text).queue();
       }
 
       @Override
@@ -163,12 +175,12 @@ public class PlayerManager {
 
       @Override
       public void noMatches() {
-        ce.getChannel().sendMessage(BotMessage.Failure.ERROR_UNABLE_TO_FIND_TRACK.text).queue();
+        ce.getChannel().sendMessage(Failure.ERROR_UNABLE_TO_FIND_TRACK.text).queue();
       }
 
       @Override
       public void loadFailed(FriendlyException throwable) {
-        ce.getChannel().sendMessage(BotMessage.Failure.ERROR_UNABLE_TO_LOAD_TRACK.text).queue();
+        ce.getChannel().sendMessage(Failure.ERROR_UNABLE_TO_LOAD_TRACK.text).queue();
       }
     });
   }

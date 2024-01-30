@@ -1,13 +1,13 @@
-package astarya;
+package commands.about;
 
 /**
- * BotHelp is an enum collection containing the bot's help messages.
+ * HelpEnum is an enum collection containing the bot's help messages.
  *
  * @author Danny Nguyen
- * @version 1.7.16
+ * @version 1.8.0
  * @since 1.7.14
  */
-public class BotHelp {
+public class HelpEnum {
   public enum Description {
     CHOOSE("Chooses randomly between any number of options. The options are parameters separated by commas."),
     CLEARQUEUE("Clears the track queue."),

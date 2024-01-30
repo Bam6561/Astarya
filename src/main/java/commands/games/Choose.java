@@ -1,6 +1,5 @@
 package commands.games;
 
-import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -12,7 +11,7 @@ import java.util.Random;
  * Choose is a command invocation that chooses randomly between any number of options.
  *
  * @author Danny Nguyen
- * @version 1.7.17
+ * @version 1.8.0
  * @since 1.0
  */
 public class Choose extends Command {
@@ -23,6 +22,17 @@ public class Choose extends Command {
     this.aliases = new String[]{"choose", "pick"};
     this.arguments = "[1, ++]Options";
     this.help = "Chooses randomly between any number of options.";
+  }
+
+  private enum Failure {
+    CHOOSE_EMPTY_OPTION("Empty option."),
+    CHOOSE_SEPARATE_OPTIONS("Separate options with a comma.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -43,7 +53,7 @@ public class Choose extends Command {
     if (numberOfParameters != 0) {
       readChooseRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.CHOOSE_SEPARATE_OPTIONS.text).queue();
+      ce.getChannel().sendMessage(Failure.CHOOSE_SEPARATE_OPTIONS.text).queue();
     }
   }
 
@@ -60,7 +70,7 @@ public class Choose extends Command {
     if (noEmptyOptionProvided) {
       processChooseRequest(ce, options);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.CHOOSE_EMPTY_OPTION.text).queue();
+      ce.getChannel().sendMessage(Failure.CHOOSE_EMPTY_OPTION.text).queue();
     }
   }
 

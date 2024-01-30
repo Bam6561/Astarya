@@ -1,6 +1,6 @@
 package commands.utility;
 
-import astarya.Astarya;
+import astarya.Bot;
 import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import utility.TextReader;
 
 import java.awt.*;
 import java.util.Set;
@@ -17,7 +18,7 @@ import java.util.Set;
  * ColorRole is a command invocation that assigns or removes color roles from the user.
  *
  * @author Danny Nguyen
- * @version 1.7.14
+ * @version 1.8.0
  * @since 1.7.4
  */
 public class ColorRole extends Command {
@@ -29,6 +30,29 @@ public class ColorRole extends Command {
     this.arguments = "[1]<#HexColor>";
     this.help = "Assigns a colored role to the user.";
     this.colorRoles = colorRoles;
+  }
+
+  private enum Success {
+    COLORROLE_CLEAR_ROLES("Cleared color roles."),
+    COLORROLE_CLEANED_UP_ROLES("Cleaned up empty color roles.");
+
+    public final String text;
+
+    Success(String text) {
+      this.text = text;
+    }
+  }
+
+  private enum Failure {
+    COLORROLE_PARAMETERS("Provide a hex color code `#ffffff` or `clear`."),
+    COLORROLE_NOT_HEX("Invalid color code."),
+    SERVER_OWNER_ONLY("Server owner only command.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -46,7 +70,7 @@ public class ColorRole extends Command {
     if (numberOfParameters == 1) {
       interpretColorRoleRequest(ce, parameters[1].toLowerCase());
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.COLORROLE_PARAMETERS.text).queue();
+      ce.getChannel().sendMessage(Failure.COLORROLE_PARAMETERS.text).queue();
     }
   }
 
@@ -67,19 +91,19 @@ public class ColorRole extends Command {
           if (ce.getMember().isOwner()) {
             reloadColorRoles(ce);
           } else {
-            ce.getChannel().sendMessage(BotMessage.Failure.SERVER_OWNER_ONLY.text).queue();
+            ce.getChannel().sendMessage(Failure.SERVER_OWNER_ONLY.text).queue();
           }
         }
         case "clear" -> {
           removeColorRoles(ce);
-          ce.getChannel().sendMessage(BotMessage.Success.COLORROLE_CLEAR_ROLES.text).queue();
+          ce.getChannel().sendMessage(Success.COLORROLE_CLEAR_ROLES.text).queue();
         }
         default -> {
           parameter = parameter.toUpperCase();
-          if (isHexColorCode(parameter)) {
+          if (TextReader.isHexColorCode(parameter)) {
             assignColorRole(ce, parameter);
           } else {
-            ce.getChannel().sendMessage(BotMessage.Failure.COLORROLE_NOT_HEX.text).queue();
+            ce.getChannel().sendMessage(Failure.COLORROLE_NOT_HEX.text).queue();
           }
         }
       }
@@ -112,21 +136,19 @@ public class ColorRole extends Command {
    * @param ce command event
    */
   private void reloadColorRoles(CommandEvent ce) {
-    Set<String> colorRoles = this.colorRoles;
-
-    for (Role role : Astarya.getApi().getRoles()) {
+    for (Role role : Bot.getApi().getRoles()) {
       String roleName = role.getName();
 
       // Hex Color Code Format: #ffffff
-      if (isHexColorCode(roleName.toUpperCase())) {
-        if (!Astarya.getApi().getMutualGuilds().get(0).getMembersWithRoles(role).isEmpty()) {
+      if (TextReader.isHexColorCode(roleName.toUpperCase())) {
+        if (!Bot.getApi().getMutualGuilds().get(0).getMembersWithRoles(role).isEmpty()) {
           colorRoles.add(roleName);
         } else {
           role.delete().queue();
         }
       }
     }
-    ce.getChannel().sendMessage(BotMessage.Success.COLORROLE_CLEANED_UP_ROLES.text).queue();
+    ce.getChannel().sendMessage(Success.COLORROLE_CLEANED_UP_ROLES.text).queue();
   }
 
   /**
@@ -141,32 +163,9 @@ public class ColorRole extends Command {
     for (Role role : member.getRoles()) {
       String roleName = role.getName();
 
-      if (isHexColorCode(roleName)) {
+      if (TextReader.isHexColorCode(roleName)) {
         guild.removeRoleFromMember(member, role).queue();
       }
     }
-  }
-
-  /**
-   * Determines if a string is a hex color code.
-   *
-   * @param parameter user provided parameter
-   * @return is a hex color code
-   */
-  private boolean isHexColorCode(String parameter) {
-    if (!parameter.startsWith("#") || parameter.length() != 7) {
-      return false;
-    }
-
-    for (char c : parameter.substring(1).toCharArray()) {
-      switch (c) {
-        case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' -> {
-        }
-        default -> {
-          return false;
-        }
-      }
-    }
-    return true;
   }
 }

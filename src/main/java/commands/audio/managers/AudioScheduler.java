@@ -1,6 +1,6 @@
 package commands.audio.managers;
 
-import astarya.Astarya;
+import astarya.Bot;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -19,7 +19,7 @@ import java.util.List;
  * player's functionality related to playing tracks and track order.
  *
  * @author Danny Nguyen
- * @version 1.7.17
+ * @version 1.8.0
  * @since 1.1.0
  */
 
@@ -44,7 +44,7 @@ public class AudioScheduler extends AudioEventAdapter {
   @Override
   public void onTrackStart(AudioPlayer audioPlayer, AudioTrack currentlyPlaying) {
     if (!audioPlayerLooped) {
-      Presence presence = Astarya.getApi().getPresence();
+      Presence presence = Bot.getApi().getPresence();
       presence.setActivity(Activity.listening(currentlyPlaying.getInfo().title));
       presence.setStatus(OnlineStatus.ONLINE);
     }
@@ -93,7 +93,7 @@ public class AudioScheduler extends AudioEventAdapter {
       // Update presence when not playing audio
       audioPlayer.stopTrack();
 
-      Presence presence = Astarya.getApi().getPresence();
+      Presence presence = Bot.getApi().getPresence();
       presence.setStatus(OnlineStatus.DO_NOT_DISTURB);
       presence.setActivity(Activity.listening("Nothing"));
     }

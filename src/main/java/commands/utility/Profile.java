@@ -1,6 +1,5 @@
 package commands.utility;
 
-import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -19,7 +18,7 @@ import java.util.List;
  * user and adds additional details if they're in the guild.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.8.0
  * @since 1.6.3
  */
 public class Profile extends Command {
@@ -28,6 +27,16 @@ public class Profile extends Command {
     this.aliases = new String[]{"profile", "whois", "user"};
     this.arguments = "[0]Self [1]Mention/UserId/<@UserId> [1+]Name/Nickname";
     this.help = "Sends information about a user.";
+  }
+
+  private enum Failure {
+    PROFILE_USER_NOT_FOUND("User not found.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -111,7 +120,7 @@ public class Profile extends Command {
         User user = ce.getJDA().retrieveUserById(parameters.substring(2, parameters.length() - 1)).complete();
         sendProfileEmbed(ce, null, user);
       } catch (NumberFormatException | ErrorResponseException invalidUserId2) {
-        ce.getTextChannel().sendMessage(BotMessage.Failure.PROFILE_USER_NOT_FOUND.text).queue();
+        ce.getTextChannel().sendMessage(Failure.PROFILE_USER_NOT_FOUND.text).queue();
       }
     }
   }

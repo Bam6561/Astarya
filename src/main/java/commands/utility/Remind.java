@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Remind is a command invocation that sets a timer and alerts the user when the time expires.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.8.0
  * @since 1.0
  */
 public class Remind extends Command {
@@ -20,6 +20,18 @@ public class Remind extends Command {
     this.arguments = "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName";
     this.help = "Sets a timer and alerts the user when the time expires.";
     this.ownerCommand = false;
+  }
+
+  private enum Failure {
+    REMIND_NO_TIME_TYPES("No time types provided."),
+    REMIND_INVALID_INPUT("Provide a valid numerical value followed by an accepted time type."),
+    REMIND_RANGE_EXCEEDED("Can only set timer for maximum length of a week.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -64,7 +76,7 @@ public class Remind extends Command {
       boolean timeIsInFirstParameter = checkTimeTypeInFirstParameter(parameters);
       processTimeTypeBasedOnLocation(ce, parameters, numberOfParameters, timeIsInFirstParameter);
     } else { // No time type in first or second parameter
-      ce.getChannel().sendMessage(BotMessage.Failure.REMIND_NO_TIME_TYPES.text).queue();
+      ce.getChannel().sendMessage(Failure.REMIND_NO_TIME_TYPES.text).queue();
     }
   }
 
@@ -145,10 +157,10 @@ public class Remind extends Command {
         setReminder(ce, timeDuration, timeType, timerName);
         setTimer(ce, timeDuration, timeType, timerName);
       } else {
-        ce.getChannel().sendMessage(BotMessage.Failure.REMIND_RANGE_EXCEEDED.text).queue();
+        ce.getChannel().sendMessage(Failure.REMIND_RANGE_EXCEEDED.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.REMIND_INVALID_INPUT.text).queue();
+      ce.getChannel().sendMessage(Failure.REMIND_INVALID_INPUT.text).queue();
     }
   }
 

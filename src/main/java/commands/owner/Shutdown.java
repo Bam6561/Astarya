@@ -1,6 +1,5 @@
 package commands.owner;
 
-import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -9,7 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Shutdown is a command invocation that shuts the bot down.
  *
  * @author Danny Nguyen
- * @version 1.7.15
+ * @version 1.8.0
  * @since 1.0
  */
 public class Shutdown extends Command {
@@ -18,6 +17,17 @@ public class Shutdown extends Command {
     this.aliases = new String[]{"shutdown"};
     this.help = "Shuts Astarya down.";
     this.ownerCommand = true;
+  }
+
+  private enum Success {
+    SHUTDOWN("Well, it was fun while it lasted. Change the world... " +
+        "my final message. Goodbye. **Astarya is shutting down.**");
+
+    public final String text;
+
+    Success(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -31,7 +41,7 @@ public class Shutdown extends Command {
 
     EmbedBuilder display = new EmbedBuilder();
     display.setAuthor("Shutdown");
-    display.setDescription(BotMessage.Success.SHUTDOWN.text);
+    display.setDescription(Success.SHUTDOWN.text);
     Settings.sendEmbed(ce, display);
 
     ce.getJDA().shutdown();

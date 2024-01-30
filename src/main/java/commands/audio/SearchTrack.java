@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * to add to the queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.7.18
+ * @version 1.8.0
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
@@ -33,6 +33,18 @@ public class SearchTrack extends Command {
     this.help = "Searches for a track to add to the track queue.";
     this.waiter = waiter;
     this.invokerUserId = 0;
+  }
+
+  private enum Failure {
+    SEARCHTRACK_RANGE("Responses must be in range of 1-5."),
+    SEARCHTRACK_TIMED_OUT("No response. Search timed out."),
+    SEARCHTRACK_SPECIFY("Provide result number.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -95,7 +107,7 @@ public class SearchTrack extends Command {
           readUserResponse(ce, w);
         }, 15, TimeUnit.SECONDS, () -> { // Timeout
           setInvokerUserId(0);
-          ce.getChannel().sendMessage(BotMessage.Failure.SEARCHTRACK_TIMED_OUT.text).queue();
+          ce.getChannel().sendMessage(Failure.SEARCHTRACK_TIMED_OUT.text).queue();
         }));
   }
 
@@ -127,7 +139,7 @@ public class SearchTrack extends Command {
     try {
       processUserResponse(ce, Integer.parseInt(parameters[0]));
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.SEARCHTRACK_SPECIFY.text).queue();
+      ce.getChannel().sendMessage(Failure.SEARCHTRACK_SPECIFY.text).queue();
     }
   }
 
@@ -151,7 +163,7 @@ public class SearchTrack extends Command {
       sendSearchTrackConfirmation(ce, track, requester);
     } catch (IndexOutOfBoundsException e) {
       setInvokerUserId(0);
-      ce.getChannel().sendMessage(BotMessage.Failure.SEARCHTRACK_RANGE.text).queue();
+      ce.getChannel().sendMessage(Failure.SEARCHTRACK_RANGE.text).queue();
     }
   }
 

@@ -1,6 +1,5 @@
 package commands.about;
 
-import astarya.BotHelp;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import commands.owner.Settings;
@@ -10,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Help is a command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.7.14
+ * @version 1.8.0
  * @since 1.0
  */
 public class Help extends Command {
@@ -74,110 +73,110 @@ public class Help extends Command {
   private void sendCommandDetails(EmbedBuilder display, String commandName) {
     switch (commandName) {
       case "choose", "pick" -> sendDetailedCommandHelpEmbed(display, "Help: Choose",
-          BotHelp.Description.CHOOSE.text, BotHelp.Alias.CHOOSE.text,
-          BotHelp.Parameter.CHOOSE.text, BotHelp.Example.CHOOSE.text);
+          HelpEnum.Description.CHOOSE.text, HelpEnum.Alias.CHOOSE.text,
+          HelpEnum.Parameter.CHOOSE.text, HelpEnum.Example.CHOOSE.text);
       case "clearqueue", "clear" -> sendDetailedCommandHelpEmbed(display, "Help: ClearQueue",
-          BotHelp.Description.CLEARQUEUE.text, BotHelp.Alias.CLEARQUEUE.text,
-          BotHelp.Parameter.CLEARQUEUE.text, BotHelp.Example.CLEARQUEUE.text);
+          HelpEnum.Description.CLEARQUEUE.text, HelpEnum.Alias.CLEARQUEUE.text,
+          HelpEnum.Parameter.CLEARQUEUE.text, HelpEnum.Example.CLEARQUEUE.text);
       case "coinflip", "flip" -> sendDetailedCommandHelpEmbed(display, "Help: Coin Flip",
-          BotHelp.Description.COINFLIP.text, BotHelp.Alias.COINFLIP.text,
-          BotHelp.Parameter.COINFLIP.text, BotHelp.Example.COINFLIP.text);
+          HelpEnum.Description.COINFLIP.text, HelpEnum.Alias.COINFLIP.text,
+          HelpEnum.Parameter.COINFLIP.text, HelpEnum.Example.COINFLIP.text);
       case "color" -> sendDetailedCommandHelpEmbed(display, "Help: Color",
-          BotHelp.Description.COLOR.text, BotHelp.Alias.COLOR.text,
-          BotHelp.Parameter.COLOR.text, BotHelp.Example.COLOR.text);
+          HelpEnum.Description.COLOR.text, HelpEnum.Alias.COLOR.text,
+          HelpEnum.Parameter.COLOR.text, HelpEnum.Example.COLOR.text);
       case "credits" -> sendDetailedCommandHelpEmbed(display, "Help: Credits",
-          BotHelp.Description.CREDITS.text, BotHelp.Alias.CREDITS.text,
-          BotHelp.Parameter.CREDITS.text, BotHelp.Example.CREDITS.text);
+          HelpEnum.Description.CREDITS.text, HelpEnum.Alias.CREDITS.text,
+          HelpEnum.Parameter.CREDITS.text, HelpEnum.Example.CREDITS.text);
       case "delete", "purge" -> sendDetailedCommandHelpEmbed(display, "Help: Delete",
-          BotHelp.Description.DELETE.text, BotHelp.Alias.DELETE.text,
-          BotHelp.Parameter.DELETE.text, BotHelp.Example.DELETE.text);
+          HelpEnum.Description.DELETE.text, HelpEnum.Alias.DELETE.text,
+          HelpEnum.Parameter.DELETE.text, HelpEnum.Example.DELETE.text);
       case "emote", "emoji" -> sendDetailedCommandHelpEmbed(display, "Help: Emote",
-          BotHelp.Description.EMOTE.text, BotHelp.Alias.EMOTE.text,
-          BotHelp.Parameter.EMOTE.text, BotHelp.Example.EMOTE.text);
+          HelpEnum.Description.EMOTE.text, HelpEnum.Alias.EMOTE.text,
+          HelpEnum.Parameter.EMOTE.text, HelpEnum.Example.EMOTE.text);
       case "help" -> sendDetailedCommandHelpEmbed(display, "Help: Help",
-          BotHelp.Description.HELP.text, BotHelp.Alias.HELP.text,
-          BotHelp.Parameter.HELP.text, BotHelp.Example.HELP.text);
+          HelpEnum.Description.HELP.text, HelpEnum.Alias.HELP.text,
+          HelpEnum.Parameter.HELP.text, HelpEnum.Example.HELP.text);
       case "highorlow", "guess" -> sendDetailedCommandHelpEmbed(display, "Help: HighOrLow",
-          BotHelp.Description.HIGHORLOW.text, BotHelp.Alias.HIGHORLOW.text,
-          BotHelp.Parameter.HIGHORLOW.text, BotHelp.Example.HIGHORLOW.text);
+          HelpEnum.Description.HIGHORLOW.text, HelpEnum.Alias.HIGHORLOW.text,
+          HelpEnum.Parameter.HIGHORLOW.text, HelpEnum.Example.HIGHORLOW.text);
       case "info", "about" -> sendDetailedCommandHelpEmbed(display, "Help: Info",
-          BotHelp.Description.INFO.text, BotHelp.Alias.INFO.text,
-          BotHelp.Parameter.INFO.text, BotHelp.Example.INFO.text);
+          HelpEnum.Description.INFO.text, HelpEnum.Alias.INFO.text,
+          HelpEnum.Parameter.INFO.text, HelpEnum.Example.INFO.text);
       case "join", "j" -> sendDetailedCommandHelpEmbed(display, "Help: Join",
-          BotHelp.Description.JOIN.text, BotHelp.Alias.JOIN.text,
-          BotHelp.Parameter.JOIN.text, BotHelp.Example.JOIN.text);
+          HelpEnum.Description.JOIN.text, HelpEnum.Alias.JOIN.text,
+          HelpEnum.Parameter.JOIN.text, HelpEnum.Example.JOIN.text);
       case "leave", "l", "disconnect", "dc" -> sendDetailedCommandHelpEmbed(display, "Help: Leave",
-          BotHelp.Description.LEAVE.text, BotHelp.Alias.LEAVE.text,
-          BotHelp.Parameter.LEAVE.text, BotHelp.Example.LEAVE.text);
+          HelpEnum.Description.LEAVE.text, HelpEnum.Alias.LEAVE.text,
+          HelpEnum.Parameter.LEAVE.text, HelpEnum.Example.LEAVE.text);
       case "loop", "repeat" -> sendDetailedCommandHelpEmbed(display, "Help: Loop",
-          BotHelp.Description.LOOP.text, BotHelp.Alias.LOOP.text,
-          BotHelp.Parameter.LOOP.text, BotHelp.Example.LOOP.text);
+          HelpEnum.Description.LOOP.text, HelpEnum.Alias.LOOP.text,
+          HelpEnum.Parameter.LOOP.text, HelpEnum.Example.LOOP.text);
       case "lyrics" -> sendDetailedCommandHelpEmbed(display, "Help: Lyrics",
-          BotHelp.Description.LYRICS.text, BotHelp.Alias.LYRICS.text,
-          BotHelp.Parameter.LYRICS.text, BotHelp.Example.LYRICS.text);
+          HelpEnum.Description.LYRICS.text, HelpEnum.Alias.LYRICS.text,
+          HelpEnum.Parameter.LYRICS.text, HelpEnum.Example.LYRICS.text);
       case "nowplaying", "np" -> sendDetailedCommandHelpEmbed(display, "Help: NowPlaying",
-          BotHelp.Description.NOWPLAYING.text, BotHelp.Alias.NOWPLAYING.text,
-          BotHelp.Parameter.NOWPLAYING.text, BotHelp.Example.NOWPLAYING.text);
+          HelpEnum.Description.NOWPLAYING.text, HelpEnum.Alias.NOWPLAYING.text,
+          HelpEnum.Parameter.NOWPLAYING.text, HelpEnum.Example.NOWPLAYING.text);
       case "pandorasbox", "pb" -> sendDetailedCommandHelpEmbed(display, "Help: PandorasBox",
-          BotHelp.Description.PANDORASBOX.text, BotHelp.Alias.PANDORASBOX.text,
-          BotHelp.Parameter.PANDORASBOX.text, BotHelp.Example.PANDORASBOX.text);
+          HelpEnum.Description.PANDORASBOX.text, HelpEnum.Alias.PANDORASBOX.text,
+          HelpEnum.Parameter.PANDORASBOX.text, HelpEnum.Example.PANDORASBOX.text);
       case "pause", "stop" -> sendDetailedCommandHelpEmbed(display, "Help: Pause",
-          BotHelp.Description.PAUSE.text, BotHelp.Alias.PAUSE.text,
-          BotHelp.Parameter.PAUSE.text, BotHelp.Example.PAUSE.text);
+          HelpEnum.Description.PAUSE.text, HelpEnum.Alias.PAUSE.text,
+          HelpEnum.Parameter.PAUSE.text, HelpEnum.Example.PAUSE.text);
       case "ping", "ms" -> sendDetailedCommandHelpEmbed(display, "Help: Ping",
-          BotHelp.Description.PING.text, BotHelp.Alias.PING.text,
-          BotHelp.Parameter.PING.text, BotHelp.Example.PING.text);
+          HelpEnum.Description.PING.text, HelpEnum.Alias.PING.text,
+          HelpEnum.Parameter.PING.text, HelpEnum.Example.PING.text);
       case "play", "p" -> sendDetailedCommandHelpEmbed(display, "Help: Play",
-          BotHelp.Description.PLAY.text, BotHelp.Alias.PLAY.text,
-          BotHelp.Parameter.PLAY.text, BotHelp.Example.PLAY.text);
+          HelpEnum.Description.PLAY.text, HelpEnum.Alias.PLAY.text,
+          HelpEnum.Parameter.PLAY.text, HelpEnum.Example.PLAY.text);
       case "playnext", "after" -> sendDetailedCommandHelpEmbed(display, "Help: PlayNext",
-          BotHelp.Description.PLAYNEXT.text, BotHelp.Alias.PLAYNEXT.text,
-          BotHelp.Parameter.PLAYNEXT.text, BotHelp.Example.PLAYNEXT.text);
+          HelpEnum.Description.PLAYNEXT.text, HelpEnum.Alias.PLAYNEXT.text,
+          HelpEnum.Parameter.PLAYNEXT.text, HelpEnum.Example.PLAYNEXT.text);
       case "poll", "vote" -> sendDetailedCommandHelpEmbed(display, "Help: Poll",
-          BotHelp.Description.POLL.text, BotHelp.Alias.POLL.text,
-          BotHelp.Parameter.POLL.text, BotHelp.Example.POLL.text);
+          HelpEnum.Description.POLL.text, HelpEnum.Alias.POLL.text,
+          HelpEnum.Parameter.POLL.text, HelpEnum.Example.POLL.text);
       case "profile", "whois", "user" -> sendDetailedCommandHelpEmbed(display, "Help: Profile",
-          BotHelp.Description.PROFILE.text, BotHelp.Alias.PROFILE.text,
-          BotHelp.Parameter.PROFILE.text, BotHelp.Example.PROFILE.text);
+          HelpEnum.Description.PROFILE.text, HelpEnum.Alias.PROFILE.text,
+          HelpEnum.Parameter.PROFILE.text, HelpEnum.Example.PROFILE.text);
       case "queue", "q" -> sendDetailedCommandHelpEmbed(display, "Help: Queue",
-          BotHelp.Description.QUEUE.text, BotHelp.Alias.QUEUE.text,
-          BotHelp.Parameter.QUEUE.text, BotHelp.Example.QUEUE.text);
+          HelpEnum.Description.QUEUE.text, HelpEnum.Alias.QUEUE.text,
+          HelpEnum.Parameter.QUEUE.text, HelpEnum.Example.QUEUE.text);
       case "remind", "timer" -> sendDetailedCommandHelpEmbed(display, "Help: Remind",
-          BotHelp.Description.REMIND.text, BotHelp.Alias.REMIND.text,
-          BotHelp.Parameter.REMIND.text, BotHelp.Example.REMIND.text);
+          HelpEnum.Description.REMIND.text, HelpEnum.Alias.REMIND.text,
+          HelpEnum.Parameter.REMIND.text, HelpEnum.Example.REMIND.text);
       case "remove", "r" -> sendDetailedCommandHelpEmbed(display, "Help: Remove",
-          BotHelp.Description.REMOVE.text, BotHelp.Alias.REMOVE.text,
-          BotHelp.Parameter.REMOVE.text, BotHelp.Example.REMOVE.text);
+          HelpEnum.Description.REMOVE.text, HelpEnum.Alias.REMOVE.text,
+          HelpEnum.Parameter.REMOVE.text, HelpEnum.Example.REMOVE.text);
       case "return", "ret" -> sendDetailedCommandHelpEmbed(display, "Help: Return",
-          BotHelp.Description.RETURN.text, BotHelp.Alias.RETURN.text,
-          BotHelp.Parameter.RETURN.text, BotHelp.Example.RETURN.text);
+          HelpEnum.Description.RETURN.text, HelpEnum.Alias.RETURN.text,
+          HelpEnum.Parameter.RETURN.text, HelpEnum.Example.RETURN.text);
       case "roll", "rng", "dice" -> sendDetailedCommandHelpEmbed(display, "Help: Roll",
-          BotHelp.Description.ROLL.text, BotHelp.Alias.ROLL.text,
-          BotHelp.Parameter.ROLL.text, BotHelp.Example.ROLL.text);
+          HelpEnum.Description.ROLL.text, HelpEnum.Alias.ROLL.text,
+          HelpEnum.Parameter.ROLL.text, HelpEnum.Example.ROLL.text);
       case "searchtrack", "search", "st" -> sendDetailedCommandHelpEmbed(display, "Help: SearchTrack",
-          BotHelp.Description.SEARCHTRACK.text, BotHelp.Alias.SEARCHTRACK.text,
-          BotHelp.Parameter.SEARCHTRACK.text, BotHelp.Example.SEARCHTRACK.text);
+          HelpEnum.Description.SEARCHTRACK.text, HelpEnum.Alias.SEARCHTRACK.text,
+          HelpEnum.Parameter.SEARCHTRACK.text, HelpEnum.Example.SEARCHTRACK.text);
       case "server" -> sendDetailedCommandHelpEmbed(display, "Help: Server",
-          BotHelp.Description.SERVER.text, BotHelp.Alias.SERVER.text,
-          BotHelp.Parameter.SERVER.text, BotHelp.Example.SERVER.text);
+          HelpEnum.Description.SERVER.text, HelpEnum.Alias.SERVER.text,
+          HelpEnum.Parameter.SERVER.text, HelpEnum.Example.SERVER.text);
       case "setposition", "setpos" -> sendDetailedCommandHelpEmbed(display, "Help: SetPosition",
-          BotHelp.Description.SETPOSITION.text, BotHelp.Alias.SETPOSITION.text,
-          BotHelp.Parameter.SETPOSITION.text, BotHelp.Example.SETPOSITION.text);
+          HelpEnum.Description.SETPOSITION.text, HelpEnum.Alias.SETPOSITION.text,
+          HelpEnum.Parameter.SETPOSITION.text, HelpEnum.Example.SETPOSITION.text);
       case "settings", "config" -> sendDetailedCommandHelpEmbed(display, "Help: Settings",
-          BotHelp.Description.SETTINGS.text, BotHelp.Alias.SETTINGS.text,
-          BotHelp.Parameter.SETTINGS.text, BotHelp.Example.SETTINGS.text);
+          HelpEnum.Description.SETTINGS.text, HelpEnum.Alias.SETTINGS.text,
+          HelpEnum.Parameter.SETTINGS.text, HelpEnum.Example.SETTINGS.text);
       case "shuffle", "mix" -> sendDetailedCommandHelpEmbed(display, "Help: Shuffle",
-          BotHelp.Description.SHUFFLE.text, BotHelp.Alias.SHUFFLE.text,
-          BotHelp.Parameter.SHUFFLE.text, BotHelp.Example.SHUFFLE.text);
+          HelpEnum.Description.SHUFFLE.text, HelpEnum.Alias.SHUFFLE.text,
+          HelpEnum.Parameter.SHUFFLE.text, HelpEnum.Example.SHUFFLE.text);
       case "shutdown" -> sendDetailedCommandHelpEmbed(display, "Help: Shutdown",
-          BotHelp.Description.SHUTDOWN.text, BotHelp.Alias.SHUTDOWN.text,
-          BotHelp.Parameter.SHUTDOWN.text, BotHelp.Example.SHUTDOWN.text);
+          HelpEnum.Description.SHUTDOWN.text, HelpEnum.Alias.SHUTDOWN.text,
+          HelpEnum.Parameter.SHUTDOWN.text, HelpEnum.Example.SHUTDOWN.text);
       case "skip", "s", "next" -> sendDetailedCommandHelpEmbed(display, "Help: Skip",
-          BotHelp.Description.SKIP.text, BotHelp.Alias.SKIP.text,
-          BotHelp.Parameter.SKIP.text, BotHelp.Example.SKIP.text);
+          HelpEnum.Description.SKIP.text, HelpEnum.Alias.SKIP.text,
+          HelpEnum.Parameter.SKIP.text, HelpEnum.Example.SKIP.text);
       case "swap", "switch" -> sendDetailedCommandHelpEmbed(display, "Help: Swap",
-          BotHelp.Description.SWAP.text, BotHelp.Alias.SWAP.text,
-          BotHelp.Parameter.SWAP.text, BotHelp.Example.SWAP.text);
+          HelpEnum.Description.SWAP.text, HelpEnum.Alias.SWAP.text,
+          HelpEnum.Parameter.SWAP.text, HelpEnum.Example.SWAP.text);
       default -> {
         display.setAuthor("Help: Command Not Found");
         display.setDescription("Type `" + Settings.getPrefix() + "commands` to get a list of commands available. " +

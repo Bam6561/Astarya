@@ -24,22 +24,43 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import utility.TextReader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
- * Astarya represents the Discord bot application. Through event listeners and the command
+ * Bot represents the Discord bot application. Through event listeners and the command
  * client (an object representing the bot's various command modules), the bot can process various
  * Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.7.16
+ * @version 1.8.0
  * @since 1.0
  */
-public class Astarya {
+public class Bot {
   private static JDA api;
+
+  private enum Success {
+    BOT_LOAD_PANDORAS_BOX("Pandora's Box prompts loaded.");
+
+    public final String text;
+
+    Success(String text) {
+      this.text = text;
+    }
+  }
+
+  private enum Failure {
+    BOT_NOT_FOUND_PANDORAS_BOX("Pandora's Box prompts not found.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
+  }
 
   /**
    * Initializes Astarya and associates all of its necessary components together as a singular application.
@@ -112,10 +133,10 @@ public class Astarya {
       }
       scanner.close();
 
-      System.out.println(BotMessage.Success.BOT_LOAD_PANDORAS_BOX.text);
+      System.out.println(Success.BOT_LOAD_PANDORAS_BOX.text);
       return prompts;
     } catch (FileNotFoundException e) {
-      System.out.println(BotMessage.Failure.BOT_NOT_FOUND_PANDORAS_BOX.text);
+      System.out.println(Failure.BOT_NOT_FOUND_PANDORAS_BOX.text);
       return null;
     }
   }
@@ -129,9 +150,9 @@ public class Astarya {
   private static Set<String> loadColorRoles() {
     Set<String> colorRoles = new HashSet<>();
 
-    for (Role role : Astarya.api.getRoles()) {
+    for (Role role : Bot.api.getRoles()) {
       String roleName = role.getName();
-      if (isHexColorCode(roleName.toUpperCase())) {
+      if (TextReader.isHexColorCode(roleName.toUpperCase())) {
         if (!api.getMutualGuilds().get(0).getMembersWithRoles(role).isEmpty()) {
           colorRoles.add(roleName);
         } else {
@@ -143,29 +164,6 @@ public class Astarya {
       }
     }
     return colorRoles;
-  }
-
-  /**
-   * Determines if a role name is a hex color code.
-   *
-   * @param roleName role name
-   * @return is a hex color code
-   */
-  private static boolean isHexColorCode(String roleName) {
-    if (!roleName.startsWith("#") || roleName.length() != 7) {
-      return false;
-    }
-
-    for (char c : roleName.substring(1).toCharArray()) {
-      switch (c) {
-        case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' -> {
-        }
-        default -> {
-          return false;
-        }
-      }
-    }
-    return true;
   }
 
   /**

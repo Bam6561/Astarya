@@ -16,7 +16,7 @@ import java.util.List;
  * PlayNext is a command invocation that sets the next track to be played in the queue.
  *
  * @author Danny Nguyen
- * @version 1.7.16
+ * @version 1.8.0
  * @since 1.2.13
  */
 public class PlayNext extends Command {
@@ -25,6 +25,16 @@ public class PlayNext extends Command {
     this.aliases = new String[]{"playnext", "pn"};
     this.arguments = "[1]QueueNumber";
     this.help = "Sets the next track to be played track in the track queue.";
+  }
+
+  private enum Failure {
+    PLAYNEXT_SPECIFY("Provide next track number.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -68,7 +78,7 @@ public class PlayNext extends Command {
       try {
         processPlayNextRequest(ce, Integer.parseInt(parameters[1]));
       } catch (NumberFormatException e) {
-        ce.getChannel().sendMessage(BotMessage.Failure.PLAYNEXT_SPECIFY.text).queue();
+        ce.getChannel().sendMessage(Failure.PLAYNEXT_SPECIFY.text).queue();
       }
     } else {
       ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();

@@ -12,7 +12,7 @@ import java.util.Random;
  * CoinFlip is a command invocation that simulates coin flips.
  *
  * @author Danny Nguyen
- * @version 1.7.17
+ * @version 1.8.0
  * @since 1.0
  */
 public class CoinFlip extends Command {
@@ -21,6 +21,16 @@ public class CoinFlip extends Command {
     this.aliases = new String[]{"coinflip", "coin", "flip"};
     this.arguments = "[0]Once [1]NumberOfFlips";
     this.help = "Flips a coin.";
+  }
+
+  private enum Failure {
+    COINFLIP_RANGE("Provide between 1-10 times to flip coin.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -75,10 +85,10 @@ public class CoinFlip extends Command {
       if (validNumberOfFlips) {
         multipleFlipResults(ce, numberOfFlips);
       } else {
-        ce.getChannel().sendMessage(BotMessage.Failure.COINFLIP_RANGE.text).queue();
+        ce.getChannel().sendMessage(Failure.COINFLIP_RANGE.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.COINFLIP_RANGE.text).queue();
+      ce.getChannel().sendMessage(Failure.COINFLIP_RANGE.text).queue();
     }
   }
 

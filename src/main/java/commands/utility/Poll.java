@@ -1,6 +1,5 @@
 package commands.utility;
 
-import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -15,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Poll is a command invocation that creates a reaction vote with up to 10 options.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.8.0
  * @since 1.0
  */
 public class Poll extends Command {
@@ -27,6 +26,18 @@ public class Poll extends Command {
     this.arguments = "[2, ++]Options";
     this.help = "Creates a reaction vote with up to 10 options.";
     this.waiter = waiter;
+  }
+
+  private enum Failure {
+    POLL_SEPARATE_OPTIONS("Provide options separated by a comma."),
+    POLL_EMPTY_OPTION("Empty option."),
+    POLL_RANGE("Provide between than 1-10 options.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -48,7 +59,7 @@ public class Poll extends Command {
     if (optionsProvided) {
       readPollRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.POLL_SEPARATE_OPTIONS.text).queue();
+      ce.getChannel().sendMessage(Failure.POLL_SEPARATE_OPTIONS.text).queue();
     }
   }
 
@@ -65,7 +76,7 @@ public class Poll extends Command {
     if (noEmptyOptions) { // Prepare poll
       processPollRequest(ce, options);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.POLL_EMPTY_OPTION.text).queue();
+      ce.getChannel().sendMessage(Failure.POLL_EMPTY_OPTION.text).queue();
     }
   }
 
@@ -112,7 +123,7 @@ public class Poll extends Command {
       createPoll(ce, options);
       setPollOptions(options);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.POLL_RANGE.text).queue();
+      ce.getChannel().sendMessage(Failure.POLL_RANGE.text).queue();
     }
   }
 

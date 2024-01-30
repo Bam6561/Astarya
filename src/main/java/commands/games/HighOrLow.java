@@ -1,6 +1,5 @@
 package commands.games;
 
-import astarya.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * to guess if the next number will be higher or lower.
  *
  * @author Danny Nguyen
- * @version 1.7.17
+ * @version 1.8.0
  * @since 1.0
  */
 public class HighOrLow extends Command {
@@ -39,6 +38,15 @@ public class HighOrLow extends Command {
     this.ongoingGame = false;
   }
 
+  private enum Failure {
+    HIGHORLOW_ONGOING("Please wait until current high or low game finishes or expires.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
+  }
 
   /**
    * Sends an embed that only the user who invoked the command can react to.
@@ -57,7 +65,7 @@ public class HighOrLow extends Command {
       processGameReactions(ce);
       processGameTimeout(ce);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.HIGHORLOW_ONGOING.text).queue();
+      ce.getChannel().sendMessage(Failure.HIGHORLOW_ONGOING.text).queue();
     }
   }
 

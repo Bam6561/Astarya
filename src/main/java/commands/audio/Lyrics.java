@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.18
+ * @version 1.8.0
  * @since 1.7.2
  */
 public class Lyrics extends Command {
@@ -34,6 +34,26 @@ public class Lyrics extends Command {
     this.aliases = new String[]{"lyrics"};
     this.arguments = "[1 ++]SongName";
     this.help = "Finds lyrics of a song using Genius.";
+  }
+
+  private enum Success {
+    LYRICS_NO_MATCHES("No matches found.");
+
+    public final String text;
+
+    Success(String text) {
+      this.text = text;
+    }
+  }
+
+  private enum Failure {
+    ERROR_CONNECTION_INTERRUPTED("Connection interrupted.");
+
+    public final String text;
+
+    Failure(String text) {
+      this.text = text;
+    }
   }
 
   /**
@@ -104,7 +124,7 @@ public class Lyrics extends Command {
       return new BufferedReader(new InputStreamReader(
           connection.getInputStream(), StandardCharsets.UTF_8)).lines().collect(Collectors.joining());
     } catch (IOException e) {
-      System.out.println(BotMessage.Failure.ERROR_CONNECTION_INTERRUPTED.text);
+      System.out.println(Failure.ERROR_CONNECTION_INTERRUPTED.text);
       return null;
     }
   }
@@ -124,7 +144,7 @@ public class Lyrics extends Command {
     try {
       extractDataFromJSON(ce, section);
     } catch (JSONException e) {
-      ce.getChannel().sendMessage(BotMessage.Success.LYRICS_NO_MATCHES.text).queue();
+      ce.getChannel().sendMessage(Success.LYRICS_NO_MATCHES.text).queue();
     }
   }
 
