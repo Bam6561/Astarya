@@ -12,7 +12,6 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * to add to the queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.7.18
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
@@ -142,10 +141,10 @@ public class SearchTrack extends Command {
   private void processUserResponse(CommandEvent ce, int searchTrackResultsIndex) {
     try {
       AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-      List<AudioTrack> searchTrackResults = PlayerManager.getINSTANCE().getSearchTrackResults();
+      AudioTrack[] searchTrackResults = PlayerManager.getINSTANCE().getSearchTrackResults();
 
       // Displayed indices to users are different from data index, so subtract 1
-      AudioTrack track = searchTrackResults.get(searchTrackResultsIndex - 1);
+      AudioTrack track = searchTrackResults[searchTrackResultsIndex - 1];
       String requester = "[" + ce.getAuthor().getAsTag() + "]";
 
       audioScheduler.queue(track, requester);

@@ -99,7 +99,8 @@ public class Swap extends Command {
    */
   private void swapTracks(CommandEvent ce, int originalIndex, int swapIndex) {
     try {
-      List<TrackQueueIndex> trackQueue = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
+      List<TrackQueueIndex> trackQueue =
+          PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
       AudioTrack originalTrack = trackQueue.get(originalIndex).getAudioTrack();
       AudioTrack swapTrack = trackQueue.get(swapIndex).getAudioTrack();
 

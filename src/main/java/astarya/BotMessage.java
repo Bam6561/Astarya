@@ -12,7 +12,7 @@ public class BotMessage {
    * Sent on success.
    */
   public enum Success {
-    VERSION("V1.7.17"),
+    VERSION("V1.7.18"),
 
     BOT_LOAD_PANDORAS_BOX("Pandora's Box prompts loaded."),
 

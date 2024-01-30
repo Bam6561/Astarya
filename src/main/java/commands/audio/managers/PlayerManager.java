@@ -14,7 +14,6 @@ import commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,14 +23,14 @@ import java.util.Map;
  * search queries into playable tracks for the AudioScheduler.
  *
  * @author Danny Nguyen
- * @version 1.7.16
+ * @version 1.7.18
  * @since 1.1.0
  */
 public class PlayerManager {
   private static PlayerManager INSTANCE;
   private final Map<Long, PlaybackManager> musicManagers;
   private final AudioPlayerManager audioPlayerManager;
-  private final List<AudioTrack> searchTrackResults;
+  private final AudioTrack[] searchTrackResults;
 
   // Registers audio player with bot application
   public PlayerManager() {
@@ -39,7 +38,7 @@ public class PlayerManager {
     this.audioPlayerManager = new DefaultAudioPlayerManager();
     AudioSourceManagers.registerRemoteSources(this.audioPlayerManager);
     AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
-    this.searchTrackResults = new ArrayList<>();
+    this.searchTrackResults = new AudioTrack[5];
   }
 
   /**
@@ -159,7 +158,6 @@ public class PlayerManager {
 
       @Override
       public void playlistLoaded(AudioPlaylist playlist) {
-        searchTrackResults.clear(); // Clear results from the previous search
         processSearchTrackResults(ce, playlist);
       }
 
@@ -186,16 +184,16 @@ public class PlayerManager {
     // Limit YouTube search results to 5 tracks
     List<AudioTrack> searchResults = playlist.getTracks();
     for (int i = 0; i < 5; i++) {
-      searchTrackResults.add(searchResults.get(i));
+      searchTrackResults[i] = searchResults.get(i);
     }
 
     // Build search result's embed contents
     StringBuilder searchResultsDisplay = new StringBuilder();
     for (int i = 0; i < 5; i++) {
-      long trackDurationLong = searchTrackResults.get(i).getDuration();
+      long trackDurationLong = searchTrackResults[i].getDuration();
       String trackDuration = TrackTime.convertLong(trackDurationLong);
       searchResultsDisplay.append("**[").append(i + 1).append("]** `").
-          append(searchTrackResults.get(i).getInfo().title)
+          append(searchTrackResults[i].getInfo().title)
           .append("` {*").append(trackDuration).append("*}\n");
     }
 
@@ -205,7 +203,7 @@ public class PlayerManager {
     Settings.sendEmbed(ce, display);
   }
 
-  public List<AudioTrack> getSearchTrackResults() {
+  public AudioTrack[] getSearchTrackResults() {
     return this.searchTrackResults;
   }
 
