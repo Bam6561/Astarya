@@ -11,7 +11,7 @@ import java.lang.management.ManagementFactory;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Info is a command invocation that details information about the bot and its developer.
+ * Command invocation that details information about the bot and its developer.
  *
  * @author Danny Nguyen
  * @version 1.8.6

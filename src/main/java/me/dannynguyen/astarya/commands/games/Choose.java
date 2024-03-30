@@ -81,7 +81,7 @@ public class Choose extends Command {
    * Checks for empty options.
    *
    * @param options array of options provided by the user
-   * @return whether there exists an empty option in the array
+   * @return if there exists an empty option in the array
    */
   private boolean checkIfEmptyOptionProvided(String[] options) {
     for (String option : options) { // Find the first blank option (if any)

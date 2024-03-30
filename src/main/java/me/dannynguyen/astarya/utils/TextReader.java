@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Identifies whether a string is in hex code format.
+ * Identifies if a string is in hex code format.
  *
  * @author Danny Nguyen
  * @version 1.8.4

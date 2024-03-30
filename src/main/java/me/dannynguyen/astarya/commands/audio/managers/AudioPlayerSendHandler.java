@@ -3,39 +3,72 @@ package me.dannynguyen.astarya.commands.audio.managers;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.MutableAudioFrame;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 /**
- * AudioPlayerSendHandler is a component of LavaPlayer that handles
- * the bot's ability to play tracks in connected voice channels.
+ * Represents the component of LavaPlayer that handles the
+ * bot's ability to play tracks in connected voice channels.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.8.7
  * @since 1.1.0
  */
 public class AudioPlayerSendHandler implements AudioSendHandler {
+  /**
+   * Audio player.
+   */
   private final AudioPlayer audioPlayer;
+
+  /**
+   * Byte buffer.
+   */
   private final ByteBuffer buffer;
+
+  /**
+   * Audio frame.
+   */
   private final MutableAudioFrame frame;
 
-  public AudioPlayerSendHandler(AudioPlayer audioPlayer) {
-    this.audioPlayer = audioPlayer;
+  /**
+   * Associates the audio player with its audio player, buffer, and frame.
+   *
+   * @param audioPlayer audio player
+   */
+  public AudioPlayerSendHandler(@NotNull AudioPlayer audioPlayer) {
+    this.audioPlayer = Objects.requireNonNull(audioPlayer, "Null audio player");
     this.buffer = ByteBuffer.allocate(1024); // Allocated memory per 20ms
     this.frame = new MutableAudioFrame();
     this.frame.setBuffer(buffer);
   }
 
+  /**
+   * Gets if the audio player can play an audio frame.
+   *
+   * @return if the audio player can play an audio frame
+   */
   @Override
   public boolean canProvide() {
     return audioPlayer.provide(this.frame);
   }
 
+  /**
+   * Gets the bytes representing the audio.
+   *
+   * @return bytes representing the audio
+   */
   @Override
   public ByteBuffer provide20MsAudio() {
     return this.buffer.flip();
   }
 
+  /**
+   * Gets if the audio being played is formatted in the Opus codec.
+   *
+   * @return if the audio bing played is formatted in Opus codec
+   */
   @Override
   public boolean isOpus() {
     return true;

@@ -54,23 +54,12 @@ public class Help extends Command {
   /**
    * Represents an embed set operation.
    *
+   * @param embed embed being set
    * @author Danny Nguyen
-   * @version 1.8.6
+   * @version 1.8.7
    * @since 1.8.6
    */
-  private static class EmbedSetter() {
-    /**
-     * Embed being sent.
-     */
-    private final EmbedBuilder embed;
-
-    /**
-     * Associates an embed set operation with the embed.
-     */
-    EmbedSetter(EmbedBuilder embed) {
-      this.embed = embed;
-    }
-
+  private record EmbedSetter(EmbedBuilder embed) {
     /**
      * Sets the embed to contain all commands available.
      */
@@ -107,7 +96,7 @@ public class Help extends Command {
         case "info", "about" -> sendDetailedCommandHelpEmbed(Help.Command.INFO);
         case "join", "j" -> sendDetailedCommandHelpEmbed(Help.Command.JOIN);
         case "leave", "l", "disconnect", "dc" -> sendDetailedCommandHelpEmbed(Help.Command.LEAVE);
-        case "loop", "repeat" -> sendDetailedCommandHelpEmbed(Help.Command.LOOP;
+        case "loop", "repeat" -> sendDetailedCommandHelpEmbed(Help.Command.LOOP);
         case "lyrics" -> sendDetailedCommandHelpEmbed(Help.Command.LYRICS);
         case "nowplaying", "np" -> sendDetailedCommandHelpEmbed(Help.Command.NOWPLAYING);
         case "pandorasbox", "pb" -> sendDetailedCommandHelpEmbed(Help.Command.PANDORASBOX);

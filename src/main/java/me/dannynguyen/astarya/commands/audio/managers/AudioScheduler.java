@@ -1,10 +1,10 @@
 package me.dannynguyen.astarya.commands.audio.managers;
 
-import me.dannynguyen.astarya.Bot;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import me.dannynguyen.astarya.Bot;
 import me.dannynguyen.astarya.commands.audio.objects.TrackQueueIndex;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -15,20 +15,39 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * AudioScheduler is a component of LavaPlayer that handles the audio
+ * Represents the component of LavaPlayer that handles the audio
  * player's functionality related to playing tracks and track order.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.7
  * @since 1.1.0
  */
-
 public class AudioScheduler extends AudioEventAdapter {
+  /**
+   * Audio player.
+   */
   private final AudioPlayer audioPlayer;
+
+  /**
+   * Track queue.
+   */
   private final List<TrackQueueIndex> trackQueue;
+
+  /**
+   * Skipped tracks.
+   */
   private final LinkedList<TrackQueueIndex> skippedTracks;
+
+  /**
+   * If the audio player is looped.
+   */
   private boolean audioPlayerLooped = false;
 
+  /**
+   * Associates an audio player with its audioplayer, track queue and skipped tracks.
+   *
+   * @param audioPlayer audio player
+   */
   public AudioScheduler(AudioPlayer audioPlayer) {
     this.audioPlayer = audioPlayer;
     this.trackQueue = new ArrayList<>();
@@ -55,7 +74,7 @@ public class AudioScheduler extends AudioEventAdapter {
    *
    * @param audioPlayer audio player
    * @param loopedTrack currently looped track
-   * @param endReason   whether the audio player can continue playing the next track
+   * @param endReason   if the audio player can continue playing the next track
    */
   @Override
   public void onTrackEnd(AudioPlayer audioPlayer, AudioTrack loopedTrack, AudioTrackEndReason endReason) {
@@ -68,8 +87,9 @@ public class AudioScheduler extends AudioEventAdapter {
   }
 
   /**
-   * Adds a track to the queue, and if the audio player isn't
-   * currently playing anything, then play the track immediately.
+   * Adds a track to the queue.
+   * <p>
+   * If the audio player isn't currently playing anything, play the track immediately.
    *
    * @param track track to be added to the queue
    */
@@ -82,15 +102,15 @@ public class AudioScheduler extends AudioEventAdapter {
   }
 
   /**
-   * Goes to the next track in the queue. If the audio player has
-   * finished its queue, then update the bot's presence and activity.
+   * Goes to the next track in the queue.
+   * <p>
+   * If the audio player has finished its queue, update the bot's presence and activity.
    */
   public void nextTrack() {
     if (!trackQueue.isEmpty()) {
       audioPlayer.startTrack(trackQueue.get(0).getAudioTrack(), false);
       trackQueue.remove(0);
     } else if (!audioPlayerLooped) {
-      // Update presence when not playing audio
       audioPlayer.stopTrack();
 
       Presence presence = Bot.getApi().getPresence();
@@ -106,7 +126,7 @@ public class AudioScheduler extends AudioEventAdapter {
    * indices by 1. The maximum number of skipped tracks is 10,
    * after which adding a new skipped track removes the least recent.
    *
-   * @param skippedTrack recently skipped track
+   * @param skippedTrack {@link TrackQueueIndex}
    */
   public void addToSkippedTracks(TrackQueueIndex skippedTrack) {
     skippedTracks.addFirst(skippedTrack);
@@ -115,23 +135,46 @@ public class AudioScheduler extends AudioEventAdapter {
     }
   }
 
+  /**
+   * Gets the audio player.
+   *
+   * @return audio player
+   */
   public AudioPlayer getAudioPlayer() {
     return this.audioPlayer;
   }
 
+  /**
+   * Gets the track queue.
+   *
+   * @return track queue
+   */
   public List<TrackQueueIndex> getTrackQueue() {
     return this.trackQueue;
   }
 
+  /**
+   * Gets the skipped tracks.
+   *
+   * @return skipped tracks
+   */
   public LinkedList<TrackQueueIndex> getSkippedTracks() {
     return this.skippedTracks;
   }
 
+  /**
+   * Gets if the audio player is looped.
+   *
+   * @return if the audio player is looped
+   */
   public boolean getAudioPlayerLooped() {
     return this.audioPlayerLooped;
   }
 
-  public void setAudioPlayerLooped(boolean audioPlayerLooped) {
-    this.audioPlayerLooped = audioPlayerLooped;
+  /**
+   * Toggles the state of the audio player.
+   */
+  public void toggleAudioPlayerLooped() {
+    audioPlayerLooped = !audioPlayerLooped;
   }
 }

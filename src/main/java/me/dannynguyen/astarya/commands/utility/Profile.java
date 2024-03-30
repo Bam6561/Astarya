@@ -119,7 +119,7 @@ public class Profile extends Command {
    * @param display       the embed builder
    * @param member        the guild member
    * @param user          the Discord user
-   * @param isGuildMember whether the user is in the same guild
+   * @param isGuildMember if the user is in the same guild
    * @param dtf           M/d/yy hh:mm
    * @param dtf2          M/d hh:mm
    */

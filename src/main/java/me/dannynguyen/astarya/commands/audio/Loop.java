@@ -1,18 +1,18 @@
 package me.dannynguyen.astarya.commands.audio;
 
-import me.dannynguyen.astarya.enums.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import me.dannynguyen.astarya.commands.audio.managers.AudioScheduler;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
 import me.dannynguyen.astarya.commands.owner.Settings;
+import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 /**
- * Loop is a command invocation that sets a boolean value of whether to loop the currently playing track.
+ * Loop is a command invocation that sets a boolean value of if to loop the currently playing track.
  *
  * @author Danny Nguyen
- * @version 1.7.16
+ * @version 1.8.7
  * @since 1.2.6
  */
 public class Loop extends Command {
@@ -54,13 +54,12 @@ public class Loop extends Command {
    */
   private void setAudioPlayerLoop(CommandEvent ce) {
     AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
+    audioScheduler.toggleAudioPlayerLooped();
 
     StringBuilder loopConfirmation = new StringBuilder();
-    if (!audioScheduler.getAudioPlayerLooped()) {
-      audioScheduler.setAudioPlayerLooped(true);
+    if (audioScheduler.getAudioPlayerLooped()) {
       loopConfirmation.append("**Loop:** `ON` [").append(ce.getAuthor().getAsTag()).append("]");
     } else {
-      audioScheduler.setAudioPlayerLooped(false);
       loopConfirmation.append("**Loop:** `OFF` [").append(ce.getAuthor().getAsTag()).append("]");
     }
     ce.getChannel().sendMessage(loopConfirmation).queue();

@@ -18,20 +18,38 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * PlayerManager is a LavaPlayer component that converts files and
- * search queries into playable tracks for the AudioScheduler.
+ * Represents a LavaPlayer component that converts files and
+ * search queries into playable tracks for the {@link AudioScheduler}.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.7
  * @since 1.1.0
  */
 public class PlayerManager {
+  /**
+   * Instance of the player manager.
+   */
   private static PlayerManager INSTANCE;
+
+  /**
+   * {@link PlaybackManager}
+   */
   private final Map<Long, PlaybackManager> musicManagers;
+
+  /**
+   * Audio player manager.
+   */
   private final AudioPlayerManager audioPlayerManager;
+
+  /**
+   * Search results from {@link me.dannynguyen.astarya.commands.audio.SearchTrack}.
+   */
   private final AudioTrack[] searchTrackResults;
 
-  // Registers audio player with bot application
+  /**
+   * Associates player manager with its music managers, audio
+   * player managers, audio source managers, and search track results.
+   */
   public PlayerManager() {
     this.musicManagers = new HashMap<>();
     this.audioPlayerManager = new DefaultAudioPlayerManager();
@@ -45,11 +63,12 @@ public class PlayerManager {
    * after the play command request to put in the queue.
    * <p>
    * YouTube video links and media files are handled by the trackLoaded method.
+   * <p>
    * YouTube playlist links and search queries are handled by the playlistLoaded method.
    *
    * @param ce       command event
    * @param trackUrl either a direct url link to the track(s) requested or a YouTube search query
-   * @param isSilent whether to send a confirmation in the text channel
+   * @param isSilent if to send a confirmation in the text channel
    */
   public void createAudioTrack(CommandEvent ce, String trackUrl, boolean isSilent) {
     final PlaybackManager playbackManager = this.getPlaybackManager(ce.getGuild());
@@ -71,12 +90,16 @@ public class PlayerManager {
 
       @Override
       public void noMatches() {
-        if (!isSilent) ce.getChannel().sendMessage(Failure.UNABLE_TO_FIND_TRACK.text).queue();
+        if (!isSilent) {
+          ce.getChannel().sendMessage(Failure.UNABLE_TO_FIND_TRACK.getMessage()).queue();
+        }
       }
 
       @Override
       public void loadFailed(FriendlyException throwable) {
-        if (!isSilent) ce.getChannel().sendMessage(Failure.UNABLE_TO_LOAD_TRACK.text).queue();
+        if (!isSilent) {
+          ce.getChannel().sendMessage(Failure.UNABLE_TO_LOAD_TRACK.getMessage()).queue();
+        }
       }
     });
   }
@@ -85,17 +108,15 @@ public class PlayerManager {
    * Adds a YouTube video or media file into the queue.
    *
    * @param ce             command event
-   * @param audioScheduler audio scheduler
+   * @param audioScheduler {@link AudioScheduler}
    * @param track          track to be added into the queue
-   * @param isSilent       whether to send a confirmation in the text channel
+   * @param isSilent       if to send a confirmation in the text channel
    */
-  private void processYouTubeLinksAndMediaFiles(CommandEvent ce, AudioScheduler audioScheduler,
-                                                AudioTrack track, boolean isSilent) {
+  private void processYouTubeLinksAndMediaFiles(CommandEvent ce, AudioScheduler audioScheduler, AudioTrack track, boolean isSilent) {
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
     audioScheduler.queue(track, requester);
     if (!isSilent) {
-      ce.getChannel().sendMessage("**Added:** `" + track.getInfo().title + "` {*"
-          + TrackTime.convertLong(track.getDuration()) + "*} " + requester).queue();
+      ce.getChannel().sendMessage("**Added:** `" + track.getInfo().title + "` {*" + TrackTime.convertLong(track.getDuration()) + "*} " + requester).queue();
     }
   }
 
@@ -104,18 +125,16 @@ public class PlayerManager {
    *
    * @param ce             command event
    * @param trackPlaylist  tracks from the search query
-   * @param audioScheduler audio scheduler
-   * @param isSilent       whether to send a confirmation in the text channel
+   * @param audioScheduler {@link AudioScheduler}
+   * @param isSilent       if to send a confirmation in the text channel
    */
-  private void processYouTubeSearchQueries(CommandEvent ce, AudioPlaylist trackPlaylist,
-                                           AudioScheduler audioScheduler, boolean isSilent) {
+  private void processYouTubeSearchQueries(CommandEvent ce, AudioPlaylist trackPlaylist, AudioScheduler audioScheduler, boolean isSilent) {
     List<AudioTrack> searchResults = trackPlaylist.getTracks();
     AudioTrack track = searchResults.get(0);
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
     audioScheduler.queue(track, requester);
     if (!isSilent) {
-      ce.getChannel().sendMessage("**Added:** `" + searchResults.get(0).getInfo().title + "` {*"
-          + TrackTime.convertLong(track.getDuration()) + "*} " + requester).queue();
+      ce.getChannel().sendMessage("**Added:** `" + searchResults.get(0).getInfo().title + "` {*" + TrackTime.convertLong(track.getDuration()) + "*} " + requester).queue();
     }
   }
 
@@ -124,24 +143,23 @@ public class PlayerManager {
    *
    * @param ce             command event
    * @param trackPlaylist  tracks retrieved from playlist
-   * @param audioScheduler audio scheduler
-   * @param isSilent       whether to send a confirmation in the text channel
+   * @param audioScheduler {@link AudioScheduler}
+   * @param isSilent       if to send a confirmation in the text channel
    */
-  private void processYouTubePlaylistLinks(CommandEvent ce, AudioPlaylist trackPlaylist,
-                                           AudioScheduler audioScheduler, boolean isSilent) {
+  private void processYouTubePlaylistLinks(CommandEvent ce, AudioPlaylist trackPlaylist, AudioScheduler audioScheduler, boolean isSilent) {
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
     for (int i = 0; i < trackPlaylist.getTracks().size(); i++) {
       audioScheduler.queue(trackPlaylist.getTracks().get(i), requester);
     }
     if (!isSilent) {
-      ce.getChannel().sendMessage("**Added:** `" + trackPlaylist.getTracks().size()
-          + "` tracks " + requester).queue();
+      ce.getChannel().sendMessage("**Added:** `" + trackPlaylist.getTracks().size() + "` tracks " + requester).queue();
     }
   }
 
   /**
-   * Used in conjunction with the SearchTrack command request, this method displays tracks from a
-   * YouTube search query and adds them into a list for the user to later choose from to queue.
+   * Used in conjunction with {@link me.dannynguyen.astarya.commands.audio.SearchTrack},
+   * this method displays tracks from a YouTube search query and
+   * adds them into a list for the user to later choose from to queue.
    *
    * @param ce                 command event
    * @param youtubeSearchQuery youtube search query
@@ -151,7 +169,7 @@ public class PlayerManager {
     this.audioPlayerManager.loadItemOrdered(playbackManager, youtubeSearchQuery, new AudioLoadResultHandler() {
       @Override
       public void trackLoaded(AudioTrack track) {
-        ce.getChannel().sendMessage(Failure.USE_PLAY_COMMAND.text).queue();
+        ce.getChannel().sendMessage("Use play command to queue tracks.").queue();
       }
 
       @Override
@@ -161,12 +179,12 @@ public class PlayerManager {
 
       @Override
       public void noMatches() {
-        ce.getChannel().sendMessage(Failure.UNABLE_TO_FIND_TRACK.text).queue();
+        ce.getChannel().sendMessage(Failure.UNABLE_TO_FIND_TRACK.getMessage()).queue();
       }
 
       @Override
       public void loadFailed(FriendlyException throwable) {
-        ce.getChannel().sendMessage(Failure.UNABLE_TO_LOAD_TRACK.text).queue();
+        ce.getChannel().sendMessage(Failure.UNABLE_TO_LOAD_TRACK.getMessage()).queue();
       }
     });
   }
@@ -179,28 +197,29 @@ public class PlayerManager {
    * @param playlist YouTube search results
    */
   private void processSearchTrackResults(CommandEvent ce, AudioPlaylist playlist) {
-    // Limit YouTube search results to 5 tracks
     List<AudioTrack> searchResults = playlist.getTracks();
     for (int i = 0; i < 5; i++) {
       searchTrackResults[i] = searchResults.get(i);
     }
 
-    // Build search result's embed contents
     StringBuilder searchResultsDisplay = new StringBuilder();
     for (int i = 0; i < 5; i++) {
       long trackDurationLong = searchTrackResults[i].getDuration();
       String trackDuration = TrackTime.convertLong(trackDurationLong);
-      searchResultsDisplay.append("**[").append(i + 1).append("]** `").
-          append(searchTrackResults[i].getInfo().title)
-          .append("` {*").append(trackDuration).append("*}\n");
+      searchResultsDisplay.append("**[").append(i + 1).append("]** `").append(searchTrackResults[i].getInfo().title).append("` {*").append(trackDuration).append("*}\n");
     }
 
-    EmbedBuilder display = new EmbedBuilder();
-    display.setTitle("**__Search Results__**");
-    display.setDescription(searchResultsDisplay);
-    Settings.sendEmbed(ce, display);
+    EmbedBuilder embed = new EmbedBuilder();
+    embed.setTitle("**__Search Results__**");
+    embed.setDescription(searchResultsDisplay);
+    Settings.sendEmbed(ce, embed);
   }
 
+  /**
+   * Gets search track results.
+   *
+   * @return search track results
+   */
   public AudioTrack[] getSearchTrackResults() {
     return this.searchTrackResults;
   }
@@ -220,6 +239,11 @@ public class PlayerManager {
     });
   }
 
+  /**
+   * Gets an instance of the player manager.
+   *
+   * @return instance of the player manager
+   */
   public static PlayerManager getINSTANCE() {
     if (INSTANCE == null) {
       INSTANCE = new PlayerManager();
@@ -227,15 +251,41 @@ public class PlayerManager {
     return INSTANCE;
   }
 
+  /**
+   * Types of track parsing failures.
+   */
   private enum Failure {
-    USE_PLAY_COMMAND("Use play command to queue tracks."),
+    /**
+     * Unable to find track.
+     */
     UNABLE_TO_FIND_TRACK("Unable to find track."),
+
+    /**
+     * Unable to load track.
+     */
     UNABLE_TO_LOAD_TRACK("Unable to load track.");
 
-    public final String text;
+    /**
+     * Message.
+     */
+    private final String message;
 
-    Failure(String text) {
-      this.text = text;
+    /**
+     * Associates a failure with its message.
+     *
+     * @param message message
+     */
+    Failure(String message) {
+      this.message = message;
+    }
+
+    /**
+     * Gets the failure's message.
+     *
+     * @return failure's message
+     */
+    public String getMessage() {
+      return this.message;
     }
   }
 }

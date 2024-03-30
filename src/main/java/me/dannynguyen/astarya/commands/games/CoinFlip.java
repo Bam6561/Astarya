@@ -62,7 +62,7 @@ public class CoinFlip extends Command {
   }
 
   /**
-   * Checks whether the user requested number of flips is an integer and is in range of 1-10.
+   * Checks if the user requested number of flips is an integer and is in range of 1-10.
    *
    * @param ce         command event
    * @param parameters user provided parameters

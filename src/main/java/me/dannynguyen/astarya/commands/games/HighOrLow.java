@@ -30,7 +30,7 @@ public class HighOrLow extends Command {
   public HighOrLow(EventWaiter waiter) {
     this.name = "highorlow";
     this.aliases = new String[]{"highorlow", "guess"};
-    this.help = "Guess whether the next number will be higher or lower!";
+    this.help = "Guess if the next number will be higher or lower!";
     this.waiter = waiter;
     this.firstNumber = 0;
     this.secondNumber = 0;

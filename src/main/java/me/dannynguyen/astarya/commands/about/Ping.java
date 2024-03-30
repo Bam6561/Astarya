@@ -5,13 +5,16 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import me.dannynguyen.astarya.commands.owner.Settings;
 
 /**
- * Ping is a command invocation that responds with the response time of the bot in milliseconds.
+ * Command invocation that responds with the response time of the bot in milliseconds.
  *
  * @author Danny Nguyen
  * @version 1.5.4
  * @since 1.0
  */
 public class Ping extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Ping() {
     this.name = "ping";
     this.aliases = new String[]{"ping", "ms"};

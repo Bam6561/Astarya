@@ -70,7 +70,7 @@ public class Remind extends Command {
    * Checks for recognized time types.
    *
    * @param parameters user provided parameters
-   * @return whether the time type provided is valid
+   * @return if the time type provided is valid
    */
   private boolean checkValidTimeTypeProvided(String[] parameters) {
     int numberOfParameters = parameters.length;
@@ -103,7 +103,7 @@ public class Remind extends Command {
    * Checks if the first parameter ends in d, h, m, or s.
    *
    * @param parameters user provided parameters
-   * @return whether the time type exists in the first parameter
+   * @return if the time type exists in the first parameter
    */
   private boolean checkTimeTypeInFirstParameter(String[] parameters) {
     char timeType = parameters[1].charAt(parameters[1].length() - 1);
@@ -119,7 +119,7 @@ public class Remind extends Command {
    * @param ce                   command event
    * @param parameters           user provided parameters
    * @param numberOfParameters   number of user provided parameters
-   * @param timeInFirstParameter whether the time type exists in the first parameter
+   * @param timeInFirstParameter if the time type exists in the first parameter
    * @throws NumberFormatException user provided non-integer values
    */
   private void processTimeTypeBasedOnLocation(CommandEvent ce, String[] parameters,
@@ -170,7 +170,7 @@ public class Remind extends Command {
    *
    * @param timeDuration duration of time
    * @param timeType     type of time
-   * @return whether the time duration is within 1 week.
+   * @return if the time duration is within 1 week.
    */
   private boolean checkTimeDuration(int timeDuration, char timeType) {
     if (timeType == 'd' && timeDuration >= 0 && timeDuration <= 7) {
@@ -192,7 +192,7 @@ public class Remind extends Command {
    *
    * @param parameters           user provided parameters
    * @param numberOfParameters   number of user provided parameters
-   * @param timeInFirstParameter whether the time type exists in the first parameter
+   * @param timeInFirstParameter if the time type exists in the first parameter
    * @param timerName            name of the reminder
    * @return name of the reminder
    */

@@ -48,7 +48,7 @@ public class Bot {
   /**
    * Bot version.
    */
-  public static final String version = "V1.8.6";
+  public static final String version = "V1.8.7";
 
   /**
    * Discord API.
