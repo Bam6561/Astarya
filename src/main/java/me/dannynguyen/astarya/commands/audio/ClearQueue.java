@@ -2,20 +2,22 @@ package me.dannynguyen.astarya.commands.audio;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import me.dannynguyen.astarya.commands.audio.managers.AudioScheduler;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 
 /**
- * ClearQueue is a command invocation that clears the queue.
+ * Command invocation that clears the queue.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.8.9
  * @since 1.2.2
  */
 public class ClearQueue extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public ClearQueue() {
     this.name = "clearqueue";
     this.aliases = new String[]{"clearqueue", "clear"};
@@ -23,7 +25,7 @@ public class ClearQueue extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel as the bot to read a clearQueue command request.
+   * Checks if the user is in the same voice channel as the bot to read a command request.
    *
    * @param ce command event
    */
@@ -31,18 +33,18 @@ public class ClearQueue extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
-    GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
+    AudioChannelUnion userChannel = ce.getMember().getVoiceState().getChannel();
+    AudioChannelUnion botChannel = ce.getGuild().getSelfMember().getVoiceState().getChannel();
 
-    try {
-      boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-      if (userInSameVoiceChannel) {
-        clearTrackQueue(ce);
-      } else {
-        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
-      }
-    } catch (NullPointerException e) {
+    if (userChannel == null) {
       ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
+      return;
+    }
+
+    if (userChannel.equals(botChannel)) {
+      clearTrackQueue(ce);
+    } else {
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
     }
   }
 
@@ -52,18 +54,7 @@ public class ClearQueue extends Command {
    * @param ce command event
    */
   private void clearTrackQueue(CommandEvent ce) {
-    AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-
-    audioScheduler.getTrackQueue().clear();
-    sendClearQueueConfirmation(ce);
-  }
-
-  /**
-   * Sends a confirmation the queue was cleared.
-   *
-   * @param ce command event
-   */
-  private void sendClearQueueConfirmation(CommandEvent ce) {
+    PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue().clear();
     StringBuilder clearQueueConfirmation = new StringBuilder();
     clearQueueConfirmation.append("**Queue Clear:** [").append(ce.getAuthor().getAsTag()).append("]");
     ce.getChannel().sendMessage(clearQueueConfirmation).queue();

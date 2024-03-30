@@ -6,16 +6,19 @@ import me.dannynguyen.astarya.commands.audio.managers.AudioScheduler;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 
 /**
- * Loop is a command invocation that sets a boolean value of if to loop the currently playing track.
+ * Command invocation that the state of looping the currently playing track.
  *
  * @author Danny Nguyen
- * @version 1.8.7
+ * @version 1.8.9
  * @since 1.2.6
  */
 public class Loop extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Loop() {
     this.name = "loop";
     this.aliases = new String[]{"loop", "repeat"};
@@ -23,27 +26,26 @@ public class Loop extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel as the bot to read a loop command request.
+   * Checks if the user is in the same voice channel as the bot to read the command request.
    *
    * @param ce command event
-   * @throws NullPointerException user not in same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
-    GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
+    AudioChannelUnion userChannel = ce.getMember().getVoiceState().getChannel();
+    AudioChannelUnion botChannel = ce.getGuild().getSelfMember().getVoiceState().getChannel();
 
-    try {
-      boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-      if (userInSameVoiceChannel) {
-        setAudioPlayerLoop(ce);
-      } else {
-        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
-      }
-    } catch (NullPointerException e) {
+    if (userChannel == null) {
       ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
+      return;
+    }
+
+    if (userChannel.equals(botChannel)) {
+      setAudioPlayerLoop(ce);
+    } else {
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
     }
   }
 

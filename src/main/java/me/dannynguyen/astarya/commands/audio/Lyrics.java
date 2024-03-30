@@ -18,15 +18,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 /**
- * Lyrics is a command invocation that queries Genius API for a song's lyrics.
+ * Command invocation that queries Genius API for a song's lyrics.
  * <p>
  * By default, the command is set to return the first five matches.
  *
  * @author Danny Nguyen
- * @version 1.8.8
+ * @version 1.8.9
  * @since 1.7.2
  */
 public class Lyrics extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Lyrics() {
     this.name = "lyrics";
     this.aliases = new String[]{"lyrics"};
@@ -35,7 +38,7 @@ public class Lyrics extends Command {
   }
 
   /**
-   * Checks if user provided parameters to process the lyrics command request.
+   * Checks if user provided parameters to process the command request.
    *
    * @param ce command event
    */
@@ -47,184 +50,161 @@ public class Lyrics extends Command {
     int numberOfParameters = parameters.length - 1;
 
     if (numberOfParameters >= 1) {
-      processLyricsRequest(ce, parameters);
+      new GeniusQuery(ce, parameters).processLyricsRequest();
     } else {
       ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
   }
 
   /**
-   * Combines an endpoint URL with its search query to query Genius API with.
+   * Represents a Genius track query.
    *
-   * @param ce         command event
-   * @param parameters user provided parameters
-   * @throws MalformedURLException invalid URL
+   * @author Danny Nguyen
+   * @version 1.8.9
+   * @since 1.8.9
    */
-  private void processLyricsRequest(CommandEvent ce, String[] parameters) {
-    try {
-      URL endpointUrlQuery = new URL("https://genius.com/api/search/song?q=" + buildSearchQuery(parameters));
-      String httpResponse = readHttpResponse(endpointUrlQuery);
-      processHttpResponse(ce, httpResponse);
-    } catch (MalformedURLException ignored) {
-      // Url is pre-set to be non-null
-    }
-  }
+  private class GeniusQuery {
+    /**
+     * Command event.
+     */
+    private final CommandEvent ce;
 
-  /**
-   * Builds a search query from user provided parameters.
-   *
-   * @param parameters user provided parameters
-   * @return text containing search query
-   */
-  private String buildSearchQuery(String[] parameters) {
-    StringBuilder searchQuery = new StringBuilder();
-    for (int i = 1; i < parameters.length; i++) {
-      searchQuery.append(parameters[i]);
-      if (i < parameters.length - 1) {
-        searchQuery.append("%20");
+    /**
+     * User provided parameters.
+     */
+    private final String[] parameters;
+
+    /**
+     * Associates a Genius query with its components.
+     *
+     * @param ce         command event
+     * @param parameters parameters
+     */
+    GeniusQuery(CommandEvent ce, String[] parameters) {
+      this.ce = ce;
+      this.parameters = parameters;
+    }
+
+    /**
+     * Combines an endpoint URL with its search query to query Genius API with.
+     */
+    private void processLyricsRequest() {
+      try {
+        URL endpointUrlQuery = new URL("https://genius.com/api/search/song?q=" + buildSearchQuery());
+        String httpResponse = readHttpResponse(endpointUrlQuery);
+        processHttpResponse(httpResponse);
+      } catch (MalformedURLException ignored) {
+        // Url is pre-set to be non-null
       }
     }
-    return searchQuery.toString();
-  }
 
-  /**
-   * Reads the query response from Genius API.
-   *
-   * @param endpointUrlQuery endpoint and its search query
-   * @return http response
-   * @throws IOException interrupted input stream
-   */
-  private String readHttpResponse(URL endpointUrlQuery) {
-    try {
-      HttpURLConnection connection = (HttpURLConnection) endpointUrlQuery.openConnection();
-      connection.setRequestMethod("GET");
-      connection.connect();
-      return new BufferedReader(new InputStreamReader(
-          connection.getInputStream(), StandardCharsets.UTF_8)).lines().collect(Collectors.joining());
-    } catch (IOException e) {
-      System.out.println(Failure.CONNECTION_INTERRUPTED.text);
-      return null;
-    }
-  }
-
-  /**
-   * Reads the Https response as a JSON and checks if any results were found.
-   *
-   * @param ce           command event
-   * @param httpResponse the response from the http connection
-   * @throws JSONException no results found
-   */
-  private void processHttpResponse(CommandEvent ce, String httpResponse) {
-    // Main JSON body
-    JSONObject httpResponseJSON = new JSONObject(httpResponse);
-    JSONObject section = (JSONObject) httpResponseJSON.
-        getJSONObject("response").getJSONArray("sections").get(0);
-    try {
-      extractDataFromJSON(ce, section);
-    } catch (JSONException e) {
-      ce.getChannel().sendMessage(Success.NO_MATCHES.text).queue();
-    }
-  }
-
-  /**
-   * Extracts data from JSON fields to respond to user's lyrics request.
-   *
-   * @param ce      command event
-   * @param section main JSON body
-   */
-  private void extractDataFromJSON(CommandEvent ce, JSONObject section) {
-    // Title & URL from top 5 matches
-    GeniusMatchResult[] matches = new GeniusMatchResult[5];
-    for (int i = 0; i < 5; i++) {
-      JSONObject match = section.getJSONArray("hits").getJSONObject(i).getJSONObject("result");
-      matches[i] = new GeniusMatchResult(match.getString("title_with_featured"), match.getString("url"));
-    }
-    buildLyricsEmbed(ce, section, matches);
-  }
-
-  /**
-   * Builds the lyrics results embed.
-   *
-   * @param ce      command event
-   * @param section main JSON body
-   * @param matches query matches
-   */
-  private void buildLyricsEmbed(CommandEvent ce, JSONObject section, GeniusMatchResult[] matches) {
-    // - Title [Link](URL)
-    StringBuilder lyricsEmbedDescription = new StringBuilder();
-    for (GeniusMatchResult geniusMatchResult : matches) {
-      lyricsEmbedDescription.append("- ").append(geniusMatchResult.getTitle());
-      lyricsEmbedDescription.append(" [Link](").append(geniusMatchResult.getUrl()).append(") \n");
-    }
-
-    // Embed Thumbnail
-    String firstMatchImageLink = section.getJSONArray("hits").
-        getJSONObject(0).getJSONObject("result").getString("song_art_image_url");
-
-    sendLyricsEmbed(ce, lyricsEmbedDescription.toString(), firstMatchImageLink);
-  }
-
-  /**
-   * Sends the lyric results embed.
-   *
-   * @param ce                     command event
-   * @param lyricsEmbedDescription list of title and lyrics links
-   * @param firstMatchImageLink    first match's image link
-   */
-  private void sendLyricsEmbed(CommandEvent ce, String lyricsEmbedDescription, String firstMatchImageLink) {
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("Lyrics Results");
-    display.setThumbnail(firstMatchImageLink);
-    display.setDescription(lyricsEmbedDescription);
-    Settings.sendEmbed(ce, display);
-  }
-
-  private enum Success {
-    NO_MATCHES("No matches found.");
-
-    public final String text;
-
-    Success(String text) {
-      this.text = text;
-    }
-  }
-
-  private enum Failure {
-    CONNECTION_INTERRUPTED("Connection interrupted.");
-
-    public final String text;
-
-    Failure(String text) {
-      this.text = text;
-    }
-  }
-
-  /**
-   * Represents a track result from Genius API.
-   *
-   * @param title track title
-   * @param url   track url
-   * @author Danny Nguyen
-   * @version 1.7.8
-   * @since 1.7.2
-   */
-  private record GeniusMatchResult(String title, String url) {
     /**
-     * Gets the track's title.
+     * Builds a search query from user provided parameters.
      *
-     * @return track's title
+     * @return text containing search query
      */
-    private String getTitle() {
-      return this.title;
+    private String buildSearchQuery() {
+      StringBuilder searchQuery = new StringBuilder();
+      for (int i = 1; i < parameters.length; i++) {
+        searchQuery.append(parameters[i]);
+        if (i < parameters.length - 1) {
+          searchQuery.append("%20");
+        }
+      }
+      return searchQuery.toString();
     }
 
     /**
-     * Gets the track's url.
+     * Reads the query response from Genius API.
      *
-     * @return track's url
+     * @param endpointUrlQuery endpoint and its search query
+     * @return HTTP response
      */
-    private String getUrl() {
-      return this.url;
+    private String readHttpResponse(URL endpointUrlQuery) {
+      try {
+        HttpURLConnection connection = (HttpURLConnection) endpointUrlQuery.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        return new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)).lines().collect(Collectors.joining());
+      } catch (IOException e) {
+        System.out.println("Connection interrupted.");
+        return null;
+      }
+    }
+
+    /**
+     * Reads the HTTP response as a JSON and checks if
+     * any results were found before parsing its data.
+     *
+     * @param httpResponse the response from the http connection
+     */
+    private void processHttpResponse(String httpResponse) {
+      // Main JSON body
+      JSONObject httpResponseJSON = new JSONObject(httpResponse);
+      JSONObject section = (JSONObject) httpResponseJSON.getJSONObject("response").getJSONArray("sections").get(0);
+      try {
+        // Title & URL from top 5 matches
+        GeniusMatchResult[] matches = new GeniusMatchResult[5];
+        for (int i = 0; i < 5; i++) {
+          JSONObject match = section.getJSONArray("hits").getJSONObject(i).getJSONObject("result");
+          matches[i] = new GeniusMatchResult(match.getString("title_with_featured"), match.getString("url"));
+        }
+        sendLyricsEmbed(section, matches);
+      } catch (JSONException e) {
+        ce.getChannel().sendMessage("No matches found.").queue();
+      }
+    }
+
+    /**
+     * Sends the lyrics results embed.
+     *
+     * @param section main JSON body
+     * @param matches query matches
+     */
+    private void sendLyricsEmbed(JSONObject section, GeniusMatchResult[] matches) {
+      // - Title [Link](URL)
+      StringBuilder descriptionBuilder = new StringBuilder();
+      for (GeniusMatchResult geniusMatchResult : matches) {
+        descriptionBuilder.append("- ").append(geniusMatchResult.getTitle());
+        descriptionBuilder.append(" [Link](").append(geniusMatchResult.getUrl()).append(") \n");
+      }
+      // Embed Thumbnail
+      String firstMatchImageLink = section.getJSONArray("hits").getJSONObject(0).getJSONObject("result").getString("song_art_image_url");
+
+      EmbedBuilder embed = new EmbedBuilder();
+      embed.setAuthor("Lyrics Results");
+      embed.setThumbnail(firstMatchImageLink);
+      embed.setDescription(descriptionBuilder);
+      Settings.sendEmbed(ce, embed);
+    }
+
+    /**
+     * Represents a track result from Genius API.
+     *
+     * @param title track title
+     * @param url   track url
+     * @author Danny Nguyen
+     * @version 1.7.8
+     * @since 1.7.2
+     */
+    private record GeniusMatchResult(String title, String url) {
+      /**
+       * Gets the track's title.
+       *
+       * @return track's title
+       */
+      private String getTitle() {
+        return this.title;
+      }
+
+      /**
+       * Gets the track's url.
+       *
+       * @return track's url
+       */
+      private String getUrl() {
+        return this.url;
+      }
     }
   }
 }
