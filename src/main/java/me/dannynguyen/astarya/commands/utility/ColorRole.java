@@ -5,7 +5,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import me.dannynguyen.astarya.Bot;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
-import me.dannynguyen.astarya.utility.TextReader;
+import me.dannynguyen.astarya.utils.TextReader;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;

@@ -1,4 +1,4 @@
-package me.dannynguyen.astarya.utility;
+package me.dannynguyen.astarya.utils;
 
 import org.jetbrains.annotations.NotNull;
 

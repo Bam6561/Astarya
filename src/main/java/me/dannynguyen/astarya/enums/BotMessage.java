@@ -13,7 +13,7 @@ public enum BotMessage {
   /**
    * Bot version.
    */
-  VERSION("V1.8.4"),
+  VERSION("V1.8.5"),
 
   /**
    * Unable to manage messages.

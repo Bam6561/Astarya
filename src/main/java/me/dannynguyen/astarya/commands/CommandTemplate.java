@@ -12,6 +12,9 @@ import me.dannynguyen.astarya.commands.owner.Settings;
  * @since 1.0
  */
 public class CommandTemplate extends Command {
+  /**
+   * Associates command with its properties.
+   */
   public CommandTemplate() {
     this.name = "";
     this.aliases = new String[]{""};

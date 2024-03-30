@@ -16,13 +16,14 @@ import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.commands.owner.Shutdown;
 import me.dannynguyen.astarya.commands.utility.*;
 import me.dannynguyen.astarya.enums.BotMessage;
-import me.dannynguyen.astarya.utility.TextReader;
+import me.dannynguyen.astarya.utils.TextReader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.api.managers.Presence;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -38,7 +39,7 @@ import java.util.*;
  * Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.8.5
  * @since 1.0
  */
 public class Bot {
@@ -71,8 +72,10 @@ public class Bot {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    api.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
-    api.getPresence().setActivity(Activity.listening("Nothing"));
+
+    Presence presence = api.getPresence();
+    presence.setStatus(OnlineStatus.DO_NOT_DISTURB);
+    presence.setActivity(Activity.listening("Nothing"));
 
     EventWaiter waiter = new EventWaiter();
     api.addEventListener(createCommandClient(waiter), waiter, new MessageEvent());
@@ -85,11 +88,10 @@ public class Bot {
    * @return command listener
    */
   private static CommandClient createCommandClient(EventWaiter waiter) {
-    CommandClientBuilder commands = new CommandClientBuilder();
-
     String prefix = "<";
     String alternativePrefix = "A:";
 
+    CommandClientBuilder commands = new CommandClientBuilder();
     commands.setOwnerId("204448598539239424"); // Bam#6561
     commands.setHelpWord("commands");
     commands.setPrefix(prefix);
