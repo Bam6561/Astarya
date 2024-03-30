@@ -3,7 +3,7 @@ package me.dannynguyen.astarya;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.time.LocalDateTime;
@@ -141,8 +141,7 @@ public class MessageEvent extends ListenerAdapter {
     private void repostMessage(String messageToRepost) {
       try {
         message.delete().queue();
-      } catch (ErrorResponseException ignored) {
-        // Insufficient permissions
+      } catch (InsufficientPermissionException ignored) {
       }
 
       Message reply = message.getReferencedMessage();

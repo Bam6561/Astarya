@@ -15,12 +15,12 @@ import me.dannynguyen.astarya.commands.owner.Delete;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.commands.owner.Shutdown;
 import me.dannynguyen.astarya.commands.utility.*;
-import me.dannynguyen.astarya.enums.BotMessage;
 import me.dannynguyen.astarya.utils.TextReader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.managers.Presence;
@@ -34,19 +34,31 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
- * Represents the Discord bot application. Through event listeners and the command client
- * (an object representing the bot's various command modules), the bot can process various
- * Discord API requests given to it by users in Discord chat through the usage of its bot token.
+ * Represents the Discord bot application.
+ * <p>
+ * Through event listeners and the command client, the bot can
+ * process various Discord API requests given to it by users
+ * in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.8.5
+ * @version 1.8.6
  * @since 1.0
  */
 public class Bot {
   /**
+   * Bot version.
+   */
+  public static final String version = "V1.8.6";
+
+  /**
    * Discord API.
    */
   private static JDA api;
+
+  /**
+   * Command client.
+   */
+  private static CommandClient commandClient;
 
   /**
    * No parameter constructor.
@@ -61,14 +73,13 @@ public class Bot {
    * @param args command line parameters
    */
   public static void main(String[] args) {
-    Dotenv dotenv = Dotenv.load();
     try {
-      api = JDABuilder.createDefault(dotenv.get("BOT_TOKEN"))
+      api = JDABuilder.createDefault(Dotenv.load().get("BOT_TOKEN"))
           .setMemberCachePolicy(MemberCachePolicy.ALL)
           .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.SCHEDULED_EVENTS)
           .enableCache(CacheFlag.ACTIVITY, CacheFlag.ONLINE_STATUS)
           .build().awaitReady();
-      System.out.println("[" + api.getSelfUser().getName() + "#" + api.getSelfUser().getDiscriminator() + " " + BotMessage.VERSION.getMessage() + "] Online");
+      System.out.println("[" + api.getSelfUser().getName() + "#" + api.getSelfUser().getDiscriminator() + " " + Bot.version + "] Online");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -78,11 +89,12 @@ public class Bot {
     presence.setActivity(Activity.listening("Nothing"));
 
     EventWaiter waiter = new EventWaiter();
-    api.addEventListener(createCommandClient(waiter), waiter, new MessageEvent());
+    commandClient = createCommandClient(waiter);
+    api.addEventListener(commandClient, waiter, new MessageEvent());
   }
 
   /**
-   * Creates a command listener.
+   * Creates the command listener.
    *
    * @param waiter event waiter
    * @return command listener
@@ -91,19 +103,19 @@ public class Bot {
     String prefix = "<";
     String alternativePrefix = "A:";
 
-    CommandClientBuilder commands = new CommandClientBuilder();
-    commands.setOwnerId("204448598539239424"); // Bam#6561
-    commands.setHelpWord("commands");
-    commands.setPrefix(prefix);
-    commands.setAlternativePrefix(alternativePrefix);
-    commands.addCommands(new ColorRole(loadColorRoles()), new Emote(), new Poll(waiter), new Profile(),
-        new Remind(), new Server(), new Delete(), new Settings(prefix, alternativePrefix),
-        new Shutdown(), new Ping(), new Choose(), new CoinFlip(), new HighOrLow(waiter),
-        new PandorasBox(loadPandorasBoxPrompts()), new Roll(), new ClearQueue(), new Join(),
-        new Leave(), new Loop(), new Lyrics(), new NowPlaying(), new Pause(), new Play(), new PlayNext(),
-        new Queue(), new Remove(), new Return(), new SearchTrack(waiter), new SetPosition(),
-        new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info());
-    return commands.build();
+    return new CommandClientBuilder()
+        .setOwnerId("204448598539239424") // Bam6561
+        .setHelpWord("commands")
+        .setPrefix(prefix)
+        .setAlternativePrefix(alternativePrefix)
+        .addCommands(new ColorRole(loadColorRoles()), new Emote(), new Poll(waiter), new Profile(),
+            new Remind(), new Server(), new Delete(), new Settings(prefix, alternativePrefix),
+            new Shutdown(), new Ping(), new Choose(), new CoinFlip(), new HighOrLow(waiter),
+            new PandorasBox(loadPandorasBoxPrompts()), new Roll(), new ClearQueue(), new Join(),
+            new Leave(), new Loop(), new Lyrics(), new NowPlaying(), new Pause(), new Play(), new PlayNext(),
+            new Queue(), new Remove(), new Return(), new SearchTrack(waiter), new SetPosition(),
+            new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info())
+        .build();
   }
 
   /**
@@ -114,8 +126,7 @@ public class Bot {
    */
   private static List<String> loadPandorasBoxPrompts() {
     try {
-      File file = new File(".\\resources\\pandoras_box_prompts.txt");
-      Scanner scanner = new Scanner(file);
+      Scanner scanner = new Scanner(new File(".\\resources\\pandoras_box_prompts.txt"));
       List<String> prompts = new ArrayList<>();
 
       while (scanner.hasNextLine()) {
@@ -132,17 +143,19 @@ public class Bot {
   }
 
   /**
-   * Loads the server's color role names into memory and deletes empty color roles if they exist.
+   * Loads the server's color role names into memory
+   * and deletes empty color roles if they exist.
    *
    * @return color role names
    */
   private static Set<String> loadColorRoles() {
     Set<String> colorRoles = new HashSet<>();
+    Guild guild = api.getMutualGuilds().get(0);
 
     for (Role role : Bot.api.getRoles()) {
       String roleName = role.getName();
       if (TextReader.isHexColorCode(roleName.toUpperCase())) {
-        if (!api.getMutualGuilds().get(0).getMembersWithRoles(role).isEmpty()) {
+        if (!guild.getMembersWithRoles(role).isEmpty()) {
           colorRoles.add(roleName);
         } else {
           try {
@@ -163,5 +176,15 @@ public class Bot {
   @NotNull
   public static JDA getApi() {
     return api;
+  }
+
+  /**
+   * Gets the bot's command client.
+   *
+   * @return bot's command client
+   */
+  @NotNull
+  public static CommandClient getCommandClient() {
+    return commandClient;
   }
 }

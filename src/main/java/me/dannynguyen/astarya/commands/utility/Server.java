@@ -48,12 +48,12 @@ public class Server extends Command {
     description.append("**Emotes:** `").append(server.getEmojis().size()).append("` ");
     description.append("**Boosts:** `").append(server.getBoostCount()).append("`");
 
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("Server");
-    display.setTitle(server.getName());
-    display.setDescription(description);
-    display.setThumbnail(server.getIconUrl());
-    display.setImage(server.getBannerUrl());
-    Settings.sendEmbed(ce, display);
+    EmbedBuilder embed = new EmbedBuilder();
+    embed.setAuthor("Server");
+    embed.setTitle(server.getName());
+    embed.setDescription(description);
+    embed.setThumbnail(server.getIconUrl());
+    embed.setImage(server.getBannerUrl());
+    Settings.sendEmbed(ce, embed);
   }
 }

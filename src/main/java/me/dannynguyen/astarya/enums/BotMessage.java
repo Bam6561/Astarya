@@ -6,15 +6,10 @@ import org.jetbrains.annotations.NotNull;
  * Bot messages.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.8.6
  * @since 1.7.6
  */
 public enum BotMessage {
-  /**
-   * Bot version.
-   */
-  VERSION("V1.8.5"),
-
   /**
    * Unable to manage messages.
    */

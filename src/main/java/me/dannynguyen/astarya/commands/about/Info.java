@@ -2,8 +2,8 @@ package me.dannynguyen.astarya.commands.about;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import me.dannynguyen.astarya.Bot;
 import me.dannynguyen.astarya.commands.owner.Settings;
-import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 
@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
  * Info is a command invocation that details information about the bot and its developer.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.8.6
  * @since 1.0
  */
 public class Info extends Command {
@@ -42,7 +42,7 @@ public class Info extends Command {
         "**Developer Id:** 204448598539239424 \n" +
         "**Bot:** " + jda.getSelfUser().getAsMention() + "\n" +
         "**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` \n" +
-        "**Version:** `" + BotMessage.VERSION.getMessage() + "` \n" +
+        "**Version:** `" + Bot.version + "` \n" +
         "**Language:** `Java` \n" +
         "**Source Code:** [GitHub](https://github.com/Bam6561/Astarya) \n" +
         "**Uptime:** " + getUptime());
