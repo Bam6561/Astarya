@@ -29,7 +29,6 @@ public class Roll extends Command {
    * <p>
    * For multiple die rolls, the user only provides the number of times to roll. For multiple custom range
    * rolls, the user provides the number of times to roll, followed by a minimum and maximum range.
-   * </p>
    *
    * @param ce command event
    */

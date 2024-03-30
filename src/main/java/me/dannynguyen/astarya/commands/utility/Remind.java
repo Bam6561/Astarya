@@ -29,11 +29,9 @@ public class Remind extends Command {
    * so both variants are checked as to if they exist and marked as to which
    * parameter they are provided in. The location of where the time type is located
    * changes the parsing processing slightly, but the overall logic remains the same.
-   * </p>
    * <p>
    * After the time type is provided, the user can optionally
    * provide a name for their reminder in additional parameters.
-   * </p>
    *
    * @param ce command event
    */
@@ -117,7 +115,6 @@ public class Remind extends Command {
    * <p>
    * Where the user provides the time type affects the data parsing, so
    * this method handles the differences in one stream.
-   * </p>
    *
    * @param ce                   command event
    * @param parameters           user provided parameters
@@ -192,7 +189,6 @@ public class Remind extends Command {
    * <p>
    * Where the user provides the time type affects the data parsing, so
    * this method handles the differences in one stream.
-   * </p>
    *
    * @param parameters           user provided parameters
    * @param numberOfParameters   number of user provided parameters

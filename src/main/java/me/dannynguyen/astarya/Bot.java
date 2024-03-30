@@ -68,7 +68,7 @@ public class Bot {
     api.getPresence().setActivity(Activity.listening("Nothing"));
 
     EventWaiter waiter = new EventWaiter();
-    api.addEventListener(createCommandClient(waiter), waiter, new MessageLog());
+    api.addEventListener(createCommandClient(waiter), waiter, new MessageEvent());
   }
 
   /**

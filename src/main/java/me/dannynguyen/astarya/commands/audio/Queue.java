@@ -39,7 +39,6 @@ public class Queue extends Command {
    * results on each page or what track is currently playing if nothing is queued.
    * <p>
    * Users can optionally provide a queue page to be displayed with an additional parameter.
-   * </p>
    *
    * @param ce command event
    * @throws NumberFormatException user provided non-integer value
@@ -93,7 +92,6 @@ public class Queue extends Command {
    * the request to the last page. For negative page number requests, set the request to 0.
    * Multiply page requested by 10 to find the track index to display first, and subtract
    * by a page (10 tracks) to display partially filled pages if the page would be empty.
-   * </p>
    *
    * @param numberOfTracksInQueue total number of tracks in queue
    * @param pageRequested         user provided queue page to view
@@ -204,7 +202,6 @@ public class Queue extends Command {
    * <p>
    * For partially filled pages, calculate which comes first - the
    * next ten indices or the last track entry in the queue.
-   * </p>
    *
    * @param trackQueue tracks in the queue
    * @return formatted text representing the tracks queue

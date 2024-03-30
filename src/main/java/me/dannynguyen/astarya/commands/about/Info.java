@@ -57,7 +57,6 @@ public class Info extends Command {
    * Credit to Almighty Alpaca - slightly modified version
    * https://github.com/Java-Discord-Bot-System/Plugin-Uptime/blob/master/src/main/java/com
    * /almightyalpaca/discord/bot/plugin/uptime/UptimePlugin.java#L28-L42
-   * </p>
    *
    * @return uptime of the bot application
    */

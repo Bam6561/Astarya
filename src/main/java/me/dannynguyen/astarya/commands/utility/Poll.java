@@ -32,7 +32,6 @@ public class Poll extends Command {
    * Checks if the user provided options to read a poll command request.
    * <p>
    * Users can provide up to 10 options in the poll, separated by commas, but no more than one.
-   * </p>
    *
    * @param ce command event
    */

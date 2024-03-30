@@ -28,7 +28,6 @@ public class Choose extends Command {
    * Checks if user provided any parameters to read a choose command request.
    * <p>
    * Users can provide any number of options separated by a comma.
-   * </p>
    *
    * @param ce command event
    */

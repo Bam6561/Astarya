@@ -46,7 +46,6 @@ public class PlayerManager {
    * <p>
    * YouTube video links and media files are handled by the trackLoaded method.
    * YouTube playlist links and search queries are handled by the playlistLoaded method.
-   * </p>
    *
    * @param ce       command event
    * @param trackUrl either a direct url link to the track(s) requested or a YouTube search query

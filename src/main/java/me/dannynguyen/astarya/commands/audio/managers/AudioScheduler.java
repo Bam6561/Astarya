@@ -105,7 +105,6 @@ public class AudioScheduler extends AudioEventAdapter {
    * Recently skipped tracks go to the top and increment all existing track
    * indices by 1. The maximum number of skipped tracks is 10,
    * after which adding a new skipped track removes the least recent.
-   * </p>
    *
    * @param skippedTrack recently skipped track
    */

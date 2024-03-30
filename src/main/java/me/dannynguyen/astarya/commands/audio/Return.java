@@ -128,7 +128,6 @@ public class Return extends Command {
    * Skipped tracks can only contain up to 10 tracks. As another skipped
    * track is added, all previously existing tracks indices are incremented
    * by 1. After exceeding the amount, the least recent track is removed.
-   * </p>
    *
    * @param skippedTracks skipped tracks
    * @return string representing skipped tracks

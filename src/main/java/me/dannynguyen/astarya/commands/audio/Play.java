@@ -32,7 +32,6 @@ import java.io.IOException;
  * For queueing Spotify playlists, only the first 100 songs in the playlist
  * are queued due to Spotify API limits. For queueing Spotify albums, only
  * the first 50 songs in the album are queued due to Spotify's API limits.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -279,7 +278,6 @@ public class Play extends Command {
    * search query on YouTube, and adds the first result to the queue.
    * <p>
    * Only the first 100 tracks in a Spotify playlist will be queued due to Spotify API limits.
-   * </p>
    *
    * @param ce              command event
    * @param spotifyPlaylist Spotify playlist identified by id
@@ -320,7 +318,6 @@ public class Play extends Command {
    * search query on YouTube, and adds the first result to the queue.
    * <p>
    * Only the first 50 tracks in a Spotify playlist will be queued due to Spotify API limits.
-   * </p>
    *
    * @param ce           command event
    * @param spotifyAlbum Spotify playlist identified by id

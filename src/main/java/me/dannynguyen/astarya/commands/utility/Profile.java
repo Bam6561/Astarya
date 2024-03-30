@@ -34,7 +34,6 @@ public class Profile extends Command {
    * <p>
    * No parameters provided default to the user.
    * Targets can be set by providing a mention, user id, nickname or name.
-   * </p>
    *
    * @param ce command event
    */
@@ -62,7 +61,6 @@ public class Profile extends Command {
    * <p>
    * If the user is in the guild, the following details are added:
    * Online Status, Activity, Mention, Joined, Boosted, Timed Out, Avatar: Server, & Roles.
-   * </p>
    *
    * @param ce     command event
    * @param member the guild member

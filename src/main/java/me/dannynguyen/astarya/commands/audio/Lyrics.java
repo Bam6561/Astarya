@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
  * Lyrics is a command invocation that queries Genius API for a song's lyrics.
  * <p>
  * By default, the command is set to return the first five matches.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.8.1
