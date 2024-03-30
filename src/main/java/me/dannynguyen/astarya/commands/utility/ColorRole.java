@@ -85,7 +85,7 @@ public class ColorRole extends Command {
         }
       }
     } catch (InsufficientPermissionException ex) {
-      ce.getChannel().sendMessage(BotMessage.Failure.MISSING_PERMISSION_MANAGE_ROLES.text).queue();
+      ce.getChannel().sendMessage(BotMessage.MISSING_PERMISSION_MANAGE_ROLES.getMessage()).queue();
     }
   }
 

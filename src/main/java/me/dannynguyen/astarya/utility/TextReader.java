@@ -1,13 +1,20 @@
 package me.dannynguyen.astarya.utility;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
 /**
- * TextReader is a utility class that identifies whether a string is in hex code format.
+ * Identifies whether a string is in hex code format.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.4
  * @since 1.8.0
  */
 public class TextReader {
+  /**
+   * Utility methods only.
+   */
   private TextReader() {
   }
 
@@ -17,7 +24,8 @@ public class TextReader {
    * @param roleName role name
    * @return is a hex color code
    */
-  public static boolean isHexColorCode(String roleName) {
+  public static boolean isHexColorCode(@NotNull String roleName) {
+    Objects.requireNonNull(roleName, "Null role name");
     if (!roleName.startsWith("#") || roleName.length() != 7) {
       return false;
     }
@@ -31,6 +39,7 @@ public class TextReader {
         }
       }
     }
+
     return true;
   }
 }

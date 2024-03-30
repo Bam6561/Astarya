@@ -1,11 +1,11 @@
 package me.dannynguyen.astarya.commands.audio;
 
-import me.dannynguyen.astarya.enums.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import me.dannynguyen.astarya.commands.audio.managers.AudioScheduler;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
 import me.dannynguyen.astarya.commands.owner.Settings;
+import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 /**
@@ -39,10 +39,10 @@ public class ClearQueue extends Command {
       if (userInSameVoiceChannel) {
         clearTrackQueue(ce);
       } else {
-        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
+        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
     }
   }
 

@@ -18,6 +18,12 @@ import java.time.format.DateTimeFormatter;
  */
 public class MessageEvent extends ListenerAdapter {
   /**
+   * No parameter constructor.
+   */
+  public MessageEvent() {
+  }
+
+  /**
    * Routes interactions for messages sent.
    *
    * @param e message received event

@@ -55,10 +55,10 @@ public class SearchTrack extends Command {
         readSearchTrackRequest(ce);
         awaitUserResponse(ce);
       } else {
-        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
+        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
     }
   }
 
@@ -75,7 +75,7 @@ public class SearchTrack extends Command {
       setInvokerUserId(Long.parseLong(ce.getAuthor().getId())); // Lock searchTrack command request to requester
       queryYouTube(ce, parameters, numberOfParameters);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
   }
 

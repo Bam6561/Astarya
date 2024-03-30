@@ -46,10 +46,10 @@ public class Remove extends Command {
       if (userInSameVoiceChannel) {
         interpretRemoveTrackRequest(ce);
       } else {
-        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
+        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
     }
   }
 
@@ -64,7 +64,7 @@ public class Remove extends Command {
     int numberOfParameters = parameters.length - 1;
 
     switch (numberOfParameters) {
-      case 0 -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      case 0 -> ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
       case 1 -> {
         try {
           removeTrack(ce, Integer.parseInt(parameters[1]));
@@ -95,7 +95,7 @@ public class Remove extends Command {
       sendRemoveConfirmation(ce, queueIndex, trackQueue);
       trackQueue.remove(queueIndex);
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_QUEUE_NUMBER.text).queue();
+      ce.getChannel().sendMessage(BotMessage.INVALID_QUEUE_NUMBER.getMessage()).queue();
     }
   }
 
@@ -137,7 +137,7 @@ public class Remove extends Command {
         removeTrack(ce, queueIndices.get(i));
       }
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_QUEUE_NUMBER.text).queue();
+      ce.getChannel().sendMessage(BotMessage.INVALID_QUEUE_NUMBER.getMessage()).queue();
     }
   }
 

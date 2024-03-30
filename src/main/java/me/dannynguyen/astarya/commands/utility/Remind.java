@@ -45,7 +45,7 @@ public class Remind extends Command {
     if (numberOfParameters != 0) {
       readRemindRequest(ce, parameters, numberOfParameters);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
   }
 

@@ -49,10 +49,10 @@ public class Return extends Command {
       if (userInSameVoiceChannel) {
         interpretReturnTrackRequest(ce);
       } else {
-        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
+        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
     }
   }
 
@@ -76,7 +76,7 @@ public class Return extends Command {
           ce.getChannel().sendMessage(Failure.SPECIFY_SKIPPED_NUMBER.text).queue();
         }
       }
-      default -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      default -> ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
   }
 
@@ -118,7 +118,7 @@ public class Return extends Command {
       returnSkippedTrack(ce, skippedTracksIndex, audioScheduler, skippedTracks, skippedTrack);
       sendReturnConfirmation(ce, skippedTrack);
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_QUEUE_NUMBER.text).queue();
+      ce.getChannel().sendMessage(BotMessage.INVALID_QUEUE_NUMBER.getMessage()).queue();
     }
   }
 

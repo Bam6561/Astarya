@@ -40,7 +40,7 @@ public class Delete extends Command {
     if (numberOfParameters == 1) {
       readDeleteMessagesRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
   }
 
@@ -80,7 +80,7 @@ public class Delete extends Command {
       textChannel.purgeMessages(recentMessages);
       textChannel.sendMessage("Previous (" + numberOfMessagesToDelete + ") messages cleared.").queue();
     } catch (InsufficientPermissionException ex) {
-      ce.getChannel().sendMessage(BotMessage.Failure.MISSING_PERMISSION_MANAGE_MESSAGES.text).queue();
+      ce.getChannel().sendMessage(BotMessage.MISSING_PERMISSION_MANAGE_MESSAGES.getMessage()).queue();
     }
   }
 

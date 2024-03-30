@@ -50,7 +50,7 @@ public class Settings extends Command {
     switch (numberOfParameters) {
       case 0 -> sendSettingsMenu(ce);
       case 2 -> interpretSettingsMenuChange(ce, parameters);
-      default -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      default -> ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
   }
 

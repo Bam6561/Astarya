@@ -42,10 +42,10 @@ public class SetPosition extends Command {
       if (userInSameVoiceChannel) {
         readSetPositionRequest(ce);
       } else {
-        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
+        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
     }
   }
 
@@ -68,7 +68,7 @@ public class SetPosition extends Command {
         ce.getChannel().sendMessage(Failure.INVALID_TIME.text).queue();
       }
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
   }
 
@@ -134,7 +134,7 @@ public class SetPosition extends Command {
         minutes = Integer.parseInt(trackPositionTimeTypes[1]);
         seconds = Integer.parseInt(trackPositionTimeTypes[2]);
       }
-      default -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      default -> ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
 
     // Conversion to milliseconds

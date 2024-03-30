@@ -50,7 +50,7 @@ public class Lyrics extends Command {
     if (numberOfParameters >= 1) {
       processLyricsRequest(ce, parameters);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
   }
 

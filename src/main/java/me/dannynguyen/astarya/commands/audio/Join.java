@@ -43,7 +43,7 @@ public class Join extends Command {
       joinVoiceChannel(ce);
     } else {
       if (!userInVoiceChannel) {
-        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
+        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
       } else if (botAlreadyInVoiceChannel) {
         String alreadyConnected = "Already connected to <#" + botVoiceState.getChannel().getId() + ">";
         ce.getChannel().sendMessage(alreadyConnected).queue();

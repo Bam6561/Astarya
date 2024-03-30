@@ -26,41 +26,48 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
- * Bot represents the Discord bot application. Through event listeners and the command
- * client (an object representing the bot's various command modules), the bot can process various
+ * Represents the Discord bot application. Through event listeners and the command client
+ * (an object representing the bot's various command modules), the bot can process various
  * Discord API requests given to it by users in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.4
  * @since 1.0
  */
 public class Bot {
+  /**
+   * Discord API.
+   */
   private static JDA api;
 
   /**
-   * Initializes Astarya and associates all of its necessary components together as a singular application.
+   * No parameter constructor.
+   */
+  public Bot() {
+  }
+
+  /**
+   * Initializes Astarya and associates all of its
+   * necessary components together as a singular application.
    *
    * @param args command line parameters
-   * @throws Exception unknown error
    */
   public static void main(String[] args) {
     Dotenv dotenv = Dotenv.load();
     try {
-      api = JDABuilder.createDefault(dotenv.get("BOT_TOKEN")).
-          setMemberCachePolicy(MemberCachePolicy.ALL).
-          enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
-              GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES,
-              GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.SCHEDULED_EVENTS).
-          enableCache(CacheFlag.ACTIVITY, CacheFlag.ONLINE_STATUS).
-          build().awaitReady();
-      System.out.println("[" + api.getSelfUser().getName() + "#" +
-          api.getSelfUser().getDiscriminator() + " " + BotMessage.Success.VERSION.text + "] Online");
+      api = JDABuilder.createDefault(dotenv.get("BOT_TOKEN"))
+          .setMemberCachePolicy(MemberCachePolicy.ALL)
+          .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.SCHEDULED_EVENTS)
+          .enableCache(CacheFlag.ACTIVITY, CacheFlag.ONLINE_STATUS)
+          .build().awaitReady();
+      System.out.println("[" + api.getSelfUser().getName() + "#" + api.getSelfUser().getDiscriminator() + " " + BotMessage.VERSION.getMessage() + "] Online");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -114,10 +121,10 @@ public class Bot {
       }
       scanner.close();
 
-      System.out.println(Success.PANDORAS_BOX_LOAD.text);
+      System.out.println("Pandora's Box prompts loaded.");
       return prompts;
     } catch (FileNotFoundException e) {
-      System.out.println(Failure.PANDORAS_BOX_NOT_FOUND.text);
+      System.out.println("Pandora's Box prompts not found.");
       return null;
     }
   }
@@ -126,7 +133,6 @@ public class Bot {
    * Loads the server's color role names into memory and deletes empty color roles if they exist.
    *
    * @return color role names
-   * @throws InsufficientPermissionException unable to manage roles
    */
   private static Set<String> loadColorRoles() {
     Set<String> colorRoles = new HashSet<>();
@@ -152,27 +158,8 @@ public class Bot {
    *
    * @return Discord API
    */
+  @NotNull
   public static JDA getApi() {
     return api;
-  }
-
-  private enum Success {
-    PANDORAS_BOX_LOAD("Pandora's Box prompts loaded.");
-
-    public final String text;
-
-    Success(String text) {
-      this.text = text;
-    }
-  }
-
-  private enum Failure {
-    PANDORAS_BOX_NOT_FOUND("Pandora's Box prompts not found.");
-
-    public final String text;
-
-    Failure(String text) {
-      this.text = text;
-    }
   }
 }

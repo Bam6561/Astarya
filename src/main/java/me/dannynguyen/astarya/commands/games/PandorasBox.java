@@ -97,7 +97,7 @@ public class PandorasBox extends Command {
       String subject = vcMembers.get(randomVCMember).getNickname();
       sendPrompt(ce, subject);
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
     }
   }
 

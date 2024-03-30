@@ -68,11 +68,11 @@ public class Play extends Command {
         if (userInSameVoiceChannel) {
           readPlayRequest(ce);
         } else {
-          ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
+          ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
         }
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
     }
   }
 
@@ -103,7 +103,7 @@ public class Play extends Command {
     int numberOfParameters = parameters.length - 1;
 
     switch (numberOfParameters) {
-      case 0 -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      case 0 -> ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
       case 1 -> readSpotifyApiKey(ce, parameters);
       default -> processYouTubeSearchQuery(ce, parameters, numberOfParameters);
     }

@@ -59,7 +59,7 @@ public class Queue extends Command {
           ce.getChannel().sendMessage(Failure.SPECIFY_PAGE_NUMBER.text).queue();
         }
       }
-      default -> ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      default -> ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
   }
 

@@ -45,10 +45,10 @@ public class PlayNext extends Command {
       if (userInSameVoiceChannel) {
         readPlayNextRequest(ce);
       } else {
-        ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_SAME_VC.text).queue();
+        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
       }
     } catch (NullPointerException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.USER_NOT_IN_VC.text).queue();
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
     }
   }
 
@@ -71,7 +71,7 @@ public class PlayNext extends Command {
         ce.getChannel().sendMessage(Failure.SPECIFY_TRACK_NUMBER.text).queue();
       }
     } else {
-      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_NUMBER_OF_PARAMETERS.text).queue();
+      ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
   }
 
@@ -96,7 +96,7 @@ public class PlayNext extends Command {
       playNext(ce, queueNumber, trackQueue, audioTrack);
       sendPlayNextConfirmation(ce, queueNumber, trackQueue, audioTrack, trackDuration);
     } catch (IndexOutOfBoundsException e) {
-      ce.getChannel().sendMessage(BotMessage.Failure.INVALID_QUEUE_NUMBER.text).queue();
+      ce.getChannel().sendMessage(BotMessage.INVALID_QUEUE_NUMBER.getMessage()).queue();
     }
   }
 
