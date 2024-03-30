@@ -2,7 +2,6 @@ package me.dannynguyen.astarya.commands.audio;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import me.dannynguyen.astarya.commands.audio.objects.GeniusMatchResult;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
  * By default, the command is set to return the first five matches.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.8
  * @since 1.7.2
  */
 public class Lyrics extends Command {
@@ -197,6 +196,35 @@ public class Lyrics extends Command {
 
     Failure(String text) {
       this.text = text;
+    }
+  }
+
+  /**
+   * Represents a track result from Genius API.
+   *
+   * @param title track title
+   * @param url   track url
+   * @author Danny Nguyen
+   * @version 1.7.8
+   * @since 1.7.2
+   */
+  private record GeniusMatchResult(String title, String url) {
+    /**
+     * Gets the track's title.
+     *
+     * @return track's title
+     */
+    private String getTitle() {
+      return this.title;
+    }
+
+    /**
+     * Gets the track's url.
+     *
+     * @return track's url
+     */
+    private String getUrl() {
+      return this.url;
     }
   }
 }

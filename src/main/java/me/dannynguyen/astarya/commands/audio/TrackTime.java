@@ -1,13 +1,19 @@
-package me.dannynguyen.astarya.commands.audio.utility;
+package me.dannynguyen.astarya.commands.audio;
 
 /**
- * TrackTime is a utility class that converts tracks' durations to conventional readable time.
+ * Converts tracks' durations to conventional readable time.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.8.8
  * @since 1.7.8
  */
 public class TrackTime {
+  /**
+   * Utility methods only.
+   */
+  private TrackTime() {
+  }
+
   /**
    * Converts long duration to conventional readable time.
    *
@@ -22,6 +28,6 @@ public class TrackTime {
     return (days == 0 ? "" : days < 10 ? "0" + days + ":" : days + ":") +
         (hours == 0 ? "" : hours < 10 ? "0" + hours + ":" : hours + ":") +
         (minutes == 0 ? "00:" : minutes < 10 ? "0" + minutes + ":" : minutes + ":") +
-        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds + "");
+        (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds);
   }
 }

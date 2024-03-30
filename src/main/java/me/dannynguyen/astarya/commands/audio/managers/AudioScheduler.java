@@ -5,7 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import me.dannynguyen.astarya.Bot;
-import me.dannynguyen.astarya.commands.audio.objects.TrackQueueIndex;
+import me.dannynguyen.astarya.commands.audio.TrackQueueIndex;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.managers.Presence;

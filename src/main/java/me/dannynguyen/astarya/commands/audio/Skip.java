@@ -5,7 +5,6 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import me.dannynguyen.astarya.commands.audio.managers.AudioScheduler;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
-import me.dannynguyen.astarya.commands.audio.objects.TrackQueueIndex;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.entities.GuildVoiceState;

@@ -4,8 +4,6 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
-import me.dannynguyen.astarya.commands.audio.objects.TrackQueueIndex;
-import me.dannynguyen.astarya.commands.audio.utility.TrackTime;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
