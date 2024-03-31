@@ -75,7 +75,7 @@ public class Lyrics extends Command {
     private final String[] parameters;
 
     /**
-     * Associates a Genius query with its components.
+     * Associates a Genius query with its parameters.
      *
      * @param ce         command event
      * @param parameters parameters

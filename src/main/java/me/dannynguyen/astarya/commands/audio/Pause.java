@@ -4,23 +4,25 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import me.dannynguyen.astarya.Bot;
-import me.dannynguyen.astarya.commands.audio.managers.AudioScheduler;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.managers.Presence;
 
 /**
- * Pause is a command invocation that pauses the audio player.
+ * Command invocation that pauses the audio player.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.10
  * @since 1.2.5
  */
 public class Pause extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Pause() {
     this.name = "pause";
     this.aliases = new String[]{"pause", "stop"};
@@ -28,98 +30,56 @@ public class Pause extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel as the bot to read a pause command request.
+   * Checks if the user is in the same voice
+   * channel as the bot to read the command request.
    *
    * @param ce command event
-   * @throws NullPointerException user not in same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
-    GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
+    AudioChannelUnion userChannel = ce.getMember().getVoiceState().getChannel();
+    AudioChannelUnion botChannel = ce.getGuild().getSelfMember().getVoiceState().getChannel();
 
-    try {
-      boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-      if (userInSameVoiceChannel) {
-        setAudioPlayerPause(ce);
-      } else {
-        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
-      }
-    } catch (NullPointerException e) {
+    if (userChannel == null) {
       ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
+      return;
+    }
+
+    if (userChannel.equals(botChannel)) {
+      setAudioPlayerPause(ce);
+    } else {
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
     }
   }
 
   /**
-   * Pauses the audio player, and sets the bot's presence according
-   * to if it's paused, playing music, or not playing anything.
+   * Pauses the audio player.
+   * <p>
+   * Sets the bot's presence according to if it's paused, playing music, or not playing anything.
    *
    * @param ce command event
    */
   private void setAudioPlayerPause(CommandEvent ce) {
-    AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-    AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
-
+    AudioPlayer audioPlayer = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getAudioPlayer();
     Presence presence = Bot.getApi().getPresence();
 
     if (!audioPlayer.isPaused()) { // Paused - Idle Yellow
-      setActivityToPaused(ce, audioPlayer, presence);
+      audioPlayer.setPaused(true);
+      presence.setActivity(Activity.listening("Paused"));
+      presence.setStatus(OnlineStatus.IDLE);
+      ce.getChannel().sendMessage("Audio player paused.").queue();
     } else { // Playing Music - Online Green || Not playing audio - Do Not Disturb Red
       audioPlayer.setPaused(false);
       try {
-        setActivityToPlayingMusic(audioPlayer, presence);
+        presence.setActivity(Activity.listening(audioPlayer.getPlayingTrack().getInfo().title));
+        presence.setStatus(OnlineStatus.ONLINE);
       } catch (NullPointerException e) { // No track currently playing
-        setActivityToNothing(presence);
+        presence.setActivity(Activity.listening("Nothing"));
+        presence.setStatus(OnlineStatus.DO_NOT_DISTURB);
       }
-      ce.getChannel().sendMessage(Success.AUDIO_PLAYER_RESUME.text).queue();
-    }
-  }
-
-  /**
-   * Sets the bot's activity to paused and status to Idle.
-   *
-   * @param ce          command event
-   * @param audioPlayer audio player
-   * @param presence    presence
-   */
-  private void setActivityToPaused(CommandEvent ce, AudioPlayer audioPlayer, Presence presence) {
-    audioPlayer.setPaused(true);
-    presence.setActivity(Activity.listening("Paused"));
-    presence.setStatus(OnlineStatus.IDLE);
-    ce.getChannel().sendMessage(Success.AUDIO_PLAYER_PAUSE.text).queue();
-  }
-
-  /**
-   * Sets the bot's activity to listening <track name> and status to Online.
-   *
-   * @param audioPlayer audio player
-   * @param presence    presence
-   */
-  private void setActivityToPlayingMusic(AudioPlayer audioPlayer, Presence presence) {
-    presence.setActivity(Activity.listening(audioPlayer.getPlayingTrack().getInfo().title));
-    presence.setStatus(OnlineStatus.ONLINE);
-  }
-
-  /**
-   * Sets the activity to listening to nothing and status to Do Not Disturb.
-   *
-   * @param presence presence
-   */
-  private void setActivityToNothing(Presence presence) {
-    presence.setActivity(Activity.listening("Nothing"));
-    presence.setStatus(OnlineStatus.DO_NOT_DISTURB);
-  }
-
-  private enum Success {
-    AUDIO_PLAYER_PAUSE("Audio player paused."),
-    AUDIO_PLAYER_RESUME("Audio player resumed.");
-
-    public final String text;
-
-    Success(String text) {
-      this.text = text;
+      ce.getChannel().sendMessage("Audio player resumed.").queue();
     }
   }
 }

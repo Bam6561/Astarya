@@ -6,9 +6,8 @@ import io.github.cdimascio.dotenv.Dotenv;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
-import net.dv8tion.jda.api.managers.AudioManager;
+import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import org.apache.hc.core5.http.ParseException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,21 +22,24 @@ import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 import java.io.IOException;
 
 /**
- * Play is a command invocation that adds a track to the queue.
+ * Command invocation that adds a track to the queue.
  * <p>
- * By default, the play command supports YouTube videos, playlists, and most media files
- * posted in Discord chat. By adding a Spotify API key, the command will also be able
- * to support queueing Spotify songs, playlists, and album links.
+ * By default, the play command supports YouTube videos, playlists, and most
+ * media files posted in Discord chat. By adding a Spotify API key, the command
+ * will also be able to support queueing Spotify songs, playlists, and album links.
  * <p>
  * For queueing Spotify playlists, only the first 100 songs in the playlist
  * are queued due to Spotify API limits. For queueing Spotify albums, only
- * the first 50 songs in the album are queued due to Spotify's API limits.
+ * the first 50 songs on the album are queued due to Spotify's API limits.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.10
  * @since 1.1.0
  */
 public class Play extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Play() {
     this.name = "play";
     this.aliases = new String[]{"play", "p"};
@@ -46,8 +48,11 @@ public class Play extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel as the bot to read a play command request.
-   * If the bot is not currently in any voice channel, then attempt to join the same one as the user.
+   * Checks if the user is in the same voice
+   * channel as the bot to read the command request.
+   * <p>
+   * If the bot is not currently in any voice channel,
+   * then attempt to join the same one as the user.
    *
    * @param ce command event
    */
@@ -55,24 +60,24 @@ public class Play extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
-    GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
+    AudioChannelUnion userChannel = ce.getMember().getVoiceState().getChannel();
+    AudioChannelUnion botChannel = ce.getGuild().getSelfMember().getVoiceState().getChannel();
 
-    boolean botNotAlreadyInVoiceChannel = !botVoiceState.inAudioChannel();
-    try {
-      if (botNotAlreadyInVoiceChannel) {
-        joinVoiceChannel(ce);
-        readPlayRequest(ce);
-      } else {
-        boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-        if (userInSameVoiceChannel) {
-          readPlayRequest(ce);
-        } else {
-          ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
-        }
-      }
-    } catch (NullPointerException e) {
+    if (userChannel == null) {
       ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
+      return;
+    }
+
+    if (botChannel == null) {
+      joinVoiceChannel(ce);
+      new TrackRequest(ce).readPlayRequest();
+      return;
+    }
+
+    if (userChannel.equals(botChannel)) {
+      new TrackRequest(ce).readPlayRequest();
+    } else {
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
     }
   }
 
@@ -83,10 +88,8 @@ public class Play extends Command {
    */
   private void joinVoiceChannel(CommandEvent ce) {
     AudioChannel audioChannel = ce.getMember().getVoiceState().getChannel();
-    AudioManager audioManager = ce.getGuild().getAudioManager();
-
     try {
-      audioManager.openAudioConnection(audioChannel);
+      ce.getGuild().getAudioManager().openAudioConnection(audioChannel);
       ce.getChannel().sendMessage("Connected to <#" + audioChannel.getId() + ">").queue();
     } catch (Exception e) { // Insufficient permissions
       ce.getChannel().sendMessage("Unable to join <#" + audioChannel.getId() + ">").queue();
@@ -94,290 +97,282 @@ public class Play extends Command {
   }
 
   /**
-   * Checks if the play command request was formatted correctly before interpreting its usage.
+   * Represents a track query.
    *
-   * @param ce command event
+   * @author Danny Nguyen
+   * @version 1.8.10
+   * @since 1.8.10
    */
-  private void readPlayRequest(CommandEvent ce) {
-    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfParameters = parameters.length - 1;
+  private static class TrackRequest {
+    /**
+     * Command event.
+     */
+    private final CommandEvent ce;
 
-    switch (numberOfParameters) {
-      case 0 -> ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
-      case 1 -> readSpotifyApiKey(ce, parameters);
-      default -> processYouTubeSearchQuery(ce, parameters, numberOfParameters);
+    /**
+     * User provided parameters.
+     */
+    private final String[] parameters;
+
+    /**
+     * Number of parameters.
+     */
+    private final int numberOfParameters;
+
+    /**
+     * Spotify API access.
+     */
+    private SpotifyApi spotifyApi;
+
+    /**
+     * Associates a track request with its parameters.
+     *
+     * @param ce command event
+     */
+    TrackRequest(CommandEvent ce) {
+      this.ce = ce;
+      this.parameters = ce.getMessage().getContentRaw().split("\\s");
+      this.numberOfParameters = parameters.length - 1;
     }
-  }
 
-  /**
-   * Checks if a Spotify API Key was provided in order for the bot to look up the names
-   * of tracks within Spotify track, playlist, and album links to play from YouTube.
-   *
-   * @param ce         command event
-   * @param parameters user provided parameters
-   */
-  private void readSpotifyApiKey(CommandEvent ce, String[] parameters) {
-    Dotenv dotenv = Dotenv.load();
-    String spotifyClientId = dotenv.get("SPOTIFY_CLIENT_ID");
-    String spotifyClientSecret = dotenv.get("SPOTIFY_CLIENT_SECRET");
+    /**
+     * Checks if the command request was formatted correctly before interpreting its usage.
+     */
+    private void readPlayRequest() {
+      switch (numberOfParameters) {
+        case 0 -> ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
+        case 1 -> readSpotifyApiKey();
+        default -> processYouTubeSearchQuery();
+      }
+    }
 
-    boolean missingSpotifyApiKey = spotifyClientId == null || spotifyClientSecret == null;
-    boolean isSpotifyLink = parameters[1].contains("https://open.spotify.com/");
+    /**
+     * Checks if a Spotify API Key was provided in order for the bot to look up the names
+     * of tracks within Spotify track, playlist, and album links to play from YouTube.
+     */
+    private void readSpotifyApiKey() {
+      Dotenv dotenv = Dotenv.load();
+      String spotifyClientId = dotenv.get("SPOTIFY_CLIENT_ID");
+      String spotifyClientSecret = dotenv.get("SPOTIFY_CLIENT_SECRET");
 
-    if (isSpotifyLink) {
-      if (!missingSpotifyApiKey) {
-        interpretPlayRequest(ce, parameters, accessSpotifyApi(spotifyClientId, spotifyClientSecret));
+      if (parameters[1].contains("https://open.spotify.com/")) {
+        if (spotifyClientId != null && spotifyClientSecret != null) {
+          try {
+            spotifyApi = new SpotifyApi.Builder()
+                .setClientId(spotifyClientId)
+                .setClientSecret(spotifyClientSecret)
+                .build();
+            ClientCredentialsRequest clientCredentialsRequest = spotifyApi.clientCredentials().build();
+            ClientCredentials clientCredentials = clientCredentialsRequest.execute();
+            spotifyApi.setAccessToken(clientCredentials.getAccessToken());
+          } catch (IOException | ParseException | SpotifyWebApiException e) {
+            System.out.println(Error.ERROR_SPOTIFY_API.message);
+          }
+          interpretPlayRequest();
+        } else {
+          ce.getChannel().sendMessage("Unable to play Spotify links. No Spotify API key provided in .env file.").queue();
+        }
       } else {
-        ce.getChannel().sendMessage(Failure.MISSING_SPOTIFY_API_KEY.text).queue();
+        PlayerManager.getINSTANCE().createAudioTrack(ce, parameters[1], false);
       }
-    } else {
-      PlayerManager.getINSTANCE().createAudioTrack(ce, parameters[1], false);
     }
-  }
 
-  /**
-   * Builds a YouTube search query using user provided parameters and adds the first result to the queue.
-   *
-   * @param ce                 command event
-   * @param parameters         user provided parameters
-   * @param numberOfParameters number of user provided parameters
-   */
-  private void processYouTubeSearchQuery(CommandEvent ce, String[] parameters, int numberOfParameters) {
-    StringBuilder searchQuery = new StringBuilder();
-    for (int i = 1; i < numberOfParameters + 1; i++) {
-      searchQuery.append(parameters[i]);
-    }
-    String youtubeSearchQuery = "ytsearch:" + String.join(" ", searchQuery);
-    PlayerManager.getINSTANCE().createAudioTrack(ce, youtubeSearchQuery, false);
-  }
-
-  /**
-   * Generates an access token to access Spotify API's scopes.
-   *
-   * @param spotifyClientId     Spotify API client id
-   * @param spotifyClientSecret Spotify API client secret
-   * @return an object representing Spotify API
-   */
-  private SpotifyApi accessSpotifyApi(String spotifyClientId, String spotifyClientSecret) {
-    try {
-      SpotifyApi spotifyApi = new SpotifyApi.Builder()
-          .setClientId(spotifyClientId)
-          .setClientSecret(spotifyClientSecret)
-          .build();
-      ClientCredentialsRequest clientCredentialsRequest = spotifyApi.clientCredentials().build();
-      ClientCredentials clientCredentials = clientCredentialsRequest.execute();
-      spotifyApi.setAccessToken(clientCredentials.getAccessToken());
-      return spotifyApi;
-    } catch (IOException | ParseException | SpotifyWebApiException e) {
-      System.out.println(Failure.ERROR_SPOTIFY_API.text);
-      return null;
-    }
-  }
-
-  /**
-   * Identifies user given Spotify links as either a track,
-   * playlist, or album before adding it to the queue.
-   *
-   * @param ce         command event
-   * @param parameters user provided parameters
-   * @param spotifyApi object representing Spotify API
-   */
-  private void interpretPlayRequest(CommandEvent ce, String[] parameters, SpotifyApi spotifyApi) {
-    boolean isSpotifyTrack = parameters[1].contains("https://open.spotify.com/track/");
-    boolean isSpotifyPlayList = parameters[1].contains("https://open.spotify.com/playlist/");
-    boolean isSpotifyAlbum = parameters[1].contains("https://open.spotify.com/album/");
-
-    if (isSpotifyTrack) {
-      readSpotifyTrackId(ce, parameters, spotifyApi);
-    } else if (isSpotifyPlayList) {
-      readSpotifyPlaylistId(ce, parameters, spotifyApi);
-    } else if (isSpotifyAlbum) {
-      readSpotifyAlbumId(ce, parameters, spotifyApi);
-    } else {
-      ce.getChannel().sendMessage(Failure.UNSUPPORTED_SPOTIFY_FEATURE.text).queue();
-    }
-  }
-
-  /**
-   * Checks if the Spotify track link was formatted correctly before adding it to the queue.
-   *
-   * @param ce         command event
-   * @param parameters user provided parameters
-   * @param spotifyApi object representing Spotify API
-   */
-  private void readSpotifyTrackId(CommandEvent ce, String[] parameters, SpotifyApi spotifyApi) {
-    String spotifyTrack = parameters[1].substring(31); // Remove https portion
-    if (spotifyTrack.length() >= 22) {
-      addSpotifyTrackToQueue(ce, spotifyTrack, spotifyApi);
-    } else {
-      ce.getChannel().sendMessage(Failure.INVALID_SPOTIFY_ID.text).queue();
-    }
-  }
-
-  /**
-   * Checks if the Spotify playlist link was formatted correctly before adding it to the queue.
-   *
-   * @param ce         command event
-   * @param parameters user provided parameters
-   * @param spotifyApi object representing Spotify API
-   */
-  private void readSpotifyPlaylistId(CommandEvent ce, String[] parameters, SpotifyApi spotifyApi) {
-    String spotifyPlaylist = parameters[1].substring(34); // Remove https portion
-    if (spotifyPlaylist.length() >= 22) {
-      addSpotifyPlaylistToQueue(ce, spotifyPlaylist, spotifyApi);
-    } else {
-      ce.getChannel().sendMessage(Failure.INVALID_SPOTIFY_PLAYLIST_ID.text).queue();
-    }
-  }
-
-  /**
-   * Checks if the Spotify album link was formatted correctly before adding it to the queue.
-   *
-   * @param ce         command event
-   * @param parameters user provided parameters
-   * @param spotifyApi object representing Spotify API
-   */
-  private void readSpotifyAlbumId(CommandEvent ce, String[] parameters, SpotifyApi spotifyApi) {
-    String spotifyAlbum = parameters[1].substring(31); // Remove https portion
-    if (spotifyAlbum.length() >= 22) {
-      addSpotifyAlbumToQueue(ce, spotifyAlbum, spotifyApi);
-    } else {
-      ce.getChannel().sendMessage(Failure.INVALID_SPOTIFY_ALBUM_ID.text).queue();
-    }
-  }
-
-  /**
-   * Deciphers Spotify song names through their Spotify track id,
-   * adds the track's associated artists with the song name as a
-   * search query on YouTube, and adds the first result to the queue.
-   *
-   * @param ce           command event
-   * @param spotifyTrack Spotify track identified by id
-   * @param spotifyApi   object representing Spotify API
-   */
-  private void addSpotifyTrackToQueue(CommandEvent ce, String spotifyTrack, SpotifyApi spotifyApi) {
-    // Id & Query -> Id only
-    spotifyTrack = spotifyTrack.substring(0, 22);
-    try {
-      // Match track with id and get track's artists
-      GetTrackRequest getTrackRequest = spotifyApi.getTrack(spotifyTrack).build();
-      JSONObject jsonTrack = new JSONObject(getTrackRequest.getJson());
-      JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONObject("album").
-          getJSONArray("artists").toString());
-
-      PlayerManager.getINSTANCE().createAudioTrack(ce,
-          buildYouTubeSearchQuery(jsonTrack, jsonTrackArtists), false);
-    } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println(Failure.ERROR_SPOTIFY_API.text);
-    }
-  }
-
-  /**
-   * Deciphers Spotify song names through their Spotify playlist id,
-   * adds the track's associated artists with the song name as a
-   * search query on YouTube, and adds the first result to the queue.
-   * <p>
-   * Only the first 100 tracks in a Spotify playlist will be queued due to Spotify API limits.
-   *
-   * @param ce              command event
-   * @param spotifyPlaylist Spotify playlist identified by id
-   * @param spotifyApi      object representing Spotify API
-   */
-  private void addSpotifyPlaylistToQueue(CommandEvent ce, String spotifyPlaylist,
-                                         SpotifyApi spotifyApi) {
-    // Id & Query -> Id only
-    spotifyPlaylist = spotifyPlaylist.substring(0, 22);
-    try {
-      // Match playlist with id and get playlist's tracks
-      GetPlaylistRequest getPlaylistRequest = spotifyApi.getPlaylist(spotifyPlaylist).build();
-      JSONObject jsonPlaylist = new JSONObject(getPlaylistRequest.getJson());
-      JSONArray jsonTracks = new JSONArray(jsonPlaylist.getJSONObject("tracks").
-          getJSONArray("items").toString());
-
-      int numberOfTracksAdded = 0;
-      for (int i = 0; i < jsonTracks.length(); i++) { // Queue tracks from playlist's tracks
-        JSONObject jsonTrack = new JSONObject(jsonTracks.getJSONObject(i).getJSONObject("track").toString());
-        JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONObject("album").
-            getJSONArray("artists").toString());
-
-        PlayerManager.getINSTANCE().createAudioTrack(ce,
-            buildYouTubeSearchQuery(jsonTrack, jsonTrackArtists), true);
-        numberOfTracksAdded++;
+    /**
+     * Builds a YouTube search query using user provided parameters and adds the first result to the queue.
+     */
+    private void processYouTubeSearchQuery() {
+      StringBuilder searchQuery = new StringBuilder();
+      for (int i = 1; i < numberOfParameters + 1; i++) {
+        searchQuery.append(parameters[i]);
       }
-
-      String requester = "[" + ce.getAuthor().getAsTag() + "]";
-      ce.getChannel().sendMessage("**Added:** `" + numberOfTracksAdded + "` tracks " + requester).queue();
-    } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println(Failure.ERROR_SPOTIFY_API.text);
+      String youtubeSearchQuery = "ytsearch:" + String.join(" ", searchQuery);
+      PlayerManager.getINSTANCE().createAudioTrack(ce, youtubeSearchQuery, false);
     }
-  }
 
-  /**
-   * Deciphers Spotify song names through their Spotify playlist id,
-   * adds the track's associated artists with the song name as a
-   * search query on YouTube, and adds the first result to the queue.
-   * <p>
-   * Only the first 50 tracks in a Spotify playlist will be queued due to Spotify API limits.
-   *
-   * @param ce           command event
-   * @param spotifyAlbum Spotify playlist identified by id
-   * @param spotifyApi   object representing Spotify API
-   */
-  private void addSpotifyAlbumToQueue(CommandEvent ce, String spotifyAlbum,
-                                      SpotifyApi spotifyApi) {
-    // Id & Query -> Id only
-    spotifyAlbum = spotifyAlbum.substring(0, 22);
-    try {
-      // Match playlist with id and get album's tracks
-      GetAlbumsTracksRequest getAlbumsTracksRequest = spotifyApi.getAlbumsTracks(spotifyAlbum).limit(50).build();
-      JSONObject jsonAlbum = new JSONObject(getAlbumsTracksRequest.getJson());
-      JSONArray jsonTracks = new JSONArray(jsonAlbum.getJSONArray("items").toString());
+    /**
+     * Identifies user given Spotify links as either a track,
+     * playlist, or album before adding it to the queue.
+     */
+    private void interpretPlayRequest() {
+      boolean isSpotifyTrack = parameters[1].contains("https://open.spotify.com/track/");
+      boolean isSpotifyPlayList = parameters[1].contains("https://open.spotify.com/playlist/");
+      boolean isSpotifyAlbum = parameters[1].contains("https://open.spotify.com/album/");
 
-      int numberOfTracksAdded = 0;
-      for (int i = 0; i < jsonTracks.length(); i++) { // Queue tracks from album's tracks
-        JSONObject jsonTrack = new JSONObject(jsonTracks.getJSONObject(i).toString());
-        JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONArray("artists").toString());
-
-        PlayerManager.getINSTANCE().createAudioTrack(ce,
-            buildYouTubeSearchQuery(jsonTrack, jsonTrackArtists), true);
-        numberOfTracksAdded++;
+      if (isSpotifyTrack) {
+        readSpotifyTrackId();
+      } else if (isSpotifyPlayList) {
+        readSpotifyPlaylistId();
+      } else if (isSpotifyAlbum) {
+        readSpotifyAlbumId();
+      } else {
+        ce.getChannel().sendMessage("Spotify feature not supported.").queue();
       }
-
-      String requester = "[" + ce.getAuthor().getAsTag() + "]";
-      ce.getChannel().sendMessage("**Added:** `" + numberOfTracksAdded + "` tracks " + requester).queue();
-    } catch (IOException | SpotifyWebApiException | ParseException e) {
-      System.out.println(Failure.ERROR_SPOTIFY_API.text);
     }
-  }
 
-  /**
-   * Builds a complete YouTube search query that includes the track name and its artists.
-   *
-   * @param jsonTrack        track in json format
-   * @param jsonTrackArtists track's artists in json format
-   * @return search query to be sent to YouTube
-   */
-  private String buildYouTubeSearchQuery(JSONObject jsonTrack, JSONArray jsonTrackArtists) {
-    StringBuilder fullTrackRequest = new StringBuilder();
-    fullTrackRequest.append(jsonTrack.getString("name"));
-    for (int j = 0; j < jsonTrackArtists.length(); j++) {
-      fullTrackRequest.append(jsonTrackArtists.getJSONObject(j).getString("name"));
+    /**
+     * Checks if the Spotify track link was formatted correctly before adding it to the queue.
+     */
+    private void readSpotifyTrackId() {
+      String spotifyTrack = parameters[1].substring(31); // Remove https portion
+      if (spotifyTrack.length() >= 22) {
+        addSpotifyTrackToQueue(spotifyTrack);
+      } else {
+        ce.getChannel().sendMessage("Invalid Spotify track id.").queue();
+      }
     }
-    return "ytsearch:" + String.join(" ", fullTrackRequest);
-  }
 
-  private enum Failure {
-    ERROR_SPOTIFY_API("Something went wrong while trying to access SpotifyAPI."),
-    MISSING_SPOTIFY_API_KEY("Unable to play Spotify links. No Spotify API key provided in .env file."),
-    INVALID_SPOTIFY_ID("Invalid Spotify track id."),
-    INVALID_SPOTIFY_PLAYLIST_ID("Invalid Spotify playlist id."),
-    INVALID_SPOTIFY_ALBUM_ID("Invalid Spotify album id."),
-    UNSUPPORTED_SPOTIFY_FEATURE("Spotify feature not supported.");
+    /**
+     * Checks if the Spotify playlist link was formatted correctly before adding it to the queue.
+     */
+    private void readSpotifyPlaylistId() {
+      String spotifyPlaylist = parameters[1].substring(34); // Remove https portion
+      if (spotifyPlaylist.length() >= 22) {
+        addSpotifyPlaylistToQueue(spotifyPlaylist);
+      } else {
+        ce.getChannel().sendMessage("Invalid Spotify playlist id.").queue();
+      }
+    }
 
-    public final String text;
+    /**
+     * Checks if the Spotify album link was formatted correctly before adding it to the queue.
+     */
+    private void readSpotifyAlbumId() {
+      String spotifyAlbum = parameters[1].substring(31); // Remove https portion
+      if (spotifyAlbum.length() >= 22) {
+        addSpotifyAlbumToQueue(spotifyAlbum);
+      } else {
+        ce.getChannel().sendMessage("Invalid Spotify album id.").queue();
+      }
+    }
 
-    Failure(String text) {
-      this.text = text;
+    /**
+     * Deciphers Spotify song names through their Spotify track id,
+     * adds the track's associated artists with the song name as a
+     * search query on YouTube, and adds the first result to the queue.
+     *
+     * @param spotifyTrack Spotify track identified by id
+     */
+    private void addSpotifyTrackToQueue(String spotifyTrack) {
+      // Id & Query -> Id only
+      spotifyTrack = spotifyTrack.substring(0, 22);
+      try {
+        // Match track with id and get track's artists
+        GetTrackRequest getTrackRequest = spotifyApi.getTrack(spotifyTrack).build();
+        JSONObject jsonTrack = new JSONObject(getTrackRequest.getJson());
+        JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONObject("album").getJSONArray("artists").toString());
+
+        PlayerManager.getINSTANCE().createAudioTrack(ce, buildYouTubeSearchQuery(jsonTrack, jsonTrackArtists), false);
+      } catch (IOException | SpotifyWebApiException | ParseException e) {
+        System.out.println(Error.ERROR_SPOTIFY_API.message);
+      }
+    }
+
+    /**
+     * Deciphers Spotify song names through their Spotify playlist id,
+     * adds the track's associated artists with the song name as a
+     * search query on YouTube, and adds the first result to the queue.
+     * <p>
+     * Only the first 100 tracks in a Spotify playlist will be queued due to Spotify API limits.
+     *
+     * @param spotifyPlaylist Spotify playlist identified by id
+     */
+    private void addSpotifyPlaylistToQueue(String spotifyPlaylist) {
+      // Id & Query -> Id only
+      spotifyPlaylist = spotifyPlaylist.substring(0, 22);
+      try {
+        // Match playlist with id and get playlist's tracks
+        GetPlaylistRequest getPlaylistRequest = spotifyApi.getPlaylist(spotifyPlaylist).build();
+        JSONObject jsonPlaylist = new JSONObject(getPlaylistRequest.getJson());
+        JSONArray jsonTracks = new JSONArray(jsonPlaylist.getJSONObject("tracks").getJSONArray("items").toString());
+
+        int numberOfTracksAdded = 0;
+        for (int i = 0; i < jsonTracks.length(); i++) { // Queue tracks from playlist's tracks
+          JSONObject jsonTrack = new JSONObject(jsonTracks.getJSONObject(i).getJSONObject("track").toString());
+          JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONObject("album").getJSONArray("artists").toString());
+
+          PlayerManager.getINSTANCE().createAudioTrack(ce, buildYouTubeSearchQuery(jsonTrack, jsonTrackArtists), true);
+          numberOfTracksAdded++;
+        }
+
+        String requester = "[" + ce.getAuthor().getAsTag() + "]";
+        ce.getChannel().sendMessage("**Added:** `" + numberOfTracksAdded + "` tracks " + requester).queue();
+      } catch (IOException | SpotifyWebApiException | ParseException e) {
+        System.out.println(Error.ERROR_SPOTIFY_API.message);
+      }
+    }
+
+    /**
+     * Deciphers Spotify song names through their Spotify playlist id,
+     * adds the track's associated artists with the song name as a
+     * search query on YouTube, and adds the first result to the queue.
+     * <p>
+     * Only the first 50 tracks in a Spotify playlist will be queued due to Spotify API limits.
+     *
+     * @param spotifyAlbum Spotify playlist identified by id
+     */
+    private void addSpotifyAlbumToQueue(String spotifyAlbum) {
+      // Id & Query -> Id only
+      spotifyAlbum = spotifyAlbum.substring(0, 22);
+      try {
+        // Match playlist with id and get album's tracks
+        GetAlbumsTracksRequest getAlbumsTracksRequest = spotifyApi.getAlbumsTracks(spotifyAlbum).limit(50).build();
+        JSONObject jsonAlbum = new JSONObject(getAlbumsTracksRequest.getJson());
+        JSONArray jsonTracks = new JSONArray(jsonAlbum.getJSONArray("items").toString());
+
+        int numberOfTracksAdded = 0;
+        for (int i = 0; i < jsonTracks.length(); i++) { // Queue tracks from album's tracks
+          JSONObject jsonTrack = new JSONObject(jsonTracks.getJSONObject(i).toString());
+          JSONArray jsonTrackArtists = new JSONArray(jsonTrack.getJSONArray("artists").toString());
+
+          PlayerManager.getINSTANCE().createAudioTrack(ce, buildYouTubeSearchQuery(jsonTrack, jsonTrackArtists), true);
+          numberOfTracksAdded++;
+        }
+
+        String requester = "[" + ce.getAuthor().getAsTag() + "]";
+        ce.getChannel().sendMessage("**Added:** `" + numberOfTracksAdded + "` tracks " + requester).queue();
+      } catch (IOException | SpotifyWebApiException | ParseException e) {
+        System.out.println(Error.ERROR_SPOTIFY_API.message);
+      }
+    }
+
+    /**
+     * Builds a complete YouTube search query that includes the track name and its artists.
+     *
+     * @param jsonTrack        track in json format
+     * @param jsonTrackArtists track's artists in json format
+     * @return search query to be sent to YouTube
+     */
+    private String buildYouTubeSearchQuery(JSONObject jsonTrack, JSONArray jsonTrackArtists) {
+      StringBuilder fullTrackRequest = new StringBuilder();
+      fullTrackRequest.append(jsonTrack.getString("name"));
+      for (int j = 0; j < jsonTrackArtists.length(); j++) {
+        fullTrackRequest.append(jsonTrackArtists.getJSONObject(j).getString("name"));
+      }
+      return "ytsearch:" + String.join(" ", fullTrackRequest);
+    }
+
+    /**
+     * Types of errors.
+     */
+    private enum Error {
+      /**
+       * Spotify API error.
+       */
+      ERROR_SPOTIFY_API("Something went wrong while trying to access SpotifyAPI.");
+
+      /**
+       * Error message.
+       */
+      public final String message;
+
+      /**
+       * Associates an error with its message.
+       *
+       * @param message message
+       */
+      Error(String message) {
+        this.message = message;
+      }
     }
   }
 }
