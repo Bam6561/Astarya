@@ -12,10 +12,13 @@ import java.util.Random;
  * Command invocation that simulates coin flips.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.13
  * @since 1.0
  */
 public class CoinFlip extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public CoinFlip() {
     this.name = "flip";
     this.aliases = new String[]{"coinflip", "coin", "flip"};
@@ -74,10 +77,10 @@ public class CoinFlip extends Command {
       if (validNumberOfFlips) {
         multipleFlipResults(ce, numberOfFlips);
       } else {
-        ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
+        ce.getChannel().sendMessage(Error.EXCEED_RANGE.message).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
+      ce.getChannel().sendMessage(Error.EXCEED_RANGE.message).queue();
     }
   }
 
@@ -106,13 +109,27 @@ public class CoinFlip extends Command {
     Settings.sendEmbed(ce, display);
   }
 
-  private enum Failure {
+  /**
+   * Types of errors.
+   */
+  private enum Error {
+    /**
+     * Out of range.
+     */
     EXCEED_RANGE("Provide between 1-10 times to flip coin.");
 
-    public final String text;
+    /**
+     * Message.
+     */
+    public final String message;
 
-    Failure(String text) {
-      this.text = text;
+    /**
+     * Associates an error with its message.
+     *
+     * @param message message
+     */
+    Error(String message) {
+      this.message = message;
     }
   }
 }

@@ -13,20 +13,43 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Command invocation that allows the user to guess
- * if the next number will be higher or lower.
+ * Command invocation that allows the user to guess if the next number will be higher or lower.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.13
  * @since 1.0
  */
 public class HighOrLow extends Command {
+  /**
+   * Event waiter.
+   */
   private final EventWaiter waiter;
+
+  /**
+   * First number generated.
+   */
   private int firstNumber;
+
+  /**
+   * Second number generated.
+   */
   private int secondNumber;
+
+  /**
+   * Player ID.
+   */
   private long playerId;
+
+  /**
+   * If a game exists.
+   */
   private boolean ongoingGame;
 
+  /**
+   * Associates the command with its properties.
+   *
+   * @param waiter event waiter
+   */
   public HighOrLow(EventWaiter waiter) {
     this.name = "highorlow";
     this.aliases = new String[]{"highorlow", "guess"};
@@ -40,7 +63,9 @@ public class HighOrLow extends Command {
 
   /**
    * Sends an embed that only the user who invoked the command can react to.
+   * <p>
    * When the same user reacts to the embed, the results screen is sent.
+   * <p>
    * After a period of inactivity, the locked embed will time out.
    *
    * @param ce command event
@@ -49,13 +74,13 @@ public class HighOrLow extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    if (!ongoingGame()) {
+    if (!ongoingGame) {
       startGame(ce);
       sendGameScreen(ce);
       processGameReactions(ce);
       processGameTimeout(ce);
     } else {
-      ce.getChannel().sendMessage(Failure.ONGOING_GAME.text).queue();
+      ce.getChannel().sendMessage("Please wait until current high or low game finishes or expires.").queue();
     }
   }
 
@@ -92,7 +117,7 @@ public class HighOrLow extends Command {
   private void sendGameScreen(CommandEvent ce) {
     EmbedBuilder display = new EmbedBuilder();
     display.setAuthor("High or Low");
-    display.setDescription("My number is (" + getFirstNumber() + ") from a range of numbers from 1 - 100. "
+    display.setDescription("My number is (" + firstNumber + ") from a range of numbers from 1 - 100. "
         + "\nWill the next number I think of be higher or lower?");
     Settings.sendEmbed(ce, display);
   }
@@ -115,7 +140,7 @@ public class HighOrLow extends Command {
 
     // Wait for the original user to react to the embed
     waiter.waitForEvent(MessageReactionAddEvent.class,
-        w -> Long.parseLong(w.getMember().getUser().getId()) == (getPlayerId())
+        w -> Long.parseLong(w.getMember().getUser().getId()) == (playerId)
             && (w.getReaction().getEmoji().getName().equals("🔼")
             || (w.getReaction().getEmoji().getName().equals("🔽"))),
         w -> displayGameResults(ce), 15, TimeUnit.SECONDS, () -> {
@@ -131,7 +156,7 @@ public class HighOrLow extends Command {
   private void processGameTimeout(CommandEvent ce) {
     new java.util.Timer().schedule(new java.util.TimerTask() { // Game Non-action Timeout (15s)
       public void run() {
-        if (ongoingGame()) {
+        if (ongoingGame) {
           ongoingGame = false;
           EmbedBuilder display = new EmbedBuilder();
           display.setAuthor("High or Low");
@@ -154,39 +179,13 @@ public class HighOrLow extends Command {
     playerId = 0;
 
     EmbedBuilder display = new EmbedBuilder();
-    if (getFirstNumber() > getSecondNumber()) {
+    if (firstNumber > secondNumber) {
       display.setAuthor("High or Low");
-      display.setDescription("||I thought of (" + getSecondNumber() + "). The number was lower!||");
+      display.setDescription("||I thought of (" + secondNumber + "). The number was lower!||");
     } else {
       display.setAuthor("High or Low");
-      display.setDescription("||I thought of (" + getSecondNumber() + "). The number was higher!||");
+      display.setDescription("||I thought of (" + firstNumber + "). The number was higher!||");
     }
     Settings.sendEmbed(ce, display);
-  }
-
-  private int getFirstNumber() {
-    return this.firstNumber;
-  }
-
-  private int getSecondNumber() {
-    return this.secondNumber;
-  }
-
-  private long getPlayerId() {
-    return this.playerId;
-  }
-
-  private boolean ongoingGame() {
-    return this.ongoingGame;
-  }
-
-  private enum Failure {
-    ONGOING_GAME("Please wait until current high or low game finishes or expires.");
-
-    public final String text;
-
-    Failure(String text) {
-      this.text = text;
-    }
   }
 }

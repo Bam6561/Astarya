@@ -72,7 +72,13 @@ public class Settings extends Command {
   }
 
   /**
-   * Either changes the delete invoke, embed decay, embed decay time, or embed media links setting.
+   * Either changes the setting:
+   * <ul>
+   *  <li> delete invoke
+   *  <li> embed decay
+   *  <li> embed decay time
+   *  <li> embed media links
+   * </ul>
    *
    * @param ce         command event
    * @param parameters user provided parameters

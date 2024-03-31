@@ -12,10 +12,13 @@ import java.util.Random;
  * randomly generates integers based on a user provided range.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.13
  * @since 1.0
  */
 public class Roll extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Roll() {
     this.name = "roll";
     this.aliases = new String[]{"roll", "rng", "dice"};
@@ -24,8 +27,12 @@ public class Roll extends Command {
   }
 
   /**
-   * Either sends the results of rolling a six sided die once, the result of rolling a die multiple
-   * times, or the results of multiple rolls of random integers between a user provided custom range.
+   * Either:
+   * <ul>
+   *  <li> sends the results of rolling a six sided die once
+   *  <li> the result of rolling a die multiple times
+   *  <li> the results of multiple rolls of random integers between a user provided custom range
+   * </ul>
    * <p>
    * For multiple die rolls, the user only provides the number of times to roll. For multiple custom range
    * rolls, the user provides the number of times to roll, followed by a minimum and maximum range.
@@ -40,10 +47,10 @@ public class Roll extends Command {
     int numberOfParameters = parameters.length - 1;
 
     switch (numberOfParameters) {
-      case 0 -> dieRoll(ce);
-      case 1 -> multipleDieRolls(ce, parameters);
+      case 0 -> rollDieOnce(ce);
+      case 1 -> rollDieMultiple(ce, parameters);
       case 3 -> customRangeRolls(ce, parameters);
-      default -> ce.getChannel().sendMessage(Failure.INVALID_INPUT.text).queue();
+      default -> ce.getChannel().sendMessage("Invalid parameter format.").queue();
     }
   }
 
@@ -52,7 +59,7 @@ public class Roll extends Command {
    *
    * @param ce command event
    */
-  private void dieRoll(CommandEvent ce) {
+  private void rollDieOnce(CommandEvent ce) {
     Random rand = new Random();
     EmbedBuilder display = new EmbedBuilder();
     display.setAuthor("Roll");
@@ -67,39 +74,28 @@ public class Roll extends Command {
    * @param ce         command event
    * @param parameters user provided parameters
    */
-  private void multipleDieRolls(CommandEvent ce, String[] parameters) {
+  private void rollDieMultiple(CommandEvent ce, String[] parameters) {
     try {
       int numberOfRolls = Integer.parseInt(parameters[1]);
-      boolean validNumberOfRolls = (numberOfRolls >= 1) && (numberOfRolls <= 10);
-      if (validNumberOfRolls) {
-        multipleDieRollsResults(ce, numberOfRolls);
+      if ((numberOfRolls >= 1) && (numberOfRolls <= 10)) {
+        Random rand = new Random();
+        StringBuilder rollResults = new StringBuilder();
+
+        // Generate list of roll results
+        for (int i = 0; i < numberOfRolls; i++) {
+          rollResults.append("\n").append(i + 1).append(": **(").append(rand.nextInt(6) + 1).append(")** ");
+        }
+
+        EmbedBuilder display = new EmbedBuilder();
+        display.setAuthor("Rolls");
+        display.setDescription(rollResults.toString());
+        Settings.sendEmbed(ce, display);
       } else {
-        ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
+        ce.getChannel().sendMessage(Error.EXCEED_RANGE.message).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
+      ce.getChannel().sendMessage(Error.EXCEED_RANGE.message).queue();
     }
-  }
-
-  /**
-   * Sends the results of rolling a six sided die multiple times.
-   *
-   * @param ce            command event
-   * @param numberOfRolls number of times to roll the die
-   */
-  private void multipleDieRollsResults(CommandEvent ce, int numberOfRolls) {
-    Random rand = new Random();
-    StringBuilder rollResults = new StringBuilder();
-
-    // Generate list of roll results
-    for (int i = 0; i < numberOfRolls; i++) {
-      rollResults.append("\n").append(i + 1).append(": **(").append(rand.nextInt(6) + 1).append(")** ");
-    }
-
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("Rolls");
-    display.setDescription(rollResults.toString());
-    Settings.sendEmbed(ce, display);
   }
 
   /**
@@ -121,108 +117,65 @@ public class Roll extends Command {
       boolean minAndMaxAreNotEqual = min != max;
       boolean minIsNotLargerThanMax = !(min > max);
 
-      boolean validRNGConstraints = validNumberOfRolls && minAndMaxAreZeroOrPositive
-          && minAndMaxAreNotEqual && minIsNotLargerThanMax;
+      boolean validRNGConstraints = validNumberOfRolls && minAndMaxAreZeroOrPositive && minAndMaxAreNotEqual && minIsNotLargerThanMax;
 
       if (validRNGConstraints) {
-        interpretCustomRangeRolls(ce, numberOfRolls, min, max);
+        StringBuilder rollResults = new StringBuilder();
+
+        if (numberOfRolls == 1) {
+          rollResults.append("You rolled a **(").append(new Random().nextInt(max - min + 1) + min).append(")**.");
+        } else {
+          Random random = new Random();
+          for (int i = 0; i < numberOfRolls; i++) { // Generate list of roll results
+            String rollResult = Integer.toString(random.nextInt(max - min + 1) + min);
+            rollResults.append("\n").append(i + 1).append(": **(").append(rollResult).append(")** ");
+          }
+        }
+
+        EmbedBuilder display = new EmbedBuilder();
+        display.setAuthor("RNG");
+        display.setDescription(rollResults.toString());
+        Settings.sendEmbed(ce, display);
       } else {
-        processErrorMessages(ce, validNumberOfRolls, minAndMaxAreZeroOrPositive,
-            minAndMaxAreNotEqual, minIsNotLargerThanMax);
+        if (!validNumberOfRolls) {
+          ce.getChannel().sendMessage("Provide between 1-10 times to generate numbers.").queue();
+        }
+        if (!minAndMaxAreZeroOrPositive) {
+          ce.getChannel().sendMessage("Minimum and maximum cannot be negative.").queue();
+        }
+        if (!minAndMaxAreNotEqual) {
+          ce.getChannel().sendMessage("Minimum cannot be equal to maximum.").queue();
+        }
+        if (minIsNotLargerThanMax) {
+          ce.getChannel().sendMessage("Minimum cannot be larger than maximum.").queue();
+        }
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.EXCEED_CUSTOM_RANGES.text).queue();
+      ce.getChannel().sendMessage("Provide between 1-10 for number of rolls and range.").queue();
     }
   }
 
   /**
-   * Either generates one or multiple custom range results.
-   *
-   * @param ce            command event
-   * @param numberOfRolls number of times to generate integers
-   * @param min           minimum value in custom range
-   * @param max           maximum value in custom range
+   * Types of errors.
    */
-  private void interpretCustomRangeRolls(CommandEvent ce, int numberOfRolls, int min, int max) {
-    StringBuilder rollResults = new StringBuilder();
+  private enum Error {
+    /**
+     * Out of range.
+     */
+    EXCEED_RANGE("Provide between 1-10 times to roll dice.");
 
-    if (numberOfRolls == 1) {
-      oneCustomRangeRoll(min, max, rollResults);
-    } else {
-      multipleCustomRangeRolls(numberOfRolls, min, max, rollResults);
-    }
+    /**
+     * Message.
+     */
+    public final String message;
 
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("RNG");
-    display.setDescription(rollResults.toString());
-    Settings.sendEmbed(ce, display);
-  }
-
-  /**
-   * Generates one custom range result.
-   *
-   * @param min         minimum value in custom range
-   * @param max         maximum value in custom range
-   * @param rollResults results of the roll
-   */
-  private void oneCustomRangeRoll(int min, int max, StringBuilder rollResults) {
-    rollResults.append("You rolled a **(").append(new Random().nextInt(max - min + 1) + min).append(")**.");
-  }
-
-  /**
-   * Generates multiple custom range results.
-   *
-   * @param numberOfRolls number of times to generate integers
-   * @param min           minimum value in custom range
-   * @param max           maximum value in custom range
-   * @param rollResults   results of the rolls
-   */
-  private void multipleCustomRangeRolls(int numberOfRolls, int min, int max, StringBuilder rollResults) {
-    Random random = new Random();
-    for (int i = 0; i < numberOfRolls; i++) { // Generate list of roll results
-      String rollResult = Integer.toString(random.nextInt(max - min + 1) + min);
-      rollResults.append("\n").append(i + 1).append(": **(").append(rollResult).append(")** ");
-    }
-  }
-
-  /**
-   * Sends error messages for invalid parameters provided by the user.
-   *
-   * @param ce                         command event
-   * @param validNumberOfRolls         number of rolls is between 1-10
-   * @param minAndMaxAreZeroOrPositive minimum and maximum values in custom range are zero or positive
-   * @param minAndMaxAreNotEqual       minimum and maximum values in custom range are not equal
-   * @param minIsNotLargerThanMax      minimum value is not larger than maximum value
-   */
-  private void processErrorMessages(CommandEvent ce, boolean validNumberOfRolls, boolean minAndMaxAreZeroOrPositive,
-                                    boolean minAndMaxAreNotEqual, boolean minIsNotLargerThanMax) {
-    if (!validNumberOfRolls) {
-      ce.getChannel().sendMessage(Failure.INVALID_NUMBER.text).queue();
-    }
-    if (!minAndMaxAreZeroOrPositive) {
-      ce.getChannel().sendMessage(Failure.MIN_OR_MAX_NEGATIVE.text).queue();
-    }
-    if (!minAndMaxAreNotEqual) {
-      ce.getChannel().sendMessage(Failure.MIN_AND_MAX_EQUAL.text).queue();
-    }
-    if (minIsNotLargerThanMax) {
-      ce.getChannel().sendMessage(Failure.MIN_LARGER_THAN_MAX.text).queue();
-    }
-  }
-
-  private enum Failure {
-    INVALID_INPUT("Invalid parameter format."),
-    INVALID_NUMBER("Provide between 1-10 times to generate numbers."),
-    EXCEED_RANGE("Provide between 1-10 times to roll dice."),
-    EXCEED_CUSTOM_RANGES("Provide between 1-10 for number of rolls and range."),
-    MIN_OR_MAX_NEGATIVE("Minimum and maximum cannot be negative."),
-    MIN_AND_MAX_EQUAL("Minimum cannot be equal to maximum."),
-    MIN_LARGER_THAN_MAX("Minimum cannot be larger than maximum.");
-
-    public final String text;
-
-    Failure(String text) {
-      this.text = text;
+    /**
+     * Associates an error with its message.
+     *
+     * @param message message
+     */
+    Error(String message) {
+      this.message = message;
     }
   }
 }

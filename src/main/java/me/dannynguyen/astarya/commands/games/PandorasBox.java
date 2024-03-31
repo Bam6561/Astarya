@@ -1,9 +1,9 @@
 package me.dannynguyen.astarya.commands.games;
 
-import me.dannynguyen.astarya.enums.BotMessage;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import me.dannynguyen.astarya.commands.owner.Settings;
+import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
@@ -11,16 +11,25 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import java.util.List;
 
 /**
- * Command invocation that sends a random scenario prompt. The prompt's
- * subject is substituted if it has a field to support the user's given parameters.
+ * Command invocation that sends a random scenario prompt.
+ * <p>
+ * The prompt's subject is substituted if it has a field to support the user's given parameters.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.13
  * @since 1.6.11
  */
 public class PandorasBox extends Command {
+  /**
+   * Pandoras box prompts.
+   */
   private final List<String> pandorasBoxPrompts;
 
+  /**
+   * Associates the command with its properties.
+   *
+   * @param pandorasBoxPrompts pandoras box prompts
+   */
   public PandorasBox(List<String> pandorasBoxPrompts) {
     this.name = "pandorasbox";
     this.aliases = new String[]{"pandorasbox", "pb"};
@@ -30,7 +39,13 @@ public class PandorasBox extends Command {
   }
 
   /**
-   * Either substitutes the prompt's subject with self-user, a random vc or discord member, or the user's choice.
+   * Either substitutes the prompt's subject with:
+   * <ul>
+   *  <li> self-user
+   *  <li> random vc member
+   *  <li> random discord member
+   *  <li> user's choice phrase
+   * </ul>
    *
    * @param ce command event
    */
@@ -87,9 +102,8 @@ public class PandorasBox extends Command {
    */
   private void randomVoiceChannelSubject(CommandEvent ce) {
     GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
-    boolean isInVoiceChannel = userVoiceState.inAudioChannel();
 
-    if (isInVoiceChannel) {
+    if (userVoiceState.inAudioChannel()) {
       VoiceChannel vc = userVoiceState.getChannel().asVoiceChannel();
       List<Member> vcMembers = vc.getMembers();
       int randomVCMember = (int) (Math.random() * vcMembers.size());
