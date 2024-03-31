@@ -26,7 +26,7 @@ import java.util.concurrent.CompletableFuture;
  * Optionally, the image can be compressed by providing a quality value.
  *
  * @author Danny Nguyen
- * @version 1.9.1
+ * @version 1.9.2
  * @see <a href="https://github.com/Bam6561/JPGConverter">JPGConverter</a>
  * @since 1.9.1
  */
@@ -147,19 +147,31 @@ public class Jpg extends Command {
      * @param quality image quality
      */
     private void convertImages(float quality) {
+      File jpgDirectory = new File(".\\resources\\jpg\\");
+      if (!jpgDirectory.exists()) {
+        jpgDirectory.mkdirs();
+      }
+
       List<CompletableFuture<File>> downloads = new ArrayList<>();
       for (Message.Attachment imageAttachment : imageAttachments) {
-        File file = new File(".\\resources\\" + imageAttachment.getFileName());
+        File file = new File(".\\resources\\jpg\\" + imageAttachment.getFileName());
         downloads.add(imageAttachment.getProxy().downloadToFile(file));
         downloadedImages.add(file);
       }
       for (CompletableFuture<File> download : downloads) {
         download.join();
       }
+
       for (File downloadedImage : downloadedImages) {
         convertIntoJpg(downloadedImage, quality);
       }
-      ce.getChannel().sendMessage("").addFiles(imagesToUpload).queue();
+      ce.getChannel().sendMessage("").addFiles(imagesToUpload).queue(
+          delete -> {
+            for (File file : jpgDirectory.listFiles()) {
+              file.delete();
+            }
+          }
+      );
     }
 
     /**
@@ -190,8 +202,7 @@ public class Jpg extends Command {
 
         imagesToUpload.add(FileUpload.fromData(convertedImage));
       } catch (IOException e) {
-        e.printStackTrace();
-        //ce.getChannel().sendMessage("Failed to convert image.").queue();
+        ce.getChannel().sendMessage("Failed to convert image.").queue();
       }
     }
 

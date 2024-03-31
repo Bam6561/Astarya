@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.8.6
+ * @version 1.9.2
  * @since 1.0
  */
 public class Help extends Command {
@@ -95,6 +95,7 @@ public class Help extends Command {
         case "highorlow", "guess" -> setCommandDetails(Help.Command.HIGHORLOW);
         case "info", "about" -> setCommandDetails(Help.Command.INFO);
         case "join", "j" -> setCommandDetails(Help.Command.JOIN);
+        case "jpg" -> setCommandDetails(Help.Command.JPG);
         case "leave", "l", "disconnect", "dc" -> setCommandDetails(Help.Command.LEAVE);
         case "loop", "repeat" -> setCommandDetails(Help.Command.LOOP);
         case "lyrics" -> setCommandDetails(Help.Command.LYRICS);
@@ -243,6 +244,15 @@ public class Help extends Command {
         "join, j",
         "[0]Join",
         "join"),
+
+    /**
+     * {@link me.dannynguyen.astarya.commands.utility.Jpg}
+     */
+    JPG("Help: JPG",
+        "Converts images to .jpg format with an optional image quality.",
+        "jpg",
+        "[0]+image(s) [1]<quality> +images(s)",
+        "jpg, jpg 0.75"),
 
     /**
      * {@link me.dannynguyen.astarya.commands.audio.Leave}
