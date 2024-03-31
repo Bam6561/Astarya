@@ -7,7 +7,7 @@ import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -41,8 +41,8 @@ public class PandorasBox extends Command {
    *
    * @param pandorasBoxPrompts pandoras box prompts
    */
-  public PandorasBox(@NotNull List<String> pandorasBoxPrompts) {
-    this.pandorasBoxPrompts = Objects.requireNonNull(pandorasBoxPrompts, "Null prompts");
+  public PandorasBox(@Nullable List<String> pandorasBoxPrompts) {
+    this.pandorasBoxPrompts = pandorasBoxPrompts;
     this.name = "pandorasbox";
     this.aliases = new String[]{"pandorasbox", "pb"};
     this.arguments = "[0]Self [1]VC/DC/Name [2 ++]Phrase";

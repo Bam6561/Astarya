@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,14 +42,14 @@ import java.util.*;
  * in Discord chat through the usage of its bot token.
  *
  * @author Danny Nguyen
- * @version 1.8.6
+ * @version 1.9.1
  * @since 1.0
  */
 public class Bot {
   /**
    * Bot version.
    */
-  public static final String version = "V1.9.0";
+  public static final String version = "V1.9.1";
 
   /**
    * Discord API.
@@ -101,20 +102,22 @@ public class Bot {
    */
   private static CommandClient createCommandClient(EventWaiter waiter) {
     String prefix = "<";
-    String alternativePrefix = "A:";
+    String alternatePrefix = "A:";
 
     return new CommandClientBuilder()
         .setOwnerId("204448598539239424") // Bam6561
         .setHelpWord("commands")
         .setPrefix(prefix)
-        .setAlternativePrefix(alternativePrefix)
-        .addCommands(new ColorRole(loadColorRoles()), new Emote(), new Poll(waiter), new Profile(),
-            new Remind(), new Server(), new Delete(), new Settings(prefix, alternativePrefix),
-            new Shutdown(), new Ping(), new Choose(), new CoinFlip(), new HighOrLow(waiter),
-            new PandorasBox(loadPandorasBoxPrompts()), new Roll(), new ClearQueue(), new Join(),
-            new Leave(), new Loop(), new Lyrics(), new NowPlaying(), new Pause(), new Play(), new PlayNext(),
-            new Queue(), new Remove(), new Return(), new SearchTrack(waiter), new SetPosition(),
-            new Shuffle(), new Skip(), new Swap(), new Credits(), new Help(), new Info())
+        .setAlternativePrefix(alternatePrefix)
+        .addCommands(new Credits(), new Help(), new Info(), new Ping(),
+            new ClearQueue(), new Join(), new Leave(), new Loop(), new Lyrics(),
+            new NowPlaying(), new Pause(), new Play(), new PlayNext(), new Queue(),
+            new Remove(), new Return(), new SearchTrack(waiter), new SetPosition(),
+            new Shuffle(), new Skip(), new Swap(), new Choose(), new CoinFlip(),
+            new HighOrLow(waiter), new PandorasBox(loadPandorasBoxPrompts()), new Roll(),
+            new Delete(), new Settings(prefix, alternatePrefix), new Shutdown(),
+            new ColorRole(loadColorRoles()), new Emote(), new Jpg(), new Poll(waiter),
+            new Profile(), new Remind(), new Server())
         .build();
   }
 
@@ -124,6 +127,7 @@ public class Bot {
    *
    * @return Pandora's Box prompts
    */
+  @Nullable
   private static List<String> loadPandorasBoxPrompts() {
     try {
       Scanner scanner = new Scanner(new File(".\\resources\\pandoras_box_prompts.txt"));
