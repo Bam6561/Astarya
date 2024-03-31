@@ -13,10 +13,13 @@ import java.util.List;
  * Command invocation that clears a number of 2-100 recent messages.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.14
  * @since 1.0
  */
 public class Delete extends Command {
+  /**
+   * Associates command with its properties.
+   */
   public Delete() {
     this.name = "delete";
     this.aliases = new String[]{"delete", "purge"};
@@ -26,7 +29,7 @@ public class Delete extends Command {
   }
 
   /**
-   * Checks if the user provided a parameter before reading the delete command request.
+   * Checks if the user provided a parameter before reading the command request.
    *
    * @param ce command event
    */
@@ -54,41 +57,45 @@ public class Delete extends Command {
   private void readDeleteMessagesRequest(CommandEvent ce, String[] parameters) {
     try {
       int numberOfMessagesToDelete = Integer.parseInt(parameters[1]);
-      boolean validNumberOfMessagesToDelete = (numberOfMessagesToDelete >= 2) && (numberOfMessagesToDelete <= 100);
-      if (validNumberOfMessagesToDelete) {
-        deleteRecentMessages(ce, numberOfMessagesToDelete);
+      if ((numberOfMessagesToDelete >= 2) && (numberOfMessagesToDelete <= 100)) {
+        MessageChannel textChannel = ce.getChannel();
+        List<Message> recentMessages = textChannel.getHistory().retrievePast(numberOfMessagesToDelete).complete();
+
+        try {
+          textChannel.purgeMessages(recentMessages);
+          textChannel.sendMessage("Previous (" + numberOfMessagesToDelete + ") messages cleared.").queue();
+        } catch (InsufficientPermissionException ex) {
+          ce.getChannel().sendMessage(BotMessage.MISSING_PERMISSION_MANAGE_MESSAGES.getMessage()).queue();
+        }
       } else {
-        ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
+        ce.getChannel().sendMessage(Error.EXCEED_RANGE.text).queue();
       }
     } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.EXCEED_RANGE.text).queue();
+      ce.getChannel().sendMessage(Error.EXCEED_RANGE.text).queue();
     }
   }
 
   /**
-   * Deletes user defined amount of recent messages from the text channel.
-   *
-   * @param ce                       command event
-   * @param numberOfMessagesToDelete number of messages to delete
+   * Types of errors.
    */
-  private void deleteRecentMessages(CommandEvent ce, int numberOfMessagesToDelete) {
-    MessageChannel textChannel = ce.getChannel();
-    List<Message> recentMessages = textChannel.getHistory().retrievePast(numberOfMessagesToDelete).complete();
-    try {
-      textChannel.purgeMessages(recentMessages);
-      textChannel.sendMessage("Previous (" + numberOfMessagesToDelete + ") messages cleared.").queue();
-    } catch (InsufficientPermissionException ex) {
-      ce.getChannel().sendMessage(BotMessage.MISSING_PERMISSION_MANAGE_MESSAGES.getMessage()).queue();
-    }
-  }
-
-  private enum Failure {
+  private enum Error {
+    /**
+     * Out of range.
+     */
     EXCEED_RANGE("Provide between 2-100 messages to clear.");
 
+    /**
+     * Message.
+     */
     public final String text;
 
-    Failure(String text) {
-      this.text = text;
+    /**
+     * Associates an error with its message.
+     *
+     * @param message message
+     */
+    Error(String message) {
+      this.text = message;
     }
   }
 }

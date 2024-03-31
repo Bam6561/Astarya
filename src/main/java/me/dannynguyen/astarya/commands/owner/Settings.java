@@ -13,25 +13,54 @@ import java.util.concurrent.TimeUnit;
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.14
  * @since 1.0
  */
 public class Settings extends Command {
+  /**
+   * Command prefix.
+   */
   private static String prefix;
+
+  /**
+   * Command alternate prefix.
+   */
   private static String alternativePrefix;
+
+  /**
+   * If to delete command invocations.
+   */
   private static boolean deleteInvoke = false;
+
+  /**
+   * If to delete embeds after a duration.
+   */
   private static boolean embedDecay = false;
+
+  /**
+   * The duration to delete embeds after (in seconds).
+   */
   private static int embedDecayTime = 30;
+
+  /**
+   * If to embed media links.
+   */
   private static boolean embedMediaLinks = true;
 
-  public Settings(String prefix, String alternativePrefix) {
+  /**
+   * Associates the command with its properties.
+   *
+   * @param prefix    prefix
+   * @param altPrefix alternate prefix
+   */
+  public Settings(String prefix, String altPrefix) {
     this.name = "settings";
     this.aliases = new String[]{"settings", "config"};
     this.arguments = "[0]MainMenu [1]Setting [2]True/False";
     this.help = "Provides information on the bot's settings.";
-    Settings.prefix = prefix;
-    Settings.alternativePrefix = alternativePrefix;
     this.ownerCommand = true;
+    Settings.prefix = prefix;
+    Settings.alternativePrefix = altPrefix;
   }
 
   /**
@@ -49,7 +78,7 @@ public class Settings extends Command {
 
     switch (numberOfParameters) {
       case 0 -> sendSettingsMenu(ce);
-      case 2 -> interpretSettingsMenuChange(ce, parameters);
+      case 2 -> new SettingsChangeRequest(ce).interpretRequest(parameters);
       default -> ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
   }
@@ -60,109 +89,15 @@ public class Settings extends Command {
    * @param ce command event
    */
   private void sendSettingsMenu(CommandEvent ce) {
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("Settings");
-    display.setDescription("**Prefix:** `" + prefix +
-        "` \n**AlternatePrefix:** `" + alternativePrefix + "`"
-        + "\n**DeleteInvoke**: `" + deleteInvoke +
-        "`" + "\n**EmbedDecay:** `" + embedDecay + "`"
+    EmbedBuilder embed = new EmbedBuilder();
+    embed.setAuthor("Settings");
+    embed.setDescription("**Prefix:** `" + prefix
+        + "` \n**AlternatePrefix:** `" + alternativePrefix + "`"
+        + "\n**DeleteInvoke**: `" + deleteInvoke
+        + "`" + "\n**EmbedDecay:** `" + embedDecay + "`"
         + "\n**EmbedDecayTime:** `" + embedDecayTime + "`s"
         + "\n**EmbedMediaLinks:** `" + embedMediaLinks + "`");
-    sendEmbed(ce, display);
-  }
-
-  /**
-   * Either changes the setting:
-   * <ul>
-   *  <li> delete invoke
-   *  <li> embed decay
-   *  <li> embed decay time
-   *  <li> embed media links
-   * </ul>
-   *
-   * @param ce         command event
-   * @param parameters user provided parameters
-   */
-  private void interpretSettingsMenuChange(CommandEvent ce, String[] parameters) {
-    String settingType = parameters[1].toLowerCase();
-
-    switch (settingType) {
-      case "deleteinvoke" -> setDeleteInvokeSetting(ce, parameters[2].toLowerCase());
-      case "embeddecay" -> setEmbedDecaySetting(ce, parameters[2].toLowerCase());
-      case "embeddecaytime" -> setEmbedDecayTimeSetting(ce, parameters[2]);
-      case "embedmedialinks" -> setEmbedMediaLinksSetting(ce, parameters[2].toLowerCase());
-      default -> ce.getChannel().sendMessage(Failure.SETTING_NOT_FOUND.text).queue();
-    }
-  }
-
-  /**
-   * Changes the deleteinvoke's setting to true or false.
-   *
-   * @param ce            command event
-   * @param settingChange the boolean value to be changed to
-   */
-  private void setDeleteInvokeSetting(CommandEvent ce, String settingChange) {
-    boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
-    if (settingChangeIsBoolean) {
-      setDeleteInvoke(Boolean.parseBoolean(settingChange));
-      ce.getChannel().sendMessage("DeleteInvoke has been set to `" + getDeleteInvoke() + "`.").queue();
-    } else {
-      ce.getChannel().sendMessage(Failure.SPECIFY_TRUE_FALSE.text).queue();
-    }
-  }
-
-  /**
-   * Changes the embeddecay's setting to true or false.
-   *
-   * @param ce            command event
-   * @param settingChange the boolean value to be changed to
-   */
-  private void setEmbedDecaySetting(CommandEvent ce, String settingChange) {
-    boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
-    if (settingChangeIsBoolean) {
-      setEmbedDecay(Boolean.parseBoolean(settingChange));
-      ce.getChannel().sendMessage("EmbedDecay has been set to `" + getEmbedDecay() + "`.").queue();
-    } else {
-      ce.getChannel().sendMessage(Failure.SPECIFY_TRUE_FALSE.text).queue();
-    }
-  }
-
-  /**
-   * Changes the embeddecaytime's setting to an integer value.
-   *
-   * @param ce            command event
-   * @param settingChange the boolean value to be changed to
-   */
-  private void setEmbedDecayTimeSetting(CommandEvent ce, String settingChange) {
-    try {
-      int timeValue = Integer.parseInt(settingChange);
-      boolean validTimeValue = (timeValue >= 15) && (timeValue <= 120);
-      if (validTimeValue) {
-        setEmbedDecayTime(timeValue);
-        ce.getChannel().sendMessage("EmbedDecayTime has been set to `" + getEmbedDecayTime() + "`s.").queue();
-      } else {
-        ce.getChannel().sendMessage(Failure.SETTINGS_EMBED_DECAY_RANGE.text).queue();
-      }
-    } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.SETTINGS_EMBED_DECAY_RANGE.text).queue();
-    }
-  }
-
-  /**
-   * Changes the embedmedia links setting to true or false.
-   *
-   * @param ce            command event
-   * @param settingChange the boolean value to be changed to
-   */
-  private void setEmbedMediaLinksSetting(CommandEvent ce, String settingChange) {
-    settingChange = settingChange.toLowerCase();
-    boolean settingChangeIsBoolean = (settingChange.equals("true")) || (settingChange.equals("false"));
-    if (settingChangeIsBoolean) {
-      setEmbedMediaLinks(Boolean.parseBoolean(settingChange));
-      ce.getChannel().sendMessage("EmbedMediaLinks has been set to `" + getEmbedMediaLinks() + "`.").queue();
-    } else {
-      ce.getChannel().sendMessage(Failure.SPECIFY_TRUE_FALSE.text).queue();
-    }
+    sendEmbed(ce, embed);
   }
 
   /**
@@ -179,77 +114,196 @@ public class Settings extends Command {
   /**
    * Sends a pre-set embed configuration into the text channel.
    *
-   * @param ce      command event
-   * @param display object representing the embed
+   * @param ce    command event
+   * @param embed embed
    */
-  public static void sendEmbed(CommandEvent ce, EmbedBuilder display) {
+  public static void sendEmbed(CommandEvent ce, EmbedBuilder embed) {
     ce.getChannel().sendTyping().queue();
-    display.setColor(0x006fb1);
-    display.setFooter(ce.getMember().getUser().getAsTag());
-    display.setTimestamp(Instant.now());
-    Settings.embedDecay(ce, display);
+    embed.setColor(0x006fb1);
+    embed.setFooter(ce.getMember().getUser().getAsTag());
+    embed.setTimestamp(Instant.now());
+    Settings.embedDecay(ce, embed);
   }
 
   /**
    * Automatically deletes embeds after an elapsed period of time.
    *
-   * @param ce      command event
-   * @param display object representing the embed
+   * @param ce    command event
+   * @param embed embed
    */
-  public static void embedDecay(CommandEvent ce, EmbedBuilder display) {
+  public static void embedDecay(CommandEvent ce, EmbedBuilder embed) {
     if (embedDecay) {
-      ce.getChannel().sendMessageEmbeds(display.build()).complete().
-          delete().queueAfter(embedDecayTime, TimeUnit.SECONDS);
+      ce.getChannel().sendMessageEmbeds(embed.build()).complete().delete().queueAfter(embedDecayTime, TimeUnit.SECONDS);
     } else {
-      ce.getChannel().sendMessageEmbeds(display.build()).queue();
+      ce.getChannel().sendMessageEmbeds(embed.build()).queue();
     }
   }
 
+  /**
+   * Gets the commands prefix.
+   *
+   * @return commands prefix
+   */
   public static String getPrefix() {
     return Settings.prefix;
   }
 
+  /**
+   * If to embed media links.
+   *
+   * @return if to embed media links
+   */
   public static boolean getEmbedMediaLinks() {
     return Settings.embedMediaLinks;
   }
 
-  private boolean getDeleteInvoke() {
-    return Settings.deleteInvoke;
-  }
+  /**
+   * Represents a settings change query.
+   *
+   * @param ce command event
+   * @author Danny Nguyen
+   * @version 1.8.13
+   * @since 1.8.13
+   */
+  private record SettingsChangeRequest(CommandEvent ce) {
+    /**
+     * Either changes the setting:
+     * <ul>
+     *  <li> delete invoke
+     *  <li> embed decay
+     *  <li> embed decay time
+     *  <li> embed media links
+     * </ul>
+     *
+     * @param parameters user provided parameters
+     */
+    private void interpretRequest(String[] parameters) {
+      try {
+        Setting setting = Setting.valueOf(parameters[1].toUpperCase());
+        switch (setting) {
+          case DELETEINVOKE -> setDeleteInvokeSetting(parameters[2].toLowerCase());
+          case EMBEDDECAY -> setEmbedDecaySetting(parameters[2].toLowerCase());
+          case EMBEDDECAYTIME -> setEmbedDecayTimeSetting(parameters[2]);
+          case EMBEDMEDIALINKS -> setEmbedMediaLinksSetting(parameters[2].toLowerCase());
+        }
+      } catch (IllegalArgumentException ex) {
+        ce.getChannel().sendMessage("Setting not found.").queue();
+      }
+    }
 
-  private boolean getEmbedDecay() {
-    return Settings.embedDecay;
-  }
+    /**
+     * Changes the delete invoke's setting to true or false.
+     *
+     * @param value the boolean value to be changed to
+     */
+    private void setDeleteInvokeSetting(String value) {
+      if (value.equals("true") || value.equals("false")) {
+        Settings.deleteInvoke = Boolean.parseBoolean(value);
+        ce.getChannel().sendMessage("DeleteInvoke has been set to `" + Settings.deleteInvoke + "`.").queue();
+      } else {
+        ce.getChannel().sendMessage(Error.SPECIFY_TRUE_FALSE.message).queue();
+      }
+    }
 
-  private int getEmbedDecayTime() {
-    return Settings.embedDecayTime;
-  }
+    /**
+     * Changes the embed decay's setting to true or false.
+     *
+     * @param value the boolean value to be changed to
+     */
+    private void setEmbedDecaySetting(String value) {
+      if (value.equals("true") || value.equals("false")) {
+        Settings.embedDecay = Boolean.parseBoolean(value);
+        ce.getChannel().sendMessage("EmbedDecay has been set to `" + Settings.embedDecay + "`.").queue();
+      } else {
+        ce.getChannel().sendMessage(Error.SPECIFY_TRUE_FALSE.message).queue();
+      }
+    }
 
-  private void setDeleteInvoke(boolean deleteInvoke) {
-    Settings.deleteInvoke = deleteInvoke;
-  }
+    /**
+     * Changes the embed decay time's setting to an integer value.
+     *
+     * @param value the boolean value to be changed to
+     */
+    private void setEmbedDecayTimeSetting(String value) {
+      try {
+        int timeValue = Integer.parseInt(value);
+        if (timeValue >= 15 && timeValue <= 120) {
+          Settings.embedDecayTime = timeValue;
+          ce.getChannel().sendMessage("EmbedDecayTime has been set to `" + Settings.embedDecayTime + "`s.").queue();
+        } else {
+          ce.getChannel().sendMessage(Error.SETTINGS_EMBED_DECAY_RANGE.message).queue();
+        }
+      } catch (NumberFormatException e) {
+        ce.getChannel().sendMessage(Error.SETTINGS_EMBED_DECAY_RANGE.message).queue();
+      }
+    }
 
-  private void setEmbedDecay(boolean embedDecay) {
-    Settings.embedDecay = embedDecay;
-  }
+    /**
+     * Changes the embed media links setting to true or false.
+     *
+     * @param value the boolean value to be changed to
+     */
+    private void setEmbedMediaLinksSetting(String value) {
+      if (value.equals("true") || value.equals("false")) {
+        Settings.embedMediaLinks = Boolean.parseBoolean(value);
+        ce.getChannel().sendMessage("EmbedMediaLinks has been set to `" + Settings.embedMediaLinks + "`.").queue();
+      } else {
+        ce.getChannel().sendMessage(Error.SPECIFY_TRUE_FALSE.message).queue();
+      }
+    }
 
-  private void setEmbedDecayTime(int embedDecayTime) {
-    Settings.embedDecayTime = embedDecayTime;
-  }
+    /**
+     * Types of settings.
+     */
+    private enum Setting {
+      /**
+       * If to delete command invocations.
+       */
+      DELETEINVOKE,
 
-  private void setEmbedMediaLinks(boolean embedMediaLinks) {
-    Settings.embedMediaLinks = embedMediaLinks;
-  }
+      /**
+       * If to delete embeds after a delay.
+       */
+      EMBEDDECAY,
 
-  private enum Failure {
-    SETTING_NOT_FOUND("Setting not found."),
-    SPECIFY_TRUE_FALSE("Provide true or false."),
-    SETTINGS_EMBED_DECAY_RANGE("Provide between 15 - 120 seconds.");
+      /**
+       * How long to wait before deleting embeds.
+       */
+      EMBEDDECAYTIME,
 
-    public final String text;
+      /**
+       * If to embed media links.
+       */
+      EMBEDMEDIALINKS;
+    }
 
-    Failure(String text) {
-      this.text = text;
+    /**
+     * Types of errors.
+     */
+    private enum Error {
+      /**
+       * Non-boolean value.
+       */
+      SPECIFY_TRUE_FALSE("Provide true or false."),
+
+      /**
+       * Out of range or not in seconds.
+       */
+      SETTINGS_EMBED_DECAY_RANGE("Provide between 15 - 120 seconds.");
+
+      /**
+       * Message.
+       */
+      public final String message;
+
+      /**
+       * Associates an error with its message.
+       *
+       * @param message message
+       */
+      Error(String message) {
+        this.message = message;
+      }
     }
   }
 }
