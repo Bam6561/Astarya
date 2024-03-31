@@ -71,12 +71,12 @@ public class Play extends Command {
 
     if (botChannel == null) {
       joinVoiceChannel(ce);
-      new PlayRequest(ce).readPlayRequest();
+      new PlayRequest(ce).interpretRequest();
       return;
     }
 
     if (userChannel.equals(botChannel)) {
-      new PlayRequest(ce).readPlayRequest();
+      new PlayRequest(ce).interpretRequest();
     } else {
       ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
     }
@@ -139,7 +139,7 @@ public class Play extends Command {
     /**
      * Checks if the command request was formatted correctly before interpreting its usage.
      */
-    private void readPlayRequest() {
+    private void interpretRequest() {
       switch (numberOfParameters) {
         case 0 -> ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
         case 1 -> readSpotifyApiKey();
@@ -169,7 +169,7 @@ public class Play extends Command {
           } catch (IOException | ParseException | SpotifyWebApiException e) {
             System.out.println(Error.ERROR_SPOTIFY_API.message);
           }
-          interpretPlayRequest();
+          interpretSpotifyLinkType();
         } else {
           ce.getChannel().sendMessage("Unable to play Spotify links. No Spotify API key provided in .env file.").queue();
         }
@@ -194,7 +194,7 @@ public class Play extends Command {
      * Identifies user given Spotify links as either a track,
      * playlist, or album before adding it to the queue.
      */
-    private void interpretPlayRequest() {
+    private void interpretSpotifyLinkType() {
       boolean isSpotifyTrack = parameters[1].contains("https://open.spotify.com/track/");
       boolean isSpotifyPlayList = parameters[1].contains("https://open.spotify.com/playlist/");
       boolean isSpotifyAlbum = parameters[1].contains("https://open.spotify.com/album/");

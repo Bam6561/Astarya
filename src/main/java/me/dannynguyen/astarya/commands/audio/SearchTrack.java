@@ -8,7 +8,7 @@ import me.dannynguyen.astarya.commands.audio.managers.AudioScheduler;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.concurrent.TimeUnit;
@@ -18,13 +18,25 @@ import java.util.concurrent.TimeUnit;
  * to the queue using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.12
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
+  /**
+   * Event waiter.
+   */
   private final EventWaiter waiter;
+
+  /**
+   * Command user's id.
+   */
   private long invokerUserId;
 
+  /**
+   * Associates the command with its properties.
+   *
+   * @param waiter event waiter
+   */
   public SearchTrack(EventWaiter waiter) {
     this.name = "searchtrack";
     this.aliases = new String[]{"searchtrack", "search", "st"};
@@ -36,6 +48,7 @@ public class SearchTrack extends Command {
 
   /**
    * Checks if the user is in the same voice channel as the bot to read the command request.
+   * <p>
    * If so, the command locks the potential response to the requester and awaits for their response.
    *
    * @param ce command event
@@ -44,144 +57,116 @@ public class SearchTrack extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
-    GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
+    AudioChannelUnion userChannel = ce.getMember().getVoiceState().getChannel();
+    AudioChannelUnion botChannel = ce.getGuild().getSelfMember().getVoiceState().getChannel();
 
-    try {
-      boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-      if (userInSameVoiceChannel) {
-        readSearchTrackRequest(ce);
-        awaitUserResponse(ce);
-      } else {
-        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
-      }
-    } catch (NullPointerException e) {
+    if (userChannel == null) {
       ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
+      return;
     }
-  }
 
-  /**
-   * Checks if the command request was formatted correctly before querying YouTube for match results.
-   *
-   * @param ce command event
-   */
-  private void readSearchTrackRequest(CommandEvent ce) {
-    String[] parameters = ce.getMessage().getContentRaw().split("\\s");
-    int numberOfParameters = parameters.length - 1;
-
-    if (numberOfParameters > 0) {
-      setInvokerUserId(Long.parseLong(ce.getAuthor().getId())); // Lock searchTrack command request to requester
-      queryYouTube(ce, parameters, numberOfParameters);
+    if (userChannel.equals(botChannel)) {
+      new SearchTrackRequest(ce).interpretRequest();
     } else {
-      ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
     }
   }
 
   /**
-   * Awaits for user response to the searchTrack command request. After a response
-   * or period of inactivity, the locked status is removed from the requester.
+   * Represents a track search query.
    *
-   * @param ce command event
+   * @author Danny Nguyen
+   * @version 1.8.12
+   * @since 1.8.12
    */
-  private void awaitUserResponse(CommandEvent ce) {
-    ce.getChannel().sendTyping().queue(response -> waiter.waitForEvent(MessageReceivedEvent.class,
-        // Message sent matches invoker user's Id
-        w -> Long.parseLong(w.getMessage().getAuthor().getId()) == getInvokerUserId(),
-        w -> {
-          setInvokerUserId(0);
-          readUserResponse(ce, w);
-        }, 15, TimeUnit.SECONDS, () -> { // Timeout
-          setInvokerUserId(0);
-          ce.getChannel().sendMessage(Failure.RESPONSE_TIMED_OUT.text).queue();
-        }));
-  }
+  private class SearchTrackRequest {
+    /**
+     * Command event.
+     */
+    private final CommandEvent ce;
 
-  /**
-   * Gets YouTube search results from the search query.
-   *
-   * @param ce                 command event
-   * @param parameters         user provided parameters
-   * @param numberOfParameters number of user provided parameters
-   */
-  private void queryYouTube(CommandEvent ce, String[] parameters, int numberOfParameters) {
-    StringBuilder searchQuery = new StringBuilder();
-    for (int i = 1; i < numberOfParameters; i++) {
-      searchQuery.append(parameters[i]);
+    /**
+     * Associates a search track request with its command event.
+     *
+     * @param ce command event
+     */
+    SearchTrackRequest(CommandEvent ce) {
+      this.ce = ce;
     }
-    String youtubeSearchQuery = "ytsearch:" + String.join(" ", searchQuery);
-    PlayerManager.getINSTANCE().searchAudioTrack(ce, youtubeSearchQuery);
-  }
 
-  /**
-   * Checks if the user's response is an integer.
-   *
-   * @param ce command event
-   * @param w  message received event
-   */
-  private void readUserResponse(CommandEvent ce, MessageReceivedEvent w) {
-    String[] parameters = w.getMessage().getContentRaw().split("\\s");
-    try {
-      processUserResponse(ce, Integer.parseInt(parameters[0]));
-    } catch (NumberFormatException e) {
-      ce.getChannel().sendMessage(Failure.SPECIFY_RESULT_NUMBER.text).queue();
+    /**
+     * Checks if the command request was formatted correctly before querying YouTube for match results.
+     */
+    private void interpretRequest() {
+      String[] parameters = ce.getMessage().getContentRaw().split("\\s");
+      int numberOfParameters = parameters.length - 1;
+
+      if (numberOfParameters > 0) {
+        invokerUserId = Long.parseLong(ce.getAuthor().getId()); // Lock searchTrack command request to requester
+
+        StringBuilder searchQuery = new StringBuilder();
+        for (int i = 1; i < numberOfParameters; i++) {
+          searchQuery.append(parameters[i]);
+        }
+        String youtubeSearchQuery = "ytsearch:" + String.join(" ", searchQuery);
+        PlayerManager.getINSTANCE().searchAudioTrack(ce, youtubeSearchQuery);
+
+        awaitUserResponse();
+      } else {
+        ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
+      }
     }
-  }
 
-  /**
-   * Queues the user's track choice from YouTube results.
-   *
-   * @param ce                      command event
-   * @param searchTrackResultsIndex track index in the searchTrackResults to be queued
-   */
-  private void processUserResponse(CommandEvent ce, int searchTrackResultsIndex) {
-    try {
-      AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-      AudioTrack[] searchTrackResults = PlayerManager.getINSTANCE().getSearchTrackResults();
-
-      // Displayed indices to users are different from data index, so subtract 1
-      AudioTrack track = searchTrackResults[searchTrackResultsIndex - 1];
-      String requester = "[" + ce.getAuthor().getAsTag() + "]";
-
-      audioScheduler.queue(track, requester);
-      sendSearchTrackConfirmation(ce, track, requester);
-    } catch (IndexOutOfBoundsException e) {
-      setInvokerUserId(0);
-      ce.getChannel().sendMessage(Failure.RESPONSE_EXCEED_RANGE.text).queue();
+    /**
+     * Awaits for user response. After a response or period of
+     * inactivity, the locked status is removed from the requester.
+     */
+    private void awaitUserResponse() {
+      ce.getChannel().sendTyping().queue(response -> waiter.waitForEvent(MessageReceivedEvent.class,
+          // Message sent matches invoker user's Id
+          w -> Long.parseLong(w.getMessage().getAuthor().getId()) == invokerUserId,
+          w -> {
+            invokerUserId = -1;
+            readUserResponse(w);
+          }, 15, TimeUnit.SECONDS, () -> { // Timeout
+            invokerUserId = -1;
+            ce.getChannel().sendMessage("No response. Search timed out.").queue();
+          }));
     }
-  }
 
-  /**
-   * Sends confirmation the chosen track result was added to the queue.
-   *
-   * @param ce        command event
-   * @param track     chosen track from the YouTube results
-   * @param requester user who invoked the command
-   */
-  private void sendSearchTrackConfirmation(CommandEvent ce, AudioTrack track, String requester) {
-    String trackDuration = TrackTime.convertLong(track.getDuration());
-    StringBuilder userResponseConfirmation = new StringBuilder();
-    userResponseConfirmation.append("**Added:** `").append(track.getInfo().title).
-        append("` {*").append(trackDuration).append("*} ").append(requester);
-    ce.getChannel().sendMessage(userResponseConfirmation).queue();
-  }
+    /**
+     * Checks if the user's response is an integer before
+     * queueing the user's track choice from YouTube results.
+     *
+     * @param w message received event
+     */
+    private void readUserResponse(MessageReceivedEvent w) {
+      String[] parameters = w.getMessage().getContentRaw().split("\\s");
+      try {
+        int searchTrackResultsIndex = Integer.parseInt(parameters[0]);
+        try {
+          AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
+          AudioTrack[] searchTrackResults = PlayerManager.getINSTANCE().getSearchTrackResults();
 
-  private long getInvokerUserId() {
-    return this.invokerUserId;
-  }
+          // Displayed indices to users are different from data index, so subtract 1
+          AudioTrack track = searchTrackResults[searchTrackResultsIndex - 1];
+          String requester = "[" + ce.getAuthor().getAsTag() + "]";
 
-  private void setInvokerUserId(long invokerUserId) {
-    this.invokerUserId = invokerUserId;
-  }
+          audioScheduler.queue(track, requester);
 
-  private enum Failure {
-    SPECIFY_RESULT_NUMBER("Provide result number."),
-    RESPONSE_EXCEED_RANGE("Responses must be in range of 1-5."),
-    RESPONSE_TIMED_OUT("No response. Search timed out.");
-
-    public final String text;
-
-    Failure(String text) {
-      this.text = text;
+          StringBuilder userResponseConfirmation = new StringBuilder();
+          userResponseConfirmation.append("**Added:** `")
+              .append(track.getInfo().title)
+              .append("` {*").append(TrackTime.convertLong(track.getDuration())).append("*} ")
+              .append(requester);
+          ce.getChannel().sendMessage(userResponseConfirmation).queue();
+        } catch (IndexOutOfBoundsException e) {
+          invokerUserId = -1;
+          ce.getChannel().sendMessage("Responses must be in range of 1-5.").queue();
+        }
+      } catch (NumberFormatException e) {
+        ce.getChannel().sendMessage("Provide result number.").queue();
+      }
     }
   }
 }

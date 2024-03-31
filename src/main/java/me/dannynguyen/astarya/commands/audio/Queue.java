@@ -13,18 +13,16 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.util.List;
 
 /**
- * Command invocation that provides a list of
- * tracks queued and what track is currently playing.
+ * Command invocation that provides a list of tracks queued and what track is currently playing.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.12
  * @since 1.2.0
  */
 public class Queue extends Command {
-  private int pageRequested;
-  private int numberOfPages;
-  private int firstTrackQueueIndexOnPage;
-
+  /**
+   * Associates the command with its properties.
+   */
   public Queue() {
     this.name = "queue";
     this.aliases = new String[]{"queue", "q"};
@@ -48,12 +46,12 @@ public class Queue extends Command {
     int numberOfParameters = parameters.length - 1;
 
     switch (numberOfParameters) {
-      case 0 -> interpretQueuePage(ce, 0); // First queue page
+      case 0 -> new QueueRequest(ce, 0).interpretQueuePage(); // First queue page
       case 1 -> { // Search for queue page
         try {
-          interpretQueuePage(ce, Integer.parseInt(parameters[1]) - 1);
+          new QueueRequest(ce, Integer.parseInt(parameters[1]) - 1).interpretQueuePage();
         } catch (NumberFormatException e) {
-          ce.getChannel().sendMessage(Failure.SPECIFY_PAGE_NUMBER.text).queue();
+          ce.getChannel().sendMessage("Provide queue page number.").queue();
         }
       }
       default -> ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
@@ -61,204 +59,213 @@ public class Queue extends Command {
   }
 
   /**
-   * Either sends an embed containing a queue page or what track is currently playing.
+   * Represents a track queue query.
    *
-   * @param ce            command event
-   * @param pageRequested user provided page number to be displayed
+   * @author Danny Nguyen
+   * @version 1.8.12
+   * @since 1.8.12
    */
-  public void interpretQueuePage(CommandEvent ce, int pageRequested) {
-    AudioScheduler audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
-    AudioPlayer audioPlayer = audioScheduler.getAudioPlayer();
-    List<TrackQueueIndex> trackQueue = audioScheduler.getTrackQueue();
+  private static class QueueRequest {
+    /**
+     * Command event.
+     */
+    private final CommandEvent ce;
 
-    if (!trackQueue.isEmpty()) {
-      calculatePageToDisplay(trackQueue.size(), pageRequested);
-      sendQueuePage(ce, audioScheduler, audioPlayer, trackQueue);
-    } else { // Display nowPlaying only
-      sendNowPlaying(ce, audioScheduler, audioPlayer);
+    /**
+     * Page requested.
+     * <p>
+     * Will be set on constructor and validated in {@link #setQueueRequest(int)}.
+     */
+    private int pageRequested;
+
+    /**
+     * Number of queue pages.
+     * <p>
+     * Set in {@link #setQueueRequest(int)}.
+     */
+    private int numberOfPages;
+
+    /**
+     * First queue index on page.
+     * <p>
+     * Set in {@link #setQueueRequest(int)}.
+     */
+    private int firstTrackQueueIndexOnPage;
+
+    /**
+     * {@link AudioScheduler}
+     */
+    private final AudioScheduler audioScheduler;
+
+    /**
+     * Audio player.
+     */
+    private final AudioPlayer audioPlayer;
+
+    /**
+     * {@link AudioScheduler#getTrackQueue()}
+     */
+    private final List<TrackQueueIndex> trackQueue;
+
+    /**
+     * Associates a queue request with its command event and page requested.
+     *
+     * @param ce            command event
+     * @param pageRequested page requested
+     */
+    QueueRequest(CommandEvent ce, int pageRequested) {
+      this.ce = ce;
+      this.pageRequested = pageRequested;
+      this.audioScheduler = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler;
+      this.audioPlayer = audioScheduler.getAudioPlayer();
+      this.trackQueue = audioScheduler.getTrackQueue();
     }
-  }
 
-
-  /**
-   * Corrects user's requested page to view and determines which
-   * queue page to display and its starting track entry.
-   * <p>
-   * Full pages show 10 tracks each and a partially filled page adds one to the total
-   * number of pages. If the user requests more than the total number of pages, then set
-   * the request to the last page. For negative page number requests, set the request to 0.
-   * Multiply page requested by 10 to find the track index to display first, and subtract
-   * by a page (10 tracks) to display partially filled pages if the page would be empty.
-   *
-   * @param numberOfTracksInQueue total number of tracks in queue
-   * @param pageRequested         user provided queue page to view
-   */
-  private void calculatePageToDisplay(int numberOfTracksInQueue, int pageRequested) {
-    // Partition the queue into pages
-    int numberOfPages = numberOfTracksInQueue / 10;
-    boolean partiallyFilledPage = (numberOfTracksInQueue % 10) > 0;
-    if (partiallyFilledPage) {
-      numberOfPages += 1;
+    /**
+     * Either sends an embed containing a queue page or what track is currently playing.
+     */
+    private void interpretQueuePage() {
+      if (!trackQueue.isEmpty()) {
+        setQueueRequest(trackQueue.size());
+        sendQueuePage();
+      } else { // Display nowPlaying only
+        sendNowPlaying();
+      }
     }
 
-    // Correct invalid user requests
-    boolean requestMoreThanTotalPages = pageRequested >= numberOfPages;
-    boolean requestNegativePageNumber = pageRequested < 0;
-    if (requestMoreThanTotalPages) {
-      pageRequested = numberOfPages - 1;
-    } else if (requestNegativePageNumber) {
-      pageRequested = 0;
+    /**
+     * Corrects user's requested page to view and determines which
+     * queue page to display and its starting track entry.
+     * <p>
+     * Full pages show 10 tracks each and a partially filled page adds one to the total number of pages.
+     * <p>
+     * Multiply page requested by 10 to find the track index to display first, and subtract
+     * by a page (10 tracks) to display partially filled pages if the page would be empty.
+     * <p>
+     * If the user requests more than the total number of pages, then set the request to the last page.
+     * <p>
+     * For negative page number requests, set the request to 0.
+     *
+     * @param numberOfTracksInQueue total number of tracks in queue
+     */
+    private void setQueueRequest(int numberOfTracksInQueue) {
+      // Partition the queue into pages
+      numberOfPages = numberOfTracksInQueue / 10;
+      boolean partiallyFilledPage = (numberOfTracksInQueue % 10) > 0;
+      if (partiallyFilledPage) {
+        numberOfPages += 1;
+      }
+
+      // Correct invalid user requests
+      if (pageRequested >= numberOfPages) {
+        pageRequested = numberOfPages - 1;
+      } else if (pageRequested < 0) {
+        pageRequested = 0;
+      }
+
+      // Decide what the first track entry to be displayed on the page is
+      firstTrackQueueIndexOnPage = pageRequested * 10;
+      if (firstTrackQueueIndexOnPage == numberOfTracksInQueue) {
+        firstTrackQueueIndexOnPage -= 10;
+      }
     }
 
-    // Decide what the first track entry to be displayed on the page is
-    int firstQueueIndexOnPage = pageRequested * 10;
-    if (firstQueueIndexOnPage == numberOfTracksInQueue) {
-      firstQueueIndexOnPage -= 10;
+    /**
+     * Sends the queue page and the audio player's currently playing track.
+     */
+    private void sendQueuePage() {
+      EmbedBuilder embed = new EmbedBuilder();
+      embed.setAuthor("Queue");
+      embed.setDescription(createNowPlayingComponent());
+      embed.addField("**Tracks:**", createQueuePage(), false);
+      Settings.sendEmbed(ce, embed);
     }
 
-    this.pageRequested = pageRequested;
-    this.numberOfPages = numberOfPages;
-    this.firstTrackQueueIndexOnPage = firstQueueIndexOnPage;
-  }
+    /**
+     * Sends the currently playing track.
+     */
+    private void sendNowPlaying() {
+      StringBuilder nowPlaying = new StringBuilder();
 
-  /**
-   * Sends the queue page and the audio player's currently playing track.
-   *
-   * @param ce             command event
-   * @param audioScheduler audio scheduler
-   * @param audioPlayer    audio player
-   * @param trackQueue     list containing the tracks
-   */
-  private void sendQueuePage(CommandEvent ce, AudioScheduler audioScheduler,
-                             AudioPlayer audioPlayer, List<TrackQueueIndex> trackQueue) {
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("Queue");
-    display.setDescription(createNowPlayingQueuePage(audioScheduler, audioPlayer));
-    display.addField("**Tracks:**", createQueuePage(trackQueue), false);
-    Settings.sendEmbed(ce, display);
-  }
+      if (audioPlayer.getPlayingTrack() != null) {
+        AudioTrack audioTrack = audioPlayer.getPlayingTrack();
+        String trackPosition = TrackTime.convertLong(audioTrack.getPosition());
+        String trackDuration = TrackTime.convertLong(audioTrack.getDuration());
 
-  /**
-   * Sends the currently playing track.
-   *
-   * @param ce             command event
-   * @param audioScheduler audio scheduler
-   * @param audioPlayer    audio player
-   */
-  private void sendNowPlaying(CommandEvent ce, AudioScheduler audioScheduler, AudioPlayer audioPlayer) {
-    StringBuilder nowPlaying = new StringBuilder();
+        nowPlaying.append("**Now Playing:** ");
+        addAudioPlayerIsPausedOrLoopedComponent(nowPlaying);
+        nowPlaying.append("`").append(audioTrack.getInfo().title).append("` {*").append(trackPosition).append("*-*").append(trackDuration).append("*}");
+      } else {
+        nowPlaying.append("**Now Playing:** `Nothing`");
+      }
+      ce.getChannel().sendMessage(nowPlaying).queue();
+    }
 
-    boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
-    if (currentlyPlayingTrack) {
-      AudioTrack audioTrack = audioPlayer.getPlayingTrack();
-      String trackPosition = TrackTime.convertLong(audioTrack.getPosition());
-      String trackDuration = TrackTime.convertLong(audioTrack.getDuration());
-
+    /**
+     * Builds the now playing component to the queue page.
+     *
+     * @return now playing component to queue page
+     */
+    private String createNowPlayingComponent() {
+      StringBuilder nowPlaying = new StringBuilder();
       nowPlaying.append("**Now Playing:** ");
-      addAudioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, nowPlaying);
-      nowPlaying.append("`").append(audioTrack.getInfo().title).
-          append("` {*").append(trackPosition).append("*-*").append(trackDuration).append("*}");
-    } else {
-      nowPlaying.append("**Now Playing:** `Nothing`");
+      addAudioPlayerIsPausedOrLoopedComponent(nowPlaying);
+
+      if (audioPlayer.getPlayingTrack() != null) {
+        AudioTrack audioTrack = audioPlayer.getPlayingTrack();
+        String trackPosition = TrackTime.convertLong(audioTrack.getPosition());
+        String trackDuration = TrackTime.convertLong(audioTrack.getDuration());
+
+        nowPlaying.append("`").append(audioTrack.getInfo().title)
+            .append("` {*").append(trackPosition).append("*-*")
+            .append(trackDuration).append("*}\nPage `").append(pageRequested + 1)
+            .append("` / `").append(numberOfPages).append("`");
+      } else {
+        nowPlaying.append("`").append("Nothing")
+            .append("`\nPage `").append(pageRequested + 1)
+            .append("` / `").append(numberOfPages).append("`");
+      }
+      return nowPlaying.toString();
     }
-    ce.getChannel().sendMessage(nowPlaying).queue();
-  }
 
-  /**
-   * Builds the nowPlaying component to the queue page.
-   *
-   * @param audioScheduler audio scheduler
-   * @param audioPlayer    audio player
-   * @return nowPlaying component to queue page
-   */
-  private String createNowPlayingQueuePage(AudioScheduler audioScheduler, AudioPlayer audioPlayer) {
-    StringBuilder nowPlaying = new StringBuilder();
-    nowPlaying.append("**Now Playing:** ");
-    addAudioPlayerIsPausedOrLoopedNotice(audioScheduler, audioPlayer, nowPlaying);
+    /**
+     * Populates a queue page with track entries.
+     * <p>
+     * For partially filled pages, calculate which comes first - the
+     * next ten indices or the last track entry in the queue.
+     *
+     * @return formatted text representing the tracks queue
+     */
+    private String createQueuePage() {
+      StringBuilder queuePage = new StringBuilder();
 
-    boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
-    if (currentlyPlayingTrack) {
-      AudioTrack audioTrack = audioPlayer.getPlayingTrack();
-      String trackPosition = TrackTime.convertLong(audioTrack.getPosition());
-      String trackDuration = TrackTime.convertLong(audioTrack.getDuration());
+      // Calculate last track entry to be displayed
+      int numberOfTracksInQueue = trackQueue.size();
+      int lastQueueIndexOnPage = Math.min((firstTrackQueueIndexOnPage + 10), numberOfTracksInQueue);
 
-      nowPlaying.append("`").append(audioTrack.getInfo().title).
-          append("` {*").append(trackPosition).append("*-*").
-          append(trackDuration).append("*}\nPage `").append(getPageRequested() + 1).
-          append("` / `").append(getNumberOfPages()).append("`");
-    } else {
-      nowPlaying.append("`").append("Nothing")
-          .append("`\nPage `").append(getPageRequested() + 1).
-          append("` / `").append(getNumberOfPages()).append("`");
+      // Build contents of queue page embed
+      for (int i = firstTrackQueueIndexOnPage; i < lastQueueIndexOnPage; i++) {
+        String trackDuration = TrackTime.convertLong(trackQueue.get(i).getAudioTrack().getDuration());
+        queuePage.append("**[").append(i + 1).append("]** `")
+            .append(trackQueue.get(i).getAudioTrack().getInfo().title)
+            .append("` {*").append(trackDuration).append("*} ")
+            .append(trackQueue.get(i).getRequester()).append("\n");
+      }
+      return queuePage.toString();
     }
-    return nowPlaying.toString();
-  }
 
-  /**
-   * Populates a queue page with track entries.
-   * <p>
-   * For partially filled pages, calculate which comes first - the
-   * next ten indices or the last track entry in the queue.
-   *
-   * @param trackQueue tracks in the queue
-   * @return formatted text representing the tracks queue
-   */
-  private String createQueuePage(List<TrackQueueIndex> trackQueue) {
-    StringBuilder queuePage = new StringBuilder();
-
-    // Calculate last track entry to be displayed
-    int numberOfTracksInQueue = trackQueue.size();
-    int lastQueueIndexOnPage = Math.min((getFirstTrackQueueIndexOnPage() + 10), numberOfTracksInQueue);
-
-    // Build contents of queue page embed
-    for (int i = firstTrackQueueIndexOnPage; i < lastQueueIndexOnPage; i++) {
-      String trackDuration = TrackTime.convertLong(trackQueue.get(i).getAudioTrack().getDuration());
-      queuePage.append("**[").append(i + 1).append("]** `").
-          append(trackQueue.get(i).getAudioTrack().getInfo().title)
-          .append("` {*").append(trackDuration).append("*} ").
-          append(trackQueue.get(i).getRequester()).append("\n");
-    }
-    return queuePage.toString();
-  }
-
-  /**
-   * Adds conditional setting notes for the nowPlaying section.
-   *
-   * @param audioScheduler audio scheduler
-   * @param audioPlayer    audio player
-   * @param nowPlaying     information about what track is currently playing
-   */
-  private void addAudioPlayerIsPausedOrLoopedNotice(AudioScheduler audioScheduler,
-                                                    AudioPlayer audioPlayer, StringBuilder nowPlaying) {
-    boolean audioPlayerIsPaused = audioPlayer.isPaused();
-    boolean audioPlayerIsLooped = audioScheduler.getAudioPlayerLooped();
-    if (audioPlayerIsPaused) {
-      nowPlaying.append("(Paused) ");
-    }
-    if (audioPlayerIsLooped) {
-      nowPlaying.append("(Loop) ");
-    }
-  }
-
-  private int getPageRequested() {
-    return this.pageRequested;
-  }
-
-  private int getNumberOfPages() {
-    return this.numberOfPages;
-  }
-
-  private int getFirstTrackQueueIndexOnPage() {
-    return this.firstTrackQueueIndexOnPage;
-  }
-
-  private enum Failure {
-    SPECIFY_PAGE_NUMBER("Provide queue page number.");
-
-    public final String text;
-
-    Failure(String text) {
-      this.text = text;
+    /**
+     * Adds conditional setting notes for the now playing section.
+     *
+     * @param nowPlaying information about what track is currently playing
+     */
+    private void addAudioPlayerIsPausedOrLoopedComponent(StringBuilder nowPlaying) {
+      if (audioPlayer.isPaused()) {
+        nowPlaying.append("(Paused) ");
+      }
+      if (audioScheduler.getAudioPlayerLooped()) {
+        nowPlaying.append("(Loop) ");
+      }
     }
   }
 }

@@ -46,7 +46,7 @@ public class PlayNext extends Command {
     }
 
     if (userChannel.equals(botChannel)) {
-      new PlayNextRequest(ce).readPlayNextRequest();
+      new PlayNextRequest(ce).interpretRequest();
     } else {
       ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
     }
@@ -65,7 +65,7 @@ public class PlayNext extends Command {
      * Checks if the command request was formatted correctly
      * before changing the position of the chosen track.
      */
-    private void readPlayNextRequest() {
+    private void interpretRequest() {
       String[] parameters = ce.getMessage().getContentRaw().split("\\s");
       int numberOfParameters = parameters.length;
 

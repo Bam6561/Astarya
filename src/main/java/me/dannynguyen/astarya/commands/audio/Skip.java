@@ -7,16 +7,19 @@ import me.dannynguyen.astarya.commands.audio.managers.AudioScheduler;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 
 /**
  * Command invocation that skips the currently playing track in the audio player.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.12
  * @since 1.2.4
  */
 public class Skip extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Skip() {
     this.name = "skip";
     this.aliases = new String[]{"skip", "s", "next"};
@@ -32,23 +35,23 @@ public class Skip extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
-    GuildVoiceState userVoiceState = ce.getMember().getVoiceState();
-    GuildVoiceState botVoiceState = ce.getGuild().getSelfMember().getVoiceState();
+    AudioChannelUnion userChannel = ce.getMember().getVoiceState().getChannel();
+    AudioChannelUnion botChannel = ce.getGuild().getSelfMember().getVoiceState().getChannel();
 
-    try {
-      boolean userInSameVoiceChannel = userVoiceState.getChannel().equals(botVoiceState.getChannel());
-      if (userInSameVoiceChannel) {
-        skipCurrentlyPlayingTrack(ce);
-      } else {
-        ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
-      }
-    } catch (NullPointerException e) {
+    if (userChannel == null) {
       ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_VC.getMessage()).queue();
+      return;
+    }
+
+    if (userChannel.equals(botChannel)) {
+      skipCurrentlyPlayingTrack(ce);
+    } else {
+      ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
     }
   }
 
   /**
-   * Checks if there is a track currently playing to skip.
+   * Checks if there is a track currently playing to skip before skipping the track.
    *
    * @param ce command event
    */
@@ -58,44 +61,15 @@ public class Skip extends Command {
 
     boolean currentlyPlayingTrack = !(audioPlayer.getPlayingTrack() == null);
     if (currentlyPlayingTrack) {
-      addTrackToSkippedTracks(ce, audioScheduler, audioPlayer);
-      sendSkipConfirmation(ce);
+      String requester = "[" + ce.getAuthor().getAsTag() + "]";
+      audioScheduler.addToSkippedTracks(new TrackQueueIndex(audioPlayer.getPlayingTrack().makeClone(), requester));
+      audioScheduler.nextTrack();
+
+      StringBuilder skipTrackConfirmation = new StringBuilder();
+      skipTrackConfirmation.append("**Skip:** [").append(ce.getAuthor().getAsTag()).append("]");
+      ce.getChannel().sendMessage(skipTrackConfirmation).queue();
     } else {
-      ce.getChannel().sendMessage(Failure.NOTHING_TO_SKIP.text).queue();
-    }
-  }
-
-  /**
-   * Skips the currently playing track and adds it to skipped tracks.
-   *
-   * @param ce             command event
-   * @param audioScheduler audio scheduler
-   * @param audioPlayer    audio player
-   */
-  private void addTrackToSkippedTracks(CommandEvent ce, AudioScheduler audioScheduler, AudioPlayer audioPlayer) {
-    String requester = "[" + ce.getAuthor().getAsTag() + "]";
-    audioScheduler.addToSkippedTracks(new TrackQueueIndex(audioPlayer.getPlayingTrack().makeClone(), requester));
-    audioScheduler.nextTrack();
-  }
-
-  /**
-   * Sends confirmation the track was skipped.
-   *
-   * @param ce command event
-   */
-  private void sendSkipConfirmation(CommandEvent ce) {
-    StringBuilder skipTrackConfirmation = new StringBuilder();
-    skipTrackConfirmation.append("**Skip:** [").append(ce.getAuthor().getAsTag()).append("]");
-    ce.getChannel().sendMessage(skipTrackConfirmation).queue();
-  }
-
-  private enum Failure {
-    NOTHING_TO_SKIP("Nothing to skip.");
-
-    public final String text;
-
-    Failure(String text) {
-      this.text = text;
+      ce.getChannel().sendMessage("Nothing to skip.").queue();
     }
   }
 }
