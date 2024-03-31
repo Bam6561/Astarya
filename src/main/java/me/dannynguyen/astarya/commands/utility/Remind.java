@@ -14,6 +14,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * @since 1.0
  */
 public class Remind extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Remind() {
     this.name = "remind";
     this.aliases = new String[]{"remind", "timer"};

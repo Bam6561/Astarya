@@ -1,5 +1,7 @@
 package me.dannynguyen.astarya.commands.audio;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Converts tracks' durations to conventional readable time.
  *
@@ -20,6 +22,7 @@ public class TrackTime {
    * @param longTime duration of the track in long
    * @return readable time format
    */
+  @NotNull
   public static String convertLong(long longTime) {
     long days = longTime / 86400000 % 30;
     long hours = longTime / 3600000 % 24;

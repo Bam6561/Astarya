@@ -10,8 +10,10 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -32,12 +34,12 @@ public class ColorRole extends Command {
    *
    * @param colorRoles color roles
    */
-  public ColorRole(Set<String> colorRoles) {
+  public ColorRole(@NotNull Set<String> colorRoles) {
     this.name = "color";
     this.aliases = new String[]{"color"};
     this.arguments = "[1]<#HexColor>";
     this.help = "Assigns a colored role to the user.";
-    this.colorRoles = colorRoles;
+    this.colorRoles = Objects.requireNonNull(colorRoles, "Null color roles");
   }
 
   /**

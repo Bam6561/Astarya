@@ -59,6 +59,7 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
    *
    * @return bytes representing the audio
    */
+  @NotNull
   @Override
   public ByteBuffer provide20MsAudio() {
     return this.buffer.flip();

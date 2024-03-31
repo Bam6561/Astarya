@@ -21,6 +21,9 @@ import java.util.LinkedList;
  * @since 1.5.2
  */
 public class Return extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Return() {
     this.name = "return";
     this.aliases = new String[]{"return", "ret"};

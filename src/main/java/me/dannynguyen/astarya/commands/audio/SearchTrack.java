@@ -10,7 +10,9 @@ import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,12 +39,12 @@ public class SearchTrack extends Command {
    *
    * @param waiter event waiter
    */
-  public SearchTrack(EventWaiter waiter) {
+  public SearchTrack(@NotNull EventWaiter waiter) {
+    this.waiter = Objects.requireNonNull(waiter, "Null waiter");
     this.name = "searchtrack";
     this.aliases = new String[]{"searchtrack", "search", "st"};
     this.arguments = "[1 ++]YouTubeQuery";
     this.help = "Searches for a track to add to the track queue.";
-    this.waiter = waiter;
     this.invokerUserId = 0;
   }
 

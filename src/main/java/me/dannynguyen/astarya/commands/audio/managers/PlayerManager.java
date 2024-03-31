@@ -12,10 +12,12 @@ import me.dannynguyen.astarya.commands.audio.TrackTime;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a LavaPlayer component that converts files and
@@ -70,18 +72,18 @@ public class PlayerManager {
    * @param trackUrl either a direct url link to the track(s) requested or a YouTube search query
    * @param isSilent if to send a confirmation in the text channel
    */
-  public void createAudioTrack(CommandEvent ce, String trackUrl, boolean isSilent) {
-    final PlaybackManager playbackManager = this.getPlaybackManager(ce.getGuild());
+  public void createAudioTrack(@NotNull CommandEvent ce, @NotNull String trackUrl, boolean isSilent) {
+    final PlaybackManager playbackManager = this.getPlaybackManager(Objects.requireNonNull(ce, "Null command event").getGuild());
     AudioScheduler audioScheduler = playbackManager.audioScheduler;
-    this.audioPlayerManager.loadItemOrdered(playbackManager, trackUrl, new AudioLoadResultHandler() {
+    this.audioPlayerManager.loadItemOrdered(playbackManager, Objects.requireNonNull(trackUrl, "Null track url"), new AudioLoadResultHandler() {
       @Override
-      public void trackLoaded(AudioTrack track) {
-        processYouTubeLinksAndMediaFiles(ce, audioScheduler, track, isSilent);
+      public void trackLoaded(@NotNull AudioTrack track) {
+        processYouTubeLinksAndMediaFiles(ce, audioScheduler, Objects.requireNonNull(track, "Null track"), isSilent);
       }
 
       @Override
-      public void playlistLoaded(AudioPlaylist trackPlaylist) {
-        if (trackPlaylist.isSearchResult()) {
+      public void playlistLoaded(@NotNull AudioPlaylist trackPlaylist) {
+        if (Objects.requireNonNull(trackPlaylist, "Null track playlist").isSearchResult()) {
           processYouTubeSearchQueries(ce, audioScheduler, trackPlaylist, isSilent);
         } else {
           processYouTubePlaylistLinks(ce, audioScheduler, trackPlaylist, isSilent);
@@ -164,17 +166,17 @@ public class PlayerManager {
    * @param ce                 command event
    * @param youtubeSearchQuery youtube search query
    */
-  public void searchAudioTrack(CommandEvent ce, String youtubeSearchQuery) {
-    final PlaybackManager playbackManager = this.getPlaybackManager(ce.getGuild());
-    this.audioPlayerManager.loadItemOrdered(playbackManager, youtubeSearchQuery, new AudioLoadResultHandler() {
+  public void searchAudioTrack(@NotNull CommandEvent ce, @NotNull String youtubeSearchQuery) {
+    final PlaybackManager playbackManager = this.getPlaybackManager(Objects.requireNonNull(ce, "Null command event").getGuild());
+    this.audioPlayerManager.loadItemOrdered(playbackManager, Objects.requireNonNull(youtubeSearchQuery, "Null youtube search query"), new AudioLoadResultHandler() {
       @Override
-      public void trackLoaded(AudioTrack track) {
+      public void trackLoaded(@NotNull AudioTrack track) {
         ce.getChannel().sendMessage("Use play command to queue tracks.").queue();
       }
 
       @Override
-      public void playlistLoaded(AudioPlaylist playlist) {
-        processSearchTrackResults(ce, playlist);
+      public void playlistLoaded(@NotNull AudioPlaylist playlist) {
+        processSearchTrackResults(ce, Objects.requireNonNull(playlist, "Null track playlist"));
       }
 
       @Override
@@ -231,8 +233,9 @@ public class PlayerManager {
    * @param guild Discord server the bot is in
    * @return playbackManager as an object
    */
-  public PlaybackManager getPlaybackManager(Guild guild) {
-    return this.musicManagers.computeIfAbsent(guild.getIdLong(), (guildId) -> {
+  @NotNull
+  public PlaybackManager getPlaybackManager(@NotNull Guild guild) {
+    return this.musicManagers.computeIfAbsent(Objects.requireNonNull(guild, "Null guild").getIdLong(), (guildId) -> {
       final PlaybackManager playbackManager = new PlaybackManager(this.audioPlayerManager);
       guild.getAudioManager().setSendingHandler(PlaybackManager.getSendHandler());
       return playbackManager;
@@ -244,6 +247,7 @@ public class PlayerManager {
    *
    * @return instance of the player manager
    */
+  @NotNull
   public static PlayerManager getINSTANCE() {
     if (INSTANCE == null) {
       INSTANCE = new PlayerManager();
@@ -284,6 +288,7 @@ public class PlayerManager {
      *
      * @return error's message
      */
+    @NotNull
     public String getMessage() {
       return this.message;
     }

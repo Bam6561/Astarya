@@ -8,7 +8,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -50,11 +52,11 @@ public class HighOrLow extends Command {
    *
    * @param waiter event waiter
    */
-  public HighOrLow(EventWaiter waiter) {
+  public HighOrLow(@NotNull EventWaiter waiter) {
+    this.waiter = Objects.requireNonNull(waiter, "Null waiter");
     this.name = "highorlow";
     this.aliases = new String[]{"highorlow", "guess"};
     this.help = "Guess if the next number will be higher or lower!";
-    this.waiter = waiter;
     this.firstNumber = 0;
     this.secondNumber = 0;
     this.playerId = 0;

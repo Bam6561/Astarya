@@ -7,8 +7,10 @@ import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Command invocation that sends a random scenario prompt.
@@ -30,12 +32,12 @@ public class PandorasBox extends Command {
    *
    * @param pandorasBoxPrompts pandoras box prompts
    */
-  public PandorasBox(List<String> pandorasBoxPrompts) {
+  public PandorasBox(@NotNull List<String> pandorasBoxPrompts) {
+    this.pandorasBoxPrompts = Objects.requireNonNull(pandorasBoxPrompts, "Null prompts");
     this.name = "pandorasbox";
     this.aliases = new String[]{"pandorasbox", "pb"};
     this.arguments = "[0]Self [1]VC/DC/Name [2 ++]Phrase";
     this.help = "Sends a random scenario prompt.";
-    this.pandorasBoxPrompts = pandorasBoxPrompts;
   }
 
   /**

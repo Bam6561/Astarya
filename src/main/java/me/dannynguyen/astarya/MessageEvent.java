@@ -5,9 +5,11 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * Message received listener.
@@ -28,8 +30,9 @@ public class MessageEvent extends ListenerAdapter {
    *
    * @param e message received event
    */
-  public void onMessageReceived(MessageReceivedEvent e) {
-    Message message = e.getMessage();
+  @Override
+  public void onMessageReceived(@NotNull MessageReceivedEvent e) {
+    Message message = Objects.requireNonNull(e, "Null message received event").getMessage();
     if (!message.isWebhookMessage() && !message.getAuthor().isBot()) {
       MessageLogger ml = new MessageLogger(e, message);
       ml.logMessage();

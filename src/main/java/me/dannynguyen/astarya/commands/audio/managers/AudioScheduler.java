@@ -9,10 +9,12 @@ import me.dannynguyen.astarya.commands.audio.TrackQueueIndex;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.managers.Presence;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents the component of LavaPlayer that handles the audio
@@ -48,8 +50,8 @@ public class AudioScheduler extends AudioEventAdapter {
    *
    * @param audioPlayer audio player
    */
-  public AudioScheduler(AudioPlayer audioPlayer) {
-    this.audioPlayer = audioPlayer;
+  public AudioScheduler(@NotNull AudioPlayer audioPlayer) {
+    this.audioPlayer = Objects.requireNonNull(audioPlayer);
     this.trackQueue = new ArrayList<>();
     this.skippedTracks = new LinkedList<>();
   }
@@ -61,10 +63,10 @@ public class AudioScheduler extends AudioEventAdapter {
    * @param currentlyPlaying currently playing track
    */
   @Override
-  public void onTrackStart(AudioPlayer audioPlayer, AudioTrack currentlyPlaying) {
+  public void onTrackStart(@NotNull AudioPlayer audioPlayer, @NotNull AudioTrack currentlyPlaying) {
     if (!audioPlayerLooped) {
       Presence presence = Bot.getApi().getPresence();
-      presence.setActivity(Activity.listening(currentlyPlaying.getInfo().title));
+      presence.setActivity(Activity.listening(Objects.requireNonNull(currentlyPlaying, "Null track").getInfo().title));
       presence.setStatus(OnlineStatus.ONLINE);
     }
   }
@@ -77,10 +79,10 @@ public class AudioScheduler extends AudioEventAdapter {
    * @param endReason   if the audio player can continue playing the next track
    */
   @Override
-  public void onTrackEnd(AudioPlayer audioPlayer, AudioTrack loopedTrack, AudioTrackEndReason endReason) {
-    if (endReason.mayStartNext) {
+  public void onTrackEnd(@NotNull AudioPlayer audioPlayer, @NotNull AudioTrack loopedTrack, @NotNull AudioTrackEndReason endReason) {
+    if (Objects.requireNonNull(endReason, "Null end reason").mayStartNext) {
       if (audioPlayerLooped) {
-        audioPlayer.startTrack(loopedTrack.makeClone(), false);
+        Objects.requireNonNull(audioPlayer, "Null audio player").startTrack(Objects.requireNonNull(loopedTrack, "Null track").makeClone(), false);
       }
       nextTrack();
     }
@@ -94,11 +96,12 @@ public class AudioScheduler extends AudioEventAdapter {
    * @param track     track to be added to the {@link AudioScheduler#getTrackQueue() queue}
    * @param requester requesting user
    */
-  public void queue(AudioTrack track, String requester) {
+  public void queue(@NotNull AudioTrack track, @NotNull String requester) {
+    Objects.requireNonNull(track, "Null track");
     if (audioPlayer.getPlayingTrack() == null) {
       audioPlayer.startTrack(track, true);
     } else {
-      trackQueue.add(new TrackQueueIndex(track, requester));
+      trackQueue.add(new TrackQueueIndex(track, Objects.requireNonNull(requester, "Null requester")));
     }
   }
 
@@ -129,8 +132,8 @@ public class AudioScheduler extends AudioEventAdapter {
    *
    * @param skippedTrack {@link TrackQueueIndex}
    */
-  public void addToSkippedTracks(TrackQueueIndex skippedTrack) {
-    skippedTracks.addFirst(skippedTrack);
+  public void addToSkippedTracks(@NotNull TrackQueueIndex skippedTrack) {
+    skippedTracks.addFirst(Objects.requireNonNull(skippedTrack, "Null track"));
     if (skippedTracks.size() > 10) {
       skippedTracks.removeLast();
     }
@@ -141,6 +144,7 @@ public class AudioScheduler extends AudioEventAdapter {
    *
    * @return audio player
    */
+  @NotNull
   public AudioPlayer getAudioPlayer() {
     return this.audioPlayer;
   }
@@ -150,6 +154,7 @@ public class AudioScheduler extends AudioEventAdapter {
    *
    * @return track queue
    */
+  @NotNull
   public List<TrackQueueIndex> getTrackQueue() {
     return this.trackQueue;
   }
@@ -159,6 +164,7 @@ public class AudioScheduler extends AudioEventAdapter {
    *
    * @return skipped tracks
    */
+  @NotNull
   public LinkedList<TrackQueueIndex> getSkippedTracks() {
     return this.skippedTracks;
   }

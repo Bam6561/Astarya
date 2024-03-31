@@ -6,7 +6,7 @@
 
     <groupId>ndanny09</groupId>
     <artifactId>Astarya</artifactId>
-    <version>1.8.15</version>
+    <version>1.8.16</version>
 
     <build>
         <plugins>

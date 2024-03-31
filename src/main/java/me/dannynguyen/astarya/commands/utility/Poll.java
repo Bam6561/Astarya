@@ -7,7 +7,9 @@ import me.dannynguyen.astarya.commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,12 +30,12 @@ public class Poll extends Command {
    *
    * @param waiter event waiter
    */
-  public Poll(EventWaiter waiter) {
+  public Poll(@NotNull EventWaiter waiter) {
+    this.waiter = Objects.requireNonNull(waiter, "Null waiter");
     this.name = "poll";
     this.aliases = new String[]{"poll", "vote"};
     this.arguments = "[2, ++]Options";
     this.help = "Creates a reaction vote with up to 10 options.";
-    this.waiter = waiter;
   }
 
   /**

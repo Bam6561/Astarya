@@ -2,6 +2,9 @@ package me.dannynguyen.astarya.commands.audio.managers;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * Represents a LavaPlayer component that associates all LavaPlayer
@@ -33,8 +36,8 @@ public class PlaybackManager {
    *
    * @param audioPlayerManager audio player manager
    */
-  public PlaybackManager(AudioPlayerManager audioPlayerManager) {
-    this.audioPlayer = audioPlayerManager.createPlayer();
+  public PlaybackManager(@NotNull AudioPlayerManager audioPlayerManager) {
+    this.audioPlayer = Objects.requireNonNull(audioPlayerManager, "Null audio player manager").createPlayer();
     this.audioScheduler = new AudioScheduler(this.audioPlayer);
     this.audioPlayer.addListener(this.audioScheduler);
     sendHandler = new AudioPlayerSendHandler(this.audioPlayer);
@@ -45,6 +48,7 @@ public class PlaybackManager {
    *
    * @return {@link AudioPlayerSendHandler}
    */
+  @NotNull
   public static AudioPlayerSendHandler getSendHandler() {
     return sendHandler;
   }

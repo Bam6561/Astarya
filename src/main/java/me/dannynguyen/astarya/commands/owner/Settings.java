@@ -4,8 +4,10 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -53,14 +55,14 @@ public class Settings extends Command {
    * @param prefix    prefix
    * @param altPrefix alternate prefix
    */
-  public Settings(String prefix, String altPrefix) {
+  public Settings(@NotNull String prefix, @NotNull String altPrefix) {
+    Settings.prefix = Objects.requireNonNull(prefix, "Null prefix");
+    Settings.alternativePrefix = Objects.requireNonNull(altPrefix, "Null alternate prefix");
     this.name = "settings";
     this.aliases = new String[]{"settings", "config"};
     this.arguments = "[0]MainMenu [1]Setting [2]True/False";
     this.help = "Provides information on the bot's settings.";
     this.ownerCommand = true;
-    Settings.prefix = prefix;
-    Settings.alternativePrefix = altPrefix;
   }
 
   /**
@@ -105,9 +107,9 @@ public class Settings extends Command {
    *
    * @param ce command event
    */
-  public static void deleteInvoke(CommandEvent ce) {
+  public static void deleteInvoke(@NotNull CommandEvent ce) {
     if (deleteInvoke) {
-      ce.getMessage().delete().queue();
+      Objects.requireNonNull(ce, "Null command event").getMessage().delete().queue();
     }
   }
 
@@ -117,9 +119,9 @@ public class Settings extends Command {
    * @param ce    command event
    * @param embed embed
    */
-  public static void sendEmbed(CommandEvent ce, EmbedBuilder embed) {
-    ce.getChannel().sendTyping().queue();
-    embed.setColor(0x006fb1);
+  public static void sendEmbed(@NotNull CommandEvent ce, @NotNull EmbedBuilder embed) {
+    Objects.requireNonNull(ce, "Null command event").getChannel().sendTyping().queue();
+    Objects.requireNonNull(embed, "Null embed").setColor(0x006fb1);
     embed.setFooter(ce.getMember().getUser().getAsTag());
     embed.setTimestamp(Instant.now());
     Settings.embedDecay(ce, embed);
@@ -131,7 +133,9 @@ public class Settings extends Command {
    * @param ce    command event
    * @param embed embed
    */
-  public static void embedDecay(CommandEvent ce, EmbedBuilder embed) {
+  public static void embedDecay(@NotNull CommandEvent ce, @NotNull EmbedBuilder embed) {
+    Objects.requireNonNull(ce, "Null command event");
+    Objects.requireNonNull(embed, "Null embed");
     if (embedDecay) {
       ce.getChannel().sendMessageEmbeds(embed.build()).complete().delete().queueAfter(embedDecayTime, TimeUnit.SECONDS);
     } else {
@@ -144,6 +148,7 @@ public class Settings extends Command {
    *
    * @return commands prefix
    */
+  @NotNull
   public static String getPrefix() {
     return Settings.prefix;
   }
