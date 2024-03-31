@@ -9,8 +9,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Command invocation that sends a random scenario prompt.
@@ -18,12 +17,22 @@ import java.util.Objects;
  * The prompt's subject is substituted if it has a field to support the user's given parameters.
  *
  * @author Danny Nguyen
- * @version 1.8.13
+ * @version 1.9.0
  * @since 1.6.11
  */
 public class PandorasBox extends Command {
   /**
-   * Pandoras box prompts.
+   * Recently sent prompts' order.
+   */
+  private final Queue<Integer> recentOrder = new LinkedList<>();
+
+  /**
+   * Recently sent prompts.
+   */
+  private final Set<Integer> recentValues = new HashSet<>();
+
+  /**
+   * Pandora's Box prompts.
    */
   private final List<String> pandorasBoxPrompts;
 
@@ -59,7 +68,13 @@ public class PandorasBox extends Command {
     int numberOfParameters = parameters.length - 1;
 
     switch (numberOfParameters) {
-      case 0 -> sendPrompt(ce, ce.getMember().getNickname()); // Target: Self
+      case 0 -> {
+        String subject = ce.getMember().getNickname();
+        if (subject == null) {
+          subject = ce.getMember().getEffectiveName();
+        }
+        sendPrompt(ce, subject); // Target: Self
+      }
       case 1 -> { // Target: VC, DC, or  *
         String parameter = parameters[1].toLowerCase();
         if (parameter.equals("vc")) {
@@ -89,10 +104,14 @@ public class PandorasBox extends Command {
    * @param subject the person the prompt is about
    */
   private void sendPrompt(CommandEvent ce, String subject) {
-    int randomPrompt = (int) (Math.random() * pandorasBoxPrompts.size());
+    int index = randomIndex();
 
-    String prompt = pandorasBoxPrompts.get(randomPrompt);
-    prompt = prompt.replace("<subject>", subject);
+    String prompt = pandorasBoxPrompts.get(index);
+    if (prompt.contains("<subject>")) {
+      prompt = prompt.replace("<subject>", subject);
+    } else {
+      prompt = "As " + subject + ": " + prompt;
+    }
 
     ce.getChannel().sendMessage(prompt).queue();
   }
@@ -128,5 +147,23 @@ public class PandorasBox extends Command {
 
     String subject = dcMembers.get(randomDCMember).getEffectiveName();
     sendPrompt(ce, subject);
+  }
+
+  /**
+   * Randomizes the prompt index until there are no recent duplicates.
+   *
+   * @return random prompt
+   */
+  private int randomIndex() {
+    int index = (int) (Math.random() * pandorasBoxPrompts.size());
+    if (!recentValues.contains(index)) {
+      recentOrder.add(index);
+      recentValues.add(index);
+      if (recentOrder.size() == 50) {
+        recentValues.remove(recentOrder.poll());
+      }
+      return index;
+    }
+    return randomIndex();
   }
 }

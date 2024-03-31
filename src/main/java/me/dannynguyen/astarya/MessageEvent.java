@@ -3,22 +3,30 @@ package me.dannynguyen.astarya;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * Message received listener.
  *
  * @author Danny Nguyen
- * @version 1.8.5
+ * @version 1.9.0
  * @since 1.0.0
  */
 public class MessageEvent extends ListenerAdapter {
+  /**
+   * Users' most recently reposted media link.
+   */
+  private final Map<Long, Long> recentRepostMessages = new HashMap<>();
+
   /**
    * No parameter constructor.
    */
@@ -36,6 +44,12 @@ public class MessageEvent extends ListenerAdapter {
     if (!message.isWebhookMessage() && !message.getAuthor().isBot()) {
       MessageLogger ml = new MessageLogger(e, message);
       ml.logMessage();
+
+      if (message.getContentRaw().equalsIgnoreCase("unsend")) {
+        ml.unsendRepostedMessage();
+        return;
+      }
+
       if (Settings.getEmbedMediaLinks()) {
         ml.checkForMediaLinks();
       }
@@ -51,13 +65,32 @@ public class MessageEvent extends ListenerAdapter {
    * The logger does not write any data into external files, and its
    * content is lost upon closing the application's terminal window.
    *
-   * @param e       message received event
-   * @param message message sent
    * @author Danny Nguyen
-   * @version 1.8.5
+   * @version 1.9.0
    * @since 1.8.3
    */
-  private record MessageLogger(MessageReceivedEvent e, Message message) {
+  private class MessageLogger {
+    /**
+     * Message received event.
+     */
+    private final MessageReceivedEvent e;
+
+    /**
+     * Message.
+     */
+    private final Message message;
+
+    /**
+     * Associates the message logger with its event and message.
+     *
+     * @param e       message received event
+     * @param message message
+     */
+    MessageLogger(MessageReceivedEvent e, Message message) {
+      this.e = e;
+      this.message = message;
+    }
+
     /**
      * Logs human user sent messages into the application's
      * terminal window and is formatted as follows:
@@ -80,6 +113,21 @@ public class MessageEvent extends ListenerAdapter {
       }
 
       System.out.println(messageBuilder);
+    }
+
+    /**
+     * Unsends a reposted message from embedding media links.
+     */
+    private void unsendRepostedMessage() {
+      long authorId = message.getAuthor().getIdLong();
+      if (recentRepostMessages.containsKey(authorId)) {
+        try {
+          e.getMessage().delete().queue();
+          e.getChannel().deleteMessageById(recentRepostMessages.get(authorId)).queue();
+        } catch (ErrorResponseException ignored) { // Request not sent in original channel
+        }
+        recentRepostMessages.remove(authorId);
+      }
     }
 
     /**
@@ -150,9 +198,9 @@ public class MessageEvent extends ListenerAdapter {
 
       Message reply = message.getReferencedMessage();
       if (reply == null) {
-        e.getChannel().sendMessage(messageToRepost).queue();
+        e.getChannel().sendMessage(messageToRepost).queue((message) -> recentRepostMessages.put(e.getAuthor().getIdLong(), message.getIdLong()));
       } else {
-        e.getChannel().sendMessage(messageToRepost).setMessageReference(reply).mentionRepliedUser(false).queue();
+        e.getChannel().sendMessage(messageToRepost).setMessageReference(reply).mentionRepliedUser(false).queue((message) -> recentRepostMessages.put(e.getAuthor().getIdLong(), message.getIdLong()));
       }
     }
   }

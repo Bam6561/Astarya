@@ -12,7 +12,7 @@ import java.util.Random;
  * randomly generates integers based on a user provided range.
  *
  * @author Danny Nguyen
- * @version 1.8.13
+ * @version 1.9.0
  * @since 1.0
  */
 public class Roll extends Command {
@@ -146,7 +146,7 @@ public class Roll extends Command {
         if (!minAndMaxAreNotEqual) {
           ce.getChannel().sendMessage("Minimum cannot be equal to maximum.").queue();
         }
-        if (minIsNotLargerThanMax) {
+        if (!minIsNotLargerThanMax) {
           ce.getChannel().sendMessage("Minimum cannot be larger than maximum.").queue();
         }
       }
