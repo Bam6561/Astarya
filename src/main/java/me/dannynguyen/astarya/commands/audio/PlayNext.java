@@ -29,8 +29,7 @@ public class PlayNext extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel
-   * as the bot to read the command request.
+   * Checks if the user is in the same voice channel as the bot to read the command request.
    *
    * @param ce command event
    */
@@ -47,21 +46,21 @@ public class PlayNext extends Command {
     }
 
     if (userChannel.equals(botChannel)) {
-      new TrackRequest(ce).readPlayNextRequest();
+      new PlayNextRequest(ce).readPlayNextRequest();
     } else {
       ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
     }
   }
 
   /**
-   * Represents the Track command request for the next track to be played.
+   * Represents a track to be played next query.
    *
    * @param ce command event
    * @author Danny Nguyen
    * @version 1.8.10
    * @since 1.8.10
    */
-  private record TrackRequest(CommandEvent ce) {
+  private record PlayNextRequest(CommandEvent ce) {
     /**
      * Checks if the command request was formatted correctly
      * before changing the position of the chosen track.

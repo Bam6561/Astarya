@@ -24,13 +24,16 @@ import java.io.IOException;
 /**
  * Command invocation that adds a track to the queue.
  * <p>
- * By default, the play command supports YouTube videos, playlists, and most
- * media files posted in Discord chat. By adding a Spotify API key, the command
- * will also be able to support queueing Spotify songs, playlists, and album links.
+ * By default, the play command supports YouTube videos,
+ * playlists, and most media files posted in Discord chat.
  * <p>
- * For queueing Spotify playlists, only the first 100 songs in the playlist
- * are queued due to Spotify API limits. For queueing Spotify albums, only
- * the first 50 songs on the album are queued due to Spotify's API limits.
+ * A Spotify API key is required to queue Spotify songs, playlists, and album links.
+ * <p>
+ * Spotify API limits:
+ * <ul>
+ *  <li> Playlists: 100
+ *  <li> Albums: 50
+ * </ul>
  *
  * @author Danny Nguyen
  * @version 1.8.10
@@ -48,11 +51,9 @@ public class Play extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice
-   * channel as the bot to read the command request.
+   * Checks if the user is in the same voice channel as the bot to read the command request.
    * <p>
-   * If the bot is not currently in any voice channel,
-   * then attempt to join the same one as the user.
+   * If the bot is not currently in any voice channel, then attempt to join the same one as the user.
    *
    * @param ce command event
    */
@@ -97,7 +98,7 @@ public class Play extends Command {
   }
 
   /**
-   * Represents a Play command track query.
+   * Represents a track queue addition query.
    *
    * @author Danny Nguyen
    * @version 1.8.10
@@ -271,8 +272,6 @@ public class Play extends Command {
      * Deciphers Spotify song names through their Spotify playlist id,
      * adds the track's associated artists with the song name as a
      * search query on YouTube, and adds the first result to the queue.
-     * <p>
-     * Only the first 100 tracks in a Spotify playlist will be queued due to Spotify API limits.
      *
      * @param spotifyPlaylist Spotify playlist identified by id
      */
@@ -305,8 +304,6 @@ public class Play extends Command {
      * Deciphers Spotify song names through their Spotify playlist id,
      * adds the track's associated artists with the song name as a
      * search query on YouTube, and adds the first result to the queue.
-     * <p>
-     * Only the first 50 tracks in a Spotify playlist will be queued due to Spotify API limits.
      *
      * @param spotifyAlbum Spotify playlist identified by id
      */

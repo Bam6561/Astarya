@@ -84,41 +84,41 @@ public class Help extends Command {
      */
     private void interpretCommand(String commandName) {
       switch (commandName) {
-        case "choose", "pick" -> sendDetailedCommandHelpEmbed(Help.Command.CHOOSE);
-        case "clearqueue", "clear" -> sendDetailedCommandHelpEmbed(Help.Command.CLEARQUEUE);
-        case "coinflip", "flip" -> sendDetailedCommandHelpEmbed(Help.Command.COINFLIP);
-        case "color" -> sendDetailedCommandHelpEmbed(Help.Command.COLOR);
-        case "credits" -> sendDetailedCommandHelpEmbed(Help.Command.CREDITS);
-        case "delete", "purge" -> sendDetailedCommandHelpEmbed(Help.Command.DELETE);
-        case "emote", "emoji" -> sendDetailedCommandHelpEmbed(Help.Command.EMOTE);
-        case "help" -> sendDetailedCommandHelpEmbed(Help.Command.HELP);
-        case "highorlow", "guess" -> sendDetailedCommandHelpEmbed(Help.Command.HIGHORLOW);
-        case "info", "about" -> sendDetailedCommandHelpEmbed(Help.Command.INFO);
-        case "join", "j" -> sendDetailedCommandHelpEmbed(Help.Command.JOIN);
-        case "leave", "l", "disconnect", "dc" -> sendDetailedCommandHelpEmbed(Help.Command.LEAVE);
-        case "loop", "repeat" -> sendDetailedCommandHelpEmbed(Help.Command.LOOP);
-        case "lyrics" -> sendDetailedCommandHelpEmbed(Help.Command.LYRICS);
-        case "nowplaying", "np" -> sendDetailedCommandHelpEmbed(Help.Command.NOWPLAYING);
-        case "pandorasbox", "pb" -> sendDetailedCommandHelpEmbed(Help.Command.PANDORASBOX);
-        case "pause", "stop" -> sendDetailedCommandHelpEmbed(Help.Command.PAUSE);
-        case "ping", "ms" -> sendDetailedCommandHelpEmbed(Help.Command.PING);
-        case "play", "p" -> sendDetailedCommandHelpEmbed(Help.Command.PLAY);
-        case "playnext", "after" -> sendDetailedCommandHelpEmbed(Help.Command.PLAYNEXT);
-        case "poll", "vote" -> sendDetailedCommandHelpEmbed(Help.Command.POLL);
-        case "profile", "whois", "user" -> sendDetailedCommandHelpEmbed(Help.Command.PROFILE);
-        case "queue", "q" -> sendDetailedCommandHelpEmbed(Help.Command.QUEUE);
-        case "remind", "timer" -> sendDetailedCommandHelpEmbed(Help.Command.REMIND);
-        case "remove", "r" -> sendDetailedCommandHelpEmbed(Help.Command.REMOVE);
-        case "return", "ret" -> sendDetailedCommandHelpEmbed(Help.Command.RETURN);
-        case "roll", "rng", "dice" -> sendDetailedCommandHelpEmbed(Help.Command.ROLL);
-        case "searchtrack", "search", "st" -> sendDetailedCommandHelpEmbed(Help.Command.SEARCHTRACK);
-        case "server" -> sendDetailedCommandHelpEmbed(Help.Command.SERVER);
-        case "setposition", "setpos" -> sendDetailedCommandHelpEmbed(Help.Command.SETPOSITION);
-        case "settings", "config" -> sendDetailedCommandHelpEmbed(Help.Command.SETTINGS);
-        case "shuffle", "mix" -> sendDetailedCommandHelpEmbed(Help.Command.SHUFFLE);
-        case "shutdown" -> sendDetailedCommandHelpEmbed(Help.Command.SHUTDOWN);
-        case "skip", "s", "next" -> sendDetailedCommandHelpEmbed(Help.Command.SKIP);
-        case "swap", "switch" -> sendDetailedCommandHelpEmbed(Help.Command.SWAP);
+        case "choose", "pick" -> setCommandDetails(Help.Command.CHOOSE);
+        case "clearqueue", "clear" -> setCommandDetails(Help.Command.CLEARQUEUE);
+        case "coinflip", "flip" -> setCommandDetails(Help.Command.COINFLIP);
+        case "color" -> setCommandDetails(Help.Command.COLOR);
+        case "credits" -> setCommandDetails(Help.Command.CREDITS);
+        case "delete", "purge" -> setCommandDetails(Help.Command.DELETE);
+        case "emote", "emoji" -> setCommandDetails(Help.Command.EMOTE);
+        case "help" -> setCommandDetails(Help.Command.HELP);
+        case "highorlow", "guess" -> setCommandDetails(Help.Command.HIGHORLOW);
+        case "info", "about" -> setCommandDetails(Help.Command.INFO);
+        case "join", "j" -> setCommandDetails(Help.Command.JOIN);
+        case "leave", "l", "disconnect", "dc" -> setCommandDetails(Help.Command.LEAVE);
+        case "loop", "repeat" -> setCommandDetails(Help.Command.LOOP);
+        case "lyrics" -> setCommandDetails(Help.Command.LYRICS);
+        case "nowplaying", "np" -> setCommandDetails(Help.Command.NOWPLAYING);
+        case "pandorasbox", "pb" -> setCommandDetails(Help.Command.PANDORASBOX);
+        case "pause", "stop" -> setCommandDetails(Help.Command.PAUSE);
+        case "ping", "ms" -> setCommandDetails(Help.Command.PING);
+        case "play", "p" -> setCommandDetails(Help.Command.PLAY);
+        case "playnext", "after" -> setCommandDetails(Help.Command.PLAYNEXT);
+        case "poll", "vote" -> setCommandDetails(Help.Command.POLL);
+        case "profile", "whois", "user" -> setCommandDetails(Help.Command.PROFILE);
+        case "queue", "q" -> setCommandDetails(Help.Command.QUEUE);
+        case "remind", "timer" -> setCommandDetails(Help.Command.REMIND);
+        case "remove", "r" -> setCommandDetails(Help.Command.REMOVE);
+        case "return", "ret" -> setCommandDetails(Help.Command.RETURN);
+        case "roll", "rng", "dice" -> setCommandDetails(Help.Command.ROLL);
+        case "searchtrack", "search", "st" -> setCommandDetails(Help.Command.SEARCHTRACK);
+        case "server" -> setCommandDetails(Help.Command.SERVER);
+        case "setposition", "setpos" -> setCommandDetails(Help.Command.SETPOSITION);
+        case "settings", "config" -> setCommandDetails(Help.Command.SETTINGS);
+        case "shuffle", "mix" -> setCommandDetails(Help.Command.SHUFFLE);
+        case "shutdown" -> setCommandDetails(Help.Command.SHUTDOWN);
+        case "skip", "s", "next" -> setCommandDetails(Help.Command.SKIP);
+        case "swap", "switch" -> setCommandDetails(Help.Command.SWAP);
         default -> {
           embed.setAuthor("Help: Command Not Found");
           embed.setDescription("Type `" + Settings.getPrefix() + "commands` to get a list of commands available. " +
@@ -132,7 +132,7 @@ public class Help extends Command {
      *
      * @param command {@link Help.Command}
      */
-    private void sendDetailedCommandHelpEmbed(Help.Command command) {
+    private void setCommandDetails(Help.Command command) {
       embed.setAuthor(command.getTitle());
       embed.setDescription(command.getDescription());
       embed.addField("Aliases", command.getAliases(), false);

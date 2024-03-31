@@ -82,9 +82,9 @@ public class PlayerManager {
       @Override
       public void playlistLoaded(AudioPlaylist trackPlaylist) {
         if (trackPlaylist.isSearchResult()) {
-          processYouTubeSearchQueries(ce, trackPlaylist, audioScheduler, isSilent);
+          processYouTubeSearchQueries(ce, audioScheduler, trackPlaylist, isSilent);
         } else {
-          processYouTubePlaylistLinks(ce, trackPlaylist, audioScheduler, isSilent);
+          processYouTubePlaylistLinks(ce, audioScheduler, trackPlaylist, isSilent);
         }
       }
 
@@ -124,11 +124,11 @@ public class PlayerManager {
    * Adds the first match from a YouTube search query into the queue.
    *
    * @param ce             command event
-   * @param trackPlaylist  tracks from the search query
    * @param audioScheduler {@link AudioScheduler}
+   * @param trackPlaylist  tracks from the search query
    * @param isSilent       if to send a confirmation in the text channel
    */
-  private void processYouTubeSearchQueries(CommandEvent ce, AudioPlaylist trackPlaylist, AudioScheduler audioScheduler, boolean isSilent) {
+  private void processYouTubeSearchQueries(CommandEvent ce, AudioScheduler audioScheduler, AudioPlaylist trackPlaylist, boolean isSilent) {
     List<AudioTrack> searchResults = trackPlaylist.getTracks();
     AudioTrack track = searchResults.get(0);
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
@@ -142,11 +142,11 @@ public class PlayerManager {
    * Adds each YouTube video from the playlist into the queue.
    *
    * @param ce             command event
-   * @param trackPlaylist  tracks retrieved from playlist
    * @param audioScheduler {@link AudioScheduler}
+   * @param trackPlaylist  tracks retrieved from playlist
    * @param isSilent       if to send a confirmation in the text channel
    */
-  private void processYouTubePlaylistLinks(CommandEvent ce, AudioPlaylist trackPlaylist, AudioScheduler audioScheduler, boolean isSilent) {
+  private void processYouTubePlaylistLinks(CommandEvent ce, AudioScheduler audioScheduler, AudioPlaylist trackPlaylist, boolean isSilent) {
     String requester = "[" + ce.getAuthor().getAsTag() + "]";
     for (int i = 0; i < trackPlaylist.getTracks().size(); i++) {
       audioScheduler.queue(trackPlaylist.getTracks().get(i), requester);

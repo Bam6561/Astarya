@@ -50,7 +50,7 @@ public class Lyrics extends Command {
     int numberOfParameters = parameters.length - 1;
 
     if (numberOfParameters >= 1) {
-      new GeniusQuery(ce, parameters).processLyricsRequest();
+      new LyricsRequest(ce, parameters).queryGeniusApi();
     } else {
       ce.getChannel().sendMessage(BotMessage.INVALID_NUMBER_OF_PARAMETERS.getMessage()).queue();
     }
@@ -65,15 +65,15 @@ public class Lyrics extends Command {
    * @version 1.8.9
    * @since 1.8.9
    */
-  private record GeniusQuery(CommandEvent ce, String[] parameters) {
+  private record LyricsRequest(CommandEvent ce, String[] parameters) {
     /**
      * Combines an endpoint URL with its search query to query Genius API with.
      */
-    private void processLyricsRequest() {
+    private void queryGeniusApi() {
       try {
         URL endpointUrlQuery = new URL("https://genius.com/api/search/song?q=" + buildSearchQuery());
-        String httpResponse = readHttpResponse(endpointUrlQuery);
-        processHttpResponse(httpResponse);
+        String httpResponse = getHttpResponse(endpointUrlQuery);
+        parseHttpResponse(httpResponse);
       } catch (MalformedURLException ignored) {
         // Url is pre-set to be non-null
       }
@@ -96,12 +96,12 @@ public class Lyrics extends Command {
     }
 
     /**
-     * Reads the query response from Genius API.
+     * Gets the query response from Genius API.
      *
      * @param endpointUrlQuery endpoint and its search query
      * @return HTTP response
      */
-    private String readHttpResponse(URL endpointUrlQuery) {
+    private String getHttpResponse(URL endpointUrlQuery) {
       try {
         HttpURLConnection connection = (HttpURLConnection) endpointUrlQuery.openConnection();
         connection.setRequestMethod("GET");
@@ -119,7 +119,7 @@ public class Lyrics extends Command {
      *
      * @param httpResponse the response from the http connection
      */
-    private void processHttpResponse(String httpResponse) {
+    private void parseHttpResponse(String httpResponse) {
       // Main JSON body
       JSONObject httpResponseJSON = new JSONObject(httpResponse);
       JSONObject section = (JSONObject) httpResponseJSON.getJSONObject("response").getJSONArray("sections").get(0);

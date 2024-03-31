@@ -26,8 +26,7 @@ public class NowPlaying extends Command {
   }
 
   /**
-   * Ignores all parameters and sends an embed that
-   * displays the currently playing track.
+   * Ignores all parameters and sends an embed that displays the currently playing track.
    * <p>
    * The embed will also display if the audio player is paused or looped.
    *
