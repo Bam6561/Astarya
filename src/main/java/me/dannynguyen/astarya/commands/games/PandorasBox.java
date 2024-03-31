@@ -66,7 +66,7 @@ public class PandorasBox extends Command {
   }
 
   /**
-   * Substitutes the <subject> from a random Pandora's Box prompt and then is sent.
+   * Substitutes the subject from a random Pandora's Box prompt and then is sent.
    *
    * @param ce      command event
    * @param subject the person the prompt is about

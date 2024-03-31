@@ -2,6 +2,7 @@ package me.dannynguyen.astarya.commands.audio;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import me.dannynguyen.astarya.commands.audio.managers.AudioScheduler;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Command invocation that shuffles the queue.
+ * Command invocation that shuffles the {@link AudioScheduler#getTrackQueue() queue}.
  *
  * @author Danny Nguyen
  * @version 1.8.12
@@ -53,7 +54,7 @@ public class Shuffle extends Command {
   }
 
   /**
-   * Shuffles the queue.
+   * Shuffles the {@link AudioScheduler#getTrackQueue() queue}.
    *
    * @param ce command event
    */

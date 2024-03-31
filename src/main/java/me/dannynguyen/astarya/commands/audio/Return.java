@@ -11,11 +11,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 
 import java.util.LinkedList;
-import java.util.List;
 
 /**
- * Command invocation that displays skipped tracks and provides
- * an option to return a recently skipped track to the queue.
+ * Command invocation that displays {@link AudioScheduler#getSkippedTracks() skipped tracks} and provides
+ * an option to return a recently skipped track to the {@link AudioScheduler#getTrackQueue() queue}.
  *
  * @author Danny Nguyen
  * @version 1.8.12
@@ -63,7 +62,8 @@ public class Return extends Command {
    */
   private record ReturnRequest(CommandEvent ce) {
     /**
-     * Either displays the skipped tracks or returns a skipped track back to the queue.
+     * Either displays the skipped tracks or returns a skipped track
+     * back to the {@link AudioScheduler#getTrackQueue() queue}.
      */
     private void interpretRequest() {
       String[] parameters = ce.getMessage().getContentRaw().split("\\s");
@@ -83,10 +83,10 @@ public class Return extends Command {
     }
 
     /**
-     * Sends an embed containing recently skipped tracks.
+     * Sends an embed containing recently {@link AudioScheduler#getSkippedTracks()}.
      */
     private void sendSkippedTracks() {
-      List<TrackQueueIndex> skippedTracks = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getSkippedTracks();
+      LinkedList<TrackQueueIndex> skippedTracks = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getSkippedTracks();
       if (!skippedTracks.isEmpty()) {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setAuthor("Recently Skipped");
@@ -98,10 +98,10 @@ public class Return extends Command {
     }
 
     /**
-     * Checks if user provided integer within range of skipped
-     * tracks before returning a skipped track to the queue.
+     * Checks if user provided integer within range of {@link AudioScheduler#getSkippedTracks() skipped tracks}
+     * before returning a skipped track to the {@link AudioScheduler#getTrackQueue() queue}.
      *
-     * @param skippedTracksIndex track index in skipped tracks to be returned
+     * @param skippedTracksIndex track index in {@link AudioScheduler#getSkippedTracks()} to be returned
      */
     private void processReturnTrackRequest(int skippedTracksIndex) {
       try {
@@ -128,17 +128,17 @@ public class Return extends Command {
     }
 
     /**
-     * Creates the display text to represent the skipped tracks.
+     * Creates the display text to represent the {@link AudioScheduler#getSkippedTracks() skipped tracks}.
      * <p>
      * Skipped tracks can only contain up to 10 tracks.
      * <p>
      * As another skipped track is added, all previously existing tracks indices are
      * incremented by 1. After exceeding the amount, the least recent track is removed.
      *
-     * @param skippedTracks skipped tracks
-     * @return string representing skipped tracks
+     * @param skippedTracks {@link AudioScheduler#getSkippedTracks()}
+     * @return string representing {@link AudioScheduler#getSkippedTracks() skipped tracks}
      */
-    private String buildSkippedTracksPage(List<TrackQueueIndex> skippedTracks) {
+    private String buildSkippedTracksPage(LinkedList<TrackQueueIndex> skippedTracks) {
       StringBuilder skippedTracksPage = new StringBuilder();
       for (int i = 0; i < skippedTracks.size(); i++) {
         String trackDuration = TrackTime.convertLong(skippedTracks.get(i).getAudioTrack().getDuration());

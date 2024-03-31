@@ -44,7 +44,7 @@ public class AudioScheduler extends AudioEventAdapter {
   private boolean audioPlayerLooped = false;
 
   /**
-   * Associates an audio player with its audioplayer, track queue and skipped tracks.
+   * Associates an audio player with its audio player, track queue and skipped tracks.
    *
    * @param audioPlayer audio player
    */
@@ -87,11 +87,12 @@ public class AudioScheduler extends AudioEventAdapter {
   }
 
   /**
-   * Adds a track to the queue.
+   * Adds a track to the {@link AudioScheduler#getTrackQueue() queue}.
    * <p>
    * If the audio player isn't currently playing anything, play the track immediately.
    *
-   * @param track track to be added to the queue
+   * @param track     track to be added to the {@link AudioScheduler#getTrackQueue() queue}
+   * @param requester requesting user
    */
   public void queue(AudioTrack track, String requester) {
     if (audioPlayer.getPlayingTrack() == null) {
@@ -102,7 +103,7 @@ public class AudioScheduler extends AudioEventAdapter {
   }
 
   /**
-   * Goes to the next track in the queue.
+   * Goes to the next track in the {@link AudioScheduler#getTrackQueue() queue}.
    * <p>
    * If the audio player has finished its queue, update the bot's presence and activity.
    */

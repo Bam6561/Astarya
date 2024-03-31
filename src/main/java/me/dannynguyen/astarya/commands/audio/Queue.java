@@ -31,8 +31,9 @@ public class Queue extends Command {
   }
 
   /**
-   * Either sends an embed containing information about the queue with 10
-   * results on each page or what track is currently playing if nothing is queued.
+   * Either sends an embed containing information about the
+   * {@link AudioScheduler#getTrackQueue() queue} with 10 results
+   * on each page or what track is currently playing if nothing is queued.
    * <p>
    * Users can optionally provide a queue page to be displayed with an additional parameter.
    *
@@ -103,7 +104,7 @@ public class Queue extends Command {
     private final AudioPlayer audioPlayer;
 
     /**
-     * {@link AudioScheduler#getTrackQueue()}
+     * {@link AudioScheduler#getTrackQueue() queue}
      */
     private final List<TrackQueueIndex> trackQueue;
 
@@ -171,7 +172,7 @@ public class Queue extends Command {
     }
 
     /**
-     * Sends the queue page and the audio player's currently playing track.
+     * Sends the {@link AudioScheduler#getTrackQueue() queue} page and the audio player's currently playing track.
      */
     private void sendQueuePage() {
       EmbedBuilder embed = new EmbedBuilder();
@@ -202,7 +203,7 @@ public class Queue extends Command {
     }
 
     /**
-     * Builds the now playing component to the queue page.
+     * Builds the now playing component to the {@link AudioScheduler#getTrackQueue() queue} page.
      *
      * @return now playing component to queue page
      */
@@ -231,8 +232,8 @@ public class Queue extends Command {
     /**
      * Populates a queue page with track entries.
      * <p>
-     * For partially filled pages, calculate which comes first - the
-     * next ten indices or the last track entry in the queue.
+     * For partially filled pages, calculate which comes first - the next ten
+     * indices or the last track entry in the {@link AudioScheduler#getTrackQueue() queue}.
      *
      * @return formatted text representing the tracks queue
      */

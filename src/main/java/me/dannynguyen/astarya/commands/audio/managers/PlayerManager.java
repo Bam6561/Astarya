@@ -60,7 +60,7 @@ public class PlayerManager {
 
   /**
    * Creates an AudioTrack based on user provided parameters
-   * after the play command request to put in the queue.
+   * after the play command request to put in the {@link AudioScheduler#getTrackQueue() queue}.
    * <p>
    * YouTube video links and media files are handled by the trackLoaded method.
    * <p>
@@ -105,11 +105,11 @@ public class PlayerManager {
   }
 
   /**
-   * Adds a YouTube video or media file into the queue.
+   * Adds a YouTube video or media file into the {@link AudioScheduler#getTrackQueue() queue}.
    *
    * @param ce             command event
    * @param audioScheduler {@link AudioScheduler}
-   * @param track          track to be added into the queue
+   * @param track          track to be added into the {@link AudioScheduler#getTrackQueue() queue}
    * @param isSilent       if to send a confirmation in the text channel
    */
   private void processYouTubeLinksAndMediaFiles(CommandEvent ce, AudioScheduler audioScheduler, AudioTrack track, boolean isSilent) {
@@ -121,7 +121,7 @@ public class PlayerManager {
   }
 
   /**
-   * Adds the first match from a YouTube search query into the queue.
+   * Adds the first match from a YouTube search query into the {@link AudioScheduler#getTrackQueue() queue}.
    *
    * @param ce             command event
    * @param audioScheduler {@link AudioScheduler}
@@ -139,7 +139,7 @@ public class PlayerManager {
   }
 
   /**
-   * Adds each YouTube video from the playlist into the queue.
+   * Adds each YouTube video from the playlist into the {@link AudioScheduler#getTrackQueue() queue}.
    *
    * @param ce             command event
    * @param audioScheduler {@link AudioScheduler}

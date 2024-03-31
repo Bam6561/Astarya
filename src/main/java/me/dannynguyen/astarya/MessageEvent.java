@@ -58,7 +58,7 @@ public class MessageEvent extends ListenerAdapter {
     /**
      * Logs human user sent messages into the application's
      * terminal window and is formatted as follows:
-     * MM/dd(HH:mm)<Server>#channel[UserTag]:Text(MessageAttachment)
+     * MM/dd(HH:mm)Server#channel[UserTag]:Text(MessageAttachment)
      */
     private void logMessage() {
       StringBuilder messageBuilder = new StringBuilder();
@@ -112,6 +112,7 @@ public class MessageEvent extends ListenerAdapter {
      * @param isRedditMedia    is Reddit media
      * @param isInstagramMedia is Instagram media
      * @param isPixiv          is Pixiv
+     * @return message with replacements
      */
     private String replaceMediaLinks(boolean isTwitterMedia, boolean isRedditMedia, boolean isInstagramMedia, boolean isPixiv) {
       String newMessage = "[" + e.getAuthor().getAsTag() + "]\n" + message.getContentRaw();

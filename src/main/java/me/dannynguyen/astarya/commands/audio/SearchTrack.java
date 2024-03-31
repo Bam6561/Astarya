@@ -14,8 +14,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Command invocation that searches for a track to add
- * to the queue using a query of user provided parameters.
+ * Command invocation that searches for a track to add to the
+ * {@link AudioScheduler#getTrackQueue() queue} using a query of user provided parameters.
  *
  * @author Danny Nguyen
  * @version 1.8.12

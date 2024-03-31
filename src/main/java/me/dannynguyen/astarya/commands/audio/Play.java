@@ -3,6 +3,7 @@ package me.dannynguyen.astarya.commands.audio;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.cdimascio.dotenv.Dotenv;
+import me.dannynguyen.astarya.commands.audio.managers.AudioScheduler;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
@@ -22,7 +23,7 @@ import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 import java.io.IOException;
 
 /**
- * Command invocation that adds a track to the queue.
+ * Command invocation that adds a track to the {@link AudioScheduler#getTrackQueue() queue}.
  * <p>
  * By default, the play command supports YouTube videos,
  * playlists, and most media files posted in Discord chat.
@@ -179,7 +180,8 @@ public class Play extends Command {
     }
 
     /**
-     * Builds a YouTube search query using user provided parameters and adds the first result to the queue.
+     * Builds a YouTube search query using user provided parameters and
+     * adds the first result to the {@link AudioScheduler#getTrackQueue() queue}.
      */
     private void processYouTubeSearchQuery() {
       StringBuilder searchQuery = new StringBuilder();
@@ -191,8 +193,8 @@ public class Play extends Command {
     }
 
     /**
-     * Identifies user given Spotify links as either a track,
-     * playlist, or album before adding it to the queue.
+     * Identifies user given Spotify links as either a track, playlist, or
+     * album before adding it to the {@link AudioScheduler#getTrackQueue() queue}.
      */
     private void interpretSpotifyLinkType() {
       boolean isSpotifyTrack = parameters[1].contains("https://open.spotify.com/track/");
@@ -211,7 +213,8 @@ public class Play extends Command {
     }
 
     /**
-     * Checks if the Spotify track link was formatted correctly before adding it to the queue.
+     * Checks if the Spotify track link was formatted correctly
+     * before adding it to the {@link AudioScheduler#getTrackQueue() queue}.
      */
     private void readSpotifyTrackId() {
       String spotifyTrack = parameters[1].substring(31); // Remove https portion
@@ -223,7 +226,8 @@ public class Play extends Command {
     }
 
     /**
-     * Checks if the Spotify playlist link was formatted correctly before adding it to the queue.
+     * Checks if the Spotify playlist link was formatted correctly
+     * before adding it to the {@link AudioScheduler#getTrackQueue() queue}.
      */
     private void readSpotifyPlaylistId() {
       String spotifyPlaylist = parameters[1].substring(34); // Remove https portion
@@ -235,7 +239,8 @@ public class Play extends Command {
     }
 
     /**
-     * Checks if the Spotify album link was formatted correctly before adding it to the queue.
+     * Checks if the Spotify album link was formatted correctly
+     * before adding it to the {@link AudioScheduler#getTrackQueue() queue}.
      */
     private void readSpotifyAlbumId() {
       String spotifyAlbum = parameters[1].substring(31); // Remove https portion
@@ -247,9 +252,9 @@ public class Play extends Command {
     }
 
     /**
-     * Deciphers Spotify song names through their Spotify track id,
-     * adds the track's associated artists with the song name as a
-     * search query on YouTube, and adds the first result to the queue.
+     * Deciphers Spotify song names through their Spotify track id, adds the
+     * track's associated artists with the song name as a search query on YouTube,
+     * and adds the first result to the {@link AudioScheduler#getTrackQueue() queue}.
      *
      * @param spotifyTrack Spotify track identified by id
      */
@@ -269,9 +274,9 @@ public class Play extends Command {
     }
 
     /**
-     * Deciphers Spotify song names through their Spotify playlist id,
-     * adds the track's associated artists with the song name as a
-     * search query on YouTube, and adds the first result to the queue.
+     * Deciphers Spotify song names through their Spotify playlist id, adds the
+     * track's associated artists with the song name as a search query on YouTube,
+     * and adds the first result to the {@link AudioScheduler#getTrackQueue() queue}.
      *
      * @param spotifyPlaylist Spotify playlist identified by id
      */
@@ -301,9 +306,9 @@ public class Play extends Command {
     }
 
     /**
-     * Deciphers Spotify song names through their Spotify playlist id,
-     * adds the track's associated artists with the song name as a
-     * search query on YouTube, and adds the first result to the queue.
+     * Deciphers Spotify song names through their Spotify playlist id, adds the
+     * track's associated artists with the song name as a search query on YouTube,
+     * and adds the first result to the {@link AudioScheduler#getTrackQueue() queue}.
      *
      * @param spotifyAlbum Spotify playlist identified by id
      */

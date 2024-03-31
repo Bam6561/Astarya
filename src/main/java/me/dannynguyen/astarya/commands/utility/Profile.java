@@ -60,7 +60,7 @@ public class Profile extends Command {
    * and adds additional details if they're in the guild.
    * <p>
    * If the user is in the guild, the following details are added:
-   * Online Status, Activity, Mention, Joined, Boosted, Timed Out, Avatar: Server, & Roles.
+   * Online Status, Activity, Mention, Joined, Boosted, Timed Out, Avatar: Server, and Roles.
    *
    * @param ce     command event
    * @param member the guild member

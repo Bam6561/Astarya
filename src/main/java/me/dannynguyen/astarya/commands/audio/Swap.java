@@ -3,6 +3,7 @@ package me.dannynguyen.astarya.commands.audio;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import me.dannynguyen.astarya.commands.audio.managers.AudioScheduler;
 import me.dannynguyen.astarya.commands.audio.managers.PlayerManager;
 import me.dannynguyen.astarya.commands.owner.Settings;
 import me.dannynguyen.astarya.enums.BotMessage;
@@ -70,7 +71,7 @@ public class Swap extends Command {
   }
 
   /**
-   * Processes user provided parameters to swap tracks in the queue.
+   * Processes user provided parameters to swap tracks in the {@link AudioScheduler#getTrackQueue() queue}.
    *
    * @param ce         command event
    * @param parameters user provided parameters
@@ -82,8 +83,7 @@ public class Swap extends Command {
       int swapIndex = Integer.parseInt(parameters[2]) - 1;
 
       try {
-        List<TrackQueueIndex> trackQueue =
-            PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
+        List<TrackQueueIndex> trackQueue = PlayerManager.getINSTANCE().getPlaybackManager(ce.getGuild()).audioScheduler.getTrackQueue();
         AudioTrack originalTrack = trackQueue.get(originalIndex).getAudioTrack();
         AudioTrack swapTrack = trackQueue.get(swapIndex).getAudioTrack();
 

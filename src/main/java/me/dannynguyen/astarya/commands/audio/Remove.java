@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Command invocation that removes track(s) from the queue.
+ * Command invocation that removes track(s) from the {@link AudioScheduler#getTrackQueue() queue}.
  *
  * @author Danny Nguyen
  * @version 1.8.12
@@ -89,7 +89,7 @@ public class Remove extends Command {
     }
 
     /**
-     * Either removes a singular track from the queue or multiple.
+     * Either removes a singular track from the {@link AudioScheduler#getTrackQueue() queue} or multiple.
      */
     private void interpretRequest() {
       switch (numberOfParameters) {
@@ -106,9 +106,9 @@ public class Remove extends Command {
     }
 
     /**
-     * Removes a track from the queue.
+     * Removes a track from the {@link AudioScheduler#getTrackQueue() queue}.
      *
-     * @param queueIndex track to be removed from the queue
+     * @param queueIndex track to be removed from the {@link AudioScheduler#getTrackQueue() queue}
      */
     private void removeTrack(int queueIndex) {
       try {
@@ -153,11 +153,11 @@ public class Remove extends Command {
     }
 
     /**
-     * Sends confirmation the track was removed from the queue.
+     * Sends confirmation the track was removed from the {@link AudioScheduler#getTrackQueue() queue}.
      *
      * @param ce         command event
-     * @param queueIndex index in the queue to be removed
-     * @param trackQueue list containing the tracks
+     * @param queueIndex index in the {@link AudioScheduler#getTrackQueue() queue} to be removed
+     * @param trackQueue {@link AudioScheduler#getTrackQueue() queue}
      */
     private void sendRemoveConfirmation(CommandEvent ce, int queueIndex, List<TrackQueueIndex> trackQueue) {
       StringBuilder removeTrackConfirmation = new StringBuilder();
