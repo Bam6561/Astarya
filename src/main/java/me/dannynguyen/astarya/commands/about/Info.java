@@ -39,9 +39,9 @@ public class Info extends Command {
     JDA jda = ce.getJDA();
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
 
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("Info");
-    display.setDescription("**Developer:** Bam#3531 \n" +
+    EmbedBuilder embed = new EmbedBuilder();
+    embed.setAuthor("Info");
+    embed.setDescription("**Developer:** Bam#3531 \n" +
         "**Developer Id:** 204448598539239424 \n" +
         "**Bot:** " + jda.getSelfUser().getAsMention() + "\n" +
         "**Created:** `" + jda.getSelfUser().getTimeCreated().format(dtf) + " GMT` \n" +
@@ -49,8 +49,8 @@ public class Info extends Command {
         "**Language:** `Java` \n" +
         "**Source Code:** [GitHub](https://github.com/Bam6561/Astarya) \n" +
         "**Uptime:** " + getUptime());
-    display.setThumbnail(jda.getSelfUser().getAvatarUrl());
-    Settings.sendEmbed(ce, display);
+    embed.setThumbnail(jda.getSelfUser().getAvatarUrl());
+    Settings.sendEmbed(ce, embed);
   }
 
   /**

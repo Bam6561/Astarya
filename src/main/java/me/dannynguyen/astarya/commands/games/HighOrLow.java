@@ -115,11 +115,11 @@ public class HighOrLow extends Command {
    * @param ce command event
    */
   private void sendGameScreen(CommandEvent ce) {
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("High or Low");
-    display.setDescription("My number is (" + firstNumber + ") from a range of numbers from 1 - 100. "
+    EmbedBuilder embed = new EmbedBuilder();
+    embed.setAuthor("High or Low");
+    embed.setDescription("My number is (" + firstNumber + ") from a range of numbers from 1 - 100. "
         + "\nWill the next number I think of be higher or lower?");
-    Settings.sendEmbed(ce, display);
+    Settings.sendEmbed(ce, embed);
   }
 
   /**
@@ -158,11 +158,10 @@ public class HighOrLow extends Command {
       public void run() {
         if (ongoingGame) {
           ongoingGame = false;
-          EmbedBuilder display = new EmbedBuilder();
-          display.setAuthor("High or Low");
-          display
-              .setDescription(ce.getMember().getAsMention() + " took too long to choose, and the game has expired!");
-          Settings.sendEmbed(ce, display);
+          EmbedBuilder embed = new EmbedBuilder();
+          embed.setAuthor("High or Low");
+          embed.setDescription(ce.getMember().getAsMention() + " took too long to choose, and the game has expired!");
+          Settings.sendEmbed(ce, embed);
         }
       }
     }, 15000);
@@ -178,14 +177,14 @@ public class HighOrLow extends Command {
     ongoingGame = false;
     playerId = 0;
 
-    EmbedBuilder display = new EmbedBuilder();
+    EmbedBuilder embed = new EmbedBuilder();
     if (firstNumber > secondNumber) {
-      display.setAuthor("High or Low");
-      display.setDescription("||I thought of (" + secondNumber + "). The number was lower!||");
+      embed.setAuthor("High or Low");
+      embed.setDescription("||I thought of (" + secondNumber + "). The number was lower!||");
     } else {
-      display.setAuthor("High or Low");
-      display.setDescription("||I thought of (" + firstNumber + "). The number was higher!||");
+      embed.setAuthor("High or Low");
+      embed.setDescription("||I thought of (" + firstNumber + "). The number was higher!||");
     }
-    Settings.sendEmbed(ce, display);
+    Settings.sendEmbed(ce, embed);
   }
 }

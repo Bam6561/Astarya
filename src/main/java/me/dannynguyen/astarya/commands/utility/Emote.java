@@ -9,10 +9,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Command invocation that provides a mentioned emote as an embed.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.15
  * @since 1.0
  */
 public class Emote extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Emote() {
     this.name = "emote";
     this.aliases = new String[]{"emote", "emoji"};
@@ -31,22 +34,12 @@ public class Emote extends Command {
 
     boolean messageHasEmote = !ce.getMessage().getMentions().getCustomEmojis().isEmpty();
     if (messageHasEmote) {
-      EmbedBuilder display = new EmbedBuilder();
-      display.setAuthor(ce.getMessage().getMentions().getCustomEmojis().get(0).getName());
-      display.setImage(ce.getMessage().getMentions().getCustomEmojis().get(0).getImageUrl());
-      Settings.sendEmbed(ce, display);
+      EmbedBuilder embed = new EmbedBuilder();
+      embed.setAuthor(ce.getMessage().getMentions().getCustomEmojis().get(0).getName());
+      embed.setImage(ce.getMessage().getMentions().getCustomEmojis().get(0).getImageUrl());
+      Settings.sendEmbed(ce, embed);
     } else {
-      ce.getChannel().sendMessage(Failure.ESPECIFY_EMOTE.text).queue();
-    }
-  }
-
-  private enum Failure {
-    ESPECIFY_EMOTE("Provide an emote.");
-
-    public final String text;
-
-    Failure(String text) {
-      this.text = text;
+      ce.getChannel().sendMessage("Provide an emote.").queue();
     }
   }
 }

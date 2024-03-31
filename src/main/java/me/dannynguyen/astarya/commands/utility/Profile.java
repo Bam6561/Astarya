@@ -18,10 +18,13 @@ import java.util.List;
  * user and adds additional details if they're in the guild.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.15
  * @since 1.6.3
  */
 public class Profile extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Profile() {
     this.name = "profile";
     this.aliases = new String[]{"profile", "whois", "user"};
@@ -30,9 +33,10 @@ public class Profile extends Command {
   }
 
   /**
-   * Sets the target for the profile command request.
+   * Sets the target for the command request.
    * <p>
    * No parameters provided default to the user.
+   * <p>
    * Targets can be set by providing a mention, user id, nickname or name.
    *
    * @param ce command event
@@ -41,182 +45,183 @@ public class Profile extends Command {
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
 
+    ProfileRequest request = new ProfileRequest(ce);
+
     String parameters = ce.getArgs();
     if (parameters.isBlank()) { // Target: Self
-      sendProfileEmbed(ce, ce.getMember(), ce.getMember().getUser());
+      request.sendProfileEmbed(ce.getMember(), ce.getMember().getUser());
     } else {
       List<Member> mentions = ce.getMessage().getMentions().getMembers();
       if (!mentions.isEmpty()) { // Target: Mention
         Member member = mentions.get(0);
-        sendProfileEmbed(ce, member, member.getUser());
+        request.sendProfileEmbed(member, member.getUser());
       } else { // Target: User Id, Nickname, or Name
-        interpretUserIdOrName(ce, parameters);
+        request.interpretUserIdOrName(parameters);
       }
     }
   }
 
   /**
-   * Sends an embed containing information about a user
-   * and adds additional details if they're in the guild.
-   * <p>
-   * If the user is in the guild, the following details are added:
-   * Online Status, Activity, Mention, Joined, Boosted, Timed Out, Avatar: Server, and Roles.
+   * Represents a profile query.
    *
-   * @param ce     command event
-   * @param member the guild member
-   * @param user   the Discord user
+   * @param ce command event
+   * @author Danny Nguyen
+   * @version 1.8.15
+   * @since 1.8.15
    */
-  private void sendProfileEmbed(CommandEvent ce, Member member, User user) {
-    EmbedBuilder display = new EmbedBuilder();
-    boolean isGuildMember = member != null;
+  private record ProfileRequest(CommandEvent ce) {
+    /**
+     * Sends an embed containing information about a user
+     * and adds additional details if they're in the guild.
+     * <p>
+     * If the user is in the guild, the following details are added:
+     * <ul>
+     *  <li> Online Status
+     *  <li> Activity
+     *  <li> Mention
+     *  <li> Joined
+     *  <li> Boosted
+     *  <li> Timed Out
+     *  <li> Avatar: Server
+     *  <li> Roles
+     * </ul>
+     *
+     * @param member the guild member
+     * @param user   the Discord user
+     */
+    private void sendProfileEmbed(Member member, User user) {
+      EmbedBuilder embed = new EmbedBuilder();
+      boolean isGuildMember = member != null;
 
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/d/yy hh:mm");
-    DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("M/d hh:mm");
-
-    buildEmbed(display, member, user, isGuildMember, dtf, dtf2);
-    Settings.sendEmbed(ce, display);
-  }
-
-  /**
-   * Sets the target for the command by either a user id, nickname, or name.
-   *
-   * @param ce         command event
-   * @param parameters user provided parameters
-   */
-  private void interpretUserIdOrName(CommandEvent ce, String parameters) {
-    try { // Target: User Id
-      User user = ce.getJDA().retrieveUserById(parameters).complete();
-      Member member = ce.getGuild().getMemberById(user.getId());
-      sendProfileEmbed(ce, member, user);
-    } catch (NumberFormatException | ErrorResponseException invalidUserId) {
-      interpretNameOrNickname(ce, parameters);
-    }
-  }
-
-  private void interpretNameOrNickname(CommandEvent ce, String parameters) {
-    // Attempt to match a member by nickname or name
-    List<Member> members = ce.getGuild().getMembersByNickname(parameters, true);
-    if (members.isEmpty()) {
-      members = ce.getGuild().getMembersByName(parameters, true);
-    }
-    if (!members.isEmpty()) { // Target: Nickname or Name
-      sendProfileEmbed(ce, members.get(0), members.get(0).getUser());
-    } else {
-      try { // Target: <@UserId>
-        User user = ce.getJDA().retrieveUserById(parameters.substring(2, parameters.length() - 1)).complete();
-        sendProfileEmbed(ce, null, user);
-      } catch (NumberFormatException | ErrorResponseException invalidUserId2) {
-        ce.getTextChannel().sendMessage(Failure.USER_NOT_FOUND.text).queue();
-      }
-    }
-  }
-
-  /**
-   * Builds the profile embed.
-   *
-   * @param display       the embed builder
-   * @param member        the guild member
-   * @param user          the Discord user
-   * @param isGuildMember if the user is in the same guild
-   * @param dtf           M/d/yy hh:mm
-   * @param dtf2          M/d hh:mm
-   */
-  private void buildEmbed(EmbedBuilder display, Member member, User user, boolean isGuildMember,
-                          DateTimeFormatter dtf, DateTimeFormatter dtf2) {
-    // User Tag, Profile Picture
-    display.setAuthor("Profile");
-    display.setTitle(user.getAsTag());
-    display.setThumbnail(isGuildMember ?
-        member.getEffectiveAvatarUrl() + "?size=1024" : user.getEffectiveAvatarUrl() + "?size=1024");
-
-    // Status, Activity, Mention
-    if (isGuildMember) {
-      display.appendDescription(getOnlineStatusAsEmoji(member) + "\n");
-      if (!member.getActivities().isEmpty()) {
-        display.appendDescription(member.getActivities().get(0).getName() + "\n");
-      }
-      display.appendDescription("**Mention:** " + member.getAsMention() + "\n");
+      buildProfileEmbed(embed, member, user, isGuildMember);
+      Settings.sendEmbed(ce, embed);
     }
 
-    // Id, Created
-    display.appendDescription("**Id:** `" + user.getId() + "`\n");
-    display.appendDescription("**Created:** `" + user.getTimeCreated().format(dtf) + "`\n");
-
-    // Joined, Boosted, Timed Out
-    if (isGuildMember) {
-      display.appendDescription("**Joined:** `" + member.getTimeJoined().format(dtf) + "`\n");
-      if (member.isBoosting()) {
-        display.appendDescription("**Boosted:** `" + member.getTimeBoosted().format(dtf) + "`\n");
-      }
-      if (member.isTimedOut()) {
-        display.appendDescription("**Timed Out:** `" + member.getTimeOutEnd().format(dtf2) + "`\n");
+    /**
+     * Sets the target for the command by either a user id, nickname, or name.
+     *
+     * @param parameters user provided parameters
+     */
+    private void interpretUserIdOrName(String parameters) {
+      try { // Target: User Id
+        User user = ce.getJDA().retrieveUserById(parameters).complete();
+        Member member = ce.getGuild().getMemberById(user.getId());
+        sendProfileEmbed(member, user);
+      } catch (NumberFormatException | ErrorResponseException invalidUserId) {
+        // Attempt to match a member by nickname or name
+        List<Member> members = ce.getGuild().getMembersByNickname(parameters, true);
+        if (members.isEmpty()) {
+          members = ce.getGuild().getMembersByName(parameters, true);
+        }
+        if (!members.isEmpty()) { // Target: Nickname or Name
+          sendProfileEmbed(members.get(0), members.get(0).getUser());
+        } else {
+          try { // Target: <@UserId>
+            User user = ce.getJDA().retrieveUserById(parameters.substring(2, parameters.length() - 1)).complete();
+            sendProfileEmbed(null, user);
+          } catch (NumberFormatException | ErrorResponseException invalidUserId2) {
+            ce.getTextChannel().sendMessage("User not found.").queue();
+          }
+        }
       }
     }
 
-    // Avatar: Global | Server
-    display.addField("Avatar", "[Global](" + user.getEffectiveAvatarUrl() + "?size=1024) " +
-        (isGuildMember ? "| [Server](" + member.getEffectiveAvatarUrl() + "?size=1024)" : ""), false);
+    /**
+     * Builds the profile embed.
+     *
+     * @param embed         the embed builder
+     * @param member        the guild member
+     * @param user          the Discord user
+     * @param isGuildMember if the user is in the same guild
+     */
+    private void buildProfileEmbed(EmbedBuilder embed, Member member, User user, boolean isGuildMember) {
+      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/d/yy hh:mm");
+      DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("M/d hh:mm");
 
-    // Banner: Global
-    String userBannerUrl = user.retrieveProfile().complete().getBannerUrl();
-    if (userBannerUrl != null) {
-      display.addField("Banner", "[Global](" + userBannerUrl + "?size=2048)", false);
+      // User Tag, Profile Picture
+      embed.setAuthor("Profile");
+      embed.setTitle(user.getAsTag());
+      embed.setThumbnail(isGuildMember ? member.getEffectiveAvatarUrl() + "?size=1024" : user.getEffectiveAvatarUrl() + "?size=1024");
+
+      // Status, Activity, Mention
+      if (isGuildMember) {
+        embed.appendDescription(getOnlineStatusAsEmoji(member) + "\n");
+        if (!member.getActivities().isEmpty()) {
+          embed.appendDescription(member.getActivities().get(0).getName() + "\n");
+        }
+        embed.appendDescription("**Mention:** " + member.getAsMention() + "\n");
+      }
+
+      // Id, Created
+      embed.appendDescription("**Id:** `" + user.getId() + "`\n");
+      embed.appendDescription("**Created:** `" + user.getTimeCreated().format(dtf) + "`\n");
+
+      // Joined, Boosted, Timed Out
+      if (isGuildMember) {
+        embed.appendDescription("**Joined:** `" + member.getTimeJoined().format(dtf) + "`\n");
+        if (member.isBoosting()) {
+          embed.appendDescription("**Boosted:** `" + member.getTimeBoosted().format(dtf) + "`\n");
+        }
+        if (member.isTimedOut()) {
+          embed.appendDescription("**Timed Out:** `" + member.getTimeOutEnd().format(dtf2) + "`\n");
+        }
+      }
+
+      // Avatar: Global | Server
+      embed.addField("Avatar", "[Global](" + user.getEffectiveAvatarUrl() + "?size=1024) " +
+          (isGuildMember ? "| [Server](" + member.getEffectiveAvatarUrl() + "?size=1024)" : ""), false);
+
+      // Banner: Global
+      String userBannerUrl = user.retrieveProfile().complete().getBannerUrl();
+      if (userBannerUrl != null) {
+        embed.addField("Banner", "[Global](" + userBannerUrl + "?size=2048)", false);
+      }
+
+      // Roles
+      if ((isGuildMember) && (!member.getRoles().isEmpty())) {
+        embed.addField("Roles", getRolesAsMentions(member), false);
+      }
     }
 
-    // Roles
-    if ((isGuildMember) && (!member.getRoles().isEmpty())) {
-      display.addField("Roles", getRolesAsMentions(member), false);
-    }
-  }
-
-  /**
-   * Gets the member's online status as an emoji.
-   *
-   * @param member the guild member
-   * @return text containing an online status's associated emoji and name
-   */
-  private String getOnlineStatusAsEmoji(Member member) {
-    switch (member.getOnlineStatus().toString()) {
-      case "ONLINE" -> {
-        return Emoji.fromUnicode("U+1F7E2").getFormatted() + " Online";
-      }
-      case "IDLE" -> {
-        return Emoji.fromUnicode("U+1F7E0").getFormatted() + " Idle";
-      }
-      case "DO_NOT_DISTURB" -> {
-        return Emoji.fromUnicode("U+1F534").getFormatted() + " Do Not Disturb";
-      }
-      case "OFFLINE" -> {
-        return Emoji.fromUnicode("U+25CF").getFormatted() + " Offline";
-      }
-      default -> {
-        return Emoji.fromUnicode("U+2753").getFormatted() + " Unknown";
+    /**
+     * Gets the member's online status as an emoji.
+     *
+     * @param member the guild member
+     * @return text containing an online status's associated emoji and name
+     */
+    private String getOnlineStatusAsEmoji(Member member) {
+      switch (member.getOnlineStatus()) {
+        case ONLINE -> {
+          return Emoji.fromUnicode("U+1F7E2").getFormatted() + " Online";
+        }
+        case IDLE -> {
+          return Emoji.fromUnicode("U+1F7E0").getFormatted() + " Idle";
+        }
+        case DO_NOT_DISTURB -> {
+          return Emoji.fromUnicode("U+1F534").getFormatted() + " Do Not Disturb";
+        }
+        case OFFLINE -> {
+          return Emoji.fromUnicode("U+25CF").getFormatted() + " Offline";
+        }
+        default -> {
+          return Emoji.fromUnicode("U+2753").getFormatted() + " Unknown";
+        }
       }
     }
-  }
 
-  /**
-   * Gets the member's roles as mentionables.
-   *
-   * @param member the guild member
-   * @return text containing the member's roles as mentionables
-   */
-  private String getRolesAsMentions(Member member) {
-    List<Role> roles = member.getRoles();
-    StringBuilder rolesAsMentions = new StringBuilder();
-    for (Role role : roles) {
-      rolesAsMentions.append(role.getAsMention()).append(" ");
-    }
-    return rolesAsMentions.toString().trim();
-  }
-
-  private enum Failure {
-    USER_NOT_FOUND("User not found.");
-
-    public final String text;
-
-    Failure(String text) {
-      this.text = text;
+    /**
+     * Gets the member's roles as mentionables.
+     *
+     * @param member the guild member
+     * @return text containing the member's roles as mentionables
+     */
+    private String getRolesAsMentions(Member member) {
+      List<Role> roles = member.getRoles();
+      StringBuilder rolesAsMentions = new StringBuilder();
+      for (Role role : roles) {
+        rolesAsMentions.append(role.getAsMention()).append(" ");
+      }
+      return rolesAsMentions.toString().trim();
     }
   }
 }

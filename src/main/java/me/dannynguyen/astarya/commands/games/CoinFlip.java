@@ -58,10 +58,10 @@ public class CoinFlip extends Command {
       flipResult = "The coin landed on **Tails**.";
     }
 
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("Coin Flip");
-    display.setDescription(flipResult);
-    Settings.sendEmbed(ce, display);
+    EmbedBuilder embed = new EmbedBuilder();
+    embed.setAuthor("Coin Flip");
+    embed.setDescription(flipResult);
+    Settings.sendEmbed(ce, embed);
   }
 
   /**
@@ -103,10 +103,10 @@ public class CoinFlip extends Command {
       }
     }
 
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("Coin Flips");
-    display.setDescription(flipResults.toString());
-    Settings.sendEmbed(ce, display);
+    EmbedBuilder embed = new EmbedBuilder();
+    embed.setAuthor("Coin Flips");
+    embed.setDescription(flipResults.toString());
+    Settings.sendEmbed(ce, embed);
   }
 
   /**

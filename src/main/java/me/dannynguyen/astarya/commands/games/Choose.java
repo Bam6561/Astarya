@@ -85,10 +85,10 @@ public class Choose extends Command {
       if (!emptyOptionExists(options)) {
         int randomOption = new Random().nextInt(options.length);
 
-        EmbedBuilder display = new EmbedBuilder();
-        display.setAuthor("Choice");
-        display.setDescription("Based on the options you provided... \n\n" + optionsString + "\n\n**I have chosen:** \n||" + options[randomOption] + "||");
-        Settings.sendEmbed(ce, display);
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setAuthor("Choice");
+        embed.setDescription("Based on the options you provided... \n\n" + optionsString + "\n\n**I have chosen:** \n||" + options[randomOption] + "||");
+        Settings.sendEmbed(ce, embed);
       } else {
         ce.getChannel().sendMessage("Empty option.").queue();
       }

@@ -231,13 +231,13 @@ public class Remind extends Command {
    * @param timerName    name of the reminder
    */
   private void setReminder(CommandEvent ce, int timeDuration, char timeType, String timerName) {
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("Reminder");
-    display.setDescription(!timerName.equals("")
+    EmbedBuilder embed = new EmbedBuilder();
+    embed.setAuthor("Reminder");
+    embed.setDescription(!timerName.equals("")
         ? "Time set for `" + timerName.substring(0, timerName.length() - 1) +
         "` in (" + timeDuration + ") " + getTimeTypeString(timeType) + "."
         : "Timer set to mention you in (" + timeDuration + ") " + getTimeTypeString(timeType) + ".");
-    Settings.sendEmbed(ce, display);
+    Settings.sendEmbed(ce, embed);
   }
 
   /**

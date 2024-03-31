@@ -61,10 +61,10 @@ public class Roll extends Command {
    */
   private void rollDieOnce(CommandEvent ce) {
     Random rand = new Random();
-    EmbedBuilder display = new EmbedBuilder();
-    display.setAuthor("Roll");
-    display.setDescription("You rolled a **(" + (rand.nextInt(6) + 1) + ")**.");
-    Settings.sendEmbed(ce, display);
+    EmbedBuilder embed = new EmbedBuilder();
+    embed.setAuthor("Roll");
+    embed.setDescription("You rolled a **(" + (rand.nextInt(6) + 1) + ")**.");
+    Settings.sendEmbed(ce, embed);
   }
 
   /**
@@ -86,10 +86,10 @@ public class Roll extends Command {
           rollResults.append("\n").append(i + 1).append(": **(").append(rand.nextInt(6) + 1).append(")** ");
         }
 
-        EmbedBuilder display = new EmbedBuilder();
-        display.setAuthor("Rolls");
-        display.setDescription(rollResults.toString());
-        Settings.sendEmbed(ce, display);
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setAuthor("Rolls");
+        embed.setDescription(rollResults.toString());
+        Settings.sendEmbed(ce, embed);
       } else {
         ce.getChannel().sendMessage(Error.EXCEED_RANGE.message).queue();
       }
@@ -132,10 +132,10 @@ public class Roll extends Command {
           }
         }
 
-        EmbedBuilder display = new EmbedBuilder();
-        display.setAuthor("RNG");
-        display.setDescription(rollResults.toString());
-        Settings.sendEmbed(ce, display);
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setAuthor("RNG");
+        embed.setDescription(rollResults.toString());
+        Settings.sendEmbed(ce, embed);
       } else {
         if (!validNumberOfRolls) {
           ce.getChannel().sendMessage("Provide between 1-10 times to generate numbers.").queue();
