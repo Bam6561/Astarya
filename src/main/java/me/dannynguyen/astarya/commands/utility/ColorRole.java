@@ -15,7 +15,7 @@ import java.awt.*;
 import java.util.Set;
 
 /**
- * ColorRole is a command invocation that assigns or removes color roles from the user.
+ * Command invocation that assigns or removes color roles from the user.
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -59,7 +59,6 @@ public class ColorRole extends Command {
    *
    * @param ce        command event
    * @param parameter user provided parameter
-   * @throws InsufficientPermissionException unable to manage roles
    */
   private void interpretColorRoleRequest(CommandEvent ce, String parameter) {
     try {

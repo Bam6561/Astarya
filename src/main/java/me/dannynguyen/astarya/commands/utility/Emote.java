@@ -6,7 +6,7 @@ import me.dannynguyen.astarya.commands.owner.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 /**
- * Emote is a command invocation that provides a mentioned emote as an embed.
+ * Command invocation that provides a mentioned emote as an embed.
  *
  * @author Danny Nguyen
  * @version 1.8.1

@@ -18,6 +18,9 @@ import java.time.format.DateTimeFormatter;
  * @since 1.0
  */
 public class Info extends Command {
+  /**
+   * Associates the command with its properties.
+   */
   public Info() {
     this.name = "info";
     this.aliases = new String[]{"info"};

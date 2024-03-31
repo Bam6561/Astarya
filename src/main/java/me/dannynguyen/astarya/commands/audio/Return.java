@@ -14,8 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Return is a command invocation that displays skipped tracks and
- * provides an option to return a recently skipped track to the queue.
+ * Command invocation that displays skipped tracks and provides
+ * an option to return a recently skipped track to the queue.
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -30,10 +30,9 @@ public class Return extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel as the bot to read a return command request.
+   * Checks if the user is in the same voice channel as the bot to read the command request.
    *
    * @param ce command event
-   * @throws NullPointerException user not in same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -58,7 +57,6 @@ public class Return extends Command {
    * Either displays the skipped tracks or returns a skipped track back to the queue.
    *
    * @param ce command event
-   * @throws NumberFormatException user provided non-integer value
    */
   private void interpretReturnTrackRequest(CommandEvent ce) {
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
@@ -103,7 +101,6 @@ public class Return extends Command {
    *
    * @param ce                 command event
    * @param skippedTracksIndex track index in skipped tracks to be returned
-   * @throws IndexOutOfBoundsException user provided index out of range of skipped tracks
    */
   private void processReturnTrackRequest(CommandEvent ce, int skippedTracksIndex) {
     try {

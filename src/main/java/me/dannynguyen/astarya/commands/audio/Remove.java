@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Remove is a command invocation that removes track(s) from the queue.
+ * Command invocation that removes track(s) from the queue.
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -28,10 +28,9 @@ public class Remove extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel as the bot to read a remove command request.
+   * Checks if the user is in the same voice channel as the bot to read the command request.
    *
    * @param ce command event
-   * @throws NullPointerException user not in same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -56,7 +55,6 @@ public class Remove extends Command {
    * Either removes a singular track from the queue or multiple.
    *
    * @param ce command event
-   * @throws NumberFormatException user provided non-integer value
    */
   private void interpretRemoveTrackRequest(CommandEvent ce) {
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
@@ -80,7 +78,6 @@ public class Remove extends Command {
    *
    * @param ce         command event
    * @param queueIndex track to be removed from the queue
-   * @throws IndexOutOfBoundsException user provided number out of range of queue
    */
   private void removeTrack(CommandEvent ce, int queueIndex) {
     try {
@@ -105,7 +102,6 @@ public class Remove extends Command {
    * @param ce                 command event
    * @param parameters         user provided parameters
    * @param numberOfParameters number of user provided parameters
-   * @throws NumberFormatException user provided non-integer value
    */
   private void readRemoveMultipleTrackRequest(CommandEvent ce, String[] parameters, int numberOfParameters) {
     try {
@@ -126,7 +122,6 @@ public class Remove extends Command {
    *
    * @param ce           command event
    * @param queueIndices list containing queue indices to be removed
-   * @throws IndexOutOfBoundsException user provided queue number out of range of queue
    */
   private void removeMultipleTracks(CommandEvent ce, List<Integer> queueIndices) {
     try {

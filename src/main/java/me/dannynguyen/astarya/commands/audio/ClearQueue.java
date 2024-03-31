@@ -25,7 +25,7 @@ public class ClearQueue extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel as the bot to read a command request.
+   * Checks if the user is in the same voice channel as the bot to read the command request.
    *
    * @param ce command event
    */

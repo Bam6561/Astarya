@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.util.Random;
 
 /**
- * Choose is a command invocation that chooses randomly between any number of options.
+ * Command invocation that chooses randomly between any number of options.
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -25,7 +25,7 @@ public class Choose extends Command {
   }
 
   /**
-   * Checks if user provided any parameters to read a choose command request.
+   * Checks if user provided any parameters to read the command request.
    * <p>
    * Users can provide any number of options separated by a comma.
    *
@@ -46,7 +46,7 @@ public class Choose extends Command {
   }
 
   /**
-   * Checks if the choose command request was formatted correctly before
+   * Checks if the command request was formatted correctly before
    * sending an embed containing a random choice from user provided options.
    *
    * @param ce         command event

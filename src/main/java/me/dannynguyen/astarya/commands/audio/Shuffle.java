@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Shuffle is a command invocation that shuffles the queue.
+ * Command invocation that shuffles the queue.
  *
  * @author Danny Nguyen
  * @version 1.7.13
@@ -26,10 +26,9 @@ public class Shuffle extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel as the bot to read a shuffle command request.
+   * Checks if the user is in the same voice channel as the bot to read the command request.
    *
    * @param ce command event
-   * @throws NullPointerException user not in the same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {

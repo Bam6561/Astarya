@@ -7,7 +7,7 @@ import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 /**
- * Remind is a command invocation that sets a timer and alerts the user when the time expires.
+ * Command invocation that sets a timer and alerts the user when the time expires.
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -120,7 +120,6 @@ public class Remind extends Command {
    * @param parameters           user provided parameters
    * @param numberOfParameters   number of user provided parameters
    * @param timeInFirstParameter if the time type exists in the first parameter
-   * @throws NumberFormatException user provided non-integer values
    */
   private void processTimeTypeBasedOnLocation(CommandEvent ce, String[] parameters,
                                               int numberOfParameters, boolean timeInFirstParameter) {

@@ -91,14 +91,14 @@ public class PlayerManager {
       @Override
       public void noMatches() {
         if (!isSilent) {
-          ce.getChannel().sendMessage(Failure.UNABLE_TO_FIND_TRACK.getMessage()).queue();
+          ce.getChannel().sendMessage(Error.UNABLE_TO_FIND_TRACK.getMessage()).queue();
         }
       }
 
       @Override
       public void loadFailed(FriendlyException throwable) {
         if (!isSilent) {
-          ce.getChannel().sendMessage(Failure.UNABLE_TO_LOAD_TRACK.getMessage()).queue();
+          ce.getChannel().sendMessage(Error.UNABLE_TO_LOAD_TRACK.getMessage()).queue();
         }
       }
     });
@@ -179,12 +179,12 @@ public class PlayerManager {
 
       @Override
       public void noMatches() {
-        ce.getChannel().sendMessage(Failure.UNABLE_TO_FIND_TRACK.getMessage()).queue();
+        ce.getChannel().sendMessage(Error.UNABLE_TO_FIND_TRACK.getMessage()).queue();
       }
 
       @Override
       public void loadFailed(FriendlyException throwable) {
-        ce.getChannel().sendMessage(Failure.UNABLE_TO_LOAD_TRACK.getMessage()).queue();
+        ce.getChannel().sendMessage(Error.UNABLE_TO_LOAD_TRACK.getMessage()).queue();
       }
     });
   }
@@ -252,9 +252,9 @@ public class PlayerManager {
   }
 
   /**
-   * Types of track parsing failures.
+   * Types of track parsing errors.
    */
-  private enum Failure {
+  private enum Error {
     /**
      * Unable to find track.
      */
@@ -271,18 +271,18 @@ public class PlayerManager {
     private final String message;
 
     /**
-     * Associates a failure with its message.
+     * Associates am error with its message.
      *
      * @param message message
      */
-    Failure(String message) {
+    Error(String message) {
       this.message = message;
     }
 
     /**
-     * Gets the failure's message.
+     * Gets the error's message.
      *
-     * @return failure's message
+     * @return error's message
      */
     public String getMessage() {
       return this.message;

@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Poll is a command invocation that creates a reaction vote with up to 10 options.
+ * Command invocation that creates a reaction vote with up to 10 options.
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -29,7 +29,7 @@ public class Poll extends Command {
   }
 
   /**
-   * Checks if the user provided options to read a poll command request.
+   * Checks if the user provided options to read the poll command request.
    * <p>
    * Users can provide up to 10 options in the poll, separated by commas, but no more than one.
    *

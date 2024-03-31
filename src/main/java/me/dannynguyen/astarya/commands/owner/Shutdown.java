@@ -5,7 +5,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 /**
- * Shutdown is a command invocation that shuts the bot down.
+ * Command invocation that shuts the bot down.
  *
  * @author Danny Nguyen
  * @version 1.8.0

@@ -59,32 +59,13 @@ public class Lyrics extends Command {
   /**
    * Represents a Genius track query.
    *
+   * @param ce         command event
+   * @param parameters user provided parameters
    * @author Danny Nguyen
    * @version 1.8.9
    * @since 1.8.9
    */
-  private class GeniusQuery {
-    /**
-     * Command event.
-     */
-    private final CommandEvent ce;
-
-    /**
-     * User provided parameters.
-     */
-    private final String[] parameters;
-
-    /**
-     * Associates a Genius query with its parameters.
-     *
-     * @param ce         command event
-     * @param parameters parameters
-     */
-    GeniusQuery(CommandEvent ce, String[] parameters) {
-      this.ce = ce;
-      this.parameters = parameters;
-    }
-
+  private record GeniusQuery(CommandEvent ce, String[] parameters) {
     /**
      * Combines an endpoint URL with its search query to query Genius API with.
      */

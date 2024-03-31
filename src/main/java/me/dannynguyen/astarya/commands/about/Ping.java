@@ -30,7 +30,6 @@ public class Ping extends Command {
     Settings.deleteInvoke(ce);
 
     long time = System.currentTimeMillis();
-    ce.getChannel().sendMessage("Ping:").queue(response ->
-        response.editMessageFormat("Ping: %d ms", System.currentTimeMillis() - time).queue());
+    ce.getChannel().sendMessage("Ping:").queue(response -> response.editMessageFormat("Ping: %d ms", System.currentTimeMillis() - time).queue());
   }
 }

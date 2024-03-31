@@ -9,7 +9,7 @@ import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 /**
- * SetPosition is a command invocation that sets the position of the currently playing track.
+ * Command invocation that sets the position of the currently playing track.
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -24,10 +24,9 @@ public class SetPosition extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel as the bot to read a setPosition command request.
+   * Checks if the user is in the same voice channel as the bot to read the command request.
    *
    * @param ce command event
-   * @throws NullPointerException user not in same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -49,11 +48,10 @@ public class SetPosition extends Command {
   }
 
   /**
-   * Checks if the setPosition command request was formatted correctly
+   * Checks if the command request was formatted correctly
    * before setting the currently playing track's position.
    *
    * @param ce command event
-   * @throws NumberFormatException user provided non-integer value
    */
   private void readSetPositionRequest(CommandEvent ce) {
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");

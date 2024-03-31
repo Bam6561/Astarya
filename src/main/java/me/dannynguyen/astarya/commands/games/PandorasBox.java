@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import java.util.List;
 
 /**
- * Pandora's Box is a command invocation that sends a random scenario prompt. The prompt's
+ * Command invocation that sends a random scenario prompt. The prompt's
  * subject is substituted if it has a field to support the user's given parameters.
  *
  * @author Danny Nguyen

@@ -10,7 +10,7 @@ import me.dannynguyen.astarya.enums.BotMessage;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 /**
- * Skip is a command invocation that skips the currently playing track in the audio player.
+ * Command invocation that skips the currently playing track in the audio player.
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -24,10 +24,9 @@ public class Skip extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel as the bot to read a skip command request.
+   * Checks if the user is in the same voice channel as the bot to read the command request.
    *
    * @param ce command event
-   * @throws NullPointerException user not in the same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {

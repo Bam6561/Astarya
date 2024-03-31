@@ -70,12 +70,12 @@ public class Play extends Command {
 
     if (botChannel == null) {
       joinVoiceChannel(ce);
-      new TrackRequest(ce).readPlayRequest();
+      new PlayRequest(ce).readPlayRequest();
       return;
     }
 
     if (userChannel.equals(botChannel)) {
-      new TrackRequest(ce).readPlayRequest();
+      new PlayRequest(ce).readPlayRequest();
     } else {
       ce.getChannel().sendMessage(BotMessage.USER_NOT_IN_SAME_VC.getMessage()).queue();
     }
@@ -97,13 +97,13 @@ public class Play extends Command {
   }
 
   /**
-   * Represents a track query.
+   * Represents a Play command track query.
    *
    * @author Danny Nguyen
    * @version 1.8.10
    * @since 1.8.10
    */
-  private static class TrackRequest {
+  private static class PlayRequest {
     /**
      * Command event.
      */
@@ -129,7 +129,7 @@ public class Play extends Command {
      *
      * @param ce command event
      */
-    TrackRequest(CommandEvent ce) {
+    PlayRequest(CommandEvent ce) {
       this.ce = ce;
       this.parameters = ce.getMessage().getContentRaw().split("\\s");
       this.numberOfParameters = parameters.length - 1;

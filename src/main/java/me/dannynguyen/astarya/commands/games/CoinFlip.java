@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.util.Random;
 
 /**
- * CoinFlip is a command invocation that simulates coin flips.
+ * Command invocation that simulates coin flips.
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -66,7 +66,6 @@ public class CoinFlip extends Command {
    *
    * @param ce         command event
    * @param parameters user provided parameters
-   * @throws NumberFormatException user provided a non-integer value
    */
   private void multipleCoinFlips(CommandEvent ce, String[] parameters) {
     try {

@@ -82,8 +82,6 @@ public class Profile extends Command {
    *
    * @param ce         command event
    * @param parameters user provided parameters
-   * @throws NumberFormatException  parameter not user id
-   * @throws ErrorResponseException invalid user id
    */
   private void interpretUserIdOrName(CommandEvent ce, String parameters) {
     try { // Target: User Id

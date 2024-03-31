@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.util.Random;
 
 /**
- * Roll is a command invocation that simulates dice rolls and
+ * Command invocation that simulates dice rolls and
  * randomly generates integers based on a user provided range.
  *
  * @author Danny Nguyen
@@ -66,7 +66,6 @@ public class Roll extends Command {
    *
    * @param ce         command event
    * @param parameters user provided parameters
-   * @throws NumberFormatException user provided non-integer value
    */
   private void multipleDieRolls(CommandEvent ce, String[] parameters) {
     try {
@@ -110,7 +109,6 @@ public class Roll extends Command {
    *
    * @param ce         command event
    * @param parameters user provided parameters
-   * @throws NumberFormatException user provided non-integer value
    */
   private void customRangeRolls(CommandEvent ce, String[] parameters) {
     try {

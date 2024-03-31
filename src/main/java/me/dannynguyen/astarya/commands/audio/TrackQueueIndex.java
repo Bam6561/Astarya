@@ -5,6 +5,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 /**
  * Represents an AudioTrack with its requester.
  *
+ * @param audioTrack audio track
+ * @param requester  requesting user
  * @author Danny Nguyen
  * @version 1.7.8
  * @since 1.7.0

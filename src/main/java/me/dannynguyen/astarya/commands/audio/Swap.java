@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Swap is a command invocation that swaps the position of a track in queue with another.
+ * Command invocation that swaps the position of a track in queue with another.
  *
  * @author Danny Nguyen
  * @version 1.8.0
@@ -27,10 +27,9 @@ public class Swap extends Command {
   }
 
   /**
-   * Checks if the user is in the same voice channel as the bot to read a swap command request.
+   * Checks if the user is in the same voice channel as the bot to read the command request.
    *
    * @param ce command event
-   * @throws NullPointerException user not in the same voice channel
    */
   @Override
   protected void execute(CommandEvent ce) {
@@ -52,7 +51,7 @@ public class Swap extends Command {
   }
 
   /**
-   * Checks if the swap command request was formatted correctly before swapping tracks.
+   * Checks if the command request was formatted correctly before swapping tracks.
    *
    * @param ce command event
    */
@@ -73,7 +72,6 @@ public class Swap extends Command {
    *
    * @param ce         command event
    * @param parameters user provided parameters
-   * @throws NumberFormatException user provided non-integer values
    */
   private void processSwapRequest(CommandEvent ce, String[] parameters) {
     try {
@@ -93,7 +91,6 @@ public class Swap extends Command {
    * @param ce            command event
    * @param originalIndex original track index
    * @param swapIndex     track index to be swapped
-   * @throws IndexOutOfBoundsException user provided indices out of queue range
    */
   private void swapTracks(CommandEvent ce, int originalIndex, int swapIndex) {
     try {

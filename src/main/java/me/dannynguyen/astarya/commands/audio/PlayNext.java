@@ -54,7 +54,7 @@ public class PlayNext extends Command {
   }
 
   /**
-   * Represents the next track to be played.
+   * Represents the Track command request for the next track to be played.
    *
    * @param ce command event
    * @author Danny Nguyen
@@ -65,7 +65,6 @@ public class PlayNext extends Command {
     /**
      * Checks if the command request was formatted correctly
      * before changing the position of the chosen track.
-     *
      */
     private void readPlayNextRequest() {
       String[] parameters = ce.getMessage().getContentRaw().split("\\s");
@@ -87,7 +86,6 @@ public class PlayNext extends Command {
      * setting a track to immediately play after the currently playing track.
      *
      * @param queueNumber track in queue to be played next
-     * @throws IndexOutOfBoundsException user provided an index out of range of the queue
      */
     private void processPlayNextRequest(int queueNumber) {
       try {

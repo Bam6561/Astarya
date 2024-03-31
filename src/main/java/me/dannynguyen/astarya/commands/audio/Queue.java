@@ -13,8 +13,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.util.List;
 
 /**
- * Queue is a command invocation that provides a list
- * of tracks queued and what track is currently playing.
+ * Command invocation that provides a list of
+ * tracks queued and what track is currently playing.
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -39,7 +39,6 @@ public class Queue extends Command {
    * Users can optionally provide a queue page to be displayed with an additional parameter.
    *
    * @param ce command event
-   * @throws NumberFormatException user provided non-integer value
    */
   @Override
   protected void execute(CommandEvent ce) {

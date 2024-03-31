@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import java.util.List;
 
 /**
- * Delete is a command invocation that clears a number of 2-100 recent messages.
+ * Command invocation that clears a number of 2-100 recent messages.
  *
  * @author Danny Nguyen
  * @version 1.8.1
@@ -50,7 +50,6 @@ public class Delete extends Command {
    *
    * @param ce         command event
    * @param parameters user provided parameters
-   * @throws NumberFormatException user provided non-integer value
    */
   private void readDeleteMessagesRequest(CommandEvent ce, String[] parameters) {
     try {
@@ -71,7 +70,6 @@ public class Delete extends Command {
    *
    * @param ce                       command event
    * @param numberOfMessagesToDelete number of messages to delete
-   * @throws InsufficientPermissionException unable to manage messages
    */
   private void deleteRecentMessages(CommandEvent ce, int numberOfMessagesToDelete) {
     MessageChannel textChannel = ce.getChannel();

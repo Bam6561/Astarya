@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Settings is a command invocation that provides information on
+ * Command invocation that provides information on
  * the bot's settings and provides the option to change them.
  *
  * @author Danny Nguyen
@@ -126,7 +126,6 @@ public class Settings extends Command {
    *
    * @param ce            command event
    * @param settingChange the boolean value to be changed to
-   * @throws NumberFormatException user provided non-integer value
    */
   private void setEmbedDecayTimeSetting(CommandEvent ce, String settingChange) {
     try {

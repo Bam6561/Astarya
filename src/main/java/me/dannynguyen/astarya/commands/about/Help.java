@@ -42,8 +42,8 @@ public class Help extends Command {
 
     EmbedBuilder embed = new EmbedBuilder();
     switch (numberOfParameters) {
-      case 0 -> new EmbedSetter(embed).setHelpMenu();
-      case 1 -> new EmbedSetter(embed).interpretCommand(parameters[1].toLowerCase());
+      case 0 -> new HelpRequest(embed).setHelpMenu();
+      case 1 -> new HelpRequest(embed).interpretCommand(parameters[1].toLowerCase());
       default -> embed.setDescription("Type `" + Settings.getPrefix() + "commands` " +
           "to get a list of commands available. You can also refer to " +
           "[Astarya's Wiki](https://github.com/Bam6561/Astarya/wiki).");
@@ -52,14 +52,14 @@ public class Help extends Command {
   }
 
   /**
-   * Represents an embed set operation.
+   * Represents a Help command embed set operation.
    *
    * @param embed embed being set
    * @author Danny Nguyen
    * @version 1.8.7
    * @since 1.8.6
    */
-  private record EmbedSetter(EmbedBuilder embed) {
+  private record HelpRequest(EmbedBuilder embed) {
     /**
      * Sets the embed to contain all commands available.
      */

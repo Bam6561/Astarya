@@ -13,8 +13,8 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
- * HighOrLow is a command invocation that allows the user
- * to guess if the next number will be higher or lower.
+ * Command invocation that allows the user to guess
+ * if the next number will be higher or lower.
  *
  * @author Danny Nguyen
  * @version 1.8.1
