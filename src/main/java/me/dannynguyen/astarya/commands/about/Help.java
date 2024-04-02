@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.4
  * @since 1.0
  */
 public class Help extends Command {
@@ -375,16 +375,10 @@ public class Help extends Command {
      * {@link me.dannynguyen.astarya.commands.utility.Remind}
      */
     REMIND("Help: Remind",
-        """
-            Sets a timer and alerts the user when the time expires for up to a day's maximum length.\040
-            Parameters provide the time duration, type, and event name. Astarya recognizes the following time types:
-            > - 1 parameter: (0-7)d, (0-168)h, (0-10080)m, (0-604800)s
-            > - 2+ parameters: days, day, d, hours, hour, hrs, hr, h,
-            minutes, minute, mins, min, m, seconds, second, secs, sec, s.""",
+        "Sets a timer and alerts the user when the timer expires. Accepts time in dd:hh:mm format.",
         "remind, timer",
-        "[1]TimeDuration&TimeType/Time [2]TimeDuration/TimeType/EventName [3++]EventName",
-        "remind (0-7)d | remind (0-168)h | remind (0-10080)m | " +
-            "remind (0-604800)s | remind TimeDurationTimeType EventName | remind TimeDuration TimeType EventName"),
+        "[1]Time (dd:hh:mm) [2, ++] EventName",
+        "remind 1:30 | remind 5 check on microwave in 5 minutes"),
 
     /**
      * {@link me.dannynguyen.astarya.commands.audio.Remove}
