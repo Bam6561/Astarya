@@ -21,7 +21,7 @@ import java.util.Objects;
  * player's functionality related to playing tracks and track order.
  *
  * @author Danny Nguyen
- * @version 1.8.7
+ * @version 1.9.3
  * @since 1.1.0
  */
 public class AudioScheduler extends AudioEventAdapter {
@@ -33,12 +33,12 @@ public class AudioScheduler extends AudioEventAdapter {
   /**
    * Track queue.
    */
-  private final List<TrackQueueIndex> trackQueue;
+  private final List<TrackQueueIndex> trackQueue = new ArrayList<>();
 
   /**
    * Skipped tracks.
    */
-  private final LinkedList<TrackQueueIndex> skippedTracks;
+  private final LinkedList<TrackQueueIndex> skippedTracks = new LinkedList<>();
 
   /**
    * If the audio player is looped.
@@ -52,8 +52,6 @@ public class AudioScheduler extends AudioEventAdapter {
    */
   public AudioScheduler(@NotNull AudioPlayer audioPlayer) {
     this.audioPlayer = Objects.requireNonNull(audioPlayer);
-    this.trackQueue = new ArrayList<>();
-    this.skippedTracks = new LinkedList<>();
   }
 
   /**

@@ -17,7 +17,7 @@ import java.util.*;
  * The prompt's subject is substituted if it has a field to support the user's given parameters.
  *
  * @author Danny Nguyen
- * @version 1.9.0
+ * @version 1.9.3
  * @since 1.6.11
  */
 public class PandorasBox extends Command {
@@ -63,6 +63,11 @@ public class PandorasBox extends Command {
   @Override
   protected void execute(CommandEvent ce) {
     Settings.deleteInvoke(ce);
+
+    if (pandorasBoxPrompts == null) {
+      ce.getChannel().sendMessage("Pandora's Box prompts not found.").queue();
+      return;
+    }
 
     String[] parameters = ce.getMessage().getContentRaw().split("\\s");
     int numberOfParameters = parameters.length - 1;

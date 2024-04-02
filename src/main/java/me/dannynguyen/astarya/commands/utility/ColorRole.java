@@ -35,11 +35,11 @@ public class ColorRole extends Command {
    * @param colorRoles color roles
    */
   public ColorRole(@NotNull Set<String> colorRoles) {
+    this.colorRoles = Objects.requireNonNull(colorRoles, "Null color roles");
     this.name = "color";
     this.aliases = new String[]{"color"};
     this.arguments = "[1]<#HexColor>";
     this.help = "Assigns a colored role to the user.";
-    this.colorRoles = Objects.requireNonNull(colorRoles, "Null color roles");
   }
 
   /**

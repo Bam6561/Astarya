@@ -13,7 +13,7 @@ import java.util.Objects;
  * bot's ability to play tracks in connected voice channels.
  *
  * @author Danny Nguyen
- * @version 1.8.7
+ * @version 1.9.3
  * @since 1.1.0
  */
 public class AudioPlayerSendHandler implements AudioSendHandler {
@@ -25,12 +25,12 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
   /**
    * Byte buffer.
    */
-  private final ByteBuffer buffer;
+  private final ByteBuffer buffer = ByteBuffer.allocate(512); // Allocated memory per 20ms
 
   /**
    * Audio frame.
    */
-  private final MutableAudioFrame frame;
+  private final MutableAudioFrame frame = new MutableAudioFrame();
 
   /**
    * Associates the audio player with its audio player, buffer, and frame.
@@ -39,8 +39,6 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
    */
   public AudioPlayerSendHandler(@NotNull AudioPlayer audioPlayer) {
     this.audioPlayer = Objects.requireNonNull(audioPlayer, "Null audio player");
-    this.buffer = ByteBuffer.allocate(1024); // Allocated memory per 20ms
-    this.frame = new MutableAudioFrame();
     this.frame.setBuffer(buffer);
   }
 

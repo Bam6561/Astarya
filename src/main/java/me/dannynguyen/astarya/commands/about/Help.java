@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * Command invocation that provides documentation on Astarya's commands.
  *
  * @author Danny Nguyen
- * @version 1.9.2
+ * @version 1.9.3
  * @since 1.0
  */
 public class Help extends Command {
@@ -74,7 +74,7 @@ public class Help extends Command {
           "searchTrack | setPosition | shuffle | skip | swap", true);
       embed.addField("Games", "> choose | coinflip | highorlow | pandorasbox | roll", true);
       embed.addField("Owner", "> delete | settings | shutdown", true);
-      embed.addField("Utility", "> color | emote | poll | profile | remind | server", true);
+      embed.addField("Utility", "> color | emote | jpg | poll | profile | remind | server", true);
     }
 
     /**

@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * Command invocation that allows the user to guess if the next number will be higher or lower.
  *
  * @author Danny Nguyen
- * @version 1.8.13
+ * @version 1.9.3
  * @since 1.0
  */
 public class HighOrLow extends Command {
@@ -30,22 +30,22 @@ public class HighOrLow extends Command {
   /**
    * First number generated.
    */
-  private int firstNumber;
+  private int firstNumber = -1;
 
   /**
    * Second number generated.
    */
-  private int secondNumber;
+  private int secondNumber = -1;
 
   /**
    * Player ID.
    */
-  private long playerId;
+  private long playerId = -1;
 
   /**
    * If a game exists.
    */
-  private boolean ongoingGame;
+  private boolean ongoingGame = false;
 
   /**
    * Associates the command with its properties.
@@ -57,10 +57,6 @@ public class HighOrLow extends Command {
     this.name = "highorlow";
     this.aliases = new String[]{"highorlow", "guess"};
     this.help = "Guess if the next number will be higher or lower!";
-    this.firstNumber = 0;
-    this.secondNumber = 0;
-    this.playerId = 0;
-    this.ongoingGame = false;
   }
 
   /**

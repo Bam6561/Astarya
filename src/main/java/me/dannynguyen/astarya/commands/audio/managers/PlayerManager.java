@@ -24,7 +24,7 @@ import java.util.Objects;
  * search queries into playable tracks for the {@link AudioScheduler}.
  *
  * @author Danny Nguyen
- * @version 1.8.7
+ * @version 1.9.3
  * @since 1.1.0
  */
 public class PlayerManager {
@@ -36,28 +36,25 @@ public class PlayerManager {
   /**
    * {@link PlaybackManager}
    */
-  private final Map<Long, PlaybackManager> musicManagers;
+  private final Map<Long, PlaybackManager> musicManagers = new HashMap<>();
 
   /**
    * Audio player manager.
    */
-  private final AudioPlayerManager audioPlayerManager;
+  private final AudioPlayerManager audioPlayerManager = new DefaultAudioPlayerManager();
 
   /**
    * Search results from {@link me.dannynguyen.astarya.commands.audio.SearchTrack}.
    */
-  private final AudioTrack[] searchTrackResults;
+  private final AudioTrack[] searchTrackResults = new AudioTrack[5];
 
   /**
    * Associates player manager with its music managers, audio
    * player managers, audio source managers, and search track results.
    */
   public PlayerManager() {
-    this.musicManagers = new HashMap<>();
-    this.audioPlayerManager = new DefaultAudioPlayerManager();
     AudioSourceManagers.registerRemoteSources(this.audioPlayerManager);
     AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
-    this.searchTrackResults = new AudioTrack[5];
   }
 
   /**

@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * {@link AudioScheduler#getTrackQueue() queue} using a query of user provided parameters.
  *
  * @author Danny Nguyen
- * @version 1.8.12
+ * @version 1.9.3
  * @since 1.2.15
  */
 public class SearchTrack extends Command {
@@ -32,7 +32,7 @@ public class SearchTrack extends Command {
   /**
    * Command user's id.
    */
-  private long invokerUserId;
+  private long invokerUserId = -1;
 
   /**
    * Associates the command with its properties.
@@ -45,7 +45,6 @@ public class SearchTrack extends Command {
     this.aliases = new String[]{"searchtrack", "search", "st"};
     this.arguments = "[1 ++]YouTubeQuery";
     this.help = "Searches for a track to add to the track queue.";
-    this.invokerUserId = 0;
   }
 
   /**
