@@ -32,8 +32,9 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-Discord bot written in Java using the JDA wrapper. Optional Spotify API integration for more audio playback
-functionality. 
+Discord bot written in Java using the JDA wrapper. 
+
+Optional Spotify API integration for more audio playback functionality. 
 
 See the [Wiki](https://github.com/Bam6561/Astarya/wiki) for documentation on its commands.
 
