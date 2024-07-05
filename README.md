@@ -32,7 +32,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-Discord bot written in Java using the JDA wrapper. 
+General usage Discord bot. 
 
 Optional Spotify API integration for more audio playback functionality. 
 
